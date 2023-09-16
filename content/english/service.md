@@ -2,7 +2,7 @@
 title : "WHERE I AM BUSY NOWADAYS..."
 service_list:
 # service item loop
-- name : "Python"
+- name : "Golang"
   image : "images/icons/web-development.png"
   
 # service item loop

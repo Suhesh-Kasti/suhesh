@@ -1,23 +1,13 @@
 ---
-title: "Project Title"
-date: 2020-05-12T12:14:34+06:00
-image: "images/portfolio/item3.jpg"
-categories: ["database"]
-description: "This is meta description."
+title: "Scripts"
+image: "images/portfolio/scripting.png"
+categories: ["linux", "code"]
+description: "Using programming languages to automate security tasks, analyze vulnerabilities, and respond to security incidents."
 draft: false
 project_info:
 - name: "Client"
   icon: "fas fa-user"
   content: "John Doe"
-- name: "Project Link"
-  icon: "fas fa-link"
-  content: "https://examplesite.com/"
-- name: "New Item"
-  icon: "fas fa-globe"
-  content: "Add whatever you want"
-- name: "Loop Item"
-  icon: "fas fa-redo"
-  content: "This is in a loop"
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore

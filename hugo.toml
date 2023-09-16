@@ -128,7 +128,7 @@ url = "service"
 weight = 3
 
 [[Languages.en.menu.main]]
-name = "Portfolio"
+name = "Arsenal"
 pre = "#"
 url = "portfolio"
 weight = 4

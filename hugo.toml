@@ -1,5 +1,5 @@
 ######################## default configuration ####################
-baseURL = ""
+baseURL = "suhesh.pages.dev"
 title = "Suhesh Kasti"
 # post pagination
 paginate = "6"

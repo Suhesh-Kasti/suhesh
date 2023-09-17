@@ -10,7 +10,7 @@ disableLanguages = [0] # disable language from here
 # google analutics
 googleAnalytics = "" # example : UA-123-45
 # disqus short name
-disqusShortname = "" # get your shortname form here : https://disqus.com
+disqusShortname = "suhesh-pages-dev" # get your shortname form here : https://disqus.com
 
 
 ############################# Outputs ##############################

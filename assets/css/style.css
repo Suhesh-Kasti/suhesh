@@ -263,6 +263,7 @@ body {
 .header:hover .slider-button {
   opacity: 1;
   transform: translateX(0px);
+
 }
 
 .slider-prev-button .fa {

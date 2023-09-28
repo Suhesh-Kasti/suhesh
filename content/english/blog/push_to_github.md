@@ -2,12 +2,11 @@
 title: "Push to Github"
 date: 2023-09-21T22:18:55+05:45
 tag: "Git"
-image: "/images/portfolio/figma.png"
+image: "/images/portfolio/wireshark.png"
 draft: false
 # description
 description: "How to push your code to Github?"
 ---
-
 GitHub is a popular platform for hosting and collaborating on software development projects. If you're new to GitHub and want to learn how to push your code to a repository, you're in the right place. In this guide, we'll walk you through the process step by step.
 
 ## Prerequisites

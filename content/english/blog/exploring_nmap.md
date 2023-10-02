@@ -15,20 +15,12 @@ Nmap (Network Mapper) is a powerful and widely-used open-source network scanning
 
 Every hacking starts with enumeration and reconnaissance phase. Enumeration is a crucial step in the information-gathering process when assessing the security of a network or system. During this phase, the goal is to gather as much information as possible about the target network or system to identify potential vulnerabilities and weaknesses. 
 
-In this blog post we are going to go over the following topics:
-- #####  Installing Nmap
-	- ###### [Nmap on Windows](#windows)
-	- ###### [Nmap on Linux](#linux)
-	- ###### [Nmap on macOS](#macos)
-	- ###### [Some alternatives for Android and IOS](##androidnios)
-- ##### [Using Nmap](#lets-start-using-nmap) 
-<br>
-________________________________________________________________________________
 <br>
 <br>
 
 
-# Install Nmap   
+## Installing Nmap   
+
 <br>
 
 ### Windows
@@ -94,53 +86,43 @@ pkg install nmap
 
 <br>
 
-# Let's start using Nmap
+## Let's start using Nmap
 
-1. **-sC** (Script Scanning):
-    
-    - **Description:** Enables script scanning using Nmap's default scripts to discover vulnerabilities and perform additional reconnaissance.
-    - **Example:** `nmap -sC 192.168.1.252`
-2. **-sT** (TCP Connect Scan):
-    
-    - **Description:** Performs a basic TCP connect scan by establishing a full TCP connection to the target ports.
-    - **Example:** `nmap -sT 192.168.1.253`
-3. **-sV** (Service Version Detection):
-    
-    - **Description:** Attempts to identify the version of services running on open ports.
-    - **Example:** `nmap -sV 192.168.1.254`
-4. **-p-** (Scan All Ports):
-    
-    - **Description:** Scans all 65535 ports on the target. By default, Nmap only scans the 1000 most common ports.
-    - **Example:** `nmap -p- 192.168.1.253`
-5. **-T5** (Aggressive Timing):
-    
-    - **Description:** Sets the timing template to "Aggressive," which makes the scan faster but more intrusive.
-    - **Example:** `nmap -T5 192.168.1.252`
-6. **-v vs -vv** (Verbose Output):
-    
-    - **Description:** Controls the level of verbosity in the output. `-v` provides regular verbosity, while `-vv` increases verbosity.
-    - **Example:** `nmap -v 192.168.1.254`
-7. **-Pn** (No Ping):
-    
-    - **Description:** Skips host discovery and assumes that the target is up, regardless of whether it responds to pings.
-    - **Example:** `nmap -Pn 192.168.1.253`
-8. **-O** (OS Detection):
-    
-    - **Description:** Attempts to identify the operating system of the target hosts.
-    - **Example:** `nmap -O 192.168.1.252`
-9. **-sU** (UDP Scan):
-    
-    - **Description:** Initiates a UDP scan to discover open UDP ports and services.
-    - **Example:** `nmap -sU 192.168.1.254`
-10. **-A** (Aggressive Scan):
-    
-    - **Description:** Enables an aggressive scan, which includes OS detection, version detection, script scanning, and traceroute.
-    - **Example:** `nmap -A 192.168.1.253`
+Nmap requires some stuff before starting to scan a network. Those things include:
+1. IP address and subnet
+2. Port number 
+3. Scan Type
+4. Timings
+5. Output Type
+### Host Discovery
+First and foremost Nmap utilizes host discovery to make sure the host is alive and running. Scans require a lot of time to be performed. When there are a lot of IPs to be scanned it makes more sense to not scan the devices that are not active to save time. -Sn flag is used for host discovery and it can be disabled using the -Pn flag. Nmap performs host discovery by default even when -Sn is not explicitly mentioned.
+
+`nmap -Sn 192.168.10.2`
+
+Let's break the above command:
+
+###### When we perform scan as *root*
+- Nmap sends an ICMP echo packet
+- Nmap sends a TCP SYN packet on port 443
+- Nmap sends a TCP ACK packet on port 80
+- Nmap sends ICMP timestamp request
+###### When we perform scan as *local user*
+- Nmap sends a TCP SYN packet on port 443
+- Nmap sends a TCP ACK packet on port 80
+
+If Nmap receives response from any of these, it will confirm that the host is active and begins port scanning.
+
+`nmap -Pn 192.168.10.2`
+
+We skip the host discovery phase if we know that our target is up. This command will make the Nmap scan the network without host discovery.
+
+Nmap utilizes the TCP handshake to check if the port is active or not. 
+- If the target is active then it replies to Nmap's SYN packet with a SYN+ACK packet which will tell the Nmap that the target is up.
+
+![Port status](/images/blog/nmap/targetup.png)
+
+- If the target is down then it replies to Nmap's SYN packet with a RST/ACK packet which will tell the Nmap that the target is down.
 
 
-Running aggressive scans, such as `-T5` and `-A`, may generate more network traffic and could potentially be detected by intrusion detection systems (IDS) or firewall rules. Always ensure you have the necessary permissions and authorization before scanning any network or system.
+![Target Down](/images/blog/nmap/targetdown.png)
 
-<br>
-
-# Conclusion
-Nmap is an essential tool for network administrators, security professionals, and curious enthusiasts alike. Whether you're using it on Linux, Windows, or macOS, or exploring alternatives on your mobile devices, Nmap empowers you to understand and secure your network. By learning its features and practicing with real-world examples, you can unlock its full potential in network reconnaissance and security assessment.

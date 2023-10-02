@@ -48,7 +48,7 @@ body {
   right: 0;
   bottom: 0;
   background-color: #2B2C2F;
-  z-index: 99999;
+  z-index: 999;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -77,6 +77,16 @@ body {
 .section-sm {
   padding-top: 60px;
   padding-bottom: 60px;
+}
+.sticky-top{
+  z-index: 0;
+ }
+
+.col-lg-3{
+  position: -webkit-sticky; 
+  position: sticky;
+  top: 0;
+
 }
 
 @-webkit-keyframes fadeInUp {
@@ -1784,7 +1794,7 @@ textarea.form-control::-webkit-input-placeholder,
     margin-bottom: 2px;
   }
 
-  .head-holder .hireMe {
+  .head-holdinitialireMe {
     margin-top: 10px;
     font-size: 18px;
     padding: 3px 12px;
@@ -2067,12 +2077,15 @@ textarea.form-control::-webkit-input-placeholder,
   .menu-container-transparent {
     background: rgb(255, 255, 255);
   }
+
+
 }
 
 @media (min-width: 601px) and (max-width: 991px) {
   .menu-container {
     justify-content: flex-start;
   }
+ 
 }
 
 @media(min-width: 601px) {

@@ -4,19 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "e0c7c381e9009f6c",
+        "id": "3e215d88c72585ec",
         "type": "tabs",
         "children": [
           {
-            "id": "86dcea8ae87c1f35",
+            "id": "062a2405e389111b",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "content/english/blog/exploring_nmap.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/english/blog/exploring_nmap.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/english/blog/exploring_nmap.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +119,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/english/blog/exploring_nmap.md"
+                "file": "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.md"
               }
             }
           }
@@ -143,16 +137,32 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "86dcea8ae87c1f35",
+  "active": "f2978f3634c177f4",
   "lastOpenFiles": [
-    "assets/css/style.css~",
-    "content/english/blog/push_to_github.md",
     "content/english/blog/exploring_nmap.md",
-    "layouts/partials/footer.html~",
+    "assets/css/style.css~",
+    "layouts/_default/single.html~",
     "content/english/blog/_index.md",
+    "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.md",
+    "images/blog/nmap/targetup.png.md",
+    "static/images/blog/nmap/targetdown.png",
+    "static/images/blog/nmap/targetup.png",
+    "Excalidraw/Drawing 2023-10-02 14.46.32.excalidraw.md",
+    "static/images/blog/nmap/portstatus.png",
+    "Excalidraw/Drawing 2023-10-02 14.21.42.excalidraw.md",
+    "Excalidraw/Drawing 2023-10-02 14.14.34.excalidraw.md",
+    "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.png",
+    "images/blog/nmap/portstatus.png.md",
+    "images/blog/nmap",
+    "images/blog",
+    "images",
+    "Excalidraw",
+    "content/english/blog/push_to_github.md",
+    "layouts/partials/footer.html~",
     "assets/css/4913"
   ]
 }

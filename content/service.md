@@ -1,12 +1,12 @@
 ---
-title : "WHERE I AM BUSY NOWADAYS..."
+title : "My Tech Arsenal"
 service_list:
 # service item loop
-- name : "Golang"
+- name : "Python"
   image : "images/icons/web-development.png"
   
 # service item loop
-- name : "Designs"
+- name : "Figma"
   image : "images/icons/graphic-design.png"
   
 # service item loop
@@ -18,7 +18,7 @@ service_list:
   image : "images/icons/software-development.png"
   
 # service item loop
-- name : "Splunk"
+- name : "Git"
   image : "images/icons/marketing.png"
   
 # service item loop

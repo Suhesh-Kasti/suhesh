@@ -1,12 +1,10 @@
 ######################## default configuration ####################
-baseURL = "https://suhesh.pages.dev/"
+baseURL = "https://suhesh.com.np/"
 title = "Suhesh Kasti"
 # post pagination
 paginate = "6"
 # post excerpt
 summaryLength = "10"
-# disable language
-disableLanguages = [0] # disable language from here
 # google analutics
 googleAnalytics = "" # example : UA-123-45
 # disqus short name
@@ -66,8 +64,8 @@ logo_light = "images/logo-light.png"
 logo_dark = "images/logo-dark.png"
 logo_width = "150px"
 # Meta data
-description = "Welcome to the portfolio website of Suhesh Kasti."
-author = "suhesh"
+description = "Portfolio website of Suhesh Kasti."
+author = "Suhesh Kasti"
 
 # Preloader
 [params.preloader]
@@ -77,7 +75,7 @@ preloader = "images/preloader.gif" # use jpg, png, svg or gif format.
 ############################# social site ########################
 [[params.social]]
 icon = "fab fa-youtube"
-link = "https://www.youtube.com/channel/UCWUvmEUYtEC6WwebdoG1IIA"
+link = "https://www.youtube.com/@schizo..."
 
 [[params.social]]
 icon = "fab fa-twitter"
@@ -96,56 +94,54 @@ icon = "fab fa-linkedin"
 link = "https://linkedin.com/in/suheshkasti"
 
 
-################################### English language #####################################
-[Languages.en]
 languageName = "En"
 languageCode = "en-us"
-contentDir = "content/english"
+contentDir = "content"
 weight = 1
 home = "Home"
 # copyright
-copyright = "Copyright &copy; 2023 [Suhesh](https://t.me/suheshkasti)"
+copyright = "Copyright &copy; 2023 [Suhesh Kasti](https://t.me/suheshkasti)"
 
 
 ################# english navigation ##################
 
 # main menu
-[[Languages.en.menu.main]]
+[[menu.main]]
 name = "Home"
 url = "/"
 weight = 1
 
-[[Languages.en.menu.main]]
+[[menu.main]]
 name = "About me"
 pre = "#"
 url = "about"
 weight = 2
 
-[[Languages.en.menu.main]]
-name = "Involved"
+[[menu.main]]
+name = "Technologies"
 pre = "#"
 url = "service"
 weight = 3
 
-[[Languages.en.menu.main]]
-name = "Arsenal"
+[[menu.main]]
+name = "Projects"
 pre = "#"
 url = "portfolio"
 weight = 4
 
-[[Languages.en.menu.main]]
-name = "Likes"
+[[menu.main]]
+name = "Certifications"
 pre = "#"
 url = "testimonial"
 weight = 5
 
-[[Languages.en.menu.main]]
+[[menu.main]]
 name = "Contact"
 pre = "#"
 url = "contact"
 weight = 6
 
-[[Languages.en.menu.main]]
+[[menu.main]]
 name = "Blog"
 url = "blog"
 weight = 7

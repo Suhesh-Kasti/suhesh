@@ -3,18 +3,18 @@ title: "FUN FACTS"
 bg_image: "images/backgrounds/funfact-bg.jpg"
 funfacts:
 # funfacts item loop
-- name: "Security Certificates in Progress"
-  image: "images/icons/works.png"
-  count: "2"
+- name: "Courses in Progress"
+  image: "images/icons/project.png"
+  count: "7"
   
 # funfacts item loop
-- name : "Security Podcasts Listened"
+- name : "Podcasts Listened"
   image : "images/icons/happy.png"
-  count : "55"
+  count : "74"
   
 # funfacts item loop
 - name : "Blogs Written"
-  image : "images/icons/project.png"
+  image : "images/icons/works.png"
   count : "1"
   
 # funfacts item loop

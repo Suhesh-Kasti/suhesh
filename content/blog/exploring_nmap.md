@@ -15,7 +15,7 @@ Nmap (Network Mapper) is a powerful and widely-used open-source network scanning
 
 Every hacking starts with enumeration and reconnaissance phase. Enumeration is a crucial step in the information-gathering process when assessing the security of a network or system. During this phase, the goal is to gather as much information as possible about the target network or system to identify potential vulnerabilities and weaknesses. 
 
-<br>
+<br>    
 <br>
 
 
@@ -99,7 +99,9 @@ First and foremost Nmap utilizes host discovery to make sure the host is alive a
 
 `nmap -Sn 192.168.10.2`
 
-Let's break the above command:
+`nmap -Pn 192.168.10.2`
+
+We skip the host discovery phase if we know that our target is up. This command will make the Nmap scan the network without host discovery.
 
 ###### When we perform scan as *root*
 - Nmap sends an ICMP echo packet
@@ -112,10 +114,6 @@ Let's break the above command:
 
 If Nmap receives response from any of these, it will confirm that the host is active and begins port scanning.
 
-`nmap -Pn 192.168.10.2`
-
-We skip the host discovery phase if we know that our target is up. This command will make the Nmap scan the network without host discovery.
-
 Nmap utilizes the TCP handshake to check if the port is active or not. 
 - If the target is active then it replies to Nmap's SYN packet with a SYN+ACK packet which will tell the Nmap that the target is up.
 
@@ -125,4 +123,6 @@ Nmap utilizes the TCP handshake to check if the port is active or not.
 
 
 ![Target Down](/images/blog/nmap/targetdown.png)
+
+
 

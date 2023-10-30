@@ -11,8 +11,12 @@
             "id": "062a2405e389111b",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "content/english/blog/exploring_nmap.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "content/english/blog/exploring_nmap.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -97,6 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "content/english/blog/exploring_nmap.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -119,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.md"
+                "file": "content/english/blog/exploring_nmap.md"
               }
             }
           }
@@ -141,13 +147,14 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "f2978f3634c177f4",
+  "active": "062a2405e389111b",
   "lastOpenFiles": [
+    "Untitled.md",
     "content/english/blog/exploring_nmap.md",
+    "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.md",
     "assets/css/style.css~",
     "layouts/_default/single.html~",
     "content/english/blog/_index.md",
-    "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.md",
     "images/blog/nmap/targetup.png.md",
     "static/images/blog/nmap/targetdown.png",
     "static/images/blog/nmap/targetup.png",

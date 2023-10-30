@@ -16,7 +16,7 @@ experience:
     - name : "Security Research Analyst"
       company : "SecurityPal Inc. Pvt. Ltd."
       duration : "(2023-ongoing)"
-      content : "Working within the Customer Operations team, I play a pivotal role in enhancing our clients' digital security through meticulous handling and completion of security questionnaires. "
+      content : "Working within the Customer Operations team, I was in the role of enhancing our clients' digital security through meticulous handling and completion of security questionnaires. "
       
     # experience item loop
     - name : "Technical Support Representative"
@@ -39,7 +39,7 @@ skill:
       percentage : "71%"
       
     # skill item loop
-    - name : "Networking Essentials"
+    - name : "Networking Concepts"
       percentage : "65%"
       
     # skill item loop
@@ -53,6 +53,6 @@ custom_attributes: ""
 custom_css: ""
 ---
 
-Hello, cyber-adventurers! 👋 I'm Suhesh Kasti, a cybersecurity student on a mission to shield the digital realm from virtual villains.🌐🛡️ 
+👋 Hello! I'm Suhesh Kasti, a cybersecurity student on a mission to shield the digital realm from virtual villains.🌐🛡️ 
 
 Let's embark on this exciting journey to make the internet safer and have some cyber-fun along the way! 🔒😊💻

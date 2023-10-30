@@ -19,8 +19,8 @@ slider_images:
 # button
 button:
   enable : true
-  label : "Contact Me"
-  link : "#contact"
+  label : "Contact me"
+  link : "#cta"
 
 
 # custom style

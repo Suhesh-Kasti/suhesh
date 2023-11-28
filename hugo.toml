@@ -1,147 +1,164 @@
 ######################## default configuration ####################
-baseURL = "https://suhesh.com.np/"
+# The base URL of your site (required). This will be prepended to all relative URLs.
+baseURL = "/"
+# Title of your website (required).
 title = "Suhesh Kasti"
+# Your theme name
+timeZone = "Asia/Kathmandu"
 # post pagination
-paginate = "6"
+paginate = 2 # see https://gohugo.io/extras/pagination/
 # post excerpt
-summaryLength = "10"
-# google analutics
-googleAnalytics = "" # example : UA-123-45
+summaryLength = 10 # see https://gohugo.io/content-management/excerpts/
+# google analytics
+googleAnalytics = "G-MEASUREMENT_ID" # see https://gohugo.io/templates/internal/#configure-google-analytics
 # disqus short name
-disqusShortname = "suhesh-pages-dev" # get your shortname form here : https://disqus.com
+disqusShortname = "suhesh-pages-dev" # we use disqus to show comments in blog posts . To install disqus please follow this tutorial https://portfolio.peter-baumgartner.net/2017/09/10/how-to-install-disqus-on-hugo/
+# disable language
+disableLanguages = [
+] # example: ["fr"] for disable french language. see https://gohugo.io/content-management/multilingual/
+hasCJKLanguage = false #  If hasCJKLanguage true, auto-detect Chinese/Japanese/Korean Languages in the content. see: https://gohugo.io/getting-started/configuration/#hascjklanguage
 
 
-############################# Outputs ##############################
+########################## Permalinks ############################
+[permalinks.page]
+"pages" = "/:slugorfilename/"
+
+
+############################# Modules ############################
+[module]
+[[module.mounts]]
+source = "assets"
+target = "assets"
+
+[[module.mounts]]
+source = "hugo_stats.json"
+target = "assets/watching/hugo_stats.json"
+
+############################# Build ##############################
+[build]
+noJSConfigInAssets = false
+useResourceCacheWhen = 'fallback'
+[build.buildStats]
+enable = true
+[[build.cachebusters]]
+source = 'assets/watching/hugo_stats\.json'
+target = 'style\.css'
+[[build.cachebusters]]
+source = '(postcss|tailwind)\.config\.js'
+target = 'css'
+[[build.cachebusters]]
+source = 'assets/.*\.(js|ts|jsx|tsx)'
+target = 'js'
+[[build.cachebusters]]
+source = 'assets/.*\.(css|scss|sass)'
+target = 'css'
+[[build.cachebusters]]
+source = 'data/.*\.(.*)$'
+target = 'css'
+[[build.cachebusters]]
+source = 'assets/.*\.(.*)$'
+target = '$1'
+
+
+############################# Outputs ############################
 [outputs]
-home = ["HTML"]
+home = ["HTML", "RSS", "WebAppManifest", "SearchIndex"]
 
+############################# Imaging ############################
+[imaging]
+# See https://github.com/disintegration/imaging
+# Default JPEG or WebP quality setting. Default is 75.
+quality = 90
+resampleFilter = "Lanczos"
+
+############################ Caches ##############################
+[caches]
+[caches.images]
+dir = ":resourceDir/_gen"
+maxAge = "720h"
+
+[caches.assets]
+dir = ":resourceDir/_gen"
+maxAge = "720h"
+
+
+############################ Markup ##############################
+[markup]
 [markup.goldmark.renderer]
-unsafe= true
+unsafe = true
+
+[markup.highlight]
+style = 'monokai' # see https://xyproto.github.io/splash/docs/all.html
+
+[markup.tableOfContents]
+startLevel = 2
+endLevel = 5
+ordered = true
+
+
+########################### Media types ###########################
+[mediaTypes]
+[mediaTypes."application/manifest+json"]
+suffixes = ["webmanifest"]
+
+
+########################### Output Format ##########################
+[outputFormats]
+[outputFormats.WebAppManifest]
+mediaType = "application/manifest+json"
+rel = "manifest"
+
+[outputFormats.SearchIndex]
+mediaType = "application/json"
+baseName = "searchindex"
+isPlainText = true
+notAlternative = true
+
 
 ############################# Plugins ##############################
 
 # CSS Plugins
 [[params.plugins.css]]
-link = "plugins/bootstrap/bootstrap.min.css"
+link = "plugins/swiper/swiper-bundle.css"
+lazy = true
 [[params.plugins.css]]
-link = "https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900&display=swap"
+link = "plugins/glightbox/glightbox.css"
+lazy = true
 [[params.plugins.css]]
-link = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+link = "plugins/font-awesome/v6/brands.css"
+lazy = true
 [[params.plugins.css]]
-link = "plugins/hover/hover.css"
+link = "plugins/font-awesome/v6/solid.css"
+lazy = true
 [[params.plugins.css]]
-link = "plugins/magnific-popup/magnific-popup.css"
-[[params.plugins.css]]
-link = "plugins/owl-carousel/owl.carousel.min.css"
-[[params.plugins.css]]
-link = "plugins/owl-carousel/owl.theme.default.min.css"
-[[params.plugins.css]]
-link = "plugins/text-animation/text-animation.css"
+link = "plugins/font-awesome/v6/icons.css"
+lazy = true
 
 # JS Plugins
 [[params.plugins.js]]
-link = "plugins/jQuery/jquery.min.js"
+link = "js/search.js"
+lazy = false
 [[params.plugins.js]]
-link = "plugins/bootstrap/bootstrap.min.js"
+link = "plugins/swiper/swiper-bundle.js"
+lazy = false
 [[params.plugins.js]]
-link = "plugins/wow.min.js"
+link = "plugins/glightbox/glightbox.js"
+lazy = true
 [[params.plugins.js]]
-link = "plugins/text-animation/text-animation.js"
+link = "js/gallery-slider.js"
+lazy = true
 [[params.plugins.js]]
-link = "plugins/jquery.waypoints.min.js"
+link = "js/accordion.js"
+lazy = true
 [[params.plugins.js]]
-link = "plugins/shuffle/shuffle.min.js"
+link = "js/tab.js"
+lazy = true
 [[params.plugins.js]]
-link = "plugins/magnific-popup/jquery.magnific-popup.min.js"
+link = "js/modal.js"
+lazy = true
 [[params.plugins.js]]
-link = "plugins/owl-carousel/owl.carousel.min.js"
-
-
-#################### default parameters ################################
-[params]
-favicon = "images/favicon.png"
-logo_light = "images/logo-light.png"
-logo_dark = "images/logo-dark.png"
-logo_width = "150px"
-# Meta data
-description = "Portfolio website of Suhesh Kasti."
-author = "Suhesh Kasti"
-
-# Preloader
-[params.preloader]
-enable = true
-preloader = "images/preloader.gif" # use jpg, png, svg or gif format.
-  
-############################# social site ########################
-[[params.social]]
-icon = "fab fa-youtube"
-link = "https://www.youtube.com/@schizo..."
-
-[[params.social]]
-icon = "fab fa-twitter"
-link = "https://twitter.com/KastiSuhesh"
-
-[[params.social]]
-icon = "fab fa-telegram-plane"
-link = "https://t.me/suheshkasti"
-
-[[params.social]]
-icon = "fab fa-github"
-link = "https://github.com/Suhesh-Kasti"
-
-[[params.social]]
-icon = "fab fa-linkedin"
-link = "https://linkedin.com/in/suheshkasti"
-
-
-languageName = "En"
-languageCode = "en-us"
-contentDir = "content"
-weight = 1
-home = "Home"
-# copyright
-copyright = "Copyright &copy; 2023 [Suhesh Kasti](https://t.me/suheshkasti)"
-
-
-################# english navigation ##################
-
-# main menu
-[[menu.main]]
-name = "Home"
-url = "/"
-weight = 1
-
-[[menu.main]]
-name = "About me"
-pre = "#"
-url = "about"
-weight = 2
-
-[[menu.main]]
-name = "Technologies"
-pre = "#"
-url = "service"
-weight = 3
-
-[[menu.main]]
-name = "Projects"
-pre = "#"
-url = "portfolio"
-weight = 4
-
-[[menu.main]]
-name = "Certifications"
-pre = "#"
-url = "testimonial"
-weight = 5
-
-[[menu.main]]
-name = "Contact"
-pre = "#"
-url = "contact"
-weight = 6
-
-[[menu.main]]
-name = "Blog"
-url = "blog"
-weight = 7
+link = "plugins/cookie.js"
+lazy = true
+[[params.plugins.js]]
+link = "plugins/youtube-lite.js"
+lazy = true

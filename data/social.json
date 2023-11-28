@@ -1,0 +1,24 @@
+{
+  "main": [
+    {
+      "name": "youtube",
+      "icon": "fab fa-youtube",
+      "link": "https://www.youtube.com/@schizo..."
+    },
+    {
+      "name": "telegram",
+      "icon": "fab fa-telegram",
+      "link": "https://t.me/suheshkasti"
+    },
+    {
+      "name": "github",
+      "icon": "fab fa-github",
+      "link": "https://github.com/Suhesh-Kasti"
+    },
+    {
+      "name": "linkedin",
+      "icon": "fab fa-linkedin",
+      "link": "https://linkedin.com/in/suheshkasti"
+    }
+  ]
+}

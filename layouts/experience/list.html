@@ -1,0 +1,21 @@
+{{ define "main" }}
+  <section class="section-sm">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="md:col-12 lg:col-7 text-center">
+          {{ partial "image" (dict "Src" .Params.image "Alt" .Title "Class" "mx-auto mb-8 lg:!max-w-[800px]") }}
+          <h2 class="h3 mb-6">{{ .Title }}</h2>
+
+          <div class="content">{{ .Content }}</div>
+        </div>
+{{ with site.GetPage "sections/call-to-action" }}
+  {{ if .Params.enable }}
+    {{ partial "call-to-action" . }}
+  {{ end }}
+{{ end }}
+      </div>
+    </div>
+  </section>
+{{ end }}
+
+

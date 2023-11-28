@@ -1,0 +1,52 @@
+---
+# Banner
+banner:
+  title: "👋 Hello, I am Suhesh Kasti"
+  content: "🔒😊💻 A cybersecurity student on a mission to shield the digital realm from virtual villains.🌐🛡️ <br> Let’s embark on this exciting journey to make the internet safer and have some cyber-fun along the way!"
+  image: "/images/avatar.png"
+  button:
+    enable: true
+    label: "Have a look at my CV"
+    link: "/documents/SuheshCV.pdf"
+
+# Features
+features:
+  - title: "Current Courses I am involved in...."
+    image: "/images/skills/courses.png"
+    content: " I am actively expanding my expertise by continuous learning in the fascinating world of cybersecurity. Courses provide structured way of learning, making the learning process seamless."
+    bulletpoints:
+      - "CS50's Introduction to Programming with **Python** from [Harvard](https://pll.harvard.edu/course/cs50s-introduction-programming-python)"
+      - "Hands-On **Web App Pentesting** course from [ITProTV](https://www.itpro.tv/courses/security-skills/webapp-penetration-testing/)"
+      - "Practical **Ethical Hacking** course from [TCM Security](https://academy.tcm-sec.com/p/practical-ethical-hacking-the-complete-course)"
+    button:
+      enable: false
+      label: "Get to"
+      link: "#"
+
+
+  - title: "Practical Knowledge is important..."
+    image: "/images/skills/practical.png"
+    content: "I think practical khowledge is of utmost importance when it comes to technology. These are the technologies I am currently invested in honing my skills in this domain."
+    bulletpoints:
+      - Mastering **Docker** with insights from [Kodekloud Engineer](https://engineer.kodekloud.com/signup?referral=654587a7a0118b90ce5ac6b9)
+      - Exploring **Kubernetes** under guidance from [Kodekloud Engineer](https://engineer.kodekloud.com/signup?referral=654587a7a0118b90ce5ac6b9) 
+      - Delving into the art of web application security with **Burpsuite** from [Portswigger Academy](https://portswigger.net/web-security/dashboard) 
+    button:
+      enable: false
+      label: "Goto"
+      link: ""
+
+  - title: "My current project ..."
+    image: "/images/skills/hacker-brito.png"
+    content: "Being in the last year of my Bachelor studies I am creating a {Project Idea} for my project. These are the objectives of that project:"
+    bulletpoints:
+      - "Objective 1"
+      - "Objective 2"
+      - "Objective 3"
+      - "Objective 4"
+    button:
+      enable: true
+      label: "View the project in Github"
+      link: "https://github.com/Suhesh-Kasti"
+---
+

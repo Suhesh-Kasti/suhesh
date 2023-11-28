@@ -1,0 +1,18 @@
+{{ define "main" }}
+  {{ partial "page-header" . }}
+
+  <section class="section">
+    <div class="container">
+      <div class="lg:col-12">
+        <div class="row">
+          {{ range .RegularPages }}
+            <div class="md:col-6 mb-14">
+              {{ partial "components/project-card" . }}
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+{{ end }}
+

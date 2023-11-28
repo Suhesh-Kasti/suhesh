@@ -1,0 +1,55 @@
+############# English navigation ##############
+
+# main menu
+[[main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[main]]
+name = "Qualification"
+url = "experience/"
+weight = 2
+
+[[main]]
+name = "Projects"
+url = "projects/"
+weight = 3
+
+[[main]]
+weight = 4
+name = "Blogs"
+hasChildren = true
+
+[[main]]
+parent = "Blogs"
+name = "Authors"
+url = "authors/"
+
+
+[[main]]
+parent = "Blogs"
+name = "Categories"
+url = "categories/"
+
+[[main]]
+parent = "Blogs"
+name = "Recent Blogs"
+url = "blog/"
+
+
+# footer menu
+[[footer]]
+name = "Contact"
+url = "contact/"
+weight = 1
+
+[[footer]]
+name = "Progress"
+url = "progress/"
+weight = 2
+
+[[footer]]
+name = "Recent Blogs"
+url = "blog/"
+weight = 3

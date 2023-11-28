@@ -1,0 +1,40 @@
+// DO NOT WRITE ANY STYLE IN THIS FILE
+// If you want to add your own styles, please write it in the `./assets/scss/custom.scss` file.
+
+html {
+  scroll-behavior: smooth;
+  cursor: default;
+}
+    a {
+      text-decoration: none;
+      color: #3498db;
+      position: relative;
+      display: inline-block;
+    }
+
+    a::before,
+    a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      background-color: #3498db;
+      transition: width 0.3s ease-in-out;
+    }
+
+    a::before {
+      left: 0;
+    }
+
+    a::after {
+      right: 0;
+    }
+
+    a:hover::before,
+    a:hover::after {
+      width: 50%;
+    }
+  .landing{
+    background-image: url(/images/landing.jpg);
+  }

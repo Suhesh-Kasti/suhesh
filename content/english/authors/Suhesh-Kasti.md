@@ -3,6 +3,7 @@ title: Suhesh Kasti
 email: kastisuhesh1@gmail.com
 image: "/images/authors/suhesh.png"
 description: Author of Cybersecurity related Blogs
+link: https://t.me/suheshkasti
 social:
   - name: mail
     icon: fa fa-envelope
@@ -19,10 +20,6 @@ social:
   - name: linkedin
     icon: fa-brands fa-linkedin
     link: https://linkedin.com
-
-  - name: telegram
-    icon: fa-brands fa-telegram
-    link: https://t.me/
 
 ---
 

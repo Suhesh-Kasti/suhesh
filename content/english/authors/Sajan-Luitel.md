@@ -3,6 +3,7 @@ title: Sajan Luitel
 email: prakashluitel991@gmail.com
 image: "/images/authors/sajan.png"
 description: Author of blogs related to Web development
+link: https://t.me/saJan991
 social:
   - name: mail
     icon: fa fa-envelope

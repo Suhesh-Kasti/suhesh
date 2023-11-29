@@ -3,7 +3,7 @@ title: Shirish Shrestha
 email: shakestha@gmail.com
 image: "/images/authors/shirish.png"
 description: Author of Machine Learning Blogs
-link: https://anjila.pages.dev/
+link: https://t.me/Lonesomejoker
 social:
   - name: mail
     icon: fa fa-envelope
@@ -20,10 +20,6 @@ social:
   - name: linkedin
     icon: fa-brands fa-linkedin
     link: https://linkedin.com
-
-  - name: telegram
-    icon: fa-brands fa-telegram
-    link: https://t.me/
 
 ---
 

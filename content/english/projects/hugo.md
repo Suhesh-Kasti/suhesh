@@ -3,15 +3,13 @@ title: "Hugo"
 date: 2023-10-26T20:53:06+05:45
 image: "images/portfolio/hugo.png"
 project_categories: ["hugo", "scripts"]
-description: "The world of Linux and Python scripting,"
+description: "Creating professional static websites with the power of Hugo"
 draft: false
 project_info:
 - name: "Websites"
   icon: "fas fa-pen-fancy"
   content: "Go Markdown Cloudflare "
 ---
-
-
 
 ### Personal and Friends' Website Project:
 

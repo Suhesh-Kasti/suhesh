@@ -35,6 +35,45 @@ html {
     a:hover::after {
       width: 50%;
     }
-  .landing{
-    background-image: url(/images/landing.jpg);
-  }
+ 
+.logo-dark a,
+.logo-light a {
+  text-decoration: none;
+  color: #3498db;
+  position: relative;
+  display: inline-block;
+}
+
+.logo-dark a::before,
+.logo-dark a::after,
+.logo-light a::before,
+.logo-light a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  background-color: #3498db;
+  transition: width 0.3s ease-in-out;
+}
+
+.logo-dark a::before,
+.logo-light a::before {
+  left: 0;
+}
+
+.logo-dark a::after,
+.logo-light a::after {
+  right: 0;
+}
+
+.logo-dark a:hover::before,
+.logo-dark a:hover::after,
+.logo-light a:hover::before,
+.logo-light a:hover::after {
+  width: 50%;
+}
+
+  // .landing{
+  //   background-image: url(/images/landing.jpg);
+  // }

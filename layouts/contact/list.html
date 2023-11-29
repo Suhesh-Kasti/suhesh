@@ -1,52 +1,51 @@
 {{ define "main" }}
   {{ partial "page-header" . }}
 
-<section class="section-sm">
-    <div class="row">
-      <div class="md:col-10 lg:col-6 mx-auto">
-        <form action="{{ .Site.Params.contact_form_action }}" method="POST" class="w-75">
-          <div class="mb-4">
-            <label for="name" class="form-label">
-              Full Name <span class="text-red-500">*</span>
-            </label>
-            <input
-              id="name"
-              name="name"
-              class="form-input"
-              placeholder="Frist Middle Last"
-              type="text" />
-          </div>
-          <div class="mb-4">
-            <label for="email" class="form-label">
-              Working Mail <span class="text-red-500">*</span>
-            </label>
-            <input
-              id="email"
-              name="email"
-              class="form-input"
-              placeholder="lastfirst@email.com"
-              type="email" />
-          </div>
-          <div class="mb-4">
-            <label for="message" class="form-label">
-              Anything else? <span class="text-red-500">*</span>
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              class="form-input"
-              placeholder="Message goes here..."
-              rows="8"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-  <br>
-    <hr>
-  <br> 
+ <section class="section-sm">
+    <div class="container">
+      <div class="row">
+        <div class="md:col-10 lg:col-6 mx-auto">
+          <form action="{{ site.Params.contact_form_action }}" method="POST">
+            <div class="mb-6">
+              <label for="name" class="form-label">
+                Full Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="name"
+                name="name"
+                class="form-input"
+                placeholder="First Middle Last"
+                type="text" />
+            </div>
+            <div class="mb-6">
+              <label for="email" class="form-label">
+                Working Mail <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                class="form-input"
+                placeholder="first.last@email.com"
+                type="email" />
+            </div>
+            <div class="mb-6">
+              <label for="message" class="form-label">
+                Anything else? <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                class="form-input"
+                placeholder="Message goes here..."
+                rows="8"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
       </div>
-  
-  </div>
- 
+    </div>
+  </section>
+  <br> 
   <div class="container">
     <div class=" row md:col-10 lg:col-8 mx-auto flex justify-between mb-6">
       <div class="col-lg-4 mb-4">
@@ -94,8 +93,7 @@
 
     </div>
 
-</section>
-<!--   <!-- google map --> -->
+<!--   <!-- google map --> 
 <!--   {{ with site.Params.google_map }} -->
 <!--     {{ if .enable }} -->
 <!--       <div -->
@@ -110,7 +108,7 @@
 <!---->
 <!--   {{ with site.Params.subscription }} -->
 <!--     {{ if .enable }} -->
-<!--       <!-- subscription form --> -->
+<!--       <!-- subscription form --> 
 <!--       <form -->
 <!--         action="{{ .mailchimp_form_action | safeURL }}" -->
 <!--         method="post" -->
@@ -154,8 +152,8 @@
 <!--       </div> -->
 <!--       <script -->
 <!--         type="text/javascript" -->
-<!--         src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script> -->
-<!--       <!-- /subscription form --> -->
+<!--         src="//s2.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script> -->
+<!--       <!-- /subscription form --> 
 <!--     {{ end }} -->
 <!--   {{ end }} -->
 <!---->

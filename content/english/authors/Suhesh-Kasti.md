@@ -7,19 +7,19 @@ link: https://t.me/suheshkasti
 social:
   - name: mail
     icon: fa fa-envelope
-    link: mailto:prakashluitel991@gmail.com
+    link: mailto:kastisuhesh1@gmail.com
 
   - name: github
     icon: fa-brands fa-github
-    link: https://github.com
+    link: https://github.com/Suhesh-Kasti
 
   - name: twitter
     icon: fa-brands fa-twitter
-    link: https://twitter.com
+    link: https://twitter.com/KastiSuhesh
 
   - name: linkedin
-    icon: fa-brands fa-linkedin
-    link: https://linkedin.com
+    icon: fa-brands fa-linkedin-in
+    link: https://linkedin.com/in/suheshkasti
 
 ---
 

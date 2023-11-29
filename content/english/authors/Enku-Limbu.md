@@ -7,19 +7,19 @@ link: https://indulimbu.com.np/
 social:
   - name: mail
     icon: fa fa-envelope
-    link: mailto:prakashluitel991@gmail.com
+    link: mailto:limbuenks@gmail.com
 
   - name: github
     icon: fa-brands fa-github
-    link: https://github.com
+    link: https://github.com/enkuLimbu
 
   - name: twitter
-    icon: fa-brands fa-twitter
-    link: https://twitter.com
+    icon: fa-brands fa-instagram
+    link: https://instagram.com/enkulimbu
 
   - name: linkedin
-    icon: fa-brands fa-linkedin
-    link: https://linkedin.com
+    icon: fa-brands fa-linkedin-in
+    link: https://www.linkedin.com/in/enkulimbu
 
 ---
 

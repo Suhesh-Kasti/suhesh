@@ -11,19 +11,15 @@ social:
 
   - name: github
     icon: fa-brands fa-github
-    link: https://github.com
+    link: https://github.com/sazan991
 
   - name: twitter
-    icon: fa-brands fa-twitter
-    link: https://twitter.com
+    icon: fa-brands fa-instagram
+    link: https://instagram.com/sazan991
 
   - name: linkedin
-    icon: fa-brands fa-linkedin
-    link: https://linkedin.com
-
-  - name: telegram
-    icon: fa-brands fa-telegram
-    link: https://t.me/
+    icon: fa-brands fa-linkedin-in
+    link: https://linkedin.com/in/sazan991
 
 ---
 

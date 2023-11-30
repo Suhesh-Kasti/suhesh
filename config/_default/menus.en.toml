@@ -40,8 +40,8 @@ url = "blog/"
 
 # footer menu
 [[footer]]
-name = "Contact"
-url = "contact/"
+name = "Recent Blogs"
+url = "blog/"
 weight = 1
 
 [[footer]]
@@ -50,6 +50,6 @@ url = "progress/"
 weight = 2
 
 [[footer]]
-name = "Recent Blogs"
-url = "blog/"
+name = "Contact"
+url = "contact/"
 weight = 3

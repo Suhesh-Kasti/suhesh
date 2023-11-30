@@ -57,7 +57,7 @@ show_categories = true
 # seo meta data for OpenGraph / Twitter Card
 # seo module: https://github.com/gethugothemes/hugo-modules/tree/master/seo-tools/basic-seo
 [metadata]
-keywords = ["Suhesh", "Kasti"]
+keywords = ["Suhesh", "Kasti", "Suhesh Kasti", "Suhesh-Kasti", "Kasti Suhesh", "Kasti-Suhesh"]
 description = "Portfolio website of Suhesh Kasti"
 author = "Suhesh Kasti"
 image = "images/avatar.png"

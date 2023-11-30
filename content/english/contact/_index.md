@@ -8,4 +8,3 @@ address:
   email: "kastisuhesh1@gmail.com"
 ---
 
-contact_form_action: "https://formspree.io/f/mrgwjvry"

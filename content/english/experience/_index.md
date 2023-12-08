@@ -10,7 +10,7 @@ draft: false
 {{< tab "Associate Security Research Analyst">}}
 #### [SecurityPal Inc.](https://www.securitypalhq.com/)
 
-Working within the Customer Operations team, I was in the role of enhancing our clients’ digital security through meticulous handling and completion of security questionnaires.
+Working within the Customer Operations team, I was in the role of enhancing our clients’ digital security through handling and completion of security questionnaires.
 {{< button label="View Experience Letter" link="/images/certificates/0x000G.jpg" style="solid" >}}
 {{< /tab >}}
 

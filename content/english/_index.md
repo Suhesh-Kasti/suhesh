@@ -38,15 +38,15 @@ features:
 
   - title: "My current project ..."
     image: "/images/skills/hacker-brito.png"
-    content: "Being in the last year of my Bachelor studies I am creating a {Project Idea} for my project. These are the objectives of that project:"
+    content: "Being in the last year of my Bachelors studies, I am creating a Web Scrapper for my project with Cybersecurity in mind. These are the objectives of that project:"
     bulletpoints:
-      - "Objective 1"
-      - "Objective 2"
-      - "Objective 3"
-      - "Objective 4"
+      - "Create a smart web scraper, CyberHarvestor, to gather and analyze information about online threats from various sources."
+      - "Improve CyberHarvestor to keep an eye on the dark web, spotting potential cyber dangers early and helping to defend against them."
+      - "Build a feature that scans for the latest security issues in software, keeping organizations informed about potential vulnerabilities."
+      - "Automate the extraction of relevant details from public sources to assist in responding quickly to security incidents."
     button:
       enable: true
       label: "View the project in Github"
-      link: "https://github.com/Suhesh-Kasti"
+      link: "https://github.com/Suhesh-Kasti/CyberHarvestor"
 ---
 

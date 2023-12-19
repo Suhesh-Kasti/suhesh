@@ -8,4 +8,5 @@ description: "This is meta description"
 draft: false
 ---
 
-# Sorry this page is a work on progress 
+# Sorry this page is a work on progress. This page will contain something as soon as I get ideas for this page.
+## Thank you for your time.

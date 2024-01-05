@@ -17,7 +17,12 @@ url = "projects/"
 weight = 3
 
 [[main]]
+name = "Cheatsheets"
+url = "cheatsheets/"
 weight = 4
+
+[[main]]
+weight = 5
 name = "Blogs"
 hasChildren = true
 
@@ -45,8 +50,8 @@ url = "blog/"
 weight = 1
 
 [[footer]]
-name = "Progress"
-url = "progress/"
+name = "CyberHarvester"
+url = "cyberharvester/"
 weight = 2
 
 [[footer]]

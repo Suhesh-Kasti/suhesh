@@ -17,12 +17,7 @@ url = "projects/"
 weight = 3
 
 [[main]]
-name = "Cheatsheets"
-url = "cheatsheets/"
 weight = 4
-
-[[main]]
-weight = 5
 name = "Blogs"
 hasChildren = true
 
@@ -50,8 +45,8 @@ url = "blog/"
 weight = 1
 
 [[footer]]
-name = "Cheatsheets"
-url = "cheatsheets/"
+name = "Progress"
+url = "progress/"
 weight = 2
 
 [[footer]]

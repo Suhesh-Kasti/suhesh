@@ -1,0 +1,169 @@
+{
+  "main": {
+    "id": "fe41316127f9ced9",
+    "type": "split",
+    "children": [
+      {
+        "id": "76d93e1d776a53f2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "31ffc53cc85d8cc4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Docker.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "7dbeef10340d127e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "File Transfer.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "849f91112b653d06",
+    "type": "split",
+    "children": [
+      {
+        "id": "db8278e89096e64e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3293b6c6f805a9db",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "d3ba111e24b54368",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "cc8b5411edbcdcb7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "15f0a67d872b4ab4",
+    "type": "split",
+    "children": [
+      {
+        "id": "973676e11226853b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e8b0f94cbc81be2f",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "File Transfer.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "c5f98e56ba56335b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "File Transfer.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "c94a5f376a9166aa",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "193d62d18f154ace",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "File Transfer.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false
+    }
+  },
+  "active": "7dbeef10340d127e",
+  "lastOpenFiles": [
+    "Docker.md",
+    "File Transfer.md",
+    "File Transfer.md~"
+  ]
+}

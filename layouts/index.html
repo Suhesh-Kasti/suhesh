@@ -14,9 +14,18 @@
             <h5 class="mb-12">
               {{ .content | markdownify }}
             </h5>
-            {{ with .button }}
+            {{ with .buttonCS }}
               {{ if .enable }}
-                <a class="btn btn-primary" href="{{ .link | absURL }}">
+                <a class="btn btn-primary m-2" href="{{ .link | absURL }}">
+                  {{ .label }}
+                  <i class="fa fa-arrow-right pl-2"></i>
+                </a>
+              {{ end }}
+            {{ end }}
+
+            {{ with .buttonDV }}
+              {{ if .enable }}
+                        <a class="btn btn-primary m-2" href="{{ .link | absURL }}">
                   {{ .label }}
                   <i class="fa fa-arrow-right pl-2"></i>
                 </a>

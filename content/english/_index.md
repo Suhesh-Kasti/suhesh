@@ -4,10 +4,14 @@ banner:
   title: "👋 Hello, I am Suhesh Kasti"
   content: "🔒😊💻 A cybersecurity student on a mission to shield the digital realm from virtual villains.🌐🛡️ <br> Let’s embark on this exciting journey to make the internet safer and have some cyber-fun along the way!"
   image: "/images/avatar.png"
-  button:
+  buttonCS:
     enable: true
-    label: "Have a look at my CV"
-    link: "/documents/SuheshCV.pdf"
+    label: "CV for CyberSecurity"
+    link: "/documents/SuheshCV-CyberSecurity.pdf"
+  buttonDV:
+    enable: true
+    label: "CV for Devops"
+    link: "/documents/SuheshCV-Devops.pdf"
 
 # Features
 features:
@@ -15,7 +19,7 @@ features:
     image: "/images/skills/courses.png"
     content: " I am actively expanding my expertise by continuous learning in the fascinating world of cybersecurity. Courses provide structured way of learning, making the learning process seamless."
     bulletpoints:
-      - "CS50's Introduction to Programming with **Python** from [Harvard](https://pll.harvard.edu/course/cs50s-introduction-programming-python)"
+      - "**Python For Hackers** course from [TCM Security](https://academy.tcm-sec.com/p/python-101-for-hackers)"
       - "Hands-On **Web App Pentesting** course from [ITProTV](https://www.itpro.tv/courses/security-skills/webapp-penetration-testing/)"
       - "Practical **Ethical Hacking** course from [TCM Security](https://academy.tcm-sec.com/p/practical-ethical-hacking-the-complete-course)"
     button:

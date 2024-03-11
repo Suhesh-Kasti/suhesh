@@ -7,6 +7,13 @@ image: "/images/blog/nmap/nmapscan.png"
 categories: ["Network Security"]
 author: "Suhesh Kasti"
 tags: ["Nmap", "Port Scanning"]
+buttons:
+  - label: "Get Katakana Syllabaries"
+    url: "/notes/japanese/katakana/katakana_english.pdf"
+quiz:
+  code: nmap101
+wordfill:
+  code: nmap101
 ---
 {{< toc >}}
 

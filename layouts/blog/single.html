@@ -41,6 +41,13 @@
           <div class="content mb-10">
             {{ .Content }}
           </div>
+            {{ if .Params.buttons }}
+            <div class="buttons-section">
+              {{ range .Params.buttons }}
+              <a href="{{ absURL .url }}" class="p-2 px-4 my-2 btn btn-primary btn-sm" download>{{ .label }}</a> <br>
+              {{ end }}
+            </div>
+            {{ end }}
           <div class="row items-start justify-between">
             <div class="lg:col-5 mb-10 flex items-center lg:mb-0">
               <h5 class="mr-3">{{ i18n "tags" }} :</h5>
@@ -61,6 +68,37 @@
               {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
             </div>
           </div>
+
+<div class="row">
+  {{ if .Params.quiz }}
+    <div class="col-md-6 mb-4">
+      <aside class="toc">
+        <div class="toc-content">
+          {{ partial "wordguess.html" . }}
+          <script>
+            var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
+          </script>
+        </div>
+        <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
+      </aside>
+    </div>
+  {{ end }} 
+
+  {{ if .Params.wordfill }}
+    <div class="col-md-6 mb-4">
+      <aside class="toc">
+        <div class="toc-content">
+          {{ partial "wordfill.html" . }}
+          <script>
+            var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
+          </script>
+        </div>
+        <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+      </aside>
+    </div>
+  {{ end }}
+</div>
+
           <!-- comments -->
           {{ if site.DisqusShortname }}
             <div class="mt-20">
@@ -88,3 +126,4 @@
     </div>
   </section>
 {{ end }}
+

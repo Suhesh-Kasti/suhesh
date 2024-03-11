@@ -101,6 +101,13 @@ ordered = false
 [mediaTypes."application/manifest+json"]
 suffixes = ["webmanifest"]
 
+[singlePages]
+[singlePages.readTime]
+enable = true
+content = "min read"
+
+[singlePages.scrollprogress]
+enable = true
 
 ########################### Output Format ##########################
 [outputFormats]

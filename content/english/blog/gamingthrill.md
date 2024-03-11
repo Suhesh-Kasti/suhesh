@@ -2,7 +2,7 @@
 title: The Thrill of Gaming
 meta_title: "Gaming"
 description: "The Thrill of Gaming"
-date: 2023-09-28T20:53:06+05:45
+date: 2024-09-28T20:53:06+05:45
 image: "/images/blog/gaming/gamingthrill.jpg"
 categories: ["Gaming"]
 author: "Shirish Shrestha"

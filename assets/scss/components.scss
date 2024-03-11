@@ -68,12 +68,4 @@ main {
   @apply prose-th:relative prose-th:z-10 prose-th:px-4 prose-th:py-[18px] prose-th:text-dark prose-th:dark:text-darkmode-text;
   @apply prose-tr:border-border prose-tr:dark:border-darkmode-border;
   @apply prose-td:relative prose-td:z-10 prose-td:px-3 prose-td:py-[18px] prose-td:dark:text-darkmode-text;
-  @media (prefers-color-scheme: dark) {
-    h3, h4, h5, h6 {
-      color: #3498db !important; // because headings in dark mode was going nuts
-    }
-    }
-  .btn {
-    @apply dark:hover:text-dark no-underline hover:text-white #{!important};
-  }
 }

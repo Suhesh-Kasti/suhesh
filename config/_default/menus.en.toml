@@ -28,6 +28,12 @@ hasChildren = true
 
 [[main]]
 parent = "Blogs"
+name = "Recent Blogs"
+url = "blog/"
+weight = 1
+
+[[main]]
+parent = "Blogs"
 name = "Authors"
 url = "authors/"
 
@@ -39,9 +45,8 @@ url = "categories/"
 
 [[main]]
 parent = "Blogs"
-name = "Recent Blogs"
-url = "blog/"
-
+name = "Tags"
+url = "tags/"
 
 # footer menu
 [[footer]]

@@ -15,5 +15,35 @@
         </article>
       </div>
     </div>
+
+<div class="row">
+  {{ if .Params.quiz }}
+    <div class="col-md-6 mb-4">
+      <aside class="toc">
+        <div class="toc-content">
+          {{ partial "wordguess.html" . }}
+          <script>
+            var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
+          </script>
+        </div>
+        <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
+      </aside>
+    </div>
+  {{ end }} 
+
+  {{ if .Params.wordfill }}
+    <div class="col-md-6 mb-4">
+      <aside class="toc">
+        <div class="toc-content">
+          {{ partial "wordfill.html" . }}
+          <script>
+            var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
+          </script>
+        </div>
+        <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+      </aside>
+    </div>
+  {{ end }}
+</div>
   </section>
 {{ end }}

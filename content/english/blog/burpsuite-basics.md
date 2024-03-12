@@ -2,8 +2,8 @@
 title: "Introduction to BurpSuite: The Essential Web Application Security Tool"
 meta_title: "BurpSuite: Web Application Security"
 description: "Discover BurpSuite, a powerful tool for web application security testing, and learn about its features, use cases, and an open-source alternative called OWASP ZAP."
-date: 2023-09-28T20:53:06+05:45
-image: "/images/blog/burpsuite/burpsuite-logo.png"
+date: 2024-03-12T20:53:06+05:45
+image: "/images/blog/burpsuite/burpsuiteui.png"
 categories: ["Web Application Security"]
 author: "Suhesh Kasti"
 tags: ["BurpSuite", "Web Security", "Penetration Testing", "Vulnerability Scanning"]
@@ -11,9 +11,9 @@ buttons:
   - label: "See the whole Burpsuite series"
     url: "/notes/japanese/katakana/katakana_english.pdf"
 quiz:
-  code: burpsuite101
+  code: burp101
 wordfill:
-  code: burpsuite101
+  code: burp101
 
 ---
 {{< toc >}}

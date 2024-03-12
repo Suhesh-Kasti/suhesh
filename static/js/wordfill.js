@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // Get the code from the query parameter or the window.quizCode variable
 var urlParams = new URLSearchParams(window.location.search);
 var codeFromUrl = urlParams.get('code');
-var wordCode = codeFromUrl || window.wordCode || "000"; // Use code from URL, window.quizCode variable, or default to "h01"
+var wordCode = codeFromUrl || window.wordCode || "nmap101";// Use code from URL, window.quizCode variable, or default to "h01"
 
   // Define question sets
   const questionSets = {
@@ -109,7 +109,7 @@ var wordCode = codeFromUrl || window.wordCode || "000"; // Use code from URL, wi
 {"correctAnswer": "BurpSuite Professional", "question": "Which edition of BurpSuite includes advanced features like the Crawler, Scanner, and Intruder tools?"}
     ],
 
-  "docker101":[
+"dock101":[
 {"correctAnswer": "docker run hello-world", "question": "How do you run the 'hello-world' Docker container?"},
 {"correctAnswer": "docker pull ubuntu", "question": "How do you download the 'ubuntu' Docker image from the registry?"},
 {"correctAnswer": "docker images", "question": "How do you list all the Docker images on your system?"},
@@ -172,13 +172,11 @@ var wordCode = codeFromUrl || window.wordCode || "000"; // Use code from URL, wi
 
   ]
   };
-
   // Game state variables
   let currentQuestionIndex = 0;
   let currentCategory = wordCode; // You can change this to switch categories
   let score = 0;
   let totalQuestions = 0;
-
   // Function to display a question
   function displayQuestion(question) {
     if (!questionTextElement || !userInputElement) {
@@ -275,7 +273,6 @@ userInputElement.addEventListener('keydown', handleEnterKey);
 
 function displayNextQuestion() {
   const currentQuestionSet = getCurrentQuestionSet();
-
   if (currentQuestionSet.length === 0) {
     // No questions defined for this category
     feedbackMessageElement.textContent = "There are no questions defined for this category.";

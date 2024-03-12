@@ -6,7 +6,7 @@ description: is a platform for developing, shipping, and running applications in
 quiz:
   code: docker101
 wordfill:
-  code: docker101
+  code: dock101
 ---
 {{< toc >}}
 

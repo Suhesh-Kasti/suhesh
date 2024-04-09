@@ -1,7 +1,7 @@
 ---
 title: Breaking Free from Tutorial Overload
 meta_title: "Tutorial Hell"
-description: "Breaking Free from Tutorial Overload: A Simple Guide to Learning Success"
+description: "Breaking Free from Tutorial Overload: A simple guide to learning successfully and stop being on a learning treadmill but not moving forward"
 image: "/images/blog/webdevelopment/tutorialhell.webp"
 categories: ["Web development"]
 author: "Sajan Luitel"

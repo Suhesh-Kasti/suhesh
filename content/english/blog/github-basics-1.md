@@ -1,5 +1,5 @@
 ---
-title: Git Basics - Part 1 
+title: "Git Basics: Part 1"
 meta_title: "Git"
 description: "Git is a powerful version control system with a wide range of capabilities and GitHub is a popular web-based platform that provides hosting for Git repositories."
 date: 2024-03-24T20:53:06+05:45

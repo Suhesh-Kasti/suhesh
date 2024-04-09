@@ -1,5 +1,5 @@
 ---
-title: "Introduction to BurpSuite: The Essential Web Application Security Tool"
+title: "BurpSuite: Part 1"
 meta_title: "BurpSuite: Web Application Security"
 description: "Discover BurpSuite, a powerful tool for web application security testing, and learn about its features, use cases, and an open-source alternative called OWASP ZAP."
 date: 2024-03-12T20:53:06+05:45

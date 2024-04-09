@@ -23,4 +23,4 @@ social:
 
 ---
 
-is leveling up in the gaming universe, he's on a quest for virtual adventures and epic wins. 🚀🕹️ Join him in the gaming realm, where every challenge is an opportunity to conquer and have a blast!
+a passionate gamer and student of React development, merges his enthusiasm for gaming with his studies in React. We see him finding joy in exploring how the two worlds intersect, constantly learning and growing in both his gaming adventures and his coding journey.

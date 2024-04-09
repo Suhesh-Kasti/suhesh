@@ -23,4 +23,4 @@ social:
 
 ---
 
-is a dedicated cybersecurity student, on a mission to understand and tackle the challenges of the digital realm. If you're curious about cybersecurity, exploring ethical hacking, or need guidance in securing your digital space, he's here to help.
+is a dedicated cybersecurity student, on a mission to understand and tackle the challenges of the digital realm. If you're curious about cybersecurity, exploring ethical hacking, or need a partner to learn together, he's here to tag along.

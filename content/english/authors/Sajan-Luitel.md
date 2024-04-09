@@ -23,5 +23,5 @@ social:
 
 ---
 
-a dynamic web developer with a mastery of ReactJS. This guy is your go-to expert for all things UI/UX or React. With a knack for turning intricate code into captivating digital interfaces, he's not just a developer; he's a creator of online experiences that leave a lasting impression.
+is a skilled Django developer, proficient in crafting web applications using Python. His expertise in coding brings innovative solutions to projects while constantly seeking to enhance his skills in the dynamic field of web development.
 

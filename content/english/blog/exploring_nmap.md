@@ -1,7 +1,7 @@
 ---
-title: Exploring Nmap
+title: "Exploring Nmap: Part 1"
 meta_title: "Nmap"
-description: "Nmap - The network scanner"
+description: "Every hacking starts with enumeration and reconnaissance phase. Enumeration is a crucial step in the information-gathering process and Nmap is one of the most powerful enumaration tool."
 date: 2023-09-28T20:53:06+05:45
 image: "/images/blog/nmap/nmapscan.png"
 categories: ["Cybersecurity"]

@@ -23,4 +23,4 @@ social:
 
 ---
 
-is an accomplished machine learning professional, passionate about unraveling the mysteries of artificial intelligence. If you're navigating the vast landscape of machine learning, seeking advice on algorithmic complexities, or eager to discuss the latest advancements, Anjila is your go-to expert.
+is a hardworking QA intern, and she also has a passion for writing poetry, expressing her thoughts and feelings through words. Her dedication to both her work in quality assurance where she enjoys testing software along her creative pursuits adds a unique perspective and depth to her personality.

@@ -23,4 +23,4 @@ social:
 
 ---
 
-is someone you will want to have deep meaningful conversations and a cup of warm tea with. Whether you are seeking solace during challenging times or desiring expert insights on life matters, reaching out to her will be of utmost help. Engage in conversations that resonate deeply and navigate life's journey with a trusted companion.
+is someone you will want to have deep meaningful conversations and a cup of warm tea with but she also teaches Japanese btw. Whether you are seeking solace during challenging times or desiring expert insights on life matters, reaching out to her will be of utmost help. Engage in conversations that resonate deeply and navigate life's journey with a trusted companion.

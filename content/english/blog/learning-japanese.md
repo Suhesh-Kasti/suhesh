@@ -9,15 +9,11 @@ buttons:
   - label: "Learn Katakana with Enku >>"
     url: "https://indulimbu.com.np/tags/katakana/"
   - label: "Learn Kanji with Enku >>"
-    url: "https://indulimbu.com.np/tags/kanji/"
+    url: "https://indulimbu.com.np/tags/khanji/"
 image: "/images/blog/learningjapanese/learning-japanese.jpg"
 description: "🔠 Unearth the intricate characters that form the backbone of Japanese writing. Unlock the magic behind each stroke and immerse yourself in the rich history of this captivating script."
-categories:
-  - "Japanese Language"
-tags:
-  - "Japanese"
-  - "Teaching"
-
+categories: ["Japanese"]
+tags: ["Khanji", "Katakana", "Hiragana"]
 draft: false
 ---
 {{< toc >}}

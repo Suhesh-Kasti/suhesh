@@ -44,12 +44,12 @@
             {{ if .Params.buttons }}
             <div class="buttons-section">
               {{ range .Params.buttons }}
-              <a href="{{ absURL .url }}" class="p-2 px-4 my-2 btn btn-primary btn-sm" download>{{ .label }}</a> <br>
+              <a href="{{ absURL .url }}" class="p-2 px-4 my-2 btn btn-primary btn-sm">{{ .label }}</a> <br>
               {{ end }}
             </div>
             {{ end }}
           <div class="row items-start justify-between">
-            <div class="lg:col-5 mb-10 flex items-center lg:mb-0">
+            <div class="lg:col-5 mb-10 my-5 flex items-center lg:mb-0">
               <h5 class="mr-3">{{ i18n "tags" }} :</h5>
               <ul>
                 {{ $tags:= .Params.tags }}
@@ -64,7 +64,7 @@
                 {{ end }}
               </ul>
             </div>
-            <div class="lg:col-4 flex items-center">
+            <div class="lg:col-4 my-2 flex items-center">
               {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
             </div>
           </div>

@@ -4,12 +4,12 @@ meta_title: "Nmap"
 description: "Nmap - The network scanner"
 date: 2023-09-28T20:53:06+05:45
 image: "/images/blog/nmap/nmapscan.png"
-categories: ["Network Security"]
+categories: ["Cybersecurity"]
 author: "Suhesh Kasti"
-tags: ["Nmap", "Port Scanning"]
+tags: ["Nmap", "Port Scanning", "Penetration Testing"]
 buttons:
-  - label: "Get Katakana Syllabaries"
-    url: "/notes/japanese/katakana/katakana_english.pdf"
+  - label: "Goto Burpsuite Cheatsheet"
+    url: "/cheatsheets/burpsuite/"
 quiz:
   code: nmap101
 wordfill:

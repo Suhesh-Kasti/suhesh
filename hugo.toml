@@ -6,7 +6,7 @@ title = "Suhesh Kasti"
 # Your theme name
 timeZone = "Asia/Kathmandu"
 # post pagination
-paginate = 2 # see https://gohugo.io/extras/pagination/
+paginate = 4 # see https://gohugo.io/extras/pagination/
 # post excerpt
 summaryLength = 10 # see https://gohugo.io/content-management/excerpts/
 # google analytics

@@ -6,7 +6,7 @@ title = "Suhesh Kasti"
 # Your theme name
 timeZone = "Asia/Kathmandu"
 # post pagination
-paginate = 4 # see https://gohugo.io/extras/pagination/
+paginate = 6 # see https://gohugo.io/extras/pagination/
 # post excerpt
 summaryLength = 10 # see https://gohugo.io/content-management/excerpts/
 # google analytics
@@ -14,8 +14,7 @@ googleAnalytics = "G-MEASUREMENT_ID" # see https://gohugo.io/templates/internal/
 # disqus short name
 disqusShortname = "suhesh-pages-dev" # we use disqus to show comments in blog posts . To install disqus please follow this tutorial https://portfolio.peter-baumgartner.net/2017/09/10/how-to-install-disqus-on-hugo/
 # disable language
-disableLanguages = [
-] # example: ["fr"] for disable french language. see https://gohugo.io/content-management/multilingual/
+disableLanguages = [] # example: ["fr"] for disable french language. see https://gohugo.io/content-management/multilingual/
 hasCJKLanguage = false #  If hasCJKLanguage true, auto-detect Chinese/Japanese/Korean Languages in the content. see: https://gohugo.io/getting-started/configuration/#hascjklanguage
 
 

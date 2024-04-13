@@ -142,4 +142,10 @@ Branching is an essential aspect of Git and GitHub, as it enables you to experim
 
 ## Conclusion
 
-In this comprehensive guide, we've explored the fundamental concepts of Git and GitHub, and provided you with the knowledge to get started. Remember, mastering these tools takes time and practice, but with the information you've learned today, you're well on your way to becoming a Git and GitHub pro. Keep exploring, experimenting, and don't hesitate to seek additional resources or ask for help. Happy coding!
+In this guide, we've explored the fundamental concepts of Git and GitHub, and provided you with the knowledge to get started. Remember, mastering these tools takes time and practice, but with the information you've learned today, you're well on your way to becoming a Git and GitHub pro. Keep exploring, experimenting, and don't hesitate to seek additional resources or ask for help.
+
+If you are a developer and want to host websites that you have made I would suggest you visit [this blog](https://suhesh.com.np/blog/cloudflare-deployment/) next. This blog will help you with deploying your static sites to cloudflare pages. Don't know what's a static site no worries [this blog](https://suhesh.com.np/blog/cloudflare-deployment/) has you covered there as well. 
+
+Happy coding fellas!
+
+

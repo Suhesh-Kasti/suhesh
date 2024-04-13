@@ -10,10 +10,6 @@ tags: ["Nmap", "Port Scanning", "Penetration Testing"]
 buttons:
   - label: "Goto Burpsuite Cheatsheet"
     url: "/cheatsheets/burpsuite/"
-quiz:
-  code: nmap101
-wordfill:
-  code: nmap101
 ---
 {{< toc >}}
 

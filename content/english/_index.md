@@ -1,8 +1,8 @@
 ---
 # Banner
 banner:
-  title: "👋 Hello, I am Suhesh Kasti"
-  content: "🔒😊💻 A cybersecurity student on a mission to shield the digital realm from virtual villains.🌐🛡️ <br> Let’s embark on this exciting journey to make the internet safer and have some cyber-fun along the way!"
+  title: "👋 Hello, I am [Suhesh Kasti](https://github.com/Suhesh-Kasti)"
+  content: "🔒😊💻 Your friendly neighbourhood Hackerman 🌐🛡️ <br> Come on with me on my exciting journey towards understanding technology, learning IT and having some cyber-fun along the way!"
   image: "/images/avatar.png"
   buttonCS:
     enable: true

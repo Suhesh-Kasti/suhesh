@@ -96,27 +96,3 @@ a:active {
   //   background-image: url(/images/landing.png);
   // }
 
-.back-to-top {
-    /* Keep the button fixed at the bottom right */
-    position: fixed;
-    bottom: 4rem; /* Adjust the distance from the bottom as needed */
-    right: 4rem; /* Adjust the distance from the right as needed */
-
-    /* Style the button */
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 1rem 2rem; /* Adjust padding as needed */
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    z-index: 999; /* Ensure the button appears on top of other content */
-}
-
-.back-to-top i {
-    margin-right: 0.5rem; /* Add space between icon and text */
-}
-
-/* Style for hovering effect */
-.back-to-top:hover {
-    background-color: #0056b3;
-    text-decoration: none;
-}

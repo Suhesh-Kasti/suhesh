@@ -6,7 +6,7 @@ date: 2024-04-19T20:53:06+05:45
 image: "/images/blog/bigip/securityFeatures.png"
 categories: ["Cybersecurity"]
 author: "Suhesh Kasti"
-tags: ["Webapp Firewall", "Web App Security", "F5 - BigIP"]
+tags: ["Webapp Firewall", "Web Application Security", "F5 - BigIP"]
 buttons:
   - label: "Goto F5's documentation"
     url: "https://my.f5.com/manage/s/article/K15530590"

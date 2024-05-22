@@ -1,0 +1,22 @@
+{
+  "Components@@tab-autohide": true,
+  "Components@@status-bar-autohide": false,
+  "Components@@Ribbon-autohide": true,
+  "Components@@nav-header-autohide": false,
+  "Components@@tab-title-bar-autohide": false,
+  "Components@@CTA-BTN-enable": true,
+  "Components@@file-names-untrim": false,
+  "Components@@folder-font-bold": true,
+  "Components@@vault-name-display-select": "vault-name-fixed",
+  "Components@@file-icon-remove": false,
+  "Components@@colorful-folder": false,
+  "Components@@outline-enhanced": false,
+  "Components@@new-tab-btn-select": "new-tab-btn-default",
+  "Components@@new-tab-image-select": "new-tab-image-default",
+  "Components@@immersive-canvas": true,
+  "Appearance-dark@@card-layout-open-dark": true,
+  "Appearance-dark@@theme-dark-style-select": "theme-dark-background-default",
+  "Mobile@@card-layout-pad-open": true,
+  "Mobile@@drawer-phone-full-width": false,
+  "Editor@@line-hover-indicator": false
+}

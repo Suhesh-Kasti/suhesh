@@ -1,19 +1,19 @@
 {
   "main": {
-    "id": "b5e7b2483f0abfa2",
+    "id": "aa01fac6a3287c9d",
     "type": "split",
     "children": [
       {
-        "id": "3e215d88c72585ec",
+        "id": "5976186f8ced7fcd",
         "type": "tabs",
         "children": [
           {
-            "id": "062a2405e389111b",
+            "id": "b55fb4dd68a465d5",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/english/blog/exploring_nmap.md",
+                "file": "content/english/blog/bigip-awaf.md",
                 "mode": "source",
                 "source": false
               }
@@ -25,15 +25,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "c283ff2e2af3f673",
+    "id": "e4deb09a635b12f2",
     "type": "split",
     "children": [
       {
-        "id": "7577a5026e6636ed",
+        "id": "e462b1f6cf28580f",
         "type": "tabs",
         "children": [
           {
-            "id": "f2978f3634c177f4",
+            "id": "5bbec8a20c194572",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -43,7 +43,7 @@
             }
           },
           {
-            "id": "475810236e37375e",
+            "id": "985220be531175a0",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -58,7 +58,7 @@
             }
           },
           {
-            "id": "2be07d54b1754535",
+            "id": "24b40855e76113b8",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -72,20 +72,20 @@
     "width": 300
   },
   "right": {
-    "id": "adbdcff246e8fbb8",
+    "id": "2036d270082795e5",
     "type": "split",
     "children": [
       {
-        "id": "fb6dacaa081bd816",
+        "id": "4e1afe6e420c765a",
         "type": "tabs",
         "children": [
           {
-            "id": "40989067762b7cc0",
+            "id": "d6a316a4730fdc30",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/english/blog/exploring_nmap.md",
+                "file": "content/english/blog/bigip-awaf.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -97,19 +97,19 @@
             }
           },
           {
-            "id": "04d6d9cf172e760c",
+            "id": "ef613625066d00bf",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/english/blog/exploring_nmap.md",
+                "file": "content/english/blog/bigip-awaf.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
             }
           },
           {
-            "id": "07f7ea820a635aaf",
+            "id": "87b2ace3006c2b30",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -120,12 +120,12 @@
             }
           },
           {
-            "id": "d6d49f9d92826452",
+            "id": "203e6c12c9ed0f92",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/english/blog/exploring_nmap.md"
+                "file": "content/english/blog/bigip-awaf.md"
               }
             }
           }
@@ -147,29 +147,20 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "062a2405e389111b",
+  "active": "b55fb4dd68a465d5",
   "lastOpenFiles": [
-    "Untitled.md",
-    "content/english/blog/exploring_nmap.md",
-    "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.md",
-    "assets/css/style.css~",
-    "layouts/_default/single.html~",
-    "content/english/blog/_index.md",
-    "images/blog/nmap/targetup.png.md",
-    "static/images/blog/nmap/targetdown.png",
-    "static/images/blog/nmap/targetup.png",
-    "Excalidraw/Drawing 2023-10-02 14.46.32.excalidraw.md",
-    "static/images/blog/nmap/portstatus.png",
-    "Excalidraw/Drawing 2023-10-02 14.21.42.excalidraw.md",
-    "Excalidraw/Drawing 2023-10-02 14.14.34.excalidraw.md",
-    "Excalidraw/Drawing 2023-10-02 15.08.33.excalidraw.png",
-    "images/blog/nmap/portstatus.png.md",
-    "images/blog/nmap",
-    "images/blog",
-    "images",
-    "Excalidraw",
-    "content/english/blog/push_to_github.md",
-    "layouts/partials/footer.html~",
-    "assets/css/4913"
+    "public/images/blog/bigip/nonThumbnails/XSS-stored.gif",
+    "static/images/blog/bigip/nonThumbnails/XSS-stored.gif",
+    "public/images/blog/bigip/nonThumbnails/XSS-reflected.gif",
+    "static/images/blog/bigip/nonThumbnails/XSS-reflected.gif",
+    "public/images/blog/bigip/nonThumbnails/suggestion.png",
+    "static/images/blog/bigip/nonThumbnails/suggestion.png",
+    "public/images/blog/bigip/nonThumbnails/learn&block.png",
+    "static/images/blog/bigip/nonThumbnails/learn&block.png",
+    "public/images/blog/bigip/nonThumbnails/parafile.png",
+    "static/images/blog/bigip/nonThumbnails/parafile.png",
+    "public/images/blog/bigip/nonThumbnails/signatures.png",
+    "public/images/blog/bigip/nonThumbnails",
+    "node_modules/fsevents"
   ]
 }

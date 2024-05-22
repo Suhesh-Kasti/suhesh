@@ -56,9 +56,9 @@ A simple app security policy is a predefined set of rules and protections that y
 
 2. **Navigate to Security Policies**: 
    Go to the 'Security' tab and select 'Policies'.
-
+	![Security Policies](/images/blog/bigip/nonThumbnails/dash.png)
 3. **Create a New Policy**:
-   Click on 'Create' to start a new policy. You can name it something descriptive like "SimplePolicy".
+   Click on 'Create' to start a new policy. You can name it something descriptive like "Rapid_Deployment_Policy".
 
 4. **Choose a Template**:
    Select a predefined template that matches your needs. For simple apps, the "Rapid Deployment" template is often sufficient.
@@ -68,9 +68,7 @@ A simple app security policy is a predefined set of rules and protections that y
 
 6. **Apply the Policy**:
    Once configured, apply the policy to your application.
-
-> ![Placeholder for Simple App Policy Screenshot](#)
-
+![Apply Policies](/images/blog/bigip/nonThumbnails/policy.png)
 This simple policy will cover basic threats and give you a baseline protection for your web application.
 
 ### Rapid Deployment Security Policies
@@ -100,7 +98,7 @@ A Rapid Deployment Security Policy is designed to provide a broad spectrum of pr
 5. **Monitor and Adjust**:
    Monitor the traffic and adjust the policy based on the observed behavior.
 
-> ![Placeholder for Rapid Deployment Policy Screenshot](#)
+> You can head here to learn more about [rapid deployment policy](/blog/bigip-securitypolicies)
 
 This approach allows for quick protection, making it ideal for situations where you need to secure an application on short notice.
 
@@ -132,10 +130,8 @@ Manual Security Policy Building involves creating and customizing security rules
 5. **Apply and Monitor**:
    Apply the policy to your application and monitor the logs for any unusual activity.
 
-> ![Placeholder for Manual Policy Building Screenshot](#)
-
 Manual policy building can be complex, but it’s highly effective for applications with unique security requirements.
-
+> You can head here to learn more about [security policies](/blog/bigip-securitypolicies)
 ### Automatic Security Policy Building
 
 If you prefer a more automated approach, F5 BIG-IP also offers automatic security policy building. This feature helps create a security policy based on the observed traffic patterns, making it easier to set up without deep manual configuration.
@@ -161,8 +157,7 @@ Automatic Security Policy Building uses machine learning and behavioral analysis
 
 5. **Enforcement**:
    Once the policy is refined, set it to "Blocking" mode to start enforcing the rules.
-
-> ![Placeholder for Automatic Policy Building Screenshot](#)
+> You can learn more about [automatic vs manual security policies](/blog/bigip-securitypolicies) from here.
 
 Automatic policy building is great for dynamic environments where traffic patterns can change frequently.
 
@@ -173,7 +168,6 @@ Security policies need to be regularly updated to adapt to evolving threats and 
 ### Manual Policy Building
 
 Manual policy building allows me to have precise control over the security rules and configurations. Here’s how I update a security policy manually:
-
 #### Steps to Update a Security Policy Manually
 
 1. **Access the Policy**:
@@ -182,12 +176,12 @@ Manual policy building allows me to have precise control over the security rules
 
 2. **Review Current Settings**:
    - I review the current settings to understand what needs updating. This includes looking at the HTTP protocol compliance, attack signatures, file type enforcement, and parameter enforcement.
-
+![Apply Policies](/images/blog/bigip/nonThumbnails/attacksign.png)
 3. **Update Attack Signatures**:
-   - **Navigate to Attack Signatures**: I go to 'Security' > 'Application Security' > 'Attack Signatures'.
+   - **Navigate to Attack Signatures**: I go to 'Security' > 'Application Security' > 'Learning and Blocking Settings' > 'Attack Signatures'.
    - **Select Signatures to Update**: I select the relevant signatures that need updating.
-   - **Update or Add New Signatures**: I update the existing signatures or add new ones as needed.
-   
+   - **Update or Add New Signatures**: I update the existing signatures or add new ones as needed from the change button on the lower right side.
+   ![Apply Policies](/images/blog/bigip/nonThumbnails/signatures.png)
    | **Attack Signatures** | **Description**                     |
    |-----------------------|-------------------------------------|
    | SQL Injection         | Detect and block SQL injection attempts. |
@@ -195,12 +189,12 @@ Manual policy building allows me to have precise control over the security rules
    | CSRF                  | Protect against Cross-Site Request Forgery. |
 
 4. **Modify File Type Enforcement**:
-   - **Navigate to File Types**: I go to 'Security' > 'Application Security' > 'File Types'.
+   - **Navigate to File Types**: I go to 'Security' > 'Application Security' > 'Learning and Blocking Settings' > 'File Types'.
    - **Update Allowed File Types**: I add or remove file types that should be allowed or blocked.
    - **Set Enforcement**: I set the enforcement actions (block, alert, etc.) for each file type.
-
+   ![Apply Policies](/images/blog/bigip/nonThumbnails/parafile.png)
 5. **Adjust Parameter Enforcement**:
-   - **Navigate to Parameters**: I go to 'Security' > 'Application Security' > 'Parameters'.
+   - **Navigate to Parameters**: I go to 'Security' > 'Application Security' > 'Learning and Blocking Settings' > 'Parameters'.
    - **Review and Update Parameters**: I review the list of parameters and update their rules (e.g., allowed characters, length, etc.).
    - **Set Enforcement**: I configure the enforcement actions for each parameter.
    
@@ -213,9 +207,6 @@ Manual policy building allows me to have precise control over the security rules
 6. **Save and Apply Changes**:
    - I save the changes and apply the updated policy to the relevant web application.
    - I monitor the logs to ensure the updates are functioning as expected.
-
-> ![Placeholder for Manual Policy Update Screenshot](#)
-
 ### Automatic Policy Building
 
 Automatic policy building leverages machine learning and behavioral analysis to update the security policy based on observed traffic patterns. Here’s how I update a security policy automatically:
@@ -229,14 +220,16 @@ Automatic policy building leverages machine learning and behavioral analysis to 
 2. **Configure Learning Settings**:
    - **Set Learning Parameters**: I configure the learning parameters to define what types of traffic and behaviors should be analyzed.
    - **Duration**: I specify the duration for which the system should observe traffic (e.g., one week).
-
+   ![Apply Policies](/images/blog/bigip/nonThumbnails/learn&block.png)
 3. **Monitor Traffic**:
    - I allow the system to monitor and analyze the traffic to learn the normal behavior patterns.
    - The system will automatically collect data on common requests, parameters, file types, and user behaviors.
 
 4. **Review Suggestions**:
-   - **Access Learning Suggestions**: I navigate to 'Security' > 'Application Security' > 'Policy Building' > 'Suggestions'.
+   - **Access Learning Suggestions**: I navigate to 'Security' > 'Application Security' > 'Traffic Learning' > 'Suggestions'.
    - **Review and Validate**: I review the suggested changes based on the observed traffic. These suggestions might include adding new parameters, updating attack signatures, or modifying enforcement actions.
+
+![Apply Policies](/images/blog/bigip/nonThumbnails/suggestion.png)
 
 5. **Apply Suggested Changes**:
    - **Select Suggestions**: I select the suggestions I want to apply to the policy.
@@ -248,8 +241,6 @@ Automatic policy building leverages machine learning and behavioral analysis to 
 7. **Monitor and Adjust**:
    - I monitor the traffic and logs to ensure the policy updates are effective.
    - I make further adjustments as necessary based on the ongoing traffic analysis.
-
-> ![Placeholder for Automatic Policy Update Screenshot](#)
 
 #### Comparison of Manual vs Automatic Policy Building
 
@@ -291,7 +282,7 @@ An attacker submits a malicious script in a comment field of a blog. When other 
 ```html
 <script>alert('XSS Attack!');</script>
 ```
-
+![Apply Policies](/images/blog/bigip/nonThumbnails/XSS-stored.gif)
 ##### Example 2: Reflected XSS
 
 An attacker sends a crafted URL to a user. When the user clicks the link, the server reflects the attacker's script back to the user's browser, which then executes it.
@@ -300,6 +291,7 @@ An attacker sends a crafted URL to a user. When the user clicks the link, the se
 http://example.com/search?q=<script>alert('XSS Attack!');</script>
 ```
 
+![Apply Policies](/images/blog/bigip/nonThumbnails/XSS-reflected.gif)
 ##### Example 3: DOM-Based XSS
 
 An attacker manipulates the URL to include a malicious script, which the client-side code then processes and executes.
@@ -353,8 +345,6 @@ Blocking XSS attacks involves setting up the right security policies and configu
 6. **Apply and Monitor**:
    - I apply these configurations and monitor the logs to ensure that XSS attacks are being detected and blocked effectively.
    - I regularly review and update the policies as needed based on new threats and patterns.
-
-> ![Placeholder for XSS Protection Configuration Screenshot](#)
 
 By following these steps, I can effectively block XSS attacks and protect my web application from one of the most common web vulnerabilities.
 
@@ -1092,9 +1082,6 @@ Blocking suspicious browsers involves identifying and preventing access from bro
    - Adjust the criteria and actions as necessary.
 
 > ![Placeholder for Browser Blocking Configuration Screenshot](#)
-
----
-
 ## 6.2 Denial of Service (DoS) Protection
 
 ### Layer 7 DoS Protection
@@ -1205,9 +1192,6 @@ Single username attacks target a single user account by attempting various passw
    - Adjust thresholds and actions based on the monitoring results.
 
 > ![Placeholder for Single Username Attack Protection Screenshot](#)
-
----
-
 #### Multi-Username Attacks
 
 Multi-username attacks involve attempting various usernames with a few common passwords. This type of attack can be more challenging to detect and requires broader protective measures.
@@ -1357,9 +1341,6 @@ Attack signatures are predefined patterns that identify malicious activity. They
    - Update the signature sets to stay current with emerging threats.
 
 > ![Placeholder for Attack Signatures Configuration Screenshot](#)
-
----
-
 ### Custom Attack Signatures
 
 Creating custom attack signatures allows me to define specific patterns unique to my application or environment, enhancing security by addressing threats that predefined signatures might miss.

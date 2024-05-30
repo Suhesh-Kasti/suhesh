@@ -92,6 +92,29 @@ a:active {
   width: 50%;
 }
 
+.accordion-header {
+    cursor: pointer;
+    padding: 15px;
+    transition: background-color 0.3s ease; /* This is optional */
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+.accordion-content p {
+    margin: 0;
+}
+
+/* Assuming .open class is added dynamically */
+.accordion-content.open {
+    max-height: 500px; /* Adjust according to content */
+    padding: 15px;
+}
   // .landing{
   //   background-image: url(/images/landing.png);
   // }

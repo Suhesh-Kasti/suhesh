@@ -18,8 +18,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "cdb548f95db05920",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "content/english/blog/bigip-securitypolicies.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -85,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/english/blog/bigip-awaf.md",
+                "file": "content/english/blog/bigip-securitypolicies.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/english/blog/bigip-awaf.md",
+                "file": "content/english/blog/bigip-securitypolicies.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/english/blog/bigip-awaf.md"
+                "file": "content/english/blog/bigip-securitypolicies.md"
               }
             }
           }
@@ -147,19 +160,25 @@
       "obsidian-excalidraw-plugin:Create new drawing": false
     }
   },
-  "active": "b55fb4dd68a465d5",
+  "active": "cdb548f95db05920",
   "lastOpenFiles": [
+    "public/images/blog/bigip/nonThumbnails/VSassign.png",
+    "static/images/blog/bigip/nonThumbnails/VSassign.png",
+    "static/images/blog/bigip/securityPolicyScreen.png",
+    "content/english/blog/bigip-securitypolicies.md",
+    "static/images/blog/bigip/nonThumbnails/automaticLM.png",
+    "content/english/blog/bigip-awaf.md",
+    "Untitled.md",
+    "Excalidraw/Drawing 2024-05-24 07.19.45.excalidraw.md",
+    "Excalidraw",
+    "public/images/blog/bigip/nonThumbnails/sqli-union.gif",
+    "static/images/blog/bigip/nonThumbnails/sqli-union.gif",
+    "content/english/cheatsheets/Docker.md",
+    "public/images/blog/bigip/nonThumbnails/sqli-basic.gif",
+    "static/images/blog/bigip/nonThumbnails/sqli-basic.gif",
     "public/images/blog/bigip/nonThumbnails/XSS-stored.gif",
     "static/images/blog/bigip/nonThumbnails/XSS-stored.gif",
     "public/images/blog/bigip/nonThumbnails/XSS-reflected.gif",
-    "static/images/blog/bigip/nonThumbnails/XSS-reflected.gif",
-    "public/images/blog/bigip/nonThumbnails/suggestion.png",
-    "static/images/blog/bigip/nonThumbnails/suggestion.png",
-    "public/images/blog/bigip/nonThumbnails/learn&block.png",
-    "static/images/blog/bigip/nonThumbnails/learn&block.png",
-    "public/images/blog/bigip/nonThumbnails/parafile.png",
-    "static/images/blog/bigip/nonThumbnails/parafile.png",
-    "public/images/blog/bigip/nonThumbnails/signatures.png",
     "public/images/blog/bigip/nonThumbnails",
     "node_modules/fsevents"
   ]

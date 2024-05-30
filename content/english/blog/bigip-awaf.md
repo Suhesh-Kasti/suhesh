@@ -368,18 +368,55 @@ SQL Injection is a type of attack where malicious SQL code is inserted into inpu
 
 ##### Example 1: Basic SQL Injection
 
-An attacker enters `' OR '1'='1' --` in a login form. If the application concatenates this input directly into an SQL query, it might become:
+An attacker enters `1' OR '1'='1'#` in a login form. If the application concatenates this input directly into an SQL query, it might become:
 
 ```sql
-SELECT * FROM users WHERE username = '' OR '1'='1' --' AND password = '';
+SELECT * FROM users WHERE username = '1' OR '1'='1' # ' AND password = '';
 ```
 
 This query is always true and may return all user records.
-
+![Apply Policies](/images/blog/bigip/nonThumbnails/sqli-basic.gif)
 ##### Example 2: Union-based SQL Injection
 
-An attacker enters a payload like `' UNION SELECT credit_card_number, 1, 1 FROM credit_cards --`. This can reveal sensitive data from another table if the application does not properly sanitize input.
+An attacker enters a payload like `, and 1=0 union select null, concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password) from users #` which is designed to exploit a vulnerability in a web application's database query to retrieve sensitive information from the `users` table.
 
+   {{< accordion "Understand the above given SQLi >>" >}}
+The primary purpose of this SQL injection is to extract and display sensitive information from the `users` table. Specifically, it aims to concatenate and display the first names, last names, usernames, and passwords of all users in the table, separated by newlines.
+1. **Basic Structure**:
+   - The payload starts with `, and 1=0`. This part attempts to make the initial condition false (`1=0` is always false) to force the application to rely on the `UNION SELECT` part of the query.
+
+2. **UNION SELECT**:
+   - `union select null, concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password) from users #` is used to combine the results of the existing query with the results of the injected query. 
+
+3. **Concat Function**:
+   - `concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password)` combines the values from the specified columns of the `users` table. The `0x0a` represents a newline character (ASCII Line Feed), which means the values will be concatenated with a newline between each field.
+     - `first_name` is the first name of the user.
+     - `lastname` is the last name of the user.
+     - `user` is the username.
+     - `password` is the password.
+
+4. **Null Placeholder**:
+   - `null` is used as a placeholder for the first column in the `UNION SELECT` clause. This is because the number of columns in the `UNION SELECT` must match the number of columns in the original query. Since the original query likely selects multiple columns, `null` fills the gap for one of the columns.
+
+5. **Comment Symbol**:
+   - `#` is a comment symbol in SQL. Everything after `#` is ignored by the SQL parser, ensuring that the rest of the original query is not executed.
+   {{< /accordion >}}
+
+Here if the original query is something like this:
+
+```sql
+SELECT id, name FROM products WHERE category_id = 1;
+```
+
+After injection, it might become:
+
+```sql
+SELECT id, name FROM products WHERE category_id = 1 AND 1=0 UNION SELECT null, concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password) FROM users;
+```
+
+Since `1=0` is always false, the `WHERE` clause will effectively discard the original query results. The `UNION SELECT` clause then retrieves and displays the concatenated `first_name`, `lastname`, `user`, and `password` from the `users` table.
+
+![Apply Policies](/images/blog/bigip/nonThumbnails/sqli-union.gif)
 ### Blocking SQL Injection Attacks
 
 To block SQL Injection attacks using F5 BIG-IP Advanced WAF, I follow these steps:
@@ -446,6 +483,7 @@ An attacker crafts a malicious URL that changes the victim's email address:
 ```
 
 If the victim clicks the link while logged into the target site, their email address is changed without their consent.
+
 
 ##### Example 2: Transferring Funds
 

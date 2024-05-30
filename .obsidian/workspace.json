@@ -162,6 +162,7 @@
   },
   "active": "cdb548f95db05920",
   "lastOpenFiles": [
+    "node_modules/fsevents",
     "public/images/blog/bigip/nonThumbnails/sqli-union.png",
     "static/images/blog/bigip/nonThumbnails/sqli-union.png",
     "public/images/blog/bigip/nonThumbnails/VSassign.png",
@@ -178,8 +179,6 @@
     "content/english/cheatsheets/Docker.md",
     "public/images/blog/bigip/nonThumbnails/sqli-basic.gif",
     "static/images/blog/bigip/nonThumbnails/sqli-basic.gif",
-    "public/images/blog/bigip/nonThumbnails/XSS-stored.gif",
-    "public/images/blog/bigip/nonThumbnails",
-    "node_modules/fsevents"
+    "public/images/blog/bigip/nonThumbnails"
   ]
 }

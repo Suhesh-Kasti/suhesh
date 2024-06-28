@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/english/blog/bigip-securitypolicies.md",
+                "file": "content/english/blog/bigip-logging.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/english/blog/bigip-securitypolicies.md",
+                "file": "content/english/blog/bigip-logging.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/english/blog/bigip-securitypolicies.md",
+                "file": "content/english/blog/bigip-logging.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/english/blog/bigip-securitypolicies.md"
+                "file": "content/english/blog/bigip-logging.md"
               }
             }
           }
@@ -162,23 +162,33 @@
   },
   "active": "cdb548f95db05920",
   "lastOpenFiles": [
-    "node_modules/fsevents",
-    "public/images/blog/bigip/nonThumbnails/sqli-union.png",
-    "static/images/blog/bigip/nonThumbnails/sqli-union.png",
-    "public/images/blog/bigip/nonThumbnails/VSassign.png",
-    "static/images/blog/bigip/nonThumbnails/VSassign.png",
-    "static/images/blog/bigip/securityPolicyScreen.png",
+    "layouts/projects/single.html~",
+    "layouts/blog/single.html~",
+    "content/english/blog/bigip-logging.md~",
+    "public/tags/webapp/index.xml",
+    "public/tags/web/index.xml",
+    "public/tags/security/index.xml",
+    "public/tags/firewall/index.xml",
+    "public/tags/f5/index.xml",
+    "public/tags/application/index.xml",
+    "public/tags/bigip/index.xml",
+    "public/tags/-/index.xml",
+    "public/images/skills/wireshark.png",
+    "public/images/skills/windows.svg",
+    "public/images/skills/sql.svg",
+    "public/images/skills/python.svg",
+    "public/images/skills/practical.png",
+    "public/images/skills/office.svg",
+    "public/images/skills/linux.svg",
+    "public/images/skills/kubernetes.svg",
+    "public/images/skills/hacker-brito.png",
+    "public/images/skills/git.svg",
+    "content/english/blog/bigip-webapp-protect.md",
     "content/english/blog/bigip-securitypolicies.md",
-    "static/images/blog/bigip/nonThumbnails/automaticLM.png",
+    "content/english/blog/bigip-logging.md",
     "content/english/blog/bigip-awaf.md",
     "Untitled.md",
     "Excalidraw/Drawing 2024-05-24 07.19.45.excalidraw.md",
-    "Excalidraw",
-    "public/images/blog/bigip/nonThumbnails/sqli-union.gif",
-    "static/images/blog/bigip/nonThumbnails/sqli-union.gif",
-    "content/english/cheatsheets/Docker.md",
-    "public/images/blog/bigip/nonThumbnails/sqli-basic.gif",
-    "static/images/blog/bigip/nonThumbnails/sqli-basic.gif",
-    "public/images/blog/bigip/nonThumbnails"
+    "content/english/cheatsheets/Docker.md"
   ]
 }

@@ -128,6 +128,7 @@ The negative security model allows all traffic except known bad requests or traf
 Policy building by false positive elimination focuses on refining security policies by eliminating false positives from attack signatures and other violations.
 
 #### **False Positive Elimination:**
+A legitimate request to a web application can also trigger violation. 
 
 | Entity               | Description                                                                                      |
 |----------------------|--------------------------------------------------------------------------------------------------|

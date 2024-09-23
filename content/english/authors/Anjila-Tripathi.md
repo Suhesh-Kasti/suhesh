@@ -23,4 +23,4 @@ social:
 
 ---
 
-is a hardworking QA intern, and she also has a passion for writing poetry, expressing her thoughts and feelings through words. Her dedication to both her work in quality assurance where she enjoys testing software along her creative pursuits adds a unique perspective and depth to her personality.
+is a hardworking QA professional, and she also has a passion for writing poetry, expressing her thoughts and feelings through words. Her dedication to both her work in quality assurance where she enjoys testing software along her creative pursuits adds a unique perspective and depth to her personality.

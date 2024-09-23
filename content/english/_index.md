@@ -2,7 +2,7 @@
 # Banner
 banner:
   title: "👋 Hello, I am [Suhesh Kasti](https://github.com/Suhesh-Kasti)"
-  content: "🔒😊💻 Your friendly neighbourhood Hackerman 🌐🛡️ <br> Come on with me on my exciting journey towards understanding technology, learning IT and having some cyber-fun along the way!"
+  content: "🔒😊💻 Your friendly neighbourhood HACKERMAN 🌐🛡️ <br> ↓ Have some job for me?? ↓"
   image: "/images/avatar.png"
   buttonCS:
     enable: true

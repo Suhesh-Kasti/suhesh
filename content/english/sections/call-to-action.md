@@ -7,9 +7,9 @@ qualifications:
   - degree: "Bachelor's in Computer Science and Information Technology"
     university: "Nepalaya College"
     universityLink: "https://nepalaya.edu.np/"
-    date: "2019 - ongoing"
+    date: "2019 - 2024"
     image: "/images/qualification/nepalaya.png"
-    description: "Currently, I am in 8th Semester pursuing Bachelors in Computer Science and Information Technology. This course is a four-year study offered by Tribhuvan University that aims to educate students with a broad understanding of computer science and information technology."
+    description: "I am a Bachelors in Computer Science and Information Technology graduate. This course is a four-year study offered by Tribhuvan University that aims to educate students with a broad understanding of computer science and information technology."
 
   - degree: "Science - HSEB(+2)"
     university: "Gyankunj HSS and College"

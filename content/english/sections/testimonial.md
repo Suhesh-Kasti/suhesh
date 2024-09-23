@@ -24,6 +24,11 @@ testimonials:
     designation: "Containerization"
     avatar: "/images/skills/docker.svg"
     content: "Docker facilitates containerization, allowing cybersecurity experts to deploy and isolate applications efficiently. Its lightweight and scalable containers streamline the development and deployment of secure applications. I also use it to setup labs for practise."
+ 
+  - name: "BigIP"
+    designation: "Web application firewall"
+    avatar: "/images/skills/f5.png"
+    content: "F5 Network's BIG-IP is a collection of hardware platforms and software solutions providing services focused on security, reliability, and performance of web applications."
 
   - name: "SQL"
     designation: "Database"
@@ -33,7 +38,7 @@ testimonials:
   - name: "Figma"
     designation: "Designing"
     avatar: "/images/skills/figma.svg"
-    content: "Figma is a collaborative design tool and although its not a security tool I use it to make some creative designs. For developers though its collaborative features make it an excellent choice for designing secure and user-friendly applications."
+    content: "Figma is a collaborative design tool and although its not a security tool I use it to make some creative designs. For developers though its collaborative features make it an excellent choice for designing secure and user-friendly applications." 
 
   - name: "Windows"
     designation: "Operating System"

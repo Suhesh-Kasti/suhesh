@@ -1,0 +1,10 @@
+{
+  "cssTheme": "Border",
+  "baseFontSize": 20,
+  "accentColor": "#7aa7ff",
+  "interfaceFontFamily": "",
+  "textFontFamily": "",
+  "monospaceFontFamily": "Monofur Nerd Font Mono",
+  "baseFontSizeAction": true,
+  "theme": "obsidian"
+}

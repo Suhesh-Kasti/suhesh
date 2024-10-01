@@ -1,0 +1,281 @@
+{
+  "main": {
+    "id": "be035330b2c7c495",
+    "type": "split",
+    "children": [
+      {
+        "id": "305868a8a5f3e59d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c2274c1147f90a05",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "blog/half-proxy.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "29c96b7c5908158f",
+    "type": "split",
+    "children": [
+      {
+        "id": "668651966d499ffc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "069a8c91f097f07b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6cdeea07ebd8be64",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:Security",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8dfda361a2268870",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          },
+          {
+            "id": "b0e326c497d3ad5d",
+            "type": "leaf",
+            "state": {
+              "type": "tagfolder-view",
+              "state": {}
+            }
+          },
+          {
+            "id": "d98c15c64c9cd003",
+            "type": "leaf",
+            "state": {
+              "type": "tagfolder-view",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 252.5
+  },
+  "right": {
+    "id": "3c37637addf520ed",
+    "type": "split",
+    "children": [
+      {
+        "id": "92cd2db01553e81b",
+        "type": "tabs",
+        "dimension": 35.58341369334619,
+        "children": [
+          {
+            "id": "704b5f07a846a422",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "f08e93f521348fe4",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
+            }
+          },
+          {
+            "id": "edf9004a4c82a70e",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              }
+            }
+          },
+          {
+            "id": "aa64258ef1197f33",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "blog/half-proxy.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "a605d9272134e62a",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "blog/half-proxy.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "2d6208703bb9891f",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "blog/half-proxy.md"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "f4bb732fb827dc70",
+        "type": "tabs",
+        "dimension": 34.3297974927676,
+        "children": [
+          {
+            "id": "e5bb2721aafddb61",
+            "type": "leaf",
+            "state": {
+              "type": "timer-view",
+              "state": {}
+            }
+          }
+        ]
+      },
+      {
+        "id": "120d376ecb6bccd1",
+        "type": "tabs",
+        "dimension": 30.08678881388621,
+        "children": [
+          {
+            "id": "136710f27a32957b",
+            "type": "leaf",
+            "state": {
+              "type": "tagfolder-view",
+              "state": {}
+            }
+          },
+          {
+            "id": "a65e5691d7e1d6ed",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "command-palette:Open command palette": false,
+      "audio-recorder:Start/stop recording": false,
+      "pomodoro-timer:Toggle timer panel": false,
+      "obsidian-excalidraw-plugin:Create new drawing": false,
+      "templater-obsidian:Templater": false,
+      "obsidian-kanban:Create new board": false,
+      "obsidian-git:Open Git source control": false,
+      "pdf-plus:PDF++: Toggle auto-copy": false,
+      "pdf-plus:PDF++: Toggle auto-focus": false,
+      "pdf-plus:PDF++: Toggle auto-paste": false
+    }
+  },
+  "active": "c2274c1147f90a05",
+  "lastOpenFiles": [
+    "blog/half-proxy.md~",
+    "halfproxy.png",
+    "blog/burpsuite-basics.md",
+    "blog/half-proxy.md",
+    "1. Project/Direct Server Return (DSR).md",
+    "1. Project/Half Proxy.md",
+    "1. Project/Network Layer.md",
+    "3. Resource/F5 101 Networks Application Delivery Fundamentals.pdf",
+    "1. Project/Data Link Layer.md",
+    "1. Project/Virtual LAN ( VLAN ).md",
+    "1. Project/Dividing a broadcast domain.md",
+    "3. Resource/Eric_Mitchell_Channel_SE_East_US_and_Fed.pdf",
+    "3. Resource/Study_Notes_F5_101_Application_Delivery.pdf",
+    "1. Project/WAN Architechture.md",
+    "**asymmetric routing problem**.md",
+    "Half Proxy.md",
+    "images/trunk_port_passage.png",
+    "images/Pasted image 20240930104616.png",
+    "images/Pasted image 20240930104611.png",
+    "images/arp_request_flow.png",
+    "obsidian.zip",
+    "Dividing a broadcast domain.md",
+    "3. Resource/f5.networks.selftestengine.101.simulations.2022-feb-24.by.jonathan.176q.vce.pdf",
+    "4. Archives",
+    "2. Area",
+    "3. Resource/F5_101_Notes.docx",
+    "3. Resource/F5-101dumps 1.pdf",
+    "3. Resource/101 F5 Question and Answer.docx",
+    "Untitled.md",
+    "1. Project/DEX and ODEX Android.md",
+    "templates/FitCheck Checklist.md",
+    "1. Project/Classes.dex.md",
+    "1. Project/BigIP fundamentals.md",
+    "Classes.dex.md",
+    "images/android_dex_odex.png",
+    "images/wireshark_tcp_syn_set.png",
+    "images/wireshark_tcp_syn1.png",
+    "1. Project/Machine - Hackers.md",
+    "1. Project/Basic Pentesting.md",
+    "1. Project/Wireshark Intro.md",
+    "images/Wireshark Intro 2024-08-15 11.32.04.md",
+    "images/wireshark_knowcommand.png",
+    "1. Project/For presentation.md",
+    "images/fitcheck_qkview.png",
+    "1. Project/Default Route.md",
+    "1. Project/Cloud Architecture.md"
+  ]
+}

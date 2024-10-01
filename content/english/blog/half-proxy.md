@@ -1,8 +1,8 @@
 ---
 title: Understanding Half Proxy
 meta_title: Understanding Half Proxy Architectures
-description: Understanding How and Why Half Proxy Architectures are used.
-date: 2024-10-01T23:53:06
+description: In a half proxy setup, the load balancer intercepts the client's request, forwards it to the server, but the response from the server bypasses the load balancer and is sent directly to the client. This setup is used in specific scenarios where performance gains are desired, but it introduces challenges like asymmetric routing. But what is asymmetric routing? 
+date: 2024-10-01T11:53:06
 image: /images/blog/networking/halfproxy.png
 categories:
   - Networking

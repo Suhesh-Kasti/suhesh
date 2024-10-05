@@ -15,7 +15,6 @@ quiz:
 wordfill:
   code: big101
 ---
-{{< toc >}}
 
 F5 BigIP is a robust platform renowned for providing a wide array of services including load balancing, application firewall, SSL offloading, and more. However, one of its standout features lies in its formidable security capabilities, often managed through its security policies.
 

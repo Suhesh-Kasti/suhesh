@@ -1,113 +1,124 @@
 {{ define "main" }}
-  <section class="section pt-7">
-    <div class="container">
-      <div class="row justify-center">
-        <article class="lg:col-10">
-          {{ $image:= .Params.image }}
-          {{ if $image }}
-            <div class="mb-10">
-              {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-full rounded") }}
-            </div>
-          {{ end }}
-          <h1 class="h2 mb-4">
-            {{ .Title }}
-          </h1>
-          <ul class="mb-4">
-            <li class="mr-4 inline-block">
-              <a
-                href="{{ `authors/` | relLangURL }}{{ .Params.Author | urlize }}/">
-                <i class="fa-regular fa-circle-user mr-2"></i
-                >{{ .Params.author }}
+<section class="container">
+  <div class="row justify-center">
+
+    <!-- Blog Content: Centered 3/5 of the screen -->
+    <main class="lg:col-10 mx-auto">
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+
+        <!-- Image -->
+        {{ $image := .Params.image }}
+        {{ if $image }}
+          <div class="mb-6">
+            {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-full rounded") }}
+          </div>
+        {{ end }}
+
+        <!-- Author Information -->
+        <div class="flex justify-evenly items-center flex-wrap mb-6">
+          <div class="flex items-center space-x-4">
+            <i class="fa-regular fa-circle-user mr-2"></i>
+            <a href="{{ `authors/` | relLangURL }}{{ .Params.Author | urlize }}/" class="text-primary dark:text-darkmode-primary">
+              {{ .Params.author }}
+            </a>
+          </div>
+          <div class="flex items-center space-x-4">
+            <i class="fa-regular fa-folder mr-2"></i>
+            {{ $categories := .Params.categories }}
+            {{ range $i, $p := $categories }}
+              <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="text-primary dark:text-darkmode-primary">
+                {{ . | humanize }}{{ if ne $i (sub (len $categories) 1) }}, {{ end }}
               </a>
-            </li>
-            <li class="mr-4 inline-block">
-              <i class="fa-regular fa-folder mr-2"></i>
-              {{ $categories:= .Params.categories }}
-              {{ range $i,$p:= $categories }}
-                <a
-                  href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/"
-                  class="ms-1"
-                  >{{ . | humanize }}{{ if ne $i (sub (len $categories) 1) }}
-                    {{ ", " }}
-                  {{ end }}
-                </a>
-              {{ end }}
-            </li>
-            <li class="mr-4 inline-block">
-              <i class="fa-regular fa-clock mr-2"></i>
-              {{ time.Format ":date_long" .PublishDate }}
-            </li>
-          </ul>
-          <div class="content mb-10">
-            {{ .Content }}
-          </div>
-            {{ if .Params.buttons }}
-            <div class="buttons-section">
-              {{ range .Params.buttons }}
-              <a href="{{ absURL .url }}" class="p-2 px-4 my-2 btn btn-primary btn-sm">{{ .label }}</a> <br>
-              {{ end }}
-            </div>
             {{ end }}
-          <div class="row items-start justify-between">
-            <div class="lg:col-5 mb-10 my-5 flex items-center lg:mb-0">
-              <h5 class="mr-3">{{ i18n "tags" }} :</h5>
-              <ul>
-                {{ $tags:= .Params.tags }}
-                {{ range $i,$p:= $tags }}
-                  <li class="inline-block">
-                    <a
-                      class="bg-theme-light hover:bg-primary dark:bg-darkmode-theme-light dark:hover:bg-darkmode-primary dark:hover:text-dark m-1 block rounded px-3 py-1 hover:text-white"
-                      href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/">
-                      {{ . | humanize }}
-                    </a>
-                  </li>
-                {{ end }}
-              </ul>
-            </div>
-            <div class="lg:col-4 my-2 flex items-center">
-              {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
+          </div>
+          <div class="flex items-center space-x-4">
+            <i class="fa-regular fa-clock mr-2"></i>
+            {{ time.Format ":date_long" .PublishDate }}
+          </div>
+        </div>
+
+        <!-- Collapsible Table of Contents -->
+        <div class="mb-6">
+          <button id="toc-toggle" class="btn btn-primary mb-4">Table of Contents</button>
+          <div id="toc-content" class="hidden">
+            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+              {{ .TableOfContents }}
             </div>
           </div>
-
-
-<div class="row">
-  {{ if .Params.quiz }}
-    <div class="col-md-6 mb-4">
-      <aside class="toc">
-        <div class="toc-content">
-          {{ partial "wordguess.html" . }}
-          <script>
-            var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
-          </script>
         </div>
-        <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
-      </aside>
-    </div>
-  {{ end }} 
 
-  {{ if .Params.wordfill }}
-    <div class="col-md-6 mb-4">
-      <aside class="toc">
-        <div class="toc-content">
-          {{ partial "wordfill.html" . }}
-          <script>
-            var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
-          </script>
+        <!-- Blog Title -->
+        <h1 class="text-h1-sm md:text-h1 font-bold text-text dark:text-darkmode-text mb-4">
+          {{ .Title }}
+        </h1>
+
+        <!-- Description -->
+        {{ with .Description }}
+          <p class="text-light dark:text-darkmode-light mb-6">{{ . }}</p>
+        {{ end }}
+
+        <!-- Content -->
+        <div class="prose dark:prose-invert max-w-none">
+          {{ .Content }}
         </div>
-        <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
-      </aside>
-    </div>
-  {{ end }}
-</div>
 
-          <!-- comments -->
-          {{ if .Site.Config.Services.Disqus.Shortname }}
-            <div class="mt-20">
-              {{ template "_internal/disqus.html" . }}
+        <!-- Buttons -->
+        {{ if .Params.buttons }}
+          <div class="mt-8">
+            {{ range .Params.buttons }}
+              <a href="{{ absURL .url }}" class="btn btn-primary btn-sm mb-2 mr-2">{{ .label }}</a>
+            {{ end }}
+          </div>
+        {{ end }}
+
+      </div>
+        <!-- Tags -->
+        <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+          <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Tags</h4>
+          <ul class="flex flex-wrap gap-2">
+            {{ range .Params.tags }}
+              <li>
+                <a href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/" 
+                   class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-dark rounded px-3 py-1 text-sm">
+                  {{ . | humanize }}
+                </a>
+              </li>
+            {{ end }}
+          </ul>
+        </div>
+
+      <!-- Word Games -->
+      {{ if or .Params.quiz .Params.wordfill }}
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          {{ if .Params.quiz }}
+            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+              <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Word Quiz</h4>
+              {{ partial "wordguess.html" . }}
             </div>
           {{ end }}
-        </article>
-      </div>
+          {{ if .Params.wordfill }}
+            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+              <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Fill the Answer</h4>
+              {{ partial "wordfill.html" . }}
+            </div>
+          {{ end }}
+        </div>
+      {{ end }}
+
+        <!-- Share Options -->
+        <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+          {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
+        </div>
+     
+     <!-- Comments -->
+      {{ if .Site.Config.Services.Disqus.Shortname }}
+        <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+          <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Comments</h4>
+          {{ template "_internal/disqus.html" . }}
+        </div>
+      {{ end }}
+    </main>
+  </div>
 
       <!-- Related posts -->
       {{ $related := (where site.RegularPages "Section" "in" site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!=" .Title) | union (site.RegularPages.Related . ) }}
@@ -126,6 +137,51 @@
       {{ end }}
     </div>
 
-  </section>
+<!-- Previous/Next Navigation -->
+  <div class="mt-8 flex justify-between">
+    {{ with .PrevInSection }}
+      <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 mr-4">
+        <span class="block text-sm text-light dark:text-darkmode-light mb-1">Previous</span>
+        <span class="text-primary dark:text-darkmode-primary group-hover:underline">← {{ .Title }}</span>
+      </a>
+    {{ else }}
+      <div class="flex-1 mr-4"></div>
+    {{ end }}
+    
+    {{ with .NextInSection }}
+      <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right">
+        <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>
+        <span class="text-primary dark:text-darkmode-primary group-hover:underline">{{ .Title }} →</span>
+      </a>
+    {{ else }}
+      <div class="flex-1 ml-4"></div>
+    {{ end }}
+  </div>
+
+    </main>
+
+  </div>
+</section>
+
+<!-- Load Word Game Scripts -->
+{{ if .Params.quiz }}
+  <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
+{{ end }}
+{{ if .Params.wordfill }}
+  <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+{{ end }}
+
+<script>
+  // Toggle Table of Contents visibility
+  document.getElementById('toc-toggle').addEventListener('click', function() {
+    var tocContent = document.getElementById('toc-content');
+    if (tocContent.classList.contains('hidden')) {
+      tocContent.classList.remove('hidden');
+    } else {
+      tocContent.classList.add('hidden');
+    }
+  });
+</script>
+
 {{ end }}
 

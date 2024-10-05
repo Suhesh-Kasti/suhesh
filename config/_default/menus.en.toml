@@ -12,17 +12,22 @@ url = "experience/"
 weight = 2
 
 [[main]]
-name = "Projects"
-url = "projects/"
+name = "Cheatsheets"
+url = "cheatsheets/"
 weight = 3
 
 [[main]]
-name = "Cheatsheets"
-url = "cheatsheets/"
+name = "Checklists"
+url = "checklists/"
 weight = 4
 
 [[main]]
+name = "Projects"
+url = "projects/"
 weight = 5
+
+[[main]]
+weight = 6
 name = "Blogs"
 hasChildren = true
 
@@ -55,11 +60,16 @@ url = "blog/"
 weight = 1
 
 [[footer]]
-name = "CyberHarvester"
-url = "cyberharvester/"
+name = "Cheatsheets"
+url = "cheatsheets/"
 weight = 2
+
+[[footer]]
+name = "Checklists"
+url = "checklists/"
+weight = 3
 
 [[footer]]
 name = "Contact"
 url = "contact/"
-weight = 3
+weight = 4

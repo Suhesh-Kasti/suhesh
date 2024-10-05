@@ -16,8 +16,6 @@ wordfill:
   code: burp101
 
 ---
-{{< toc >}}
-
 
 ## What is BurpSuite?
 

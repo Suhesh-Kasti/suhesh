@@ -11,7 +11,7 @@ buttons:
   - label: "Goto F5's documentation"
     url: "https://my.f5.com/manage/s/article/K15530590"
 ---
-{{< toc >}}
+
 # Violation Categories
 
 | Positive Security | Negative Security |

@@ -15,7 +15,6 @@ quiz:
 wordfill:
   code: big201
 ---
-{{< toc >}}
 
 This screen displays various configuration settings for creating a security policy in F5's BIG-IP application delivery controller. Let's break down each topic and its options:
 ### 1. **Policy Name**

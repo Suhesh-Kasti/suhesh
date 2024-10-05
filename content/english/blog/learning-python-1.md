@@ -15,8 +15,6 @@ quiz:
 wordfill:
   code: py101
 ---
-{{< toc >}}
-
 
 # Mastering Python Basics: A Beginner's Guide
 

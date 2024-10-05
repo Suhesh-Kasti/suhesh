@@ -15,7 +15,6 @@ quiz:
 wordfill:
   code: net101
 ---
-{{< toc >}}
 
 Welcome, friends, to the fascinating realm of computer networking. In this networking series, we will embark on an exciting journey to understand networking. Today we will start by exploring the intricates of the TCP/IP and OSI models, exploring each layer's functions, protocols, and real-world examples. Prepare to dive deep into the world of networking as we unravel its mysteries together!
 

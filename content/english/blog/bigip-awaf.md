@@ -15,7 +15,6 @@ quiz:
 wordfill:
   code: awaf101
 ---
-{{< toc >}}
 
 # 1. Introduction to F5 BIG-IP Advanced WAF
 

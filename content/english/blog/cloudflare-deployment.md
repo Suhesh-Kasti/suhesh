@@ -13,7 +13,6 @@ buttons:
   - label: "View Cloudflare Pages Documentation"
     url: "https://developers.cloudflare.com/pages/"
 ---
-{{< toc >}}
 
 # Deploying a Static Site to Cloudflare Pages
 

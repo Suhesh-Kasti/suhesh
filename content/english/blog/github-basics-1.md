@@ -15,7 +15,6 @@ quiz:
 wordfill:
   code: git101
 ---
-{{< toc >}}
 
 # Demystifying Git and GitHub for Beginners
 

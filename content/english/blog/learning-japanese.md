@@ -16,7 +16,6 @@ categories: ["Japanese"]
 tags: ["Khanji", "Katakana", "Hiragana"]
 draft: false
 ---
-{{< toc >}}
 
 # Unraveling the Wonders of Learning Japanese 🇯🇵
 

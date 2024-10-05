@@ -15,7 +15,6 @@ quiz:
 wordfill:
   code: big301
 ---
-{{< toc >}}
 
 ![Webapp and F5 Big IP](/images/blog/bigip/webappvsf5.png)
 

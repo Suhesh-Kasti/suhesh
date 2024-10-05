@@ -20,7 +20,6 @@ quiz:
 wordfill:
   code: burp101
 ---
-{{< toc >}}
 
 # How does a half proxy work?
 In a **half proxy** setup, the load balancer intercepts the client's request, forwards it to the server, but the response from the server **bypasses the load balancer** and is sent directly to the client. This setup is used in specific scenarios where performance gains are desired, but it introduces challenges like asymmetric routing.  But what is asymmetric routing? 

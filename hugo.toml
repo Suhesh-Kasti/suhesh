@@ -37,6 +37,7 @@ target = "assets/watching/hugo_stats.json"
 [build]
 noJSConfigInAssets = false
 useResourceCacheWhen = 'fallback'
+writeStats = true
 [build.buildStats]
 enable = true
 [[build.cachebusters]]
@@ -57,7 +58,9 @@ target = 'css'
 [[build.cachebusters]]
 source = 'assets/.*\.(.*)$'
 target = '$1'
-
+[security]
+  [security.funcs]
+    getenv = ['^HUGO_', '^NODE_']
 
 ############################# Outputs ############################
 [outputs]

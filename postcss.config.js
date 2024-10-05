@@ -1,11 +1,17 @@
 const purgecss = {
   content: ["./hugo_stats.json"],
   defaultExtractor: (content) => {
-    const elements = JSON.parse(content).htmlElements;
+    let stats;
+    try {
+      stats = JSON.parse(content).htmlElements;
+    } catch (e) {
+      console.warn('Failed to parse hugo_stats.json:', e);
+      return [];
+    }
     return [
-      ...(elements.tags || []),
-      ...(elements.classes || []),
-      ...(elements.ids || []),
+      ...(stats?.tags || []),
+      ...(stats?.classes || []),
+      ...(stats?.ids || []),
     ];
   },
   safelist: [
@@ -37,8 +43,7 @@ const purgecss = {
 module.exports = {
   plugins: {
     tailwindcss: {},
-    "@fullhuman/postcss-purgecss":
-      process.env.HUGO_ENVIRONMENT === "production" ? purgecss : false,
-    autoprefixer: process.env.HUGO_ENVIRONMENT === "production" ? {} : false,
+    autoprefixer: {},
+    '@fullhuman/postcss-purgecss': process.env.HUGO_ENVIRONMENT === 'production' ? purgecss : false,
   },
 };

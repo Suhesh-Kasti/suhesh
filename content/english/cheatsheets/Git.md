@@ -5,7 +5,6 @@ image: "/images/cheatsheets/git.svg"
 description: is a distributed version control system for tracking changes in code and coordinating work among multiple developers.
 
 ---
-{{< toc >}}
 
 #### 1. Clone
    {{< accordion "git clone: Clone a repository into a new directory" >}}

@@ -5,7 +5,6 @@ image: "/images/cheatsheets/kubernetes.svg"
 description: is an open-source container orchestration platform that automates the deployment and management of containerized applications.
 
 ---
-{{< toc >}}
 
 #### 1. Deploy a Pod
    {{< accordion "kubectl run: Create and run a pod" >}}

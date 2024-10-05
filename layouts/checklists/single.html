@@ -1,0 +1,147 @@
+{{ define "main" }}
+<section class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    
+    <!-- Left Section: Checklist Navigation -->
+    <aside class="lg:col-span-1 space-y-6">
+      <!-- Checklists Tree -->
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text font-primary">
+          Checklists
+        </h4>
+        
+        <nav class="checklist-nav space-y-2">
+          {{ $currentPage := . }}
+          {{ $section := .Site.GetPage "section" "english/checklists" }}
+          
+            <!-- If it's a section/folder -->
+            {{ if .Page.IsSection }}
+              <div class="checklist-folder" x-data="{ open: {{ or (in $currentPage.RelPermalink .Page.RelPermalink) false }} }">
+                <button 
+                  @click="open = !open" 
+                  class="flex items-center w-full py-2 px-3 rounded-md text-text dark:text-darkmode-text hover:bg-theme-dark/10 dark:hover:bg-darkmode-theme-dark/10"
+                >
+                  <span 
+                    class="mr-2 transition-transform duration-200"
+                    :class="{'rotate-90': open}"
+                  >
+                    →
+                  </span>
+                  <span class="font-medium">{{ .Page.Title | default (path.Base .Page.File.Dir) }}</span>
+                </button>
+                
+                <div 
+                  x-show="open" 
+                  x-collapse 
+                  class="ml-4 mt-1 space-y-1"
+                >
+                  {{ range .Page.Pages }}
+                    {{ partial "tree-nav-item" (dict "Page" . "currentPage" $currentPage) }}
+                </div>
+              </div>
+            
+            <!-- If it's a page -->
+            {{ else }}
+              <a 
+                href="{{ .Page.RelPermalink }}" 
+                class="block py-2 px-3 rounded-md transition-colors duration-200
+                       {{ if eq $currentPage.RelPermalink .Page.RelPermalink }}
+                         bg-primary dark:bg-darkmode-primary text-white dark:text-darkmode-text font-medium
+                       {{ else }}
+                         text-text dark:text-darkmode-text hover:bg-theme-dark/10 dark:hover:bg-darkmode-theme-dark/10
+                       {{ end }}"
+              >
+                {{ .Page.Title }}
+              </a>
+            {{ end }}
+          {{ end }}
+
+          <!-- Start rendering the tree -->
+          {{ range $section.Pages }}
+            {{ partial "tree-nav-item" (dict "Page" . "currentPage" $currentPage) }}
+          {{ end }}
+        </nav>
+      </div>
+
+      <!-- Previous/Next Navigation -->
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+        <div class="space-y-4">
+          {{ with .PrevInSection }}
+            <a href="{{ .Permalink }}" class="block group">
+              <span class="block text-sm text-light dark:text-darkmode-light mb-1">Previous</span>
+              <span class="text-primary dark:text-darkmode-primary group-hover:underline">← {{ .Title }}</span>
+            </a>
+          {{ end }}
+          
+          {{ with .NextInSection }}
+            <a href="{{ .Permalink }}" class="block group">
+              <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>
+              <span class="text-primary dark:text-darkmode-primary group-hover:underline">{{ .Title }} →</span>
+            </a>
+          {{ end }}
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Section: Checklist Content -->
+    <main class="lg:col-span-3">
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg">
+        <article class="p-6">
+          <!-- Breadcrumb navigation -->
+          <nav class="mb-4 text-sm">
+            <ol class="flex flex-wrap items-center space-x-2">
+              <li><a href="/english/checklists" class="text-primary dark:text-darkmode-primary hover:underline">Checklists</a></li>
+              {{ $path := split (trim .File.Dir "/") "/" }}
+              {{ $length := len $path }}
+              {{ range $index, $element := after 2 $path }}
+                <li class="flex items-center space-x-2">
+                  <span class="text-light dark:text-darkmode-light">/</span>
+                  {{ if eq (add $index 1) (len (after 2 $path)) }}
+                    <span class="text-text dark:text-darkmode-text">{{ humanize . }}</span>
+                  {{ else }}
+                    <a href="/english/checklists/{{ . }}" class="text-primary dark:text-darkmode-primary hover:underline">{{ humanize . }}</a>
+                  {{ end }}
+                </li>
+              {{ end }}
+            </ol>
+          </nav>
+
+          <!-- Title and metadata -->
+          <header class="mb-8">
+            <h1 class="text-h1-sm md:text-h1 font-bold text-text dark:text-darkmode-text font-primary">
+              {{ .Title }}
+            </h1>
+            {{ with .Description }}
+              <p class="mt-2 text-light dark:text-darkmode-light">
+                {{ . }}
+              </p>
+            {{ end }}
+          </header>
+
+          <!-- Content -->
+          <div class="prose dark:prose-invert max-w-none">
+            {{ .Content }}
+          </div>
+
+          <!-- Tags -->
+          {{ with .Params.tags }}
+            <footer class="mt-8 pt-6 border-t border-border dark:border-darkmode-border">
+              <div class="flex flex-wrap gap-2">
+                {{ range . }}
+                  <span class="px-3 py-1 text-sm rounded-full bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 
+                             text-text dark:text-darkmode-text">
+                    {{ . }}
+                  </span>
+                {{ end }}
+              </div>
+            </footer>
+          {{ end }}
+        </article>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- Add Alpine.js for the folder tree functionality -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{{ end }}

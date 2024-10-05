@@ -5,7 +5,6 @@ image: "/images/cheatsheets/sql.svg"
 description: is a domain-specific language for managing and manipulating relational databases.
 
 ---
-{{< toc >}}
 
 #### 1. SELECT
    {{< accordion "SELECT: Retrieve data from one or more tables" >}}

@@ -8,7 +8,6 @@ quiz:
 wordfill:
   code: dock101
 ---
-{{< toc >}}
 
 #### 1. Docker Hello World
    {{< accordion "docker run: Execute a command in a new container" >}}

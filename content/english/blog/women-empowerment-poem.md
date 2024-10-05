@@ -2,7 +2,7 @@
 title: Self Reflection (Poem) 
 meta_title: "Poem about self reflection"
 description: "Anjila is a great poet and she writes poems whenever she can. This one is about self reflection. And yes the great poet part was forced by her."
-date: 2024-03-12T20:53:06+05:45
+date: 2023-05-12T20:53:06+05:45
 image: "/images/blog/poems/self-reflection.png"
 categories: ["Poem"]
 author: "Anjila Tripathi"

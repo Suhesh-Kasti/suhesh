@@ -9,8 +9,6 @@ wordfill:
   code: owasp101
 ---
 
-{{< toc >}}
-
 #### 1. Broken Access Control
 
 {{< accordion "Horizontal Priv-esc" >}}

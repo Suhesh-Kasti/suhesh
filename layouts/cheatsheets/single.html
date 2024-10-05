@@ -1,51 +1,76 @@
 {{ define "main" }}
-<section class="section pt-7">
-  <div class="container">
-    <div class="row justify-center">
-      <article class="lg:col-10">
-        {{ $image:= .Params.image }}
-        {{ if $image }}
-        {{ end }}
-        <h1 class="h2 mb-4">
-          {{ .Title }}
-        </h1>
-        <div class="content mb-10">
-          {{ .Content }}
-        </div>
-        <!-- Center the wordguess and wordfill sections -->
-        <div class="row">
-          {{ if .Params.quiz }}
-          <div class="col-md-6 mb-4">
-            <aside class="toc">
-              <div class="toc-content">
-                {{ partial "wordguess.html" . }}
-                <script>
-                  var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
-                </script>
-              </div>
-              <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
-            </aside>
-          </div>
-          {{ end }}
+<section class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    
+    <!-- Left Section: Table of Contents -->
+    <aside class="lg:col-span-1">
+      <div class="sticky top-24 p-6 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg">
+        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text font-primary">
+          Table of Contents
+        </h4>
+        <nav id="TableOfContents" class="toc-nav">
+          {{ .TableOfContents }}
+        </nav>
+      </div>
+    </aside>
 
-          {{ if .Params.wordfill }}
-          <div class="col-md-6 mb-4">
-            <aside class="toc">
-              <div class="toc-content">
-                {{ partial "wordfill.html" . }}
-                <script>
-                  var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
-                </script>
-              </div>
-              <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
-            </aside>
+    <!-- Right Section: Content and Quizzes -->
+    <main class="lg:col-span-3 space-y-8">
+      <!-- Main Content -->
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg overflow-hidden">
+        <article class="p-6">
+          <h1 class="text-h1-sm md:text-h1 font-bold mb-6 text-text dark:text-darkmode-text font-primary">
+            {{ .Title }}
+          </h1>
+          <div class="prose dark:prose-invert max-w-none">
+            {{ .Content }}
           </div>
-          {{ end }}
+        </article>
+      </div>
+
+      <!-- Quiz Section -->
+      {{ if or .Params.quiz .Params.wordfill }}
+      <div class="space-y-8">
+        <!-- Word Guess Quiz -->
+        {{ if .Params.quiz }}
+        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+          <h3 class="text-h3 font-bold mb-6 text-text dark:text-darkmode-text font-primary">
+            Word Guess Challenge
+          </h3>
+          <div class="quiz-section">
+            {{ partial "wordguess.html" . }}
+            <script>
+              var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
+            </script>
+          </div>
         </div>
-        <!-- End centering wordguess and wordfill sections -->
-        
-      </article>
-    </div>
+        {{ end }}
+
+        <!-- Word Fill Quiz -->
+        {{ if .Params.wordfill }}
+        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+          <h3 class="text-h3 font-bold mb-6 text-text dark:text-darkmode-text font-primary">
+            Fill in the Blanks
+          </h3>
+          <div class="word-fill-section">
+            {{ partial "wordfill.html" . }}
+            <script>
+              var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
+            </script>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+      {{ end }}
+    </main>
   </div>
 </section>
+
+<!-- Load quiz scripts at the end -->
+{{ if .Params.quiz }}
+<script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
+{{ end }}
+{{ if .Params.wordfill }}
+<script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+{{ end }}
 {{ end }}

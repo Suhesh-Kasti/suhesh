@@ -5,7 +5,6 @@ image: "/images/cheatsheets/linux.svg"
 description: is a stable, secure, and versatile open-source operating system kernel, powering servers, desktops, and diverse devices worldwide.
 
 ---
-{{< toc >}}
 
 #### 1. Change Directory
    {{< accordion "cd: Change to other directory" >}}

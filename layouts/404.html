@@ -8,8 +8,7 @@
             404
           </span>
           <h1 class="h2 mb-4">Page not found</h1>
-          {{ $image := resources.Get "static/images/404.webp" }}
-<img src="{{ $image.RelPermalink }}" alt="ERROR" class="w-full h-auto mx-auto mb-6">
+          <img src="{{ "images/404.webp" | relURL }}" alt="ERROR" class="w-full h-auto mx-auto mb-6">
           <div class="content">
             <p>
               The page you are looking for might have been removed, had its name

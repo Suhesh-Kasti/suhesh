@@ -38,17 +38,15 @@ a:not(.btn, .logo-dark a, .logo-light a)::after {
   background-repeat: repeat-x;
   background-size: 120px 10px;
   background-position: 0 0;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0s;
+  opacity: 0; /* Set opacity to 0 initially */
+  transition: opacity 0.2s ease; /* Fade in smoothly */
 }
 
-/* Show and animate the line */
+/* Show and fade in the line */
 a:not(.btn, .logo-dark a, .logo-light a):hover::after {
-  transform: scaleX(1);
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1; /* Fade in the wavy line */
   animation: moveWave 2s linear infinite;
-  animation-delay: 0.6s;
+  animation-delay: 0.1s;
 }
 
 @keyframes moveWave {
@@ -68,6 +66,7 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
   position: relative;
   display: inline-block;
 }
+
 /* Accordion styles remain unchanged */
 .accordion-header {
   cursor: pointer;

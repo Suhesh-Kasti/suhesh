@@ -6,54 +6,61 @@ html {
   scroll-behavior: smooth;
   cursor: default;
 }
-    a {
-      text-decoration: none;
-      color: #007bff;
-      position: relative;
-      display: inline-block;
-      font-weight: 600;
-    }
-a:link {
-  text-decoration: none; 
+
+/* Base link styles */
+a {
+  text-decoration: none;
+  color: #007bff;
+  position: relative;
+  display: inline-block;
   font-weight: 600;
-} 
-a:visited { 
-  text-decoration: none; 
-  font-weight: 600;
-} 
-a:hover { 
-  text-decoration: none; 
-  font-weight: 600;
-} 
-a:active { 
-  text-decoration: none; 
+  padding-bottom: 4px;
+}
+
+/* Remove decoration for all link states */
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
   font-weight: 600;
 }
 
-    a::before,
-    a::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      bottom: 0;
-      background-color: #007bff;
-      transition: width 0.3s ease-in-out;
-    }
+/* Exclude buttons and logos */
+a:not(.btn, .logo-dark a, .logo-light a)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='xMidYMid slice'%3E%3Cpath d='M0,5 C8,1 12,9 20,5 S32,1 40,5 S52,9 60,5 S72,1 80,5 S92,9 100,5 S112,1 120,5' stroke='%23007bff' stroke-width='2.5' fill='none' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 120px 10px;
+  background-position: 0 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0s;
+}
 
-    a::before {
-      left: 0;
-    }
+/* Show and animate the line */
+a:not(.btn, .logo-dark a, .logo-light a):hover::after {
+  transform: scaleX(1);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: moveWave 2s linear infinite;
+  animation-delay: 0.6s;
+}
 
-    a::after {
-      right: 0;
-    }
+@keyframes moveWave {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -120px 0;
+  }
+}
 
-    a:hover::before,
-    a:hover::after {
-      width: 50%;
-    }
- 
+/* Logo styles - no animation */
 .logo-dark a,
 .logo-light a {
   text-decoration: none;
@@ -61,61 +68,118 @@ a:active {
   position: relative;
   display: inline-block;
 }
-
-.logo-dark a::before,
-.logo-dark a::after,
-.logo-light a::before,
-.logo-light a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  background-color: #007bff;
-  transition: width 0.3s ease-in-out;
-}
-
-.logo-dark a::before,
-.logo-light a::before {
-  left: 0;
-}
-
-.logo-dark a::after,
-.logo-light a::after {
-  right: 0;
-}
-
-.logo-dark a:hover::before,
-.logo-dark a:hover::after,
-.logo-light a:hover::before,
-.logo-light a:hover::after {
-  width: 50%;
-}
-
+/* Accordion styles remain unchanged */
 .accordion-header {
-    cursor: pointer;
-    padding: 15px;
-    transition: background-color 0.3s ease; /* This is optional */
+  cursor: pointer;
+  padding: 15px;
+  transition: background-color 0.3s ease;
 }
 
 .accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
-    padding: 0 15px;
-    box-sizing: border-box;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 
 .accordion-content p {
-    margin: 0;
+  margin: 0;
 }
 
-/* Assuming .open class is added dynamically */
 .accordion-content.open {
-    max-height: 500px; /* Adjust according to content */
-    padding: 15px;
+  max-height: 500px;
+  padding: 15px;
 }
-  // .landing{
+
+// .landing{
   //   background-image: url(/images/landing.png);
   // }
 
+ /* Banner Styles */
+.banner-slider {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-slider .swiper-slide {
+  height: 0;
+  padding-bottom: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner-slider .swiper-slide img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-slider .swiper-button-next,
+.banner-slider .swiper-button-prev {
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  color: white;
+}
+
+.banner-slider .swiper-button-next:after,
+.banner-slider .swiper-button-prev:after {
+  font-size: 16px;
+}
+
+/* Content Styling */
+.content-wrapper {
+  line-height: 1.8;
+}
+
+.banner-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.banner-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.banner-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-dark);
+}
+
+/* Bullet Points */
+.banner-bullets li {
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.banner-bullets li span {
+  line-height: 1.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .banner .gallery-wrapper {
+    max-width: 350px;
+  }
+  
+  .banner-title {
+    font-size: 2rem;
+  }
+  
+  .banner-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .banner-bullets li {
+    font-size: 0.95rem;
+  }
+}

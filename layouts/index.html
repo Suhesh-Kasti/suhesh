@@ -3,41 +3,86 @@
   {{ with .Params.banner }}
     <section class="section landing pt-14">
       <div class="container">
-        <div class="row justify-center">
-          <div class="col-12">
-            {{ partial "image" (dict "Src" .image "Alt" "Banner image" "Loading" "eager" "Class" "mx-auto mb-8" "Size" "400x400" ) }}
+        <div class="row items-center justify-between">
+          <!-- Gallery Section - Left Side -->
+          <div class="md:col-5 lg:col-4 mb-8 md:mb-0">
+            <div class="gallery-wrapper relative max-w-[450px] mx-auto">
+              <div class="swiper banner-slider">
+                <div class="swiper-wrapper">
+                  {{ $files := readDir "static/images/admin" }}
+                  {{ range $files }}
+                    {{ if and (not .IsDir) (findRE "\\.(jpe?g|png|gif|webp)$" .Name)}}
+                      <div class="swiper-slide aspect-square">
+                        {{ partial "image" (dict 
+                          "Src" (print "/images/admin/" .Name)
+                          "Alt" "Profile image" 
+                          "Loading" "eager" 
+                          "Class" "rounded-lg w-full h-full object-cover shadow-lg" 
+                          "Size" "450x450" )
+                        }}
+                      </div>
+                    {{ end }}
+                  {{ end }}
+                </div>
+                <!-- Navigation buttons -->
+                <div class="swiper-button-prev !-left-2"></div>
+                <div class="swiper-button-next !-right-2"></div>
+              </div>
+            </div>
           </div>
-          <div class="lg:col-7 mb-8 text-center">
-            <h1 class="mb-4">
-              {{ .title | markdownify }}
-            </h1>
-            <h5 class="mb-12">
-              {{ .content | markdownify }}
-            </h5>
-            {{ with .buttonCS }}
-              {{ if .enable }}
-                <a class="btn btn-primary m-2" href="{{ .link | absURL }}">
-                  {{ .label }}
-                  <i class="fa fa-arrow-right pl-2"></i>
-                </a>
-              {{ end }}
-            {{ end }}
 
-            {{ with .buttonDV }}
-              {{ if .enable }}
-                        <a class="btn btn-primary m-2" href="{{ .link | absURL }}">
-                  {{ .label }}
-                  <i class="fa fa-arrow-right pl-2"></i>
-                </a>
+          <!-- Content Section - Right Side -->
+          <div class="md:col-7 lg:col-7 text-center md:text-left md:pl-8 lg:pl-12">
+            <div class="max-w-[600px] content-wrapper">
+              <h1 class="banner-title mb-2 leading-tight">
+                {{ .title | markdownify }}
+              </h1>
+              <h4 class="banner-subtitle mb-4 font-normal">
+                {{ .subtitle | markdownify }}
+              </h4>
+              <p class="banner-content mb-8">
+                {{ .content | markdownify }}
+              </p>
+
+              <!-- Bullet Points -->
+              {{ if .bulletpoints }}
+              <ul class="banner-bullets mb-10 space-y-6">
+                {{ range .bulletpoints }}
+                  <li class="relative pl-8 text-left flex items-start">
+                    <i class="fas fa-stroopwafel fa-spin absolute left-0 top-1"></i>
+                    <span class="block">{{ . | markdownify }}</span>
+                  </li>
+                {{ end }}
+              </ul>
               {{ end }}
-            {{ end }}
+
+              <!-- Buttons -->
+              <div class="banner-buttons flex flex-wrap gap-4 justify-center md:justify-start">
+                {{ with .buttonCS }}
+                  {{ if .enable }}
+                    <a class="btn btn-primary" href="{{ .link | absURL }}">
+                      {{ .label }}
+                      <i class="fa fa-arrow-right pl-2"></i>
+                    </a>
+                  {{ end }}
+                {{ end }}
+
+                {{ with .buttonDV }}
+                  {{ if .enable }}
+                    <a class="btn btn-outline-primary" href="{{ .link | absURL }}">
+                      {{ .label }}
+                      <i class="fa fa-arrow-right pl-2"></i>
+                    </a>
+                  {{ end }}
+                {{ end }}
+              </div>
+            </div>
           </div>
-        
         </div>
       </div>
     </section>
-  {{ end }}
-  <!-- /Banner -->
+{{ end }} 
+<!-- /Banner -->
 
   <!-- Features -->
   {{ range $i, $e:= .Params.features }}

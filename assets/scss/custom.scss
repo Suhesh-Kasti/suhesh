@@ -67,30 +67,6 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
   display: inline-block;
 }
 
-/* Accordion styles remain unchanged */
-.accordion-header {
-  cursor: pointer;
-  padding: 15px;
-  transition: background-color 0.3s ease;
-}
-
-.accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease-out, padding 0.5s ease-out;
-  padding: 0 15px;
-  box-sizing: border-box;
-}
-
-.accordion-content p {
-  margin: 0;
-}
-
-.accordion-content.open {
-  max-height: 500px;
-  padding: 15px;
-}
-
 // .landing{
   //   background-image: url(/images/landing.png);
   // }
@@ -182,3 +158,17 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
     font-size: 0.95rem;
   }
 }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width:7px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary dark:bg-darkmode-primary rounded-lg;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-darkmode-theme-light;
+  }
+

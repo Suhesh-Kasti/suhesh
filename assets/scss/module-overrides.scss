@@ -16,29 +16,220 @@
 
 // tab
 .tab {
-  @apply border-border dark:border-darkmode-border overflow-hidden rounded-lg border;
+  @apply border-border dark:border-darkmode-border overflow-hidden rounded-lg border bg-theme-light dark:bg-darkmode-theme-light;
+
+  /* Tab Navigation */
   &-nav {
-    @apply border-border bg-theme-light dark:border-darkmode-border dark:bg-darkmode-theme-light pl-4;
+    @apply flex gap-2 p-2 bg-theme-light dark:bg-darkmode-theme-light border-b border-border dark:border-darkmode-border rounded-t-lg;
 
     &-item {
-      @apply text-dark dark:text-darkmode-dark px-8 text-lg #{!important};
+      @apply text-dark dark:text-darkmode-dark px-8 py-3 text-lg font-semibold cursor-pointer
+             transition-colors duration-300 ease-in-out border-b-4 border-transparent outline-none;
+
+      &:hover {
+        @apply text-primary dark:text-darkmode-primary bg-gray-100 dark:bg-darkmode-theme-light;
+      }
+
       &.active {
-        @apply border-dark dark:border-darkmode-primary;
+        @apply text-primary dark:text-darkmode-primary bg-white dark:bg-darkmode-theme-light;
+
+        /* Underline only for the active tab */
+        border-bottom-color: var(--tw-border-opacity);
+        border-bottom-width: 2px; /* remove any extra */
+        border-color: transparent; /* avoid double underline */
+      }
+
+      &:focus-visible {
+        @apply ring-2 ring-primary dark:ring-darkmode-primary ring-offset-2 dark:ring-offset-gray-900;
       }
     }
   }
+
+  /* Tab Content */
   &-content {
+    @apply p-6 bg-white dark:bg-darkmode-theme-light rounded-b-lg;
+
     &-panel {
-      @apply px-4 pt-0 #{!important};
+      @apply opacity-0 scale-95 absolute invisible transition-all duration-300 ease-out;
+      
+      &.active {
+        @apply opacity-100 scale-100 static visible;
+
+        /* Animation on fade in */
+        animation: fadeInUp 0.4s ease-out forwards;
+      }
+
+      > * + * {
+        @apply mt-4;
+      }
+
+      /* Headings */
+      h1, h2, h3, h4, h5, h6 {
+        @apply font-semibold text-gray-900 dark:text-white;
+      }
+
+      /* Paragraphs */
+      p {
+        @apply text-gray-600 dark:text-gray-300;
+      }
+
+    }
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    height:10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary dark:bg-darkmode-primary rounded-lg;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-darkmode-theme-light;
+  }
+
+  /* Animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
     }
   }
 }
 
-// accordion
+
+// Enhanced Accordion Styles
 .accordion {
-  @apply border-border bg-theme-light dark:border-darkmode-border dark:bg-darkmode-theme-light mb-6 overflow-hidden rounded-lg border;
+  @apply border-border bg-theme-light dark:border-darkmode-border 
+         dark:bg-darkmode-theme-light mb-6 overflow-hidden rounded-lg border
+         divide-y divide-border dark:divide-darkmode-border;
+  
+  // Accordion group wrapper
+  &-wrapper {
+    @apply space-y-4;
+  }
+  
+  // Accordion item container
+  &-item {
+    @apply relative transition-all duration-300;
+    
+    &:hover {
+      @apply bg-theme-light/50 dark:bg-darkmode-theme-light/50;
+    }
+    
+    // Add subtle scale effect on hover
+    &:hover &-header {
+      @apply transform scale-[1.01] transition-transform;
+    }
+  }
+  
+  // Header styling
   &-header {
-    @apply text-dark dark:text-darkmode-dark;
+    @apply flex items-center justify-between w-full p-5 text-left 
+           text-dark dark:text-darkmode-dark cursor-pointer 
+           transition-all duration-200 select-none gap-4;
+    
+    // Enhanced hover state
+    &:hover {
+      @apply text-primary dark:text-darkmode-primary bg-primary/5 dark:bg-darkmode-primary/5;
+    }
+    
+    // Icon container
+    &-icon {
+      @apply flex-shrink-0 w-6 h-6 transition-transform duration-300;
+      
+      svg {
+        @apply w-full h-full stroke-current;
+      }
+    }
+    
+    // Title wrapper
+    &-content {
+      @apply flex-grow;
+      
+      h3, .title {
+        @apply text-h5 font-primary font-semibold leading-tight;
+      }
+      
+      .description {
+        @apply text-light dark:text-darkmode-light text-sm mt-1;
+      }
+    }
+    
+    &[aria-expanded="true"] {
+      .accordion-header-icon {
+        @apply rotate-180;
+      }
+    }
+  }
+  
+  // Content panel
+  &-content {
+    @apply overflow-hidden transition-all duration-300 ease-in-out bg-white dark:bg-darkmode-body;
+    max-height: 0;
+    
+    &-inner {
+      @apply p-5 prose dark:prose-invert max-w-none;
+      
+      // Enhanced typography styles
+      @apply prose-headings:text-dark dark:prose-headings:text-darkmode-dark
+             prose-p:text-text dark:prose-p:text-darkmode-text
+             prose-strong:text-dark dark:prose-strong:text-darkmode-dark
+             prose-pre:bg-theme-light dark:prose-pre:bg-darkmode-theme-light;
+      
+      // Enhanced list styles
+      ul, ol {
+        @apply ml-4 space-y-2;
+        
+        li {
+          @apply text-text dark:text-darkmode-text;
+          
+          &::marker {
+            @apply text-primary dark:text-darkmode-primary;
+          }
+        }
+      }
+      
+      // Enhanced link styles
+      a {
+        @apply text-primary dark:text-darkmode-primary 
+               transition-colors duration-200 border-b border-primary/30 
+               dark:border-darkmode-primary/30;
+        
+        &:hover {
+          @apply border-primary dark:border-darkmode-primary;
+        }
+      }
+    }
+    
+    // Active state with animation
+    &.active {
+      @apply border-t border-border dark:border-darkmode-border;
+      animation: contentShow 0.3s ease-out forwards;
+    }
+  }
+  
+  // Focus styles
+  &-header:focus-visible {
+    @apply outline-none ring-2 ring-primary/20 dark:ring-darkmode-primary/20 
+           ring-offset-2 ring-offset-white dark:ring-offset-darkmode-body;
+  }
+}
+
+// Refined animation keyframes
+@keyframes contentShow {
+  0% {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

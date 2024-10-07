@@ -136,21 +136,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Testimonial Slider
   // ----------------------------------------
-  new Swiper(".testimonial-slider", {
-    spaceBetween: 24,
-    loop: true,
-    pagination: {
-      el: ".testimonial-slider-pagination",
-      type: "bullets",
-      clickable: true,
+const testimonialSwiper = new Swiper(".testimonial-slider", {
+  spaceBetween: 24,
+  loop: true,
+  autoplay: {
+    delay: 3000,
+    disableOnInteraction: false,
+  },
+  pagination: {
+    el: ".testimonial-slider-pagination",
+    type: "bullets",
+    clickable: true,
+  },
+  breakpoints: {
+    768: {
+      slidesPerView: 2,
     },
-    breakpoints: {
-      768: {
-        slidesPerView: 2,
-      },
-      992: {
-        slidesPerView: 3,
-      },
+    992: {
+      slidesPerView: 3,
     },
-  });
+  },
+});
+// Pause autoplay on mouse enter (desktop)
+document.querySelector('.testimonial-slider').addEventListener('mouseenter', function() {
+  testimonialSwiper.autoplay.stop();
+});
+
+// Resume autoplay on mouse leave (desktop)
+document.querySelector('.testimonial-slider').addEventListener('mouseleave', function() {
+  testimonialSwiper.autoplay.start();
+});
+
+// Pause autoplay on touch start (mobile and tablets)
+document.querySelector('.testimonial-slider').addEventListener('touchstart', function() {
+  testimonialSwiper.autoplay.stop();
+});
+
+// Resume autoplay on touch end (mobile and tablets)
+document.querySelector('.testimonial-slider').addEventListener('touchend', function() {
+  testimonialSwiper.autoplay.start();
+});
+
 })();

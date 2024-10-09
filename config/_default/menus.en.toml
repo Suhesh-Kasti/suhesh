@@ -55,21 +55,26 @@ url = "tags/"
 
 # footer menu
 [[footer]]
+name = "My Setup"
+url = "projects/setup"
+weight = 1
+
+[[footer]]
 name = "Recent Blogs"
 url = "blog/"
-weight = 1
+weight = 2
 
 [[footer]]
 name = "Cheatsheets"
 url = "cheatsheets/"
-weight = 2
+weight = 3
 
 [[footer]]
 name = "Checklists"
 url = "checklists/"
-weight = 3
+weight = 4
 
 [[footer]]
 name = "Contact"
 url = "contact/"
-weight = 4
+weight = 5

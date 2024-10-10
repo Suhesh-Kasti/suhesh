@@ -8,10 +8,10 @@ categories:
   - Networking
 author: Suhesh Kasti
 tags:
-  - Half_proxy
+  - Half proxy
   - Proxy
-  - Load_Balancer
-  - Direct_Server_Return
+  - Load Balancer
+  - Direct Server Return
 buttons:
   - label: See more
     url: /notes/

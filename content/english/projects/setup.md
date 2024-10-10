@@ -1,7 +1,7 @@
 ---
 title: "My beginner setup and resources"
 date: 2024-10-07T20:53:06+05:45
-image: "images/portfolio/beginner.png"
+image: "images/portfolio/mysetup.webp"
 project_categories: ["Setup", "Beginner"]
 project_tags: ["resources", "beginner", "setup"]
 description: "My beginner setup for learning cyber security along with links and resources to learn"
@@ -10,7 +10,7 @@ draft: false
 
 My setup is fairly simple. I use a number of tools and plugins for testing. This page lists out all the tools I use with appropriate links. Here I will also include links from where as a beginner you can start in cyber.
 
-# Hardware
+## Hardware
 Let's start from the hardware level. This is the setup that is recommended for smooth practice although you can easily get started with specs much lower than the ones shown below 
 
 {{< tabs >}}
@@ -136,7 +136,7 @@ Let's start from the hardware level. This is the setup that is recommended for s
 
 </br>
 
-# Operating System 
+## Operating System 
 For the operating system, I recommend Kali Linux for beginners but you can consider other options as well by simply installing your tools on your preferred OS. Personally I would recommend using a linux based distro or maybe [dual booting](/blog/dual_booting). 
 
 For my setup I have dual booted Linux and Windows. I find arch linux easy to use and has all the tools required for pentesting whilst for report purposes Office works just on windows so I have to run windows as well. You can find below the list of recommeded distros and how to setup chaotic aur and black arch repos in arch and arch based distros.   
@@ -199,7 +199,7 @@ $ sudo pacman -Syu
 
 {{< /accordion >}}
 
-# Browser
+## Browser
 {{< tabs >}}
 
 <!-- Chromium-Based Browsers Tab -->
@@ -268,9 +268,8 @@ $ sudo pacman -Syu
 {{< /tab >}}
 
 {{< /tabs >}}
-<br>
 
-# Code Editors
+## Code Editors
 {{< tabs >}}
 
 {{< tab "Neovim" >}}
@@ -311,11 +310,8 @@ VS Codium offers a broad range of open-source extensions to improve your coding 
 {{< /tab >}}
 
 {{< /tabs >}}
-<br>
 
-# Programming Languages
-
-# Note taking
+## Note taking
 {{< tabs >}}
 
 {{< tab "Obsidian" >}}
@@ -363,6 +359,201 @@ VS Codium offers a broad range of open-source extensions to improve your coding 
 
 {{< /tabs >}}
 
-# Hypervisor
+## Pentesting Tools
+I am learning the following tools to improve my pentesting skills and I will be writing various blogs related to these 
+{{< tabs >}}
 
+{{< tab "Programming Languages" >}}
+- [Python](https://www.python.org)
+- [Golang](https://golang.org)
+- [Rust](https://www.rust-lang.org)
+- [Bash](https://www.gnu.org/software/bash/)
+{{< /tab >}}
+
+{{< tab "Port Scanning" >}}
+- [Nmap](https://nmap.org)
+- [Masscan](https://github.com/robertdavidgraham/masscan)
+- [Unicornscan](https://github.com/unicorn-engine/unicorn)
+- [Rustscan](https://github.com/RustScan/RustScan)
+{{< /tab >}}
+
+{{< tab "OSINT" >}}
+- [Maltego](https://www.maltego.com)
+- [theHarvester](https://github.com/laramies/theHarvester)
+- [SpiderFoot](https://github.com/smicallef/spiderfoot)
+- [Recon-ng](https://github.com/lanmaster53/recon-ng)
+- [Sherlock](https://github.com/sherlock-project/sherlock)
+{{< /tab >}}
+
+{{< tab "Mobile App Testing" >}}
+- [Frida](https://frida.re)
+- [Objection](https://github.com/sensepost/objection)
+- [Drozer](https://github.com/WithSecureLabs/drozer)
+- [MobSF](https://github.com/MobSF/Mobile-Security-Framework-MobSF)
+- [APKTool](https://github.com/iBotPeaches/Apktool)
+{{< /tab >}}
+
+{{< tab "Webapp Testing" >}}
+- [Burp Suite](https://portswigger.net/burp) *(**PLUGINS:** Autorize, Burp Bounty Pro, Coverter)*
+- [OWASP ZAP](https://www.zaproxy.org)
+- [Nikto](https://github.com/sullo/nikto)
+- [Feroxbuster](https://github.com/epi052/feroxbuster)
+- [GoBuster](https://github.com/OJ/gobuster)
+- [SQLMap](https://github.com/sqlmapproject/sqlmap)
+- [XSStrike](https://github.com/s0md3v/XSStrike)
+{{< /tab >}}
+
+{{< tab "API Testing" >}}
+- [Postman](https://www.postman.com)
+- [Insomnia](https://insomnia.rest)
+- [Swagger UI](https://swagger.io/tools/swagger-ui)
+- [Hoppscotch](https://hoppscotch.io)
+{{< /tab >}}
+
+{{< tab "WordPress Sites" >}}
+- [WPScan](https://wpscan.com)
+- [CMSmap](https://github.com/Dionach/CMSmap)
+- [WPHunter](https://github.com/StefanoDeVuono/WP-Hunter)
+- [Wordfence](https://www.wordfence.com)
+{{< /tab >}}
+
+{{< tab "Social Engineering" >}}
+- [Social Engineering Toolkit (SET)](https://github.com/trustedsec/social-engineer-toolkit)
+- [Evilginx2](https://github.com/kgretzky/evilginx2)
+- [Phishery](https://github.com/ryhanson/phishery)
+{{< /tab >}}
+
+{{< tab "Wordlists" >}}
+- [SecLists](https://github.com/danielmiessler/SecLists)
+- [RockYou](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
+- [Dirb](https://github.com/v0re/dirb)
+- [Wordlistctl](https://github.com/random-robbie/wordlistctl)
+{{< /tab >}}
+
+{{< tab "Exploitation Frameworks" >}}
+- [Metasploit](https://www.metasploit.com)
+- [BeEF](https://github.com/beefproject/beef)
+- [PowerSploit](https://github.com/PowerShellMafia/PowerSploit)
+- [Empire](https://github.com/EmpireProject/Empire)
+{{< /tab >}}
+
+{{< tab "Privilege Escalation" >}}
+- [LinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
+- [WinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
+- [GTFOBins](https://gtfobins.github.io)
+- [SUDO_KILLER](https://github.com/TH3xACE/SUDO_KILLER)
+{{< /tab >}}
+
+{{< /tabs >}}
+
+# Resources
+
+{{< tabs >}}
+
+<!-- CTF Platforms -->
+{{< tab "CTF Platforms" >}}
+
+##### *Pentesting Practice*
+- [HackTheBox](https://www.hackthebox.com/)
+- [PicoCTF](https://picoctf.org/)
+- [TryHackMe](https://tryhackme.com/)
+- [CTF 101](https://ctf101.org/)
+- [Hacker101](https://www.hacker101.com/)
+- [Pwn College](https://pwn.college/)
+- [Root Me](https://www.root-me.org/?lang=en)
+- [HackerTest](https://www.hackertest.net/)
+
+##### *Linux Practice*
+- [Linux Survival](https://linuxsurvival.com/)
+- [OverTheWire](https://overthewire.org/wargames/)
+
+##### *Vulnerable Machine Downloads*
+- [VulnHub](https://www.vulnhub.com/)
+
+{{< /tab >}}
+
+<!-- Hacking Tools -->
+{{< tab "Hacking Tools" >}}
+- [Shodan](https://www.shodan.io/)
+- [BinaryEdge](https://www.binaryedge.io/)
+- [Censys](https://censys.io/)
+- [Exploit-DB](https://www.exploit-db.com/)
+- [VirusTotal](https://www.virustotal.com/)
+- [Unpac Me](https://www.unpac.me/)
+{{< /tab >}}
+
+<!-- Learning Platforms -->
+{{< tab "Learning Platforms" >}}
+- [Hacklido](https://hacklido.com/)
+- [SysExplore](https://www.sysexplore.com/)
+- [Ivre](https://ivre.rocks/)
+- [KodeKloud Engineer](https://engineer.kodekloud.com/)
+- [PortSwigger Academy](https://portswigger.net/web-security)
+- [APISec University](https://www.apisecuniversity.com/)
+- [FreeCodeCamp](https://www.freecodecamp.org/)
+- [The Odin Project](https://www.theodinproject.com/)
+- [Cloud Pentest](https://pentesterlab.com/exercises/cloud_introduction)
+- [Hacker High School](https://hackerhighschool.org/)
+- [Coursera](https://www.coursera.org/)
+- [Udemy](https://www.udemy.com/)
+- [Skillshare](https://www.skillshare.com/)
+- [edX](https://www.edx.org/)
+- [Hacker Forum](https://thehackerforum.com/)
+
+{{< /tab >}}
+
+<!-- Creators -->
+{{< tab "Creators" >}}
+- [Rana Khalil OSCP Preparation](https://rana-khalil.gitbook.io/hack-the-box-oscp-preparation)
+- [TCM Alex Site](https://appsecexplained.gitbook.io/appsecexplained)
+{{< /tab >}}
+
+<!-- Hacking Resources -->
+{{< tab "Hacking Resources" >}}
+- [OSSTMM](https://www.isecom.org/research.html)
+- [BlackHills InfoSec](https://www.blackhillsinfosec.com/)
+- [Antisyphon](https://www.antisyphontraining.com/)
+- [Senoia.io](https://senoia.io/)
+- [NIST Glossary](https://csrc.nist.gov/glossary)
+{{< /tab >}}
+
+<!-- Linux Resources -->
+{{< tab "Linux Learning" >}}
+- [Linux.die](https://linux.die.net/)
+- [Linux Journey](https://linuxjourney.com/)
+- [Linux Handbook](https://linuxhandbook.com/)
+- [LinuxOPSys](https://linuxopsys.com/)
+{{< /tab >}}
+
+<!-- InfoSec News -->
+{{< tab "InfoSec News" >}}
+- [Hacker News](https://thehackernews.com/)
+- [Exploit-DB](https://www.exploit-db.com/)
+- [Shodan](https://www.shodan.io/)
+- [BlackHills InfoSec](https://www.blackhillsinfosec.com/)
+{{< /tab >}}
+
+<!-- Useful Blogs -->
+{{< tab "Useful Blogs" >}}
+- [My Blogs](https://suhesh.com.np/blog/)
+{{< /tab >}}
+
+<!-- Cheat Sheets -->
+{{< tab "Cheat Sheets" >}}
+- [My Cheatsheets: Best one on the list](https://suhesh.com.np/cheatsheets/)
+- [Cheatsheet.sh](https://cheatsheet.sh/)
+- [Roadmap.sh](https://roadmap.sh/)
+- [Google Dorks Database](https://www.exploit-db.com/google-hacking-database)
+- [HackTricks](https://book.hacktricks.xyz/)
+- [Pentest Monkey](http://pentestmonkey.net/)
+- [GTFOBins](https://gtfobins.github.io/)
+{{< /tab >}}
+
+<!-- Libraries -->
+{{< tab "Libraries" >}}
+- [PDF Drive](https://www.pdfdrive.com/)
+- [LibraryLOL](https://library.lol/)
+{{< /tab >}}
+
+{{< /tabs >}}
 

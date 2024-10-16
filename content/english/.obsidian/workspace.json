@@ -13,9 +13,9 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/half-proxy.md",
+                "file": "blog/f5101.md",
                 "mode": "source",
-                "source": false
+                "source": true
               }
             }
           }
@@ -81,7 +81,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
@@ -133,7 +134,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/half-proxy.md",
+                "file": "blog/f5101.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -150,7 +151,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/half-proxy.md",
+                "file": "blog/f5101.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -162,7 +163,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/half-proxy.md"
+                "file": "blog/f5101.md"
               }
             }
           }
@@ -229,12 +230,13 @@
       "pdf-plus:PDF++: Toggle auto-paste": false
     }
   },
-  "active": "c2274c1147f90a05",
+  "active": "069a8c91f097f07b",
   "lastOpenFiles": [
+    "pool_node_vs.png",
+    "blog/half-proxy.md",
     "blog/half-proxy.md~",
     "halfproxy.png",
     "blog/burpsuite-basics.md",
-    "blog/half-proxy.md",
     "1. Project/Direct Server Return (DSR).md",
     "1. Project/Half Proxy.md",
     "1. Project/Network Layer.md",
@@ -258,7 +260,6 @@
     "2. Area",
     "3. Resource/F5_101_Notes.docx",
     "3. Resource/F5-101dumps 1.pdf",
-    "3. Resource/101 F5 Question and Answer.docx",
     "Untitled.md",
     "1. Project/DEX and ODEX Android.md",
     "templates/FitCheck Checklist.md",

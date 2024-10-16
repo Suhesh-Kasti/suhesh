@@ -8,8 +8,12 @@ categories: ["Cybersecurity"]
 author: "Suhesh Kasti"
 tags: ["Nmap", "Port Scanning", "Penetration Testing"]
 buttons:
-  - label: "Goto Burpsuite Cheatsheet"
-    url: "/cheatsheets/burpsuite/"
+  - label: "Goto Nmap Cheatsheet"
+    url: "/cheatsheets/nmap/"
+quiz:
+  code: nmap101
+wordfill:
+  code: nmap101
 ---
 
 Nmap (Network Mapper) is a powerful and widely-used open-source network scanning and security auditing tool designed to discover devices, services, open ports, and potential vulnerabilities on computer networks. 

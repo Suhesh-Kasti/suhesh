@@ -19,7 +19,6 @@ let currentCategory = quizCode;
 
   // Define question sets
   var questionSets = {
-
 "nmap101": [
 {"correctAnswer": "TCP connect", "options": ["TCP connect", "SYN", "ACK", "FIN"], "question": "What is the most reliable method for Nmap to determine if a port is open or closed?"},
 {"correctAnswer": "-p-", "options": ["-p1-1000", "-p-", "-p80,443,22", "-pU:53,T:21-25"], "question": "What Nmap flag is used to scan all 65535 ports?"},
@@ -74,7 +73,6 @@ let currentCategory = quizCode;
 {"correctAnswer": "-Pn", "options": ["-sn", "-sP", "-Pn", "-n"], "question": "Which Nmap flag is used to skip host discovery and treat all specified hosts as online?"},
 {"correctAnswer": "-n", "options": ["-sn", "-sP", "-Pn", "-n"], "question": "Which Nmap flag is used to disable DNS resolution and only show IP addresses in the output?"}
     ],
-
 
 "burp101":[
 {"correctAnswer": "Proxy", "options": ["Proxy", "Spider", "Scanner", "Repeater"], "question": "Which BurpSuite tool acts as an intermediary between the web browser and the target web application, allowing interception and modification of HTTP/HTTPS traffic?"},
@@ -199,7 +197,12 @@ let currentCategory = quizCode;
 {"correctAnswer": "service scale", "options": ["service scale", "scale service", "adjust service", "resize service"], "question": "What Docker command is used to scale the number of replicas in a service?"},
 {"correctAnswer": "system df", "options": ["system df", "df", "disk usage", "disk free"], "question": "Which Docker command is used to display the total disk space used by Docker and the amount of free space?"},
 {"correctAnswer": "system events", "options": ["system events", "events", "system activity", "server events"], "question": "What Docker command is used to get real-time events from the server?"},
+],
+
+"f5101": [
+{"correctAnswer": "TCP connect", "options": ["TCP connect", "SYN", "ACK", "FIN"], "question": "What is the most reliable method for Nmap to determine if a port is open or closed?"},
 ]
+
 };
 
 

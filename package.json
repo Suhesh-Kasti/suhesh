@@ -1,9 +1,9 @@
 {
-  "name": "hugoplate",
+  "name": "suhesh",
   "description": "hugo tailwindcss boilerplate",
   "version": "1.9.5",
   "license": "MIT",
-  "author": "zeon.studio",
+  "author": "suhesh.kasti",
   "scripts": {
     "dev": "hugo server",
     "build": "hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic",

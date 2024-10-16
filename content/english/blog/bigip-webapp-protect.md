@@ -4,7 +4,7 @@ meta_title: "BIG-IP: Configuring Security Policies for Better Web Application Se
 description: "This comprehensive blog post provides a detailed breakdown of configuring security policies in BIG-IP ASM, covering essential elements such as policy types, enforcement modes, learning modes, and signature accuracy settings. It offers practical examples and explanations for each component, helping you enhance the security of your web applications."
 date: 2024-05-04
 image: "/images/blog/bigip/webappGuided.png"
-categories: ["Cybersecurity"]
+categories: ["F5 BigIP WebApp Firewall"]
 author: "Suhesh Kasti"
 tags: ["Webapp Firewall", "Web App Security", "F5 - BigIP"]
 buttons:

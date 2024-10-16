@@ -4,9 +4,9 @@ meta_title: "BigIp: Security Features of BigIP"
 description: "This comprehensive blog post provides a detailed breakdown of configuring security policies in BIG-IP ASM, covering essential elements such as policy types, enforcement modes, learning modes, and signature accuracy settings, offering practical examples and explanations for each component."
 date: 2024-04-19T20:53:06+05:45
 image: "/images/blog/bigip/securityFeatures.png"
-categories: ["Cybersecurity"]
+categories: ["F5 BigIP WebApp Firewall"]
 author: "Suhesh Kasti"
-tags: ["Webapp Firewall", "Web Application Security", "F5 - BigIP"]
+tags: ["Webapp Firewall", "Web Application Security", "F5-BigIP"]
 buttons:
   - label: "Goto F5's documentation"
     url: "https://my.f5.com/manage/s/article/K15530590"

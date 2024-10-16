@@ -14,7 +14,6 @@ quiz:
   code: burp101
 wordfill:
   code: burp101
-
 ---
 
 ## What is BurpSuite?

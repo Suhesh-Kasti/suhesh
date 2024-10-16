@@ -4,7 +4,7 @@ meta_title: "F5 BigIP: Advanced Web Application Firewall"
 description: "A comprehensive guide on advanced Web Application Firewall (WAF) policies, focusing on deployment modes, SSL/TLS integration, policy management, geolocation enforcement, and WebSocket protection to enhance security against sophisticated cyber threats."
 date: 2024-05-19T20:53:06+05:45
 image: "/images/blog/bigip/bigip-awaf.png"
-categories: ["Cybersecurity"]
+categories: ["F5 BigIP WebApp Firewall"]
 author: "Suhesh Kasti"
 tags: ["Webapp Firewall", "Web Application Security", "F5 - BigIP"]
 buttons:

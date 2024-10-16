@@ -448,111 +448,211 @@ I am learning the following tools to improve my pentesting skills and I will be 
 
 # Resources
 
+## Learning
+
 {{< tabs >}}
-
-<!-- CTF Platforms -->
-{{< tab "CTF Platforms" >}}
-
-##### *Pentesting Practice*
-- [HackTheBox](https://www.hackthebox.com/)
-- [PicoCTF](https://picoctf.org/)
-- [TryHackMe](https://tryhackme.com/)
-- [CTF 101](https://ctf101.org/)
-- [Hacker101](https://www.hacker101.com/)
-- [Pwn College](https://pwn.college/)
-- [Root Me](https://www.root-me.org/?lang=en)
-- [HackerTest](https://www.hackertest.net/)
-
-##### *Linux Practice*
-- [Linux Survival](https://linuxsurvival.com/)
-- [OverTheWire](https://overthewire.org/wargames/)
-
-##### *Vulnerable Machine Downloads*
-- [VulnHub](https://www.vulnhub.com/)
-
-{{< /tab >}}
-
-<!-- Hacking Tools -->
-{{< tab "Hacking Tools" >}}
-- [Shodan](https://www.shodan.io/)
-- [BinaryEdge](https://www.binaryedge.io/)
-- [Censys](https://censys.io/)
-- [Exploit-DB](https://www.exploit-db.com/)
-- [VirusTotal](https://www.virustotal.com/)
-- [Unpac Me](https://www.unpac.me/)
-{{< /tab >}}
 
 <!-- Learning Platforms -->
 {{< tab "Learning Platforms" >}}
 - [Hacklido](https://hacklido.com/)
+  - Articles, discussions, and learning resources for security professionals.
 - [SysExplore](https://www.sysexplore.com/)
+  - Explore educational materials for cybersecurity.
 - [Ivre](https://ivre.rocks/)
+  - Network scan analysis platform.
 - [KodeKloud Engineer](https://engineer.kodekloud.com/)
+  - Learn DevOps and cybersecurity skills through practical labs.
 - [PortSwigger Academy](https://portswigger.net/web-security)
+  - Free web security learning platform from the creators of Burp Suite.
 - [APISec University](https://www.apisecuniversity.com/)
+  - API security learning resources.
 - [FreeCodeCamp](https://www.freecodecamp.org/)
+  - Free interactive lessons on coding and security.
 - [The Odin Project](https://www.theodinproject.com/)
+  - Comprehensive full-stack development education.
 - [Cloud Pentest](https://pentesterlab.com/exercises/cloud_introduction)
+  - Learn cloud pentesting through practical labs.
 - [Hacker High School](https://hackerhighschool.org/)
+  - Cybersecurity lessons and labs for teens.
 - [Coursera](https://www.coursera.org/)
+  - Online learning platform with cybersecurity courses.
 - [Udemy](https://www.udemy.com/)
+  - A wide variety of cybersecurity and hacking courses.
 - [Skillshare](https://www.skillshare.com/)
+  - Learn various topics, including cybersecurity.
 - [edX](https://www.edx.org/)
+  - Free and paid courses on topics including cybersecurity.
 - [Hacker Forum](https://thehackerforum.com/)
-
+  - Online forum for hacking and cybersecurity discussions.
 {{< /tab >}}
 
-<!-- Creators -->
-{{< tab "Creators" >}}
-- [Rana Khalil OSCP Preparation](https://rana-khalil.gitbook.io/hack-the-box-oscp-preparation)
-- [TCM Alex Site](https://appsecexplained.gitbook.io/appsecexplained)
+<!-- General CTF Learning -->
+{{< tab "General" >}}
+- [AperiSolve](https://github.com/Zeecka/AperiSolve)
+  - Tool that automatically runs various steganography tools.
+- [John Hammond's CTF Katana](https://github.com/JohnHammond/ctf-katana)
+  - Comprehensive repository for solving CTF challenges.
+- [Awesome CTF](https://github.com/apsdehal/awesome-ctf/blob/master/README.md)
+  - Cheat sheet for creating and solving CTF challenges.
 {{< /tab >}}
 
 <!-- Hacking Resources -->
 {{< tab "Hacking Resources" >}}
 - [OSSTMM](https://www.isecom.org/research.html)
+  - Open Source Security Testing Methodology Manual.
 - [BlackHills InfoSec](https://www.blackhillsinfosec.com/)
+  - Cybersecurity resources and training.
 - [Antisyphon](https://www.antisyphontraining.com/)
+  - Affordable cybersecurity training.
 - [Senoia.io](https://senoia.io/)
+  - Threat hunting resources and tools.
 - [NIST Glossary](https://csrc.nist.gov/glossary)
+  - Cybersecurity terms from NIST.
 {{< /tab >}}
 
 <!-- Linux Resources -->
 {{< tab "Linux Learning" >}}
 - [Linux.die](https://linux.die.net/)
+  - Linux documentation and resources.
 - [Linux Journey](https://linuxjourney.com/)
+  - Beginner-friendly platform for learning Linux.
 - [Linux Handbook](https://linuxhandbook.com/)
+  - Articles and tutorials on Linux for professionals.
 - [LinuxOPSys](https://linuxopsys.com/)
+  - Linux resources and learning for enthusiasts and professionals.
 {{< /tab >}}
 
 <!-- InfoSec News -->
 {{< tab "InfoSec News" >}}
 - [Hacker News](https://thehackernews.com/)
+  - Cybersecurity news and articles.
 - [Exploit-DB](https://www.exploit-db.com/)
+  - Database of exploits and vulnerabilities.
 - [Shodan](https://www.shodan.io/)
+  - Search engine for internet-connected devices and vulnerabilities.
 - [BlackHills InfoSec](https://www.blackhillsinfosec.com/)
-{{< /tab >}}
-
-<!-- Useful Blogs -->
-{{< tab "Useful Blogs" >}}
-- [My Blogs](https://suhesh.com.np/blog/)
+  - Security news and insights from professionals.
 {{< /tab >}}
 
 <!-- Cheat Sheets -->
 {{< tab "Cheat Sheets" >}}
-- [My Cheatsheets: Best one on the list](https://suhesh.com.np/cheatsheets/)
 - [Cheatsheet.sh](https://cheatsheet.sh/)
+  - Command-line cheat sheets for developers and security professionals.
 - [Roadmap.sh](https://roadmap.sh/)
+  - Developer and security roadmaps for various technologies.
 - [Google Dorks Database](https://www.exploit-db.com/google-hacking-database)
+  - Database of Google Dorks for information gathering.
 - [HackTricks](https://book.hacktricks.xyz/)
+  - A hacking techniques cheat sheet.
 - [Pentest Monkey](http://pentestmonkey.net/)
+  - Useful resources and cheat sheets for pentesting.
 - [GTFOBins](https://gtfobins.github.io/)
+  - A collection of Linux binaries useful for exploitation.
 {{< /tab >}}
 
 <!-- Libraries -->
 {{< tab "Libraries" >}}
 - [PDF Drive](https://www.pdfdrive.com/)
+  - Free eBooks for a wide range of topics.
 - [LibraryLOL](https://library.lol/)
+  - Online library with various resources, including hacking.
+{{< /tab >}}
+
+{{< /tabs >}}
+
+--- 
+
+## Practice
+After learning you can practise here
+
+{{< tabs >}}
+
+<!-- General CTFs -->
+{{< tab "General CTFs" >}}
+- [HackTheBox](https://hackthebox.com/)
+  - The OG box site with curated CTF problems and learning courses.
+- [PicoCTF](https://play.picoctf.org/practice)
+  - Tons of practice challenges across various domains.
+- [TryHackMe](https://tryhackme.com/)
+  - Step-by-step CTF challenges with guided learning paths.
+- [CTF101](https://ctf101.org/)
+  - A great beginner-friendly introduction to CTFs.
+- [CybersecLabs](https://www.cyberseclabs.co.uk/)
+  - Good collection of CTF-style challenges.
+- [Root Me](https://www.root-me.org/?lang=en)
+  - CTF platform with various hacking challenges for practice.
+- [HackerTest](https://www.hackertest.net/)
+  - Platform to test and improve your hacking skills.
+- [VulnHub](https://www.vulnhub.com/)
+  - Vulnerable virtual machines for self-hosted practice.
+- [CTF Challenge](https://ctfchallenge.com/register)
+  - Realistic web challenges for bug bounty practice.
+{{< /tab >}}
+
+<!-- Pwn CTFs -->
+{{< tab "Pwn CTFs" >}}
+- [pwnable.kr](http://pwnable.kr/index.php)
+  - Good variety of pwn challenges.
+- [pwnable.tw](https://pwnable.tw/challenge/)
+  - More advanced pwn challenges.
+- [pwnable.xyz](https://pwnable.xyz/challenges/)
+  - User-uploadable pwn challenges with built-in writeups.
+- [pwn dojo](https://dojo.pwn.college)
+  - Pwn challenges with educational resources and Discord support.
+- [nightmare](https://guyinatuxedo.github.io/)
+  - Gold standard for pwning C binaries.
+- [ROPEmporium](https://ropemporium.com/)
+  - Learn Return-Oriented Programming techniques.
+- [Phoenix Exploit Education](https://exploit.education/phoenix/)
+  - Binary exploitation challenges ranked by difficulty.
+{{< /tab >}}
+
+<!-- Reversing CTFs -->
+{{< tab "Reversing CTFs" >}}
+- [challenges.re](https://challenges.re/)
+  - Extensive reversing challenges across many levels.
+- [reversing.kr](http://reversing.kr/)
+  - Reverse engineering challenges for different levels.
+- [crackmes.one](https://crackmes.one)
+  - CrackMe challenges for reverse engineering practice.
+{{< /tab >}}
+
+<!-- Web CTFs -->
+{{< tab "Web CTFs" >}}
+- [websec.fr](http://websec.fr/#)
+  - Web challenges for various levels of difficulty.
+- [webhacking.kr](https://webhacking.kr/chall.php)
+  - Archive of web CTF challenges.
+- [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/)
+  - Web application with over 100 challenges.
+- [DVWA](https://dvwa.co.uk/)
+  - Web app vulnerability lab for testing.
+- [bWAPP](http://www.itsecgames.com/)
+  - Buggy Web App for learning and practicing vulnerabilities.
+{{< /tab >}}
+
+<!-- Crypto CTFs -->
+{{< tab "Crypto CTFs" >}}
+- [CryptoHack](https://cryptohack.org/)
+  - Crypto challenges for all levels.
+- [cryptopals](https://cryptopals.com/)
+  - OG crypto challenge site.
+- [CryptoCTF](https://cr.yp.toc.tf)
+  - Annual cryptography-based CTF event.
+{{< /tab >}}
+
+<!-- Cloud CTFs -->
+{{< tab "Cloud CTFs" >}}
+- [CloudFoxable](https://cloudfoxable.bishopfox.com)
+  - Walkthrough of cloud-based vulnerabilities using CloudFox.
+- [Flaws.cloud](https://flaws.cloud)
+  - AWS-based challenges related to S3, EC2, and Lambda.
+{{< /tab >}}
+
+<!-- Smart Contracts -->
+{{< tab "Smart Contracts" >}}
+- [Capture the Ether](https://capturetheether.com/)
+  - Smart contract security challenges for Ethereum.
 {{< /tab >}}
 
 {{< /tabs >}}

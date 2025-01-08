@@ -88,22 +88,30 @@
         </div>
 
       <!-- Word Games -->
-      {{ if or .Params.quiz .Params.wordfill }}
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {{ if .Params.quiz }}
-            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-              <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Word Quiz</h4>
-              {{ partial "wordguess.html" . }}
-            </div>
-          {{ end }}
-          {{ if .Params.wordfill }}
-            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-              <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Fill the Answer</h4>
-              {{ partial "wordfill.html" . }}
-            </div>
-          {{ end }}
-        </div>
-      {{ end }}
+{{ if or .Params.quiz .Params.wordfill }}
+  <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+    {{ if .Params.quiz }}
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Word Quiz</h4>
+        {{ partial "wordguess.html" . }}
+        <script>
+          var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
+        </script>
+        <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
+      </div>
+    {{ end }}
+    {{ if .Params.wordfill }}
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Fill the Answer</h4>
+        {{ partial "wordfill.html" . }}
+        <script>
+          var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
+        </script>
+        <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+      </div>
+    {{ end }}
+  </div>
+{{ end }}
 
         <!-- Share Options -->
         <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">

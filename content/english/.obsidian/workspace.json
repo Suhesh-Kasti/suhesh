@@ -13,10 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/f5101.md",
+                "file": "blog/dns101.md",
                 "mode": "source",
-                "source": true
-              }
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "dns101"
             }
           }
         ]
@@ -39,7 +41,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
@@ -48,13 +52,15 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:Security",
+                "query": "tag:F5",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
@@ -62,7 +68,9 @@
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           },
           {
@@ -70,7 +78,9 @@
             "type": "leaf",
             "state": {
               "type": "tagfolder-view",
-              "state": {}
+              "state": {},
+              "icon": "stacked-levels",
+              "title": "Tag Folder"
             }
           },
           {
@@ -78,11 +88,23 @@
             "type": "leaf",
             "state": {
               "type": "tagfolder-view",
-              "state": {}
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
+            }
+          },
+          {
+            "id": "fcff918bb019c6b1",
+            "type": "leaf",
+            "state": {
+              "type": "tagfolder-view",
+              "state": {},
+              "icon": "stacked-levels",
+              "title": "Tag Folder"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -105,7 +127,9 @@
               "state": {
                 "sortOrder": "frequency",
                 "useHierarchy": true
-              }
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
             }
           },
           {
@@ -113,7 +137,9 @@
             "type": "leaf",
             "state": {
               "type": "calendar",
-              "state": {}
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
             }
           },
           {
@@ -125,7 +151,9 @@
                 "sortOrder": "frequency",
                 "showSearch": false,
                 "searchQuery": ""
-              }
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
             }
           },
           {
@@ -134,7 +162,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/f5101.md",
+                "file": "blog/dns101.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -142,7 +170,9 @@
                 "searchQuery": "",
                 "backlinkCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for dns101"
             }
           },
           {
@@ -151,10 +181,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/f5101.md",
+                "file": "blog/dns101.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from dns101"
             }
           },
           {
@@ -163,8 +195,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/f5101.md"
-              }
+                "file": "blog/dns101.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of dns101"
             }
           }
         ]
@@ -179,7 +213,9 @@
             "type": "leaf",
             "state": {
               "type": "timer-view",
-              "state": {}
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
             }
           }
         ]
@@ -194,7 +230,9 @@
             "type": "leaf",
             "state": {
               "type": "tagfolder-view",
-              "state": {}
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
             }
           },
           {
@@ -202,7 +240,9 @@
             "type": "leaf",
             "state": {
               "type": "empty",
-              "state": {}
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -220,8 +260,8 @@
       "daily-notes:Open today's daily note": false,
       "command-palette:Open command palette": false,
       "audio-recorder:Start/stop recording": false,
-      "pomodoro-timer:Toggle timer panel": false,
       "obsidian-excalidraw-plugin:Create new drawing": false,
+      "pomodoro-timer:Toggle timer panel": false,
       "templater-obsidian:Templater": false,
       "obsidian-kanban:Create new board": false,
       "obsidian-git:Open Git source control": false,
@@ -230,8 +270,10 @@
       "pdf-plus:PDF++: Toggle auto-paste": false
     }
   },
-  "active": "069a8c91f097f07b",
+  "active": "c2274c1147f90a05",
   "lastOpenFiles": [
+    "blog/f5101.md",
+    "blog/dns101.md",
     "pool_node_vs.png",
     "blog/half-proxy.md",
     "blog/half-proxy.md~",
@@ -275,8 +317,6 @@
     "images/Wireshark Intro 2024-08-15 11.32.04.md",
     "images/wireshark_knowcommand.png",
     "1. Project/For presentation.md",
-    "images/fitcheck_qkview.png",
-    "1. Project/Default Route.md",
-    "1. Project/Cloud Architecture.md"
+    "1. Project/Default Route.md"
   ]
 }

@@ -53,6 +53,10 @@ show_description = true
 show_tags = true
 show_categories = true
 
+# highlight
+# hugo built-in highlight.js
+[highlight]
+enableCodeCopy = true
 
 # seo meta data for OpenGraph / Twitter Card
 # seo module: https://github.com/gethugothemes/hugo-modules/tree/master/seo-tools/basic-seo

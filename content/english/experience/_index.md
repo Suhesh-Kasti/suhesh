@@ -8,13 +8,15 @@ draft: false
 
 {{< tabs >}}
 {{< tab "Application Security Engineer">}}
+
 #### [Digital Network Solutions](https://digitalnetwork.com.np/)
 
-As an application security professional my tasks included protecting web application from attacks using a Web Application Firewall. 
+As an application security professional my tasks included protecting web application from attacks using a Web Application Firewall.
 {{< button label="View Experience" link="/images/certificates/0x000G.jpg" style="solid" >}}
 {{< /tab >}}
 
 {{< tab "Associate Security Research Analyst">}}
+
 #### [SecurityPal Inc.](https://www.securitypalhq.com/)
 
 Working within the Customer Operations team, I was in the role of enhancing our clients’ digital security through handling and completion of security questionnaires.
@@ -50,9 +52,11 @@ As a Technical Support Represenattive at an ISP, I transformed digital challenge
 - Conducting Remote Diagnostics, Support, Configurations
 
 {{< /accordion >}}
+
 <hr>
 
 ### Certifications
+
 {{< slider dir="images/certificates" class="max-w-[800px] ml-0" height="400" width="600" webp="true" command="Fit" option="" zoomable="true" >}}
 
 <hr>
@@ -60,5 +64,3 @@ As a Technical Support Represenattive at an ISP, I transformed digital challenge
 ### Acedemic Qualification
 
 ![Studying](/images/qualification/studying.png)
-
-

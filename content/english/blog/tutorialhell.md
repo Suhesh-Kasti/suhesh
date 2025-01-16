@@ -19,7 +19,6 @@ Tutorial hell is when you're stuck in a loop of endlessly watching or reading tu
 Being stuck in tutorial hell can be frustrating. It means you might not really know what you're doing, even after going through lots of tutorials. The problems with this are:
 
 - Lack of Direction: You might feel lost because you didn't set clear goals for what you want to achieve.
-  
 - Not Really Learning: Just watching or reading without practicing doesn't help you remember or use what you've learned.
 
 - Too Many Tutorials: There are so many tutorials online that it's easy to get overwhelmed. But watching too many on the same topic can make things confusing.
@@ -44,4 +43,4 @@ Being in tutorial hell can slow down your progress. If you're not actively apply
 
 7. Think of Challenges as Opportunities: Don't give up when things get hard. See challenges as chances to get better. You're growing, not stuck.
 
-*In simple terms, escaping tutorial hell means being smart about how you learn. Set goals, practice what you learn, and don't forget to enjoy the journey. It's like finding the right path instead of going in circles.*
+_In simple terms, escaping tutorial hell means being smart about how you learn. Set goals, practice what you learn, and don't forget to enjoy the journey. It's like finding the right path instead of going in circles._

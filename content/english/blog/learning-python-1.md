@@ -58,13 +58,13 @@ With your journey initiated, let us traverse the realms of Python's fundamental 
 
 In the alchemical laboratory of Python, variables and data types are the potions that shape reality. Let us unveil a table of mystical data types:
 
-| Data Type     | Description                     | Example        |
-|---------------|---------------------------------|----------------|
-| Integers      | Whole numbers                   | `42`           |
-| Floats        | Decimal numbers                 | `3.14`         |
-| Strings       | Textual incantations            | `"Hello, Python!"` |
-| Lists         | Ordered collections of items    | `[1, 2, 3]`    |
-| Dictionaries  | Key-value scrolls               | `{"name": "John", "age": 30}` |
+| Data Type    | Description                  | Example                       |
+| ------------ | ---------------------------- | ----------------------------- |
+| Integers     | Whole numbers                | `42`                          |
+| Floats       | Decimal numbers              | `3.14`                        |
+| Strings      | Textual incantations         | `"Hello, Python!"`            |
+| Lists        | Ordered collections of items | `[1, 2, 3]`                   |
+| Dictionaries | Key-value scrolls            | `{"name": "John", "age": 30}` |
 
 #### Control Flow: Navigating Python's Maze
 
@@ -106,6 +106,3 @@ Congratulations, young apprentice, on mastering the basics of Python magic! But 
 In this enchanted tome, we have traversed the realms of Python, unlocking its secrets and unraveling its mysteries. Let your journey be guided by curiosity, fueled by passion, and illuminated by the light of knowledge. And remember, in the world of Python, the adventure never ends.
 
 > "The path of the Python wizard is a winding road, fraught with challenges and wonders. Embrace the journey, for within its twists and turns lie the secrets of mastery." - Python Proverb
-
-
-

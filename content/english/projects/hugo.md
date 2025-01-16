@@ -6,9 +6,9 @@ project_categories: ["hugo", "scripts"]
 description: "Creating professional static websites with the power of Hugo"
 draft: false
 project_info:
-- name: "Websites"
-  icon: "fas fa-pen-fancy"
-  content: "Go Markdown Cloudflare "
+  - name: "Websites"
+    icon: "fas fa-pen-fancy"
+    content: "Go Markdown Cloudflare "
 ---
 
 ### Personal and Friends' Website Project:
@@ -35,7 +35,6 @@ Throughout this project, I've acquired a diverse set of skills and knowledge, in
 
 This project has been a journey of both self-expression and community support. Through website creation, I've had the privilege of helping my friends establish their online presence and connect with their audience. It's a testament to the power of technology in bridging the digital divide and enhancing personal and professional opportunities.
 
-
 ### Learning Hosting and Domain Management:
 
 In addition to web development, this project introduced me to the intricacies of website hosting and domain management. I've learned to host websites, gained insights into how domains work, and even obtained a .com.np domain. Exploring Cloudflare Pages further enriched my knowledge, teaching me about DNS, CNAME records, and the importance of security concepts like HTTP TLS.
@@ -45,5 +44,3 @@ In addition to web development, this project introduced me to the intricacies of
 ###### [Ms. Anjila Tripathi](https://anjila.pages.dev)
 
 ###### [Ms. Enku Limbu](https://indulimbu.com.np)
-
-

@@ -6,7 +6,17 @@ date: 2024-10-22T04:22:06+05:45
 image: "/images/blog/networking/sdn.webp"
 categories: ["Networking"]
 author: "Suhesh Kasti"
-tags: ["Software Defined Network(SDN)", "Network Planes", "Overlay", "Underlay", "Network Automation", "Application Centric Interface (ACI)", "Application Policy Infrastructure Controller(APIC)", "Virtual Extensible LAN (VXLAN)"]
+tags:
+  [
+    "Software Defined Network(SDN)",
+    "Network Planes",
+    "Overlay",
+    "Underlay",
+    "Network Automation",
+    "Application Centric Interface (ACI)",
+    "Application Policy Infrastructure Controller(APIC)",
+    "Virtual Extensible LAN (VXLAN)",
+  ]
 buttons:
   - label: "Learn ACI"
     url: "https://developer.cisco.com/site/aci/"
@@ -97,7 +107,7 @@ OpFlex is especially useful in systems like Cisco ACI, where intent-based networ
 
 - **CLI**: Allows administrators to manually interact with devices using commands.
 - **SNMP**: Collects information from devices and can trigger configuration changes remotely.
-{{< /accordion >}}
+  {{< /accordion >}}
 
 {{< accordion "NETCONF" >}}
 **NETCONF** (Network Configuration Protocol) is a more modern approach for configuring network devices. It uses XML-based data encoding and runs over a secure transport layer (usually SSH) to push configurations and retrieve data from network devices.
@@ -116,7 +126,7 @@ The **North Bound Interface (NBI)** is how we interact with the SDN Controller, 
 
 SDN Controllers provide centralized management, reducing complexity and increasing flexibility. They allow us to define policies and automate configuration changes across the entire network, making SDN a critical part of modern networking.
 
-SDN provides a way to simplify the network logic stuffs by making intent based and we don't need to configure everything manually. 
+SDN provides a way to simplify the network logic stuffs by making intent based and we don't need to configure everything manually.
 
 #### Intent-Based Networking
 
@@ -128,7 +138,7 @@ In ACI, intent-based networking allows you to define your goals or "intent," and
 
 SDN Architecture typically involves **Layer 3 routed links**, where every link runs a routing protocol like OSPF. This creates a strong, redundant network with efficient routing between devices.
 
-### Underlay, Overlay, VXLAN, and Fabric 
+### Underlay, Overlay, VXLAN, and Fabric
 
 {{< accordion "Underlay" >}}
 The **Underlay** is the physical network infrastructure that provides connectivity between devices. It includes all the routers, switches, and physical links that form the foundation of the network.
@@ -137,7 +147,7 @@ In SDN, the underlay is often Layer 3-routed, meaning that routing protocols lik
 {{< /accordion >}}
 
 {{< accordion "Overlay" >}}
-The **Overlay** is a virtual network that runs on top of the Underlay. It allows for logical segmentation of the network, often using technologies like VXLAN to create tunnels over the physical infrastructure. 
+The **Overlay** is a virtual network that runs on top of the Underlay. It allows for logical segmentation of the network, often using technologies like VXLAN to create tunnels over the physical infrastructure.
 
 This is useful for creating isolated virtual networks (think of each virtual network as its own world) on the same physical hardware.
 {{< /accordion >}}
@@ -173,13 +183,10 @@ The **APIC** manages both the Underlay and the Overlay in the network. It ensure
 In most Data Centers, applications follow a **3-tier model**:
 
 {{< accordion "DB -> App -> Web" >}}
+
 1. **Database Tier (DB)**: Stores data for the application.
 2. **Application Tier (App)**: Handles the business logic.
 3. **Web Tier (Web)**: The frontend that interacts with users.
 
 In ACI, these are managed by creating their own seperate endpoint groups and setting policies on how they should communicate with each other.
 {{< /accordion >}}
-
-
-
-

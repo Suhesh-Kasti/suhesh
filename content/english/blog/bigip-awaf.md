@@ -33,7 +33,6 @@ In today's digital landscape, web applications are a prime target for cyber atta
 
 Overall, F5 BIG-IP Advanced WAF is a critical component of any cybersecurity strategy, helping organizations safeguard their web applications and data against evolving threats in today's dynamic threat landscape.
 
-
 # 2. Core Security Policies
 
 ## 2.1 Creating Security Policies with F5 BIG-IP Advanced WAF
@@ -50,12 +49,12 @@ A simple app security policy is a predefined set of rules and protections that y
 
 #### Steps to Create Simple App Security Policies
 
-1. **Access the BIG-IP Management Interface**: 
+1. **Access the BIG-IP Management Interface**:
    Log in to the F5 BIG-IP management interface.
 
-2. **Navigate to Security Policies**: 
+2. **Navigate to Security Policies**:
    Go to the 'Security' tab and select 'Policies'.
-	![Security Policies](/images/blog/bigip/nonThumbnails/dash.png)
+   ![Security Policies](/images/blog/bigip/nonThumbnails/dash.png)
 3. **Create a New Policy**:
    Click on 'Create' to start a new policy. You can name it something descriptive like "Rapid_Deployment_Policy".
 
@@ -63,12 +62,12 @@ A simple app security policy is a predefined set of rules and protections that y
    Select a predefined template that matches your needs. For simple apps, the "Rapid Deployment" template is often sufficient.
 
 5. **Configure Basic Settings**:
-   Set the policy type to "Positive Security Model" which focuses on known good traffic. 
+   Set the policy type to "Positive Security Model" which focuses on known good traffic.
 
 6. **Apply the Policy**:
    Once configured, apply the policy to your application.
-![Apply Policies](/images/blog/bigip/nonThumbnails/policy.png)
-This simple policy will cover basic threats and give you a baseline protection for your web application.
+   ![Apply Policies](/images/blog/bigip/nonThumbnails/policy.png)
+   This simple policy will cover basic threats and give you a baseline protection for your web application.
 
 ### Rapid Deployment Security Policies
 
@@ -87,6 +86,7 @@ A Rapid Deployment Security Policy is designed to provide a broad spectrum of pr
    Click 'Create' and select the "Rapid Deployment" template.
 
 3. **Basic Configuration**:
+
    - **Name**: Give your policy a name like "RapidDeployPolicy".
    - **Policy Type**: Choose "Positive Security Model".
    - **Enforcement Mode**: Set to "Transparent" initially to monitor traffic without blocking.
@@ -118,6 +118,7 @@ Manual Security Policy Building involves creating and customizing security rules
    Choose a custom template to start with a blank slate.
 
 3. **Configure Detailed Settings**:
+
    - **HTTP Protocol Compliance**: Ensure all incoming traffic complies with HTTP standards.
    - **Attack Signatures**: Select and configure specific attack signatures to detect and block known threats.
    - **File Type Enforcement**: Specify allowed file types to prevent malicious file uploads.
@@ -130,7 +131,9 @@ Manual Security Policy Building involves creating and customizing security rules
    Apply the policy to your application and monitor the logs for any unusual activity.
 
 Manual policy building can be complex, but it’s highly effective for applications with unique security requirements.
+
 > You can head here to learn more about [security policies](/blog/bigip-securitypolicies)
+
 ### Automatic Security Policy Building
 
 If you prefer a more automated approach, F5 BIG-IP also offers automatic security policy building. This feature helps create a security policy based on the observed traffic patterns, making it easier to set up without deep manual configuration.
@@ -145,6 +148,7 @@ Automatic Security Policy Building uses machine learning and behavioral analysis
    In the 'Security' tab, select 'Policies' and click 'Create'. Enable the learning mode for the new policy.
 
 2. **Initial Configuration**:
+
    - **Name**: Name your policy, e.g., "AutoPolicy".
    - **Learning Mode**: Set to "Automatic".
 
@@ -156,7 +160,7 @@ Automatic Security Policy Building uses machine learning and behavioral analysis
 
 5. **Enforcement**:
    Once the policy is refined, set it to "Blocking" mode to start enforcing the rules.
-> You can learn more about [automatic vs manual security policies](/blog/bigip-securitypolicies) from here.
+   > You can learn more about [automatic vs manual security policies](/blog/bigip-securitypolicies) from here.
 
 Automatic policy building is great for dynamic environments where traffic patterns can change frequently.
 
@@ -167,38 +171,42 @@ Security policies need to be regularly updated to adapt to evolving threats and 
 ### Manual Policy Building
 
 Manual policy building allows me to have precise control over the security rules and configurations. Here’s how I update a security policy manually:
+
 #### Steps to Update a Security Policy Manually
 
 1. **Access the Policy**:
+
    - I navigate to the 'Security' tab in the BIG-IP management interface and select 'Policies'.
    - I choose the policy I want to update from the list.
 
 2. **Review Current Settings**:
    - I review the current settings to understand what needs updating. This includes looking at the HTTP protocol compliance, attack signatures, file type enforcement, and parameter enforcement.
-![Apply Policies](/images/blog/bigip/nonThumbnails/attacksign.png)
+     ![Apply Policies](/images/blog/bigip/nonThumbnails/attacksign.png)
 3. **Update Attack Signatures**:
+
    - **Navigate to Attack Signatures**: I go to 'Security' > 'Application Security' > 'Learning and Blocking Settings' > 'Attack Signatures'.
    - **Select Signatures to Update**: I select the relevant signatures that need updating.
    - **Update or Add New Signatures**: I update the existing signatures or add new ones as needed from the change button on the lower right side.
-   ![Apply Policies](/images/blog/bigip/nonThumbnails/signatures.png)
-   | **Attack Signatures** | **Description**                     |
-   |-----------------------|-------------------------------------|
-   | SQL Injection         | Detect and block SQL injection attempts. |
-   | XSS                   | Detect and prevent Cross-Site Scripting attacks. |
-   | CSRF                  | Protect against Cross-Site Request Forgery. |
+     ![Apply Policies](/images/blog/bigip/nonThumbnails/signatures.png)
+     | **Attack Signatures** | **Description** |
+     |-----------------------|-------------------------------------|
+     | SQL Injection | Detect and block SQL injection attempts. |
+     | XSS | Detect and prevent Cross-Site Scripting attacks. |
+     | CSRF | Protect against Cross-Site Request Forgery. |
 
 4. **Modify File Type Enforcement**:
    - **Navigate to File Types**: I go to 'Security' > 'Application Security' > 'Learning and Blocking Settings' > 'File Types'.
    - **Update Allowed File Types**: I add or remove file types that should be allowed or blocked.
    - **Set Enforcement**: I set the enforcement actions (block, alert, etc.) for each file type.
-   ![Apply Policies](/images/blog/bigip/nonThumbnails/parafile.png)
+     ![Apply Policies](/images/blog/bigip/nonThumbnails/parafile.png)
 5. **Adjust Parameter Enforcement**:
+
    - **Navigate to Parameters**: I go to 'Security' > 'Application Security' > 'Learning and Blocking Settings' > 'Parameters'.
    - **Review and Update Parameters**: I review the list of parameters and update their rules (e.g., allowed characters, length, etc.).
    - **Set Enforcement**: I configure the enforcement actions for each parameter.
-   
+
    | **Parameter Name** | **Allowed Characters** | **Max Length** | **Enforcement** |
-   |--------------------|------------------------|----------------|-----------------|
+   | ------------------ | ---------------------- | -------------- | --------------- |
    | username           | Alphanumeric           | 30             | Block           |
    | email              | Alphanumeric + @ .     | 50             | Alert           |
    | id                 | Numeric                | 10             | Block           |
@@ -206,6 +214,7 @@ Manual policy building allows me to have precise control over the security rules
 6. **Save and Apply Changes**:
    - I save the changes and apply the updated policy to the relevant web application.
    - I monitor the logs to ensure the updates are functioning as expected.
+
 ### Automatic Policy Building
 
 Automatic policy building leverages machine learning and behavioral analysis to update the security policy based on observed traffic patterns. Here’s how I update a security policy automatically:
@@ -213,14 +222,16 @@ Automatic policy building leverages machine learning and behavioral analysis to 
 #### Steps to Update a Security Policy Automatically
 
 1. **Enable Learning Mode**:
+
    - I go to the 'Security' tab and select 'Policies'.
    - I choose the policy I want to update and enable learning mode if it's not already enabled.
 
 2. **Configure Learning Settings**:
    - **Set Learning Parameters**: I configure the learning parameters to define what types of traffic and behaviors should be analyzed.
    - **Duration**: I specify the duration for which the system should observe traffic (e.g., one week).
-   ![Apply Policies](/images/blog/bigip/nonThumbnails/learn&block.png)
+     ![Apply Policies](/images/blog/bigip/nonThumbnails/learn&block.png)
 3. **Monitor Traffic**:
+
    - I allow the system to monitor and analyze the traffic to learn the normal behavior patterns.
    - The system will automatically collect data on common requests, parameters, file types, and user behaviors.
 
@@ -231,10 +242,12 @@ Automatic policy building leverages machine learning and behavioral analysis to 
 ![Apply Policies](/images/blog/bigip/nonThumbnails/suggestion.png)
 
 5. **Apply Suggested Changes**:
+
    - **Select Suggestions**: I select the suggestions I want to apply to the policy.
    - **Apply**: I apply the selected suggestions to the policy.
 
 6. **Enforcement Mode**:
+
    - Once the policy has been updated and I am satisfied with the changes, I switch the policy to "Blocking" mode to start enforcing the new rules.
 
 7. **Monitor and Adjust**:
@@ -243,16 +256,15 @@ Automatic policy building leverages machine learning and behavioral analysis to 
 
 #### Comparison of Manual vs Automatic Policy Building
 
-| **Feature**                  | **Manual Policy Building**                               | **Automatic Policy Building**                             |
-|------------------------------|----------------------------------------------------------|----------------------------------------------------------|
-| **Control**                  | High, detailed configuration                              | Medium, based on system suggestions                      |
-| **Time Required**            | High, involves detailed manual configuration              | Low, relies on automated suggestions                      |
-| **Customization**            | High, very customizable                                  | Moderate, less granular customization                     |
-| **Ease of Use**              | Requires deep knowledge of security settings             | Easier, suitable for those with less in-depth knowledge   |
-| **Adaptability**             | Manual adjustments needed for changing traffic patterns  | Automatically adapts to changing traffic patterns         |
+| **Feature**       | **Manual Policy Building**                              | **Automatic Policy Building**                           |
+| ----------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| **Control**       | High, detailed configuration                            | Medium, based on system suggestions                     |
+| **Time Required** | High, involves detailed manual configuration            | Low, relies on automated suggestions                    |
+| **Customization** | High, very customizable                                 | Moderate, less granular customization                   |
+| **Ease of Use**   | Requires deep knowledge of security settings            | Easier, suitable for those with less in-depth knowledge |
+| **Adaptability**  | Manual adjustments needed for changing traffic patterns | Automatically adapts to changing traffic patterns       |
 
 By using these methods, I can ensure that my web application security policies are up-to-date and provide robust protection against evolving threats.
-
 
 # 3. Protecting Against Common Web Application vulnerabilities
 
@@ -279,18 +291,26 @@ Cross-Site Scripting (XSS) is a prevalent web application vulnerability that all
 An attacker submits a malicious script in a comment field of a blog. When other users visit the page, the script executes in their browsers, potentially stealing their cookies and session information.
 
 ```html
-<script>alert('XSS Attack!');</script>
+<script>
+  alert("XSS Attack!");
+</script>
 ```
+
 ![Apply Policies](/images/blog/bigip/nonThumbnails/XSS-stored.gif)
+
 ##### Example 2: Reflected XSS
 
 An attacker sends a crafted URL to a user. When the user clicks the link, the server reflects the attacker's script back to the user's browser, which then executes it.
 
 ```html
-http://example.com/search?q=<script>alert('XSS Attack!');</script>
+http://example.com/search?q=
+<script>
+  alert("XSS Attack!");
+</script>
 ```
 
 ![Apply Policies](/images/blog/bigip/nonThumbnails/XSS-reflected.gif)
+
 ##### Example 3: DOM-Based XSS
 
 An attacker manipulates the URL to include a malicious script, which the client-side code then processes and executes.
@@ -306,34 +326,39 @@ Blocking XSS attacks involves setting up the right security policies and configu
 #### Steps to Block XSS Attacks
 
 1. **Enable XSS Protection**:
+
    - In the BIG-IP management interface, I go to 'Security' > 'Application Security' > 'Policies'.
    - I select the security policy I want to update.
 
 2. **Configure Attack Signatures**:
+
    - **Navigate to Attack Signatures**: I go to 'Security' > 'Application Security' > 'Attack Signatures'.
    - **Enable XSS Signatures**: I enable signatures specifically designed to detect and block XSS attacks.
-   
-   | **Signature Name**        | **Description**                        |
-   |---------------------------|----------------------------------------|
-   | XSS Attack                | Detects general XSS attack patterns.   |
-   | XSS in URL Parameters     | Detects XSS payloads in URL parameters.|
-   | XSS in Form Inputs        | Detects XSS payloads in form inputs.   |
+
+   | **Signature Name**    | **Description**                         |
+   | --------------------- | --------------------------------------- |
+   | XSS Attack            | Detects general XSS attack patterns.    |
+   | XSS in URL Parameters | Detects XSS payloads in URL parameters. |
+   | XSS in Form Inputs    | Detects XSS payloads in form inputs.    |
 
 3. **Set Up Input Validation**:
+
    - **Navigate to Parameters**: I go to 'Security' > 'Application Security' > 'Parameters'.
    - **Add Parameter Rules**: I add rules for input validation, specifying allowed characters and patterns for parameters that might be vulnerable to XSS.
-   
-   | **Parameter Name** | **Allowed Characters** | **Validation Pattern**       | **Enforcement** |
-   |--------------------|------------------------|------------------------------|-----------------|
-   | username           | Alphanumeric           | ^[a-zA-Z0-9]+$               | Block           |
-   | comment            | Alphanumeric + Symbols | ^[a-zA-Z0-9\s.,!?]*$         | Alert           |
-   | search             | Alphanumeric           | ^[a-zA-Z0-9\s]+$             | Block           |
+
+   | **Parameter Name** | **Allowed Characters** | **Validation Pattern** | **Enforcement** |
+   | ------------------ | ---------------------- | ---------------------- | --------------- |
+   | username           | Alphanumeric           | ^[a-zA-Z0-9]+$         | Block           |
+   | comment            | Alphanumeric + Symbols | ^[a-zA-Z0-9\s.,!?]\*$  | Alert           |
+   | search             | Alphanumeric           | ^[a-zA-Z0-9\s]+$       | Block           |
 
 4. **Output Encoding**:
+
    - I ensure that all data output to web pages is properly encoded to prevent execution of injected scripts.
    - This involves setting up the server and client-side code to use secure output encoding functions.
 
 5. **Content Security Policy (CSP)**:
+
    - **Set Up CSP**: I configure a Content Security Policy to restrict the sources from which scripts can be loaded.
    - **Add CSP Header**: I add the CSP header to the server responses.
 
@@ -375,19 +400,24 @@ SELECT * FROM users WHERE username = '1' OR '1'='1' # ' AND password = '';
 
 This query is always true and may return all user records.
 ![Apply Policies](/images/blog/bigip/nonThumbnails/sqli-basic.gif)
+
 ##### Example 2: Union-based SQL Injection
 
 An attacker enters a payload like `, and 1=0 union select null, concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password) from users #` which is designed to exploit a vulnerability in a web application's database query to retrieve sensitive information from the `users` table.
 
-   {{< accordion "Understand the above given SQLi >>" >}}
+{{< accordion "Understand the above given SQLi >>" >}}
 The primary purpose of this SQL injection is to extract and display sensitive information from the `users` table. Specifically, it aims to concatenate and display the first names, last names, usernames, and passwords of all users in the table, separated by newlines.
+
 1. **Basic Structure**:
+
    - The payload starts with `, and 1=0`. This part attempts to make the initial condition false (`1=0` is always false) to force the application to rely on the `UNION SELECT` part of the query.
 
 2. **UNION SELECT**:
-   - `union select null, concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password) from users #` is used to combine the results of the existing query with the results of the injected query. 
+
+   - `union select null, concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password) from users #` is used to combine the results of the existing query with the results of the injected query.
 
 3. **Concat Function**:
+
    - `concat(first_name, 0x0a, lastname, 0x0a, user, 0x0a, password)` combines the values from the specified columns of the `users` table. The `0x0a` represents a newline character (ASCII Line Feed), which means the values will be concatenated with a newline between each field.
      - `first_name` is the first name of the user.
      - `lastname` is the last name of the user.
@@ -395,11 +425,12 @@ The primary purpose of this SQL injection is to extract and display sensitive in
      - `password` is the password.
 
 4. **Null Placeholder**:
+
    - `null` is used as a placeholder for the first column in the `UNION SELECT` clause. This is because the number of columns in the `UNION SELECT` must match the number of columns in the original query. Since the original query likely selects multiple columns, `null` fills the gap for one of the columns.
 
 5. **Comment Symbol**:
    - `#` is a comment symbol in SQL. Everything after `#` is ignored by the SQL parser, ensuring that the rest of the original query is not executed.
-   {{< /accordion >}}
+     {{< /accordion >}}
 
 Here if the original query is something like this:
 
@@ -416,6 +447,7 @@ SELECT id, name FROM products WHERE category_id = 1 AND 1=0 UNION SELECT null, c
 Since `1=0` is always false, the `WHERE` clause will effectively discard the original query results. The `UNION SELECT` clause then retrieves and displays the concatenated `first_name`, `lastname`, `user`, and `password` from the `users` table.
 
 ![Apply Policies](/images/blog/bigip/nonThumbnails/sqli-union.gif)
+
 ### Blocking SQL Injection Attacks
 
 To block SQL Injection attacks using F5 BIG-IP Advanced WAF, I follow these steps:
@@ -423,30 +455,34 @@ To block SQL Injection attacks using F5 BIG-IP Advanced WAF, I follow these step
 #### Steps to Block SQL Injection Attacks
 
 1. **Enable SQL Injection Protection**:
+
    - I navigate to 'Security' > 'Application Security' > 'Policies'.
    - I select the security policy I want to update.
 
 2. **Configure Attack Signatures**:
+
    - **Navigate to Attack Signatures**: I go to 'Security' > 'Application Security' > 'Attack Signatures'.
    - **Enable SQLi Signatures**: I enable signatures specifically designed to detect and block SQL Injection attacks.
-   
-   | **Signature Name**        | **Description**                        |
-   |---------------------------|----------------------------------------|
-   | SQL Injection             | Detects common SQL injection patterns. |
-   | SQLi in URL Parameters     | Detects SQLi payloads in URL parameters.|
-   | SQLi in Form Inputs        | Detects SQLi payloads in form inputs.   |
+
+   | **Signature Name**     | **Description**                          |
+   | ---------------------- | ---------------------------------------- |
+   | SQL Injection          | Detects common SQL injection patterns.   |
+   | SQLi in URL Parameters | Detects SQLi payloads in URL parameters. |
+   | SQLi in Form Inputs    | Detects SQLi payloads in form inputs.    |
 
 3. **Set Up Parameter Validation**:
+
    - **Navigate to Parameters**: I go to 'Security' > 'Application Security' > 'Parameters'.
    - **Add Parameter Rules**: I add rules for input validation, specifying allowed characters and patterns for parameters that might be vulnerable to SQL Injection.
-   
-   | **Parameter Name** | **Allowed Characters** | **Validation Pattern**       | **Enforcement** |
-   |--------------------|------------------------|------------------------------|-----------------|
-   | username           | Alphanumeric           | ^[a-zA-Z0-9]+$               | Block           |
-   | comment            | Alphanumeric + Symbols | ^[a-zA-Z0-9\s.,!?]*$         | Alert           |
-   | id                 | Numeric                | ^[0-9]+$                     | Block           |
+
+   | **Parameter Name** | **Allowed Characters** | **Validation Pattern** | **Enforcement** |
+   | ------------------ | ---------------------- | ---------------------- | --------------- |
+   | username           | Alphanumeric           | ^[a-zA-Z0-9]+$         | Block           |
+   | comment            | Alphanumeric + Symbols | ^[a-zA-Z0-9\s.,!?]\*$  | Alert           |
+   | id                 | Numeric                | ^[0-9]+$               | Block           |
 
 4. **Use Prepared Statements and Parameterized Queries**:
+
    - Ensure that the application code uses prepared statements and parameterized queries, which separate SQL code from data.
 
 5. **Apply and Monitor**:
@@ -454,8 +490,6 @@ To block SQL Injection attacks using F5 BIG-IP Advanced WAF, I follow these step
    - I regularly review and update the policies as needed based on new threats and patterns.
 
 > ![Placeholder for SQL Injection Protection Configuration Screenshot](#)
-
-
 
 ## 3.3 Cross-Site Request Forgery (CSRF)
 
@@ -478,11 +512,12 @@ An attacker tricks the victim into submitting a malicious request, typically by 
 An attacker crafts a malicious URL that changes the victim's email address:
 
 ```html
-<a href="http://example.com/change_email?new_email=attacker@example.com">Click here</a>
+<a href="http://example.com/change_email?new_email=attacker@example.com"
+  >Click here</a
+>
 ```
 
 If the victim clicks the link while logged into the target site, their email address is changed without their consent.
-
 
 ##### Example 2: Transferring Funds
 
@@ -490,9 +525,9 @@ An attacker creates a form that submits a fund transfer request:
 
 ```html
 <form action="http://bank.com/transfer" method="POST">
-  <input type="hidden" name="amount" value="1000">
-  <input type="hidden" name="to_account" value="attacker_account">
-  <input type="submit" value="Click to win a prize!">
+  <input type="hidden" name="amount" value="1000" />
+  <input type="hidden" name="to_account" value="attacker_account" />
+  <input type="submit" value="Click to win a prize!" />
 </form>
 ```
 
@@ -505,23 +540,27 @@ To protect against CSRF attacks using F5 BIG-IP Advanced WAF, I follow these ste
 #### Steps to Use CSRF Protection
 
 1. **Enable CSRF Protection**:
+
    - In the BIG-IP management interface, I go to 'Security' > 'Application Security' > 'Policies'.
    - I select the security policy I want to update.
 
 2. **Configure CSRF Protection**:
+
    - **Navigate to CSRF Protection**: I go to 'Security' > 'Application Security' > 'CSRF Protection'.
    - **Enable CSRF Protection**: I enable the CSRF protection feature.
 
 3. **Set Up CSRF Tokens**:
+
    - **Configure Tokens**: I configure the system to include CSRF tokens in forms and AJAX requests.
    - **Token Validation**: Ensure that the application validates the CSRF tokens with each request.
-   
-   | **Feature**              | **Description**                        |
-   |--------------------------|----------------------------------------|
-   | CSRF Token Inclusion     | Add CSRF tokens to all forms and AJAX requests. |
-   | Token Validation         | Ensure tokens are validated on the server side. |
+
+   | **Feature**          | **Description**                                 |
+   | -------------------- | ----------------------------------------------- |
+   | CSRF Token Inclusion | Add CSRF tokens to all forms and AJAX requests. |
+   | Token Validation     | Ensure tokens are validated on the server side. |
 
 4. **Implement SameSite Cookies**:
+
    - I configure the application to use SameSite cookies, which restricts cookies from being sent along with cross-site requests.
    - **Set SameSite Attribute**: I set the `SameSite` attribute of cookies to `Strict` or `Lax`.
 
@@ -546,23 +585,26 @@ Preventing unauthorized modification of cookies is important to maintain session
 #### Steps to Prevent Cookie Modification
 
 1. **Enable Cookie Protection**:
+
    - In the BIG-IP management interface, I go to 'Security' > 'Application Security' > 'Policies'.
    - I select the security policy I want to update.
 
 2. **Configure Cookie Security**:
+
    - **Navigate to Cookie Security**: I go to 'Security' > 'Application Security' > 'Cookie Security'.
    - **Enable Cookie Protection**: I enable the cookie protection feature.
 
 3. **Set HTTPOnly and Secure Flags**:
    - **HTTPOnly Flag**: I ensure that the HTTPOnly flag is set for all session cookies to prevent access via client-side scripts.
    - **Secure Flag**: I ensure that the Secure flag is set to ensure cookies are only sent over HTTPS.
-  
- | **Cookie Attribute** | **Description**                        |
-   |----------------------|----------------------------------------|
-   | HTTPOnly             | Prevents access to cookies via JavaScript. |
-   | Secure               | Ensures cookies are only sent over HTTPS.  |
+
+| **Cookie Attribute** | **Description**                            |
+| -------------------- | ------------------------------------------ |
+| HTTPOnly             | Prevents access to cookies via JavaScript. |
+| Secure               | Ensures cookies are only sent over HTTPS.  |
 
 4. **Implement Cookie Integrity**:
+
    - **Cookie Signing**: I configure the system to sign cookies to detect and prevent tampering.
    - **Cookie Encryption**: I enable encryption for cookies containing sensitive information.
 
@@ -579,24 +621,28 @@ Protecting session cookies from hijacking is essential for maintaining secure us
 #### Steps to Protect Against Session Cookie Hijacking
 
 1. **Enable Session Protection**:
+
    - In the BIG-IP management interface, I go to 'Security' > 'Application Security' > 'Policies'.
    - I select the security policy I want to update.
 
 2. **Configure Session Handling**:
+
    - **Navigate to Session Handling**: I go to 'Security' > 'Application Security' > 'Session Handling'.
    - **Enable Session Protection**: I enable the session protection feature.
 
 3. **Set Up Session Timeout**:
+
    - **Configure Timeouts**: I configure session timeouts to minimize the risk of session hijacking.
    - **Idle Timeout**: Set an idle timeout to end sessions after a period of inactivity.
    - **Absolute Timeout**: Set an absolute timeout to end sessions after a fixed duration.
-   
-   | **Timeout Type**    | **Description**                        |
-   |---------------------|----------------------------------------|
-   | Idle Timeout        | Ends sessions after a period of inactivity. |
-   | Absolute Timeout    | Ends sessions after a fixed duration.     |
+
+   | **Timeout Type** | **Description**                             |
+   | ---------------- | ------------------------------------------- |
+   | Idle Timeout     | Ends sessions after a period of inactivity. |
+   | Absolute Timeout | Ends sessions after a fixed duration.       |
 
 4. **Implement IP and Device Binding**:
+
    - **IP Binding**: Bind sessions to the user's IP address to prevent session hijacking from different locations.
    - **Device Binding**: Bind sessions to specific devices to enhance security.
 
@@ -605,8 +651,6 @@ Protecting session cookies from hijacking is essential for maintaining secure us
    - I regularly review and update the policies as needed.
 
 > ![Placeholder for Session Cookie Hijacking Protection Configuration Screenshot](#)
-
-
 
 By understanding and implementing these security measures, I can significantly reduce the risk of SQL Injection, CSRF, and cookie-related attacks on my web applications.
 
@@ -621,23 +665,27 @@ Ensuring PCI DSS compliance is critical for organizations that handle payment ca
 #### Steps to Use Data Guard:
 
 1. **Enable Data Guard**:
+
    - Navigate to `Security` > `Application Security` > `Data Guard`.
    - Enable the Data Guard feature.
 
 2. **Configure Sensitive Data Patterns**:
+
    - Add patterns for sensitive data that need to be protected (e.g., credit card numbers, Social Security numbers).
    - Use regular expressions to define these patterns accurately.
 
-   | **Pattern**           | **Description**                        |
-   |-----------------------|----------------------------------------|
-   | \d{16}                | Matches 16-digit credit card numbers   |
-   | \d{3}-\d{2}-\d{4}     | Matches Social Security numbers (SSNs) |
+   | **Pattern**       | **Description**                        |
+   | ----------------- | -------------------------------------- |
+   | \d{16}            | Matches 16-digit credit card numbers   |
+   | \d{3}-\d{2}-\d{4} | Matches Social Security numbers (SSNs) |
 
 3. **Set Masking Rules**:
+
    - Define how sensitive data should be masked in logs and application responses.
    - For example, replace digits with `X` (e.g., `XXXXXXXXXXXX1234`).
 
 4. **Apply Data Guard to Security Policies**:
+
    - Assign the Data Guard configuration to your security policies.
    - This ensures all traffic passing through the WAF is inspected for sensitive data patterns.
 
@@ -654,21 +702,25 @@ Creating custom Data Guard patterns allows me to tailor the data protection to s
 #### Steps to Create Custom Data Guard Patterns:
 
 1. **Identify Custom Data Requirements**:
+
    - Determine the types of custom sensitive data that need protection (e.g., employee IDs, custom account numbers).
 
 2. **Define Regular Expressions**:
+
    - Use regular expressions to define patterns for the custom sensitive data.
-   
-   | **Custom Pattern**    | **Description**                        |
-   |-----------------------|----------------------------------------|
-   | \d{8}-\d{4}           | Matches custom account numbers        |
-   | EMP-\d{5}             | Matches employee IDs                  |
+
+   | **Custom Pattern** | **Description**                |
+   | ------------------ | ------------------------------ |
+   | \d{8}-\d{4}        | Matches custom account numbers |
+   | EMP-\d{5}          | Matches employee IDs           |
 
 3. **Configure Data Guard**:
+
    - Navigate to `Security` > `Application Security` > `Data Guard`.
    - Add the custom patterns to the Data Guard configuration.
 
 4. **Set Masking Rules for Custom Patterns**:
+
    - Define how these custom data types should be masked (e.g., `XXXX-1234` for custom account numbers).
 
 5. **Apply and Monitor**:
@@ -676,8 +728,6 @@ Creating custom Data Guard patterns allows me to tailor the data protection to s
    - Monitor logs to ensure custom data is being masked correctly and adjust patterns as needed.
 
 > ![Placeholder for Custom Data Guard Patterns Screenshot](#)
-
-
 
 ## 4.2 Logging and Reporting
 
@@ -688,28 +738,33 @@ Logging is a critical component of any security strategy. It provides visibility
 #### Steps to Configure Security Policy Logging:
 
 1. **Enable Logging**:
+
    - Navigate to `Security` > `Event Logs` > `Application`.
    - Enable logging for security policies.
 
 2. **Select Log Destination**:
+
    - Choose where the logs should be sent (e.g., local storage, remote syslog server).
    - Configure the log destination settings.
 
 3. **Define Log Levels**:
+
    - Specify the level of detail to be logged (e.g., Info, Warning, Error).
    - More detailed logs provide better insights but require more storage.
 
-   | **Log Level**   | **Description**                        |
-   |-----------------|----------------------------------------|
-   | Info            | Basic information about events         |
-   | Warning         | Potential issues that need attention   |
-   | Error           | Critical issues that require immediate action |
+   | **Log Level** | **Description**                               |
+   | ------------- | --------------------------------------------- |
+   | Info          | Basic information about events                |
+   | Warning       | Potential issues that need attention          |
+   | Error         | Critical issues that require immediate action |
 
 4. **Configure Log Filters**:
+
    - Set filters to log specific types of events or data (e.g., only log SQL injection attempts).
    - This helps in focusing on critical events.
 
 5. **Apply Logging Configuration**:
+
    - Save and apply the logging settings to the security policies.
    - Ensure the logs are being generated and sent to the configured destination.
 
@@ -726,27 +781,32 @@ Reporting features in F5 BIG-IP Advanced WAF provide insights into the security 
 #### Steps to Use Reporting Features:
 
 1. **Access Reporting Module**:
+
    - Navigate to `Security` > `Event Logs` > `Reports`.
    - Access the reporting module to generate various reports.
 
 2. **Select Report Type**:
+
    - Choose the type of report needed (e.g., attack statistics, policy violations, compliance reports).
 
-   | **Report Type**            | **Description**                        |
-   |----------------------------|----------------------------------------|
-   | Attack Statistics          | Provides data on different types of attacks detected |
-   | Policy Violations          | Details violations of security policies          |
-   | Compliance Reports         | Helps in demonstrating compliance with standards   |
+   | **Report Type**    | **Description**                                      |
+   | ------------------ | ---------------------------------------------------- |
+   | Attack Statistics  | Provides data on different types of attacks detected |
+   | Policy Violations  | Details violations of security policies              |
+   | Compliance Reports | Helps in demonstrating compliance with standards     |
 
 3. **Customize Report Parameters**:
+
    - Specify the time range, filter criteria, and other parameters for the report.
    - Customize the report to focus on specific areas of interest.
 
 4. **Generate Report**:
+
    - Click on the generate button to create the report.
    - Review the report to gain insights into security events and trends.
 
 5. **Export and Share Reports**:
+
    - Export the report in preferred formats (e.g., PDF, CSV).
    - Share the reports with stakeholders for review and action.
 
@@ -756,10 +816,7 @@ Reporting features in F5 BIG-IP Advanced WAF provide insights into the security 
 
 > ![Placeholder for Report Generation Screenshot](#)
 
-
-
 By following these steps, I can ensure that my organization maintains robust data security and compliance, with comprehensive logging and reporting to support ongoing security management and regulatory requirements.
-
 
 # 5. Policy Enforcement Features
 
@@ -772,25 +829,30 @@ Enforcing file types in F5 BIG-IP Advanced WAF ensures that only permitted file 
 #### Steps to Enforce File Types:
 
 1. **Navigate to Security Policies**:
+
    - Go to `Security` > `Application Security` > `Policy`.
 
 2. **Select the Security Policy**:
+
    - Choose the security policy you want to modify.
 
 3. **Configure File Types**:
+
    - Go to the `File Types` section.
    - Add allowed file types (e.g., `.jpg`, `.png`, `.pdf`).
 
-   | **File Type** | **Description**                        |
-   |---------------|----------------------------------------|
-   | .jpg          | JPEG Image File                        |
-   | .png          | PNG Image File                         |
-   | .pdf          | PDF Document                           |
+   | **File Type** | **Description** |
+   | ------------- | --------------- |
+   | .jpg          | JPEG Image File |
+   | .png          | PNG Image File  |
+   | .pdf          | PDF Document    |
 
 4. **Set Enforcement Actions**:
+
    - Define actions for non-compliant file types (e.g., block, log, alert).
 
 5. **Apply Changes**:
+
    - Save and apply the changes to the security policy.
 
 6. **Monitor and Review**:
@@ -806,20 +868,24 @@ Global settings for file types allow me to define file type enforcement rules th
 #### Steps to Configure Global Settings:
 
 1. **Access Global Settings**:
+
    - Go to `Security` > `Application Security` > `Policy` > `File Types`.
 
 2. **Add Global File Types**:
+
    - Define file types that should be allowed or blocked globally.
 
 3. **Configure Actions**:
+
    - Set default actions for file types (e.g., block, log, alert).
 
-   | **File Type** | **Global Action**                        |
-   |---------------|------------------------------------------|
-   | .exe          | Block                                    |
-   | .docx         | Allow                                    |
+   | **File Type** | **Global Action** |
+   | ------------- | ----------------- |
+   | .exe          | Block             |
+   | .docx         | Allow             |
 
 4. **Apply Global Settings**:
+
    - Save and apply the global settings.
    - These settings will now be inherited by individual security policies.
 
@@ -836,23 +902,27 @@ File type learning allows the WAF to dynamically learn and enforce file types ba
 #### Steps to Enable File Type Learning:
 
 1. **Enable Learning Mode**:
+
    - Navigate to `Security` > `Application Security` > `Policy` > `Learning and Blocking`.
 
 2. **Set Learning Parameters**:
+
    - Configure parameters for learning file types (e.g., time window, traffic volume).
 
 3. **Review Learned File Types**:
+
    - Periodically review the file types that the WAF has learned.
    - Decide which learned file types to enforce.
 
 4. **Update Security Policy**:
+
    - Add the learned file types to the security policy.
    - Define actions for each file type.
 
-   | **File Type** | **Learning Status**   | **Action**                        |
-   |---------------|-----------------------|----------------------------------|
-   | .xml          | Learned               | Allow                            |
-   | .sh           | Learned               | Block                            |
+   | **File Type** | **Learning Status** | **Action** |
+   | ------------- | ------------------- | ---------- |
+   | .xml          | Learned             | Allow      |
+   | .sh           | Learned             | Block      |
 
 5. **Monitor and Adjust**:
    - Continuously monitor logs and adjust the file type enforcement as needed.
@@ -868,25 +938,30 @@ Parameter enforcement ensures that only expected parameters are accepted by the 
 #### Steps to Enforce Parameters:
 
 1. **Navigate to Security Policies**:
+
    - Go to `Security` > `Application Security` > `Policy`.
 
 2. **Select the Security Policy**:
+
    - Choose the security policy to configure.
 
 3. **Configure Parameters**:
+
    - Go to the `Parameters` section.
    - Define allowed parameters (e.g., `username`, `password`, `email`).
 
-   | **Parameter** | **Description**                        |
-   |---------------|----------------------------------------|
-   | username      | User's login name                      |
-   | password      | User's password                        |
-   | email         | User's email address                   |
+   | **Parameter** | **Description**      |
+   | ------------- | -------------------- |
+   | username      | User's login name    |
+   | password      | User's password      |
+   | email         | User's email address |
 
 4. **Set Enforcement Actions**:
+
    - Specify actions for unexpected parameters (e.g., block, log, alert).
 
 5. **Apply Changes**:
+
    - Save and apply the changes to the security policy.
 
 6. **Monitor and Review**:
@@ -902,20 +977,24 @@ Global settings for parameters allow me to define enforcement rules that apply a
 #### Steps to Configure Global Settings:
 
 1. **Access Global Settings**:
+
    - Go to `Security` > `Application Security` > `Policy` > `Parameters`.
 
 2. **Add Global Parameters**:
+
    - Define parameters that should be allowed or blocked globally.
 
 3. **Configure Actions**:
+
    - Set default actions for parameters (e.g., block, log, alert).
 
-   | **Parameter** | **Global Action**                        |
-   |---------------|------------------------------------------|
-   | sessionID     | Allow                                    |
-   | debug         | Block                                    |
+   | **Parameter** | **Global Action** |
+   | ------------- | ----------------- |
+   | sessionID     | Allow             |
+   | debug         | Block             |
 
 4. **Apply Global Settings**:
+
    - Save and apply the global settings.
    - These settings will now be inherited by individual security policies.
 
@@ -932,23 +1011,27 @@ Parameter learning allows the WAF to dynamically learn and enforce parameters ba
 #### Steps to Enable Parameter Learning:
 
 1. **Enable Learning Mode**:
+
    - Navigate to `Security` > `Application Security` > `Policy` > `Learning and Blocking`.
 
 2. **Set Learning Parameters**:
+
    - Configure parameters for learning (e.g., time window, traffic volume).
 
 3. **Review Learned Parameters**:
+
    - Periodically review the parameters that the WAF has learned.
    - Decide which learned parameters to enforce.
 
 4. **Update Security Policy**:
+
    - Add the learned parameters to the security policy.
    - Define actions for each parameter.
 
-   | **Parameter** | **Learning Status**   | **Action**                        |
-   |---------------|-----------------------|----------------------------------|
-   | token         | Learned               | Allow                            |
-   | debug         | Learned               | Block                            |
+   | **Parameter** | **Learning Status** | **Action** |
+   | ------------- | ------------------- | ---------- |
+   | token         | Learned             | Allow      |
+   | debug         | Learned             | Block      |
 
 5. **Monitor and Adjust**:
    - Continuously monitor logs and adjust the parameter enforcement as needed.
@@ -962,22 +1045,26 @@ Different parameter types (e.g., query parameters, form parameters) can be enfor
 #### Steps to Enforce Different Parameter Types:
 
 1. **Identify Parameter Types**:
+
    - Determine the types of parameters used by the application (e.g., query, form, cookie).
 
 2. **Configure Parameter Types**:
+
    - Go to `Security` > `Application Security` > `Policy` > `Parameters`.
    - Define the expected parameter types.
 
-   | **Parameter Type** | **Description**                        |
-   |--------------------|----------------------------------------|
-   | query              | URL query parameters                   |
-   | form               | Form submission parameters             |
-   | cookie             | Cookies sent by the browser            |
+   | **Parameter Type** | **Description**             |
+   | ------------------ | --------------------------- |
+   | query              | URL query parameters        |
+   | form               | Form submission parameters  |
+   | cookie             | Cookies sent by the browser |
 
 3. **Set Enforcement Actions**:
+
    - Specify actions for each parameter type (e.g., block unexpected types).
 
 4. **Apply Changes**:
+
    - Save and apply the changes to the security policy.
 
 5. **Monitor and Review**:
@@ -993,20 +1080,24 @@ Blocking parameter tampering prevents attackers from manipulating parameters to 
 #### Steps to Block Parameter Tampering:
 
 1. **Enable Parameter Enforcement**:
+
    - Ensure parameter enforcement is enabled in the security policy.
 
 2. **Configure Parameter Validation**:
+
    - Define validation rules for parameters (e.g., length, format, value range).
 
 3. **Set Enforcement Actions**:
+
    - Specify actions for tampered parameters (e.g., block, log, alert).
 
-   | **Parameter** | **Validation Rule**          | **Action**                        |
-   |---------------|-----------------------------|----------------------------------|
-   | username      | Length: 5-20 characters      | Block                            |
-   | age           | Value range: 1-120           | Block                            |
+   | **Parameter** | **Validation Rule**     | **Action** |
+   | ------------- | ----------------------- | ---------- |
+   | username      | Length: 5-20 characters | Block      |
+   | age           | Value range: 1-120      | Block      |
 
 4. **Apply Changes**:
+
    - Save and apply the changes to the security policy.
 
 5. **Monitor and Review**:
@@ -1024,23 +1115,27 @@ Entity enforcement involves defining and enforcing rules for entities (e.g., use
 #### Steps to Implement Entity Enforcement:
 
 1. **Identify Entities**:
+
    - Determine the entities to be enforced (e.g., user accounts, sessions).
 
 2. **Define Entity Rules**:
+
    - Go to `Security` > `Application Security` > `Policy` > `Entities`.
    - Define rules for each entity (e.g., user authentication, session validity).
 
-   | **Entity**  | **Rule**                            |
-   |-------------|-------------------------------------|
-   | User        |
+   | **Entity** | **Rule** |
+   | ---------- | -------- |
+   | User       |
 
- Must be authenticated               |
-   | Session     | Must be valid and active            |
+Must be authenticated |
+| Session | Must be valid and active |
 
 3. **Set Enforcement Actions**:
+
    - Specify actions for non-compliant entities (e.g., block, log, alert).
 
 4. **Apply Changes**:
+
    - Save and apply the entity rules to the security policy.
 
 5. **Monitor and Review**:
@@ -1048,8 +1143,6 @@ Entity enforcement involves defining and enforcing rules for entities (e.g., use
    - Adjust entity rules as needed.
 
 > ![Placeholder for Entity Enforcement Screenshot](#)
-
-
 
 By enforcing file types, parameters, and entities, I can ensure that my web applications are secure and protected against various attacks. Regular monitoring and adjustments help in maintaining robust security over time.
 
@@ -1064,24 +1157,29 @@ Using a bot defense profile helps in identifying and mitigating malicious bot ac
 #### Steps to Use a Bot Defense Profile:
 
 1. **Navigate to Security Policies**:
+
    - Go to `Security` > `Application Security` > `Bot Defense`.
 
 2. **Create a New Profile**:
+
    - Click on `Create` to start a new bot defense profile.
 
 3. **Configure Bot Detection**:
+
    - Set up detection mechanisms such as CAPTCHA, JavaScript challenges, and behavioral analysis.
 
-   | **Detection Method** | **Description**                                        |
-   |----------------------|--------------------------------------------------------|
-   | CAPTCHA              | Present a challenge-response test to detect bots.      |
-   | JavaScript Challenge | Require execution of JavaScript to identify bots.      |
-   | Behavioral Analysis  | Analyze user behavior to detect automated activities.  |
+   | **Detection Method** | **Description**                                       |
+   | -------------------- | ----------------------------------------------------- |
+   | CAPTCHA              | Present a challenge-response test to detect bots.     |
+   | JavaScript Challenge | Require execution of JavaScript to identify bots.     |
+   | Behavioral Analysis  | Analyze user behavior to detect automated activities. |
 
 4. **Define Actions for Detected Bots**:
+
    - Configure actions such as blocking, logging, or redirecting detected bots.
 
 5. **Apply the Profile to the Security Policy**:
+
    - Assign the created bot defense profile to the relevant security policy.
 
 6. **Monitor and Adjust**:
@@ -1097,21 +1195,25 @@ Blocking suspicious browsers involves identifying and preventing access from bro
 #### Steps to Block Suspicious Browsers:
 
 1. **Access Bot Defense Configuration**:
+
    - Navigate to `Security` > `Application Security` > `Bot Defense`.
 
 2. **Configure Browser Blocking**:
+
    - Enable the option to block suspicious browsers.
    - Define criteria for what constitutes a suspicious browser (e.g., outdated versions, known bot browsers).
 
 3. **Set Actions for Suspicious Browsers**:
+
    - Specify actions such as blocking access, presenting CAPTCHA, or logging the event.
 
-   | **Browser**         | **Criteria**             | **Action**       |
-   |---------------------|--------------------------|------------------|
-   | Outdated Browsers   | Versions older than X    | Block            |
-   | Known Bot Browsers  | Specific bot signatures  | Present CAPTCHA  |
+   | **Browser**        | **Criteria**            | **Action**      |
+   | ------------------ | ----------------------- | --------------- |
+   | Outdated Browsers  | Versions older than X   | Block           |
+   | Known Bot Browsers | Specific bot signatures | Present CAPTCHA |
 
 4. **Apply the Configuration**:
+
    - Save and apply the changes to the bot defense profile.
 
 5. **Monitor Browser Activity**:
@@ -1119,6 +1221,7 @@ Blocking suspicious browsers involves identifying and preventing access from bro
    - Adjust the criteria and actions as necessary.
 
 > ![Placeholder for Browser Blocking Configuration Screenshot](#)
+
 ## 6.2 Denial of Service (DoS) Protection
 
 ### Layer 7 DoS Protection
@@ -1128,24 +1231,29 @@ Layer 7 DoS protection focuses on mitigating attacks targeting the application l
 #### Steps to Implement Layer 7 DoS Protection:
 
 1. **Navigate to DoS Protection Settings**:
+
    - Go to `Security` > `DoS Protection`.
 
 2. **Create a DoS Profile**:
+
    - Click on `Create` to start a new DoS protection profile.
 
 3. **Configure Detection Methods**:
+
    - Set up detection mechanisms such as anomaly detection, rate limiting, and signature-based detection.
 
-   | **Detection Method**     | **Description**                                          |
-   |--------------------------|----------------------------------------------------------|
-   | Anomaly Detection        | Identify unusual traffic patterns.                       |
-   | Rate Limiting            | Limit the number of requests per second from a source.   |
-   | Signature-Based Detection| Detect known attack signatures.                          |
+   | **Detection Method**      | **Description**                                        |
+   | ------------------------- | ------------------------------------------------------ |
+   | Anomaly Detection         | Identify unusual traffic patterns.                     |
+   | Rate Limiting             | Limit the number of requests per second from a source. |
+   | Signature-Based Detection | Detect known attack signatures.                        |
 
 4. **Define Mitigation Actions**:
+
    - Configure actions such as blocking, rate limiting, or redirecting traffic.
 
 5. **Apply the DoS Profile to the Security Policy**:
+
    - Assign the created DoS profile to the relevant security policy.
 
 6. **Monitor and Adjust**:
@@ -1161,23 +1269,28 @@ Behavioral Layer 7 DoS protection involves analyzing traffic patterns to detect 
 #### Steps to Implement Behavioral Layer 7 DoS Protection:
 
 1. **Enable Behavioral Analysis**:
+
    - Navigate to `Security` > `DoS Protection` > `Behavioral Analysis`.
 
 2. **Configure Traffic Baseline**:
+
    - Set up a baseline for normal traffic behavior by monitoring regular traffic patterns.
 
 3. **Define Detection Criteria**:
+
    - Configure criteria for detecting deviations from the baseline (e.g., sudden spikes in traffic).
 
-   | **Detection Criteria**   | **Description**                                            |
-   |--------------------------|------------------------------------------------------------|
-   | Traffic Volume Spikes    | Identify sudden increases in request volume.               |
-   | Session Anomalies        | Detect unusual session behavior (e.g., session hijacking). |
+   | **Detection Criteria** | **Description**                                            |
+   | ---------------------- | ---------------------------------------------------------- |
+   | Traffic Volume Spikes  | Identify sudden increases in request volume.               |
+   | Session Anomalies      | Detect unusual session behavior (e.g., session hijacking). |
 
 4. **Set Mitigation Actions**:
+
    - Specify actions such as blocking, rate limiting, or redirecting anomalous traffic.
 
 5. **Apply the Configuration**:
+
    - Save and apply the behavioral analysis settings to the DoS protection profile.
 
 6. **Monitor and Adjust**:
@@ -1185,8 +1298,6 @@ Behavioral Layer 7 DoS protection involves analyzing traffic patterns to detect 
    - Adjust the baseline and detection criteria as needed.
 
 > ![Placeholder for Behavioral Layer 7 DoS Protection Screenshot](#)
-
-
 
 By implementing these advanced attack protection features, I can significantly enhance the security of my web applications. Continuous monitoring and adjustments ensure that the protections remain effective against evolving threats.
 
@@ -1199,29 +1310,34 @@ Single username attacks target a single user account by attempting various passw
 ##### Steps to Protect Against Single Username Attacks:
 
 1. **Navigate to Brute Force Protection**:
+
    - Go to `Security` > `Application Security` > `Brute Force Protection`.
 
 2. **Create a Brute Force Protection Profile**:
+
    - Click on `Create` to start a new profile.
 
 3. **Configure Detection Methods**:
+
    - Set thresholds for login attempts and configure detection mechanisms.
 
-   | **Detection Method**       | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Login Attempt Threshold    | Define maximum allowed login attempts per username.|
-   | Time Window                | Set the time frame for counting login attempts.    |
+   | **Detection Method**    | **Description**                                     |
+   | ----------------------- | --------------------------------------------------- |
+   | Login Attempt Threshold | Define maximum allowed login attempts per username. |
+   | Time Window             | Set the time frame for counting login attempts.     |
 
 4. **Define Actions for Detection**:
+
    - Configure actions such as blocking the IP, locking the account, or presenting a CAPTCHA after the threshold is exceeded.
 
-   | **Action**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Block IP                   | Block the IP address making excessive login attempts.|
-   | Lock Account               | Temporarily lock the account after multiple failed attempts.|
-   | CAPTCHA                    | Require CAPTCHA verification after a number of failed attempts.|
+   | **Action**   | **Description**                                                 |
+   | ------------ | --------------------------------------------------------------- |
+   | Block IP     | Block the IP address making excessive login attempts.           |
+   | Lock Account | Temporarily lock the account after multiple failed attempts.    |
+   | CAPTCHA      | Require CAPTCHA verification after a number of failed attempts. |
 
 5. **Apply the Profile**:
+
    - Assign the profile to the relevant security policy.
 
 6. **Monitor and Adjust**:
@@ -1229,6 +1345,7 @@ Single username attacks target a single user account by attempting various passw
    - Adjust thresholds and actions based on the monitoring results.
 
 > ![Placeholder for Single Username Attack Protection Screenshot](#)
+
 #### Multi-Username Attacks
 
 Multi-username attacks involve attempting various usernames with a few common passwords. This type of attack can be more challenging to detect and requires broader protective measures.
@@ -1236,27 +1353,31 @@ Multi-username attacks involve attempting various usernames with a few common pa
 ##### Steps to Protect Against Multi-Username Attacks:
 
 1. **Access Brute Force Protection Settings**:
+
    - Navigate to `Security` > `Application Security` > `Brute Force Protection`.
 
 2. **Create or Edit a Profile**:
+
    - Either create a new profile or edit an existing one.
 
 3. **Configure Multi-Username Detection**:
+
    - Set thresholds for login attempts across multiple usernames.
 
-   | **Detection Method**       | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | IP Attempt Threshold       | Define maximum allowed login attempts per IP address.|
-   | Username Variability       | Set the detection for multiple usernames from a single IP. |
+   | **Detection Method** | **Description**                                            |
+   | -------------------- | ---------------------------------------------------------- |
+   | IP Attempt Threshold | Define maximum allowed login attempts per IP address.      |
+   | Username Variability | Set the detection for multiple usernames from a single IP. |
 
 4. **Define Mitigation Actions**:
+
    - Specify actions such as blocking the IP, presenting a CAPTCHA, or rate limiting.
 
-   | **Action**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Block IP                   | Block the IP address making excessive login attempts.|
-   | CAPTCHA                    | Require CAPTCHA verification after multiple failed attempts.|
-   | Rate Limiting              | Slow down request rate from a specific IP.         |
+   | **Action**    | **Description**                                              |
+   | ------------- | ------------------------------------------------------------ |
+   | Block IP      | Block the IP address making excessive login attempts.        |
+   | CAPTCHA       | Require CAPTCHA verification after multiple failed attempts. |
+   | Rate Limiting | Slow down request rate from a specific IP.                   |
 
 5. **Apply and Monitor**:
    - Assign the profile to the security policy and monitor the effectiveness.
@@ -1271,27 +1392,31 @@ Distributed brute force attacks originate from multiple IP addresses, making the
 ##### Steps to Protect Against Distributed Brute Force Attacks:
 
 1. **Navigate to Advanced Protection Settings**:
+
    - Go to `Security` > `Application Security` > `Advanced Protection`.
 
 2. **Enable Distributed Brute Force Protection**:
+
    - Enable the feature specifically designed for distributed attacks.
 
 3. **Configure Detection Mechanisms**:
+
    - Set thresholds and detection methods to identify distributed attempts.
 
-   | **Detection Method**       | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Distributed IP Detection   | Identify login attempts from multiple IP addresses.|
-   | Anomaly Detection          | Use patterns to detect unusual login behavior.     |
+   | **Detection Method**     | **Description**                                     |
+   | ------------------------ | --------------------------------------------------- |
+   | Distributed IP Detection | Identify login attempts from multiple IP addresses. |
+   | Anomaly Detection        | Use patterns to detect unusual login behavior.      |
 
 4. **Set Mitigation Actions**:
+
    - Configure actions such as blocking offending IP addresses, deploying rate limiting, or requiring additional verification.
 
-   | **Action**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Block IPs                  | Block IP addresses involved in the attack.         |
-   | Rate Limiting              | Apply rate limiting to reduce the attack impact.   |
-   | Additional Verification    | Require extra verification steps.                  |
+   | **Action**              | **Description**                                  |
+   | ----------------------- | ------------------------------------------------ |
+   | Block IPs               | Block IP addresses involved in the attack.       |
+   | Rate Limiting           | Apply rate limiting to reduce the attack impact. |
+   | Additional Verification | Require extra verification steps.                |
 
 5. **Apply Settings and Monitor**:
    - Assign the settings to the security policy and monitor attack patterns.
@@ -1306,29 +1431,34 @@ Credential stuffing involves using compromised credentials from one service to g
 #### Steps to Block Credential Stuffing Attacks:
 
 1. **Navigate to Credential Protection**:
+
    - Go to `Security` > `Application Security` > `Credential Protection`.
 
 2. **Enable Credential Stuffing Protection**:
+
    - Enable the feature designed to detect and block credential stuffing attempts.
 
 3. **Configure Detection Mechanisms**:
+
    - Set parameters for identifying credential stuffing activities, such as rapid login attempts using multiple credentials.
 
-   | **Detection Method**       | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Login Velocity             | Detect high-frequency login attempts.              |
-   | Credential Reuse           | Identify use of the same credentials across multiple accounts. |
+   | **Detection Method** | **Description**                                                |
+   | -------------------- | -------------------------------------------------------------- |
+   | Login Velocity       | Detect high-frequency login attempts.                          |
+   | Credential Reuse     | Identify use of the same credentials across multiple accounts. |
 
 4. **Define Mitigation Actions**:
+
    - Specify actions such as blocking IPs, requiring CAPTCHA, or initiating multi-factor authentication (MFA).
 
-   | **Action**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Block IP                   | Block IP addresses associated with credential stuffing.|
-   | CAPTCHA                    | Require CAPTCHA to verify human interaction.       |
-   | Multi-Factor Authentication| Enforce MFA to add an additional security layer.   |
+   | **Action**                  | **Description**                                         |
+   | --------------------------- | ------------------------------------------------------- |
+   | Block IP                    | Block IP addresses associated with credential stuffing. |
+   | CAPTCHA                     | Require CAPTCHA to verify human interaction.            |
+   | Multi-Factor Authentication | Enforce MFA to add an additional security layer.        |
 
 5. **Apply the Protection Profile**:
+
    - Assign the protection profile to the relevant security policy.
 
 6. **Monitor and Adapt**:
@@ -1348,29 +1478,34 @@ Attack signatures are predefined patterns that identify malicious activity. They
 #### Steps to Use and Enforce Attack Signatures:
 
 1. **Access the Attack Signatures Settings**:
+
    - Navigate to `Security` > `Application Security` > `Attack Signatures`.
 
 2. **Enable Attack Signatures**:
+
    - Ensure the attack signatures are enabled for your security policy.
 
 3. **Select Signature Sets**:
+
    - Choose the relevant attack signature sets to apply based on the application type.
 
-   | **Signature Set**          | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | General                    | Covers a wide range of common attacks.             |
-   | SQL Injection              | Specifically targets SQL injection patterns.       |
-   | XSS                        | Focuses on detecting Cross-Site Scripting attacks. |
+   | **Signature Set** | **Description**                                    |
+   | ----------------- | -------------------------------------------------- |
+   | General           | Covers a wide range of common attacks.             |
+   | SQL Injection     | Specifically targets SQL injection patterns.       |
+   | XSS               | Focuses on detecting Cross-Site Scripting attacks. |
 
 4. **Configure Signature Enforcement**:
+
    - Define the enforcement mode (blocking, detection only, etc.).
 
-   | **Enforcement Mode**       | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Blocking                   | Actively blocks detected attacks.                  |
-   | Detection Only             | Logs the attacks without blocking.                 |
+   | **Enforcement Mode** | **Description**                    |
+   | -------------------- | ---------------------------------- |
+   | Blocking             | Actively blocks detected attacks.  |
+   | Detection Only       | Logs the attacks without blocking. |
 
 5. **Apply the Settings**:
+
    - Save and apply the configured attack signatures to the security policy.
 
 6. **Monitor and Update**:
@@ -1378,6 +1513,7 @@ Attack signatures are predefined patterns that identify malicious activity. They
    - Update the signature sets to stay current with emerging threats.
 
 > ![Placeholder for Attack Signatures Configuration Screenshot](#)
+
 ### Custom Attack Signatures
 
 Creating custom attack signatures allows me to define specific patterns unique to my application or environment, enhancing security by addressing threats that predefined signatures might miss.
@@ -1385,24 +1521,29 @@ Creating custom attack signatures allows me to define specific patterns unique t
 #### Steps to Create and Apply Custom Attack Signatures:
 
 1. **Navigate to Custom Signatures**:
+
    - Go to `Security` > `Application Security` > `Attack Signatures`.
 
 2. **Create a New Signature**:
+
    - Click on `Create` to define a new custom signature.
 
 3. **Define Signature Details**:
+
    - Fill in the necessary details such as name, description, and signature pattern.
 
-   | **Field**                  | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Name                       | Unique name for the signature.                     |
-   | Description                | Brief description of the signature purpose.        |
-   | Signature Pattern          | The pattern or regex that defines the attack.      |
+   | **Field**         | **Description**                               |
+   | ----------------- | --------------------------------------------- |
+   | Name              | Unique name for the signature.                |
+   | Description       | Brief description of the signature purpose.   |
+   | Signature Pattern | The pattern or regex that defines the attack. |
 
 4. **Set the Action**:
+
    - Specify the action to take when the signature is matched (e.g., block, log).
 
 5. **Apply the Custom Signature**:
+
    - Assign the custom signature to the relevant security policy.
 
 6. **Test and Monitor**:
@@ -1420,26 +1561,30 @@ Detecting violations by username helps to identify malicious activities linked t
 #### Steps to Detect Violations by Username:
 
 1. **Access Violation Detection Settings**:
+
    - Navigate to `Security` > `Application Security` > `Violations`.
 
 2. **Enable Username Tracking**:
+
    - Ensure that the security policy is configured to track violations by username.
 
 3. **Define Violation Criteria**:
+
    - Set the criteria for what constitutes a violation (e.g., failed logins, policy breaches).
 
-   | **Violation Type**         | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Failed Login Attempts      | Track repeated failed login attempts.              |
-   | Policy Breach              | Detect actions that violate security policies.     |
+   | **Violation Type**    | **Description**                                |
+   | --------------------- | ---------------------------------------------- |
+   | Failed Login Attempts | Track repeated failed login attempts.          |
+   | Policy Breach         | Detect actions that violate security policies. |
 
 4. **Set Response Actions**:
+
    - Configure actions to take when a violation is detected (e.g., alert, block user).
 
-   | **Action**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Alert                      | Send an alert to the admin or security team.       |
-   | Block User                 | Temporarily block the user account.                |
+   | **Action** | **Description**                              |
+   | ---------- | -------------------------------------------- |
+   | Alert      | Send an alert to the admin or security team. |
+   | Block User | Temporarily block the user account.          |
 
 5. **Apply and Monitor**:
    - Apply the settings to the security policy.
@@ -1454,26 +1599,30 @@ Detecting violations by device helps identify and respond to malicious activitie
 #### Steps to Detect Violations by Device:
 
 1. **Access Device Detection Settings**:
+
    - Navigate to `Security` > `Application Security` > `Violations`.
 
 2. **Enable Device Tracking**:
+
    - Ensure that the security policy includes device tracking capabilities.
 
 3. **Define Violation Criteria**:
+
    - Set the criteria for device-related violations (e.g., repeated access attempts from an unknown device).
 
-   | **Violation Type**         | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Unknown Device Access      | Track attempts from devices not previously recognized. |
-   | Repeated Access Attempts   | Detect repeated access attempts from a single device. |
+   | **Violation Type**       | **Description**                                        |
+   | ------------------------ | ------------------------------------------------------ |
+   | Unknown Device Access    | Track attempts from devices not previously recognized. |
+   | Repeated Access Attempts | Detect repeated access attempts from a single device.  |
 
 4. **Set Response Actions**:
+
    - Configure actions for detected device violations (e.g., block device, notify admin).
 
-   | **Action**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Block Device               | Block the device from accessing the application.   |
-   | Notify Admin               | Send a notification to the administrator.          |
+   | **Action**   | **Description**                                  |
+   | ------------ | ------------------------------------------------ |
+   | Block Device | Block the device from accessing the application. |
+   | Notify Admin | Send a notification to the administrator.        |
 
 5. **Apply and Monitor**:
    - Apply the device detection settings to the security policy.
@@ -1481,11 +1630,10 @@ Detecting violations by device helps identify and respond to malicious activitie
 
 > ![Placeholder for Violation Detection by Device Screenshot](#)
 
-
-
 By leveraging attack signatures and implementing robust violation detection mechanisms, I can significantly enhance the security posture of my web applications, ensuring proactive and responsive threat management. Regular updates and continuous monitoring are essential to maintain effective protection against evolving threats.
 
 # 8. Session Management and Protection
+
 ## 8.1 Login Page Enforcement
 
 ### Using Login Page Enforcement
@@ -1495,41 +1643,47 @@ Login page enforcement is crucial for ensuring that only authenticated users can
 #### Steps to Implement Login Page Enforcement:
 
 1. **Access the Security Policy Settings**:
+
    - Navigate to `Security` > `Application Security` > `Login Pages`.
 
    ![Placeholder for Security Policy Settings Screenshot](#)
 
 2. **Define the Login Page**:
+
    - Specify the URL of the login page.
 
-   | **Field**                  | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Login Page URL             | The exact URL where the login form is located.     |
-   | Login Parameters           | Parameters like username and password fields.      |
+   | **Field**        | **Description**                                |
+   | ---------------- | ---------------------------------------------- |
+   | Login Page URL   | The exact URL where the login form is located. |
+   | Login Parameters | Parameters like username and password fields.  |
 
 3. **Set Authentication Criteria**:
+
    - Define what constitutes successful authentication (e.g., a successful login response).
 
-   | **Criteria**               | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
+   | **Criteria**               | **Description**                                                          |
+   | -------------------------- | ------------------------------------------------------------------------ |
    | Successful Login Indicator | A pattern or status code indicating a successful login (e.g., HTTP 200). |
 
 4. **Enable Enforcement**:
+
    - Ensure that the login page enforcement is enabled in the security policy.
 
-   | **Enforcement Option**     | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Enable                     | Turn on the enforcement for the specified login page. |
+   | **Enforcement Option** | **Description**                                       |
+   | ---------------------- | ----------------------------------------------------- |
+   | Enable                 | Turn on the enforcement for the specified login page. |
 
 5. **Configure Response Actions**:
+
    - Define the actions to take on failed login attempts (e.g., block IP after multiple failures).
 
-   | **Response Action**        | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Block IP                   | Block the IP address after a set number of failed attempts. |
-   | Alert Admin                | Send an alert to the administrator.                |
+   | **Response Action** | **Description**                                             |
+   | ------------------- | ----------------------------------------------------------- |
+   | Block IP            | Block the IP address after a set number of failed attempts. |
+   | Alert Admin         | Send an alert to the administrator.                         |
 
 6. **Apply and Monitor**:
+
    - Save the settings and monitor login attempts through the security logs.
 
    ![Placeholder for Login Attempt Logs Screenshot](#)
@@ -1543,60 +1697,65 @@ Session cookie hijacking involves an attacker stealing a user's session cookie t
 #### Steps to Protect Against Session Cookie Hijacking:
 
 1. **Secure Cookie Attributes**:
+
    - Ensure cookies have secure attributes set, such as `HttpOnly` and `Secure`.
 
-   | **Attribute**              | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | HttpOnly                   | Prevents client-side scripts from accessing the cookie. |
-   | Secure                     | Ensures the cookie is only sent over HTTPS.        |
+   | **Attribute** | **Description**                                         |
+   | ------------- | ------------------------------------------------------- |
+   | HttpOnly      | Prevents client-side scripts from accessing the cookie. |
+   | Secure        | Ensures the cookie is only sent over HTTPS.             |
 
    ```html
    Set-Cookie: sessionId=abc123; HttpOnly; Secure
    ```
 
 2. **Enable SameSite Attribute**:
+
    - Use the `SameSite` attribute to prevent cross-site request forgery attacks.
 
-   | **SameSite Attribute**     | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Lax                        | Allows sending cookies with same-site requests.    |
-   | Strict                     | Restricts cookies to same-site requests only.      |
+   | **SameSite Attribute** | **Description**                                 |
+   | ---------------------- | ----------------------------------------------- |
+   | Lax                    | Allows sending cookies with same-site requests. |
+   | Strict                 | Restricts cookies to same-site requests only.   |
 
    ```html
    Set-Cookie: sessionId=abc123; SameSite=Strict
    ```
 
 3. **Use Secure Tokens**:
+
    - Implement secure tokens for session management, ensuring they are unique and unpredictable.
 
-   | **Token Type**             | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | CSRF Tokens                | Tokens to protect against cross-site request forgery. |
-   | JWT Tokens                 | JSON Web Tokens for secure session management.     |
+   | **Token Type** | **Description**                                       |
+   | -------------- | ----------------------------------------------------- |
+   | CSRF Tokens    | Tokens to protect against cross-site request forgery. |
+   | JWT Tokens     | JSON Web Tokens for secure session management.        |
 
 4. **Implement Session Timeout**:
+
    - Set a reasonable session timeout to limit the duration a session remains active.
 
-   | **Timeout Setting**        | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Idle Timeout               | Logs out the user after a period of inactivity.    |
-   | Absolute Timeout           | Ends the session after a fixed period, regardless of activity. |
+   | **Timeout Setting** | **Description**                                                |
+   | ------------------- | -------------------------------------------------------------- |
+   | Idle Timeout        | Logs out the user after a period of inactivity.                |
+   | Absolute Timeout    | Ends the session after a fixed period, regardless of activity. |
 
 5. **Monitor Session Activity**:
+
    - Continuously monitor session activity for anomalies and potential hijacking attempts.
 
-   | **Monitoring Tool**        | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Security Logs              | Logs to track session activity and detect anomalies. |
+   | **Monitoring Tool**        | **Description**                                          |
+   | -------------------------- | -------------------------------------------------------- |
+   | Security Logs              | Logs to track session activity and detect anomalies.     |
    | Intrusion Detection System | System to identify and respond to suspicious activities. |
 
 6. **Educate Users**:
+
    - Inform users about best practices for session security, such as logging out after use and not sharing their session details.
 
    ![Placeholder for Session Activity Monitoring Screenshot](#)
 
 By enforcing robust login page security and protecting session cookies, I can significantly enhance the security of user sessions in my web application. This proactive approach helps prevent unauthorized access and ensures the integrity of user data. Regular monitoring and user education are key components in maintaining effective session security.
-
 
 # 9. Deployment and Integration
 
@@ -1609,6 +1768,7 @@ One-arm mode is a deployment where the F5 BIG-IP Advanced WAF is connected to th
 #### Steps to Deploy in One-Arm Mode:
 
 1. **Configure Network Interface**:
+
    - Assign the interface an IP address and ensure it is reachable from the network.
 
    ```shell
@@ -1618,14 +1778,16 @@ One-arm mode is a deployment where the F5 BIG-IP Advanced WAF is connected to th
    ![Placeholder for Network Interface Configuration Screenshot](#)
 
 2. **Set Up Virtual Server**:
+
    - Define a virtual server to handle incoming traffic.
 
-   | **Field**                  | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Virtual Server IP          | IP address for the virtual server.                 |
-   | Service Port               | Port number (e.g., 80 for HTTP, 443 for HTTPS).    |
+   | **Field**         | **Description**                                 |
+   | ----------------- | ----------------------------------------------- |
+   | Virtual Server IP | IP address for the virtual server.              |
+   | Service Port      | Port number (e.g., 80 for HTTP, 443 for HTTPS). |
 
 3. **Configure NAT**:
+
    - Enable Network Address Translation (NAT) to route traffic through the WAF.
 
    ```shell
@@ -1633,12 +1795,13 @@ One-arm mode is a deployment where the F5 BIG-IP Advanced WAF is connected to th
    ```
 
 4. **Apply Security Policies**:
+
    - Attach security policies to the virtual server to inspect and filter traffic.
 
-   | **Policy**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Web Application Policy     | Protects against common web vulnerabilities.       |
-   | DDoS Protection Policy     | Mitigates denial-of-service attacks.               |
+   | **Policy**             | **Description**                              |
+   | ---------------------- | -------------------------------------------- |
+   | Web Application Policy | Protects against common web vulnerabilities. |
+   | DDoS Protection Policy | Mitigates denial-of-service attacks.         |
 
    ![Placeholder for Security Policy Attachment Screenshot](#)
 
@@ -1652,6 +1815,7 @@ Two-arm mode uses two separate interfaces for inbound and outbound traffic, offe
 #### Steps to Deploy in Two-Arm Mode:
 
 1. **Configure Inbound and Outbound Interfaces**:
+
    - Assign IP addresses to both interfaces.
 
    ```shell
@@ -1662,14 +1826,16 @@ Two-arm mode uses two separate interfaces for inbound and outbound traffic, offe
    ![Placeholder for Interface Configuration Screenshot](#)
 
 2. **Set Up Virtual Servers**:
+
    - Define virtual servers for both inbound and outbound traffic.
 
-   | **Field**                  | **Inbound**                                      | **Outbound**                                     |
-   |----------------------------|--------------------------------------------------|--------------------------------------------------|
-   | Virtual Server IP          | 192.168.1.200                                    | 10.0.0.2                                         |
-   | Service Port               | 80/443                                           | 80/443                                           |
+   | **Field**         | **Inbound**   | **Outbound** |
+   | ----------------- | ------------- | ------------ |
+   | Virtual Server IP | 192.168.1.200 | 10.0.0.2     |
+   | Service Port      | 80/443        | 80/443       |
 
 3. **Enable Routing**:
+
    - Configure routing to direct traffic through the correct interfaces.
 
    ```shell
@@ -1678,16 +1844,18 @@ Two-arm mode uses two separate interfaces for inbound and outbound traffic, offe
    ```
 
 4. **Apply Security Policies**:
+
    - Attach appropriate security policies to each virtual server.
 
-   | **Policy**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Web Application Policy     | Protects against web vulnerabilities.              |
-   | DDoS Protection Policy     | Mitigates denial-of-service attacks.               |
+   | **Policy**             | **Description**                       |
+   | ---------------------- | ------------------------------------- |
+   | Web Application Policy | Protects against web vulnerabilities. |
+   | DDoS Protection Policy | Mitigates denial-of-service attacks.  |
 
    ![Placeholder for Security Policy Attachment Screenshot](#)
 
 5. **Monitor Traffic Flow**:
+
    - Use monitoring tools to observe and manage traffic flow through both interfaces.
 
    ![Placeholder for Traffic Monitoring Screenshot](#)
@@ -1701,24 +1869,28 @@ SSL/TLS decryption and inspection allow me to examine encrypted traffic for pote
 #### Steps to Implement SSL/TLS Decryption and Inspection:
 
 1. **Install SSL Certificates**:
+
    - Upload and install SSL certificates on the F5 device.
 
    ![Placeholder for SSL Certificate Installation Screenshot](#)
 
 2. **Configure SSL Profiles**:
+
    - Set up SSL profiles for both client-side and server-side SSL/TLS.
 
-   | **Profile**                | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Client SSL Profile         | Manages SSL connections with clients.              |
-   | Server SSL Profile         | Manages SSL connections with backend servers.      |
+   | **Profile**        | **Description**                               |
+   | ------------------ | --------------------------------------------- |
+   | Client SSL Profile | Manages SSL connections with clients.         |
+   | Server SSL Profile | Manages SSL connections with backend servers. |
 
 3. **Attach SSL Profiles to Virtual Servers**:
+
    - Apply the SSL profiles to the relevant virtual servers for decryption and inspection.
 
    ![Placeholder for SSL Profile Attachment Screenshot](#)
 
 4. **Enable SSL Forward Proxy**:
+
    - Use SSL forward proxy to decrypt traffic, inspect it, and then re-encrypt it before forwarding.
 
    ```shell
@@ -1728,7 +1900,6 @@ SSL/TLS decryption and inspection allow me to examine encrypted traffic for pote
 5. **Monitor and Adjust**:
    - Continuously monitor SSL traffic and adjust settings as necessary to maintain security and performance.
 
-
 ### SSL/TLS Management
 
 Managing SSL/TLS involves regular updates, monitoring, and configuration adjustments to ensure secure and efficient encryption.
@@ -1736,19 +1907,22 @@ Managing SSL/TLS involves regular updates, monitoring, and configuration adjustm
 #### Steps to Manage SSL/TLS:
 
 1. **Regularly Update Certificates**:
+
    - Ensure SSL certificates are renewed before expiration to maintain trust.
 
    ![Placeholder for Certificate Update Screenshot](#)
 
 2. **Monitor SSL/TLS Performance**:
+
    - Use monitoring tools to track SSL handshake times, encryption strength, and other performance metrics.
 
-   | **Metric**                 | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | Handshake Time             | Time taken to establish an SSL/TLS connection.     |
-   | Cipher Strength            | Strength of the encryption algorithm used.         |
+   | **Metric**      | **Description**                                |
+   | --------------- | ---------------------------------------------- |
+   | Handshake Time  | Time taken to establish an SSL/TLS connection. |
+   | Cipher Strength | Strength of the encryption algorithm used.     |
 
 3. **Enforce Strong Cipher Suites**:
+
    - Configure SSL/TLS profiles to use strong cipher suites and disable weak ones.
 
    ```shell
@@ -1756,14 +1930,16 @@ Managing SSL/TLS involves regular updates, monitoring, and configuration adjustm
    ```
 
 4. **Implement SSL/TLS Best Practices**:
+
    - Follow best practices such as enabling HSTS, using secure protocols, and applying perfect forward secrecy.
 
-   | **Best Practice**          | **Description**                                    |
-   |----------------------------|----------------------------------------------------|
-   | HSTS                       | Enforces secure connections by browsers.           |
-   | Perfect Forward Secrecy    | Ensures session keys are not compromised.          |
+   | **Best Practice**       | **Description**                           |
+   | ----------------------- | ----------------------------------------- |
+   | HSTS                    | Enforces secure connections by browsers.  |
+   | Perfect Forward Secrecy | Ensures session keys are not compromised. |
 
 5. **Audit and Review**:
+
    - Conduct regular audits and reviews of SSL/TLS configurations and practices to ensure ongoing security.
 
    ![Placeholder for Audit and Review Screenshot](#)
@@ -1779,12 +1955,13 @@ Using parent and child security policies helps to manage complex security rules 
 #### Steps to Implement Parent and Child Security Policies:
 
 1. **Create a Parent Policy**:
+
    - Define a base security policy that includes common rules and settings.
 
-   | **Setting**                 | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | Base Rules                  | Common security rules applicable to all apps.      |
-   | Logging Configuration       | Standard logging settings.                         |
+   | **Setting**           | **Description**                               |
+   | --------------------- | --------------------------------------------- |
+   | Base Rules            | Common security rules applicable to all apps. |
+   | Logging Configuration | Standard logging settings.                    |
 
    ```shell
    create security-policy parent-policy
@@ -1793,24 +1970,26 @@ Using parent and child security policies helps to manage complex security rules 
    ![Placeholder for Parent Policy Creation Screenshot](#)
 
 2. **Create Child Policies**:
+
    - Define child policies that inherit settings from the parent policy but include specific rules for individual applications.
 
-   | **Setting**                 | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | Inherited Rules             | Rules inherited from the parent policy.            |
-   | Application-Specific Rules  | Custom rules for the specific application.         |
+   | **Setting**                | **Description**                            |
+   | -------------------------- | ------------------------------------------ |
+   | Inherited Rules            | Rules inherited from the parent policy.    |
+   | Application-Specific Rules | Custom rules for the specific application. |
 
    ```shell
    create security-policy child-policy --parent parent-policy
    ```
 
 3. **Apply Policies to Applications**:
+
    - Assign child policies to respective applications to enforce the inherited and specific rules.
 
-   | **Application**             | **Policy**                                         |
-   |-----------------------------|----------------------------------------------------|
-   | App1                        | child-policy-app1                                  |
-   | App2                        | child-policy-app2                                  |
+   | **Application** | **Policy**        |
+   | --------------- | ----------------- |
+   | App1            | child-policy-app1 |
+   | App2            | child-policy-app2 |
 
    ![Placeholder for Policy Assignment Screenshot](#)
 
@@ -1824,28 +2003,31 @@ Advanced policy building options provide flexibility to create detailed and spec
 #### Steps to Use Advanced Policy Building Options:
 
 1. **Define Policy Templates**:
+
    - Use predefined templates as a starting point for common scenarios.
 
-   | **Template**                | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | Web Application             | Standard web app security settings.                |
-   | API Security                | API-specific security settings.                    |
+   | **Template**    | **Description**                     |
+   | --------------- | ----------------------------------- |
+   | Web Application | Standard web app security settings. |
+   | API Security    | API-specific security settings.     |
 
    ```shell
    create security-policy --template web-application
    ```
 
 2. **Customize Rules**:
+
    - Modify or add custom rules to address specific threats or requirements.
 
-   | **Rule**                    | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | SQL Injection Protection    | Detects and blocks SQL injection attempts.         |
-   | XSS Protection              | Detects and blocks cross-site scripting.           |
+   | **Rule**                 | **Description**                            |
+   | ------------------------ | ------------------------------------------ |
+   | SQL Injection Protection | Detects and blocks SQL injection attempts. |
+   | XSS Protection           | Detects and blocks cross-site scripting.   |
 
    ![Placeholder for Custom Rule Configuration Screenshot](#)
 
 3. **Use Machine Learning**:
+
    - Implement machine learning to automatically adjust and optimize security rules based on traffic patterns.
 
    ```shell
@@ -1853,12 +2035,13 @@ Advanced policy building options provide flexibility to create detailed and spec
    ```
 
 4. **Test Policies**:
+
    - Use a staging environment to test policies before deploying them in production.
 
-   | **Environment**             | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | Staging                     | Test environment to validate policies.             |
-   | Production                  | Live environment where policies are enforced.      |
+   | **Environment** | **Description**                               |
+   | --------------- | --------------------------------------------- |
+   | Staging         | Test environment to validate policies.        |
+   | Production      | Live environment where policies are enforced. |
 
    ![Placeholder for Policy Testing Screenshot](#)
 
@@ -1872,16 +2055,18 @@ Stabilizing a security policy involves fine-tuning the rules to ensure they prov
 #### Steps to Stabilize a Security Policy:
 
 1. **Collect Baseline Data**:
+
    - Gather traffic and incident data to understand normal behavior and potential threats.
 
-   | **Metric**                  | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | Normal Traffic Patterns     | Typical user behavior and traffic volumes.         |
-   | Incident Frequency          | Frequency of security incidents.                   |
+   | **Metric**              | **Description**                            |
+   | ----------------------- | ------------------------------------------ |
+   | Normal Traffic Patterns | Typical user behavior and traffic volumes. |
+   | Incident Frequency      | Frequency of security incidents.           |
 
    ![Placeholder for Baseline Data Collection Screenshot](#)
 
 2. **Adjust Sensitivity Levels**:
+
    - Modify the sensitivity of detection rules to balance between security and usability.
 
    ```shell
@@ -1889,14 +2074,16 @@ Stabilizing a security policy involves fine-tuning the rules to ensure they prov
    ```
 
 3. **Reduce False Positives**:
+
    - Analyze false positive incidents and adjust rules to minimize them without compromising security.
 
-   | **Incident**                | **Adjustment**                                     |
-   |-----------------------------|----------------------------------------------------|
-   | False SQL Injection Alerts  | Fine-tune SQL detection rules.                     |
-   | False XSS Alerts            | Refine XSS detection parameters.                   |
+   | **Incident**               | **Adjustment**                   |
+   | -------------------------- | -------------------------------- |
+   | False SQL Injection Alerts | Fine-tune SQL detection rules.   |
+   | False XSS Alerts           | Refine XSS detection parameters. |
 
 4. **Implement Rate Limiting**:
+
    - Apply rate limiting to mitigate the impact of high-volume attacks without affecting legitimate traffic.
 
    ```shell
@@ -1904,6 +2091,7 @@ Stabilizing a security policy involves fine-tuning the rules to ensure they prov
    ```
 
 5. **Regular Review and Updates**:
+
    - Continuously review and update policies based on new threats and evolving application behavior.
 
    ![Placeholder for Policy Review and Update Screenshot](#)
@@ -1917,6 +2105,7 @@ IP Geolocation Enforcement restricts or allows access based on the geographic lo
 #### Steps to Implement IP Geolocation Enforcement:
 
 1. **Enable Geolocation Database**:
+
    - Activate the geolocation database on the F5 device.
 
    ```shell
@@ -1926,12 +2115,13 @@ IP Geolocation Enforcement restricts or allows access based on the geographic lo
    ![Placeholder for Geolocation Database Activation Screenshot](#)
 
 2. **Define Geolocation Rules**:
+
    - Create rules that specify which geographic regions are allowed or blocked.
 
-   | **Region**                  | **Action**                                         |
-   |-----------------------------|----------------------------------------------------|
-   | United States               | Allow                                              |
-   | Russia                      | Block                                              |
+   | **Region**    | **Action** |
+   | ------------- | ---------- |
+   | United States | Allow      |
+   | Russia        | Block      |
 
    ```shell
    create geolocation-rule allow us
@@ -1939,19 +2129,20 @@ IP Geolocation Enforcement restricts or allows access based on the geographic lo
    ```
 
 3. **Apply Geolocation Rules**:
+
    - Attach the geolocation rules to the security policies.
 
-   | **Policy**                  | **Geolocation Rule**                               |
-   |-----------------------------|----------------------------------------------------|
-   | WebAppPolicy                | Allow US, Block RU                                 |
+   | **Policy**   | **Geolocation Rule** |
+   | ------------ | -------------------- |
+   | WebAppPolicy | Allow US, Block RU   |
 
    ![Placeholder for Geolocation Rule Application Screenshot](#)
 
 4. **Monitor Geolocation Logs**:
+
    - Regularly review logs to ensure geolocation rules are effective and adjust as needed.
 
    ![Placeholder for Geolocation Log Screenshot](#)
-
 
 # 12. WebSocket Protection
 
@@ -1979,6 +2170,7 @@ To ensure the security of WebSocket communications, it's essential to implement 
 #### Steps to Implement WebSocket Protection:
 
 1. **Enable WebSocket Protocol**:
+
    - Activate WebSocket support on the F5 device.
 
    ```shell
@@ -1988,32 +2180,35 @@ To ensure the security of WebSocket communications, it's essential to implement 
    ![Placeholder for WebSocket Protocol Activation Screenshot](#)
 
 2. **Configure WebSocket Profile**:
+
    - Set up a profile to define security settings for WebSocket connections.
 
-   | **Setting**                 | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | Max Message Size            | Maximum size of WebSocket messages.                |
-   | Connection Timeout          | Duration before idle connections are terminated.   |
+   | **Setting**        | **Description**                                  |
+   | ------------------ | ------------------------------------------------ |
+   | Max Message Size   | Maximum size of WebSocket messages.              |
+   | Connection Timeout | Duration before idle connections are terminated. |
 
    ```shell
    create websocket-profile max-message-size 1024 connection-timeout 60
    ```
 
 3. **Apply WebSocket Profile to Virtual Server**:
+
    - Attach the WebSocket profile to the appropriate virtual server.
 
-   | **Virtual Server**          | **WebSocket Profile**                              |
-   |-----------------------------|----------------------------------------------------|
-   | WebAppVS                    | WebSocketProfile                                   |
+   | **Virtual Server** | **WebSocket Profile** |
+   | ------------------ | --------------------- |
+   | WebAppVS           | WebSocketProfile      |
 
    ![Placeholder for WebSocket Profile Application Screenshot](#)
 
 4. **Enable Security Policies**:
+
    - Apply relevant security policies to inspect and filter WebSocket traffic.
 
-   | **Policy**                  | **Description**                                    |
-   |-----------------------------|----------------------------------------------------|
-   | WebSocket Security Policy   | Protects against WebSocket-specific threats.       |
+   | **Policy**                | **Description**                              |
+   | ------------------------- | -------------------------------------------- |
+   | WebSocket Security Policy | Protects against WebSocket-specific threats. |
 
    ```shell
    apply security-policy websocket-security
@@ -2022,16 +2217,15 @@ To ensure the security of WebSocket communications, it's essential to implement 
 5. **Monitor WebSocket Traffic**:
    - Use monitoring tools to track WebSocket traffic and detect any anomalies or attacks.
 
-| **Step**                       | **Action**                                                                                               |
-|--------------------------------|---------------------------------------------------------------------------------------------------------|
-| **Enable WebSocket Protocol**  | Ensure that the WebSocket protocol is enabled in the security configuration of the Web Application Firewall (WAF). |
-| **Configure Security Profile** | Set up a security profile that includes rules for message size limits, connection timeouts, and rate limiting. |
-| **Apply Profile to Server**    | Apply the configured security profile to the virtual server handling WebSocket connections.              |
-| **Implement Security Policies**| Define and enforce security policies to inspect WebSocket traffic and block suspicious activities.        |
-| **Monitor Traffic**            | Continuously monitor WebSocket traffic to identify and respond to potential threats.                     |
+| **Step**                        | **Action**                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Enable WebSocket Protocol**   | Ensure that the WebSocket protocol is enabled in the security configuration of the Web Application Firewall (WAF). |
+| **Configure Security Profile**  | Set up a security profile that includes rules for message size limits, connection timeouts, and rate limiting.     |
+| **Apply Profile to Server**     | Apply the configured security profile to the virtual server handling WebSocket connections.                        |
+| **Implement Security Policies** | Define and enforce security policies to inspect WebSocket traffic and block suspicious activities.                 |
+| **Monitor Traffic**             | Continuously monitor WebSocket traffic to identify and respond to potential threats.                               |
 
-   ![Placeholder for WebSocket Traffic Monitoring Screenshot](#)
-
+![Placeholder for WebSocket Traffic Monitoring Screenshot](#)
 
 These steps ensure robust policy management and advanced protection features, enabling me to maintain a secure and efficient web application environment. Regular monitoring and updates are crucial to adapt to new threats and evolving requirements.
 
@@ -2039,95 +2233,94 @@ These steps ensure robust policy management and advanced protection features, en
 
 **1. Policy Management**
 
-| **Feature**                    | **Steps**                                                                                         |
-|--------------------------------|---------------------------------------------------------------------------------------------------|
-| **Parent and Child Policies**  | Create a parent policy with base rules, establish child policies inheriting from the parent, apply policies to applications, monitor and adjust based on performance and new threats. |
-| **Advanced Policy Building**   | Use templates as starting points, customize rules for specific threats, utilize machine learning for optimization, test in staging environment, deploy and continuously monitor. |
-| **Stabilizing a Policy**       | Collect baseline traffic data, adjust sensitivity of detection rules, reduce false positives, implement rate limiting, regularly review and update policies. |
+| **Feature**                   | **Steps**                                                                                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Parent and Child Policies** | Create a parent policy with base rules, establish child policies inheriting from the parent, apply policies to applications, monitor and adjust based on performance and new threats. |
+| **Advanced Policy Building**  | Use templates as starting points, customize rules for specific threats, utilize machine learning for optimization, test in staging environment, deploy and continuously monitor.      |
+| **Stabilizing a Policy**      | Collect baseline traffic data, adjust sensitivity of detection rules, reduce false positives, implement rate limiting, regularly review and update policies.                          |
 
 **2. Geolocation and Device Control**
 
-| **Feature**                    | **Steps**                                                                                         |
-|--------------------------------|---------------------------------------------------------------------------------------------------|
+| **Feature**                    | **Steps**                                                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **IP Geolocation Enforcement** | Enable the geolocation database, define and apply geolocation rules (e.g., allow US, block RU), monitor geolocation logs and adjust rules as necessary. |
 
 **3. WebSocket Protection**
 
-| **Feature**                    | **Steps**                                                                                         |
-|--------------------------------|---------------------------------------------------------------------------------------------------|
-| **WebSocket Protection**       | Enable WebSocket protocol, configure security profile with message size limits and connection timeouts, apply profile to virtual server, implement security policies, monitor WebSocket traffic. |
+| **Feature**              | **Steps**                                                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **WebSocket Protection** | Enable WebSocket protocol, configure security profile with message size limits and connection timeouts, apply profile to virtual server, implement security policies, monitor WebSocket traffic. |
 
 **4. Session Management and Protection**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **Login Page Enforcement**             | Define login page settings, set authentication criteria, enable enforcement, configure response actions, apply and monitor. |
-| **Session Cookie Hijacking Protection**| Secure cookie attributes with HTTPOnly and Secure flags, enable SameSite attribute, use secure tokens, implement session timeout, monitor session activity. |
+| **Feature**                             | **Steps**                                                                                                                                                   |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Login Page Enforcement**              | Define login page settings, set authentication criteria, enable enforcement, configure response actions, apply and monitor.                                 |
+| **Session Cookie Hijacking Protection** | Secure cookie attributes with HTTPOnly and Secure flags, enable SameSite attribute, use secure tokens, implement session timeout, monitor session activity. |
 
 **5. Deployment and Integration**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **One-Arm Mode Deployment**            | Configure network interface, set up virtual server, configure NAT, apply security policies, monitor and adjust. |
-| **Two-Arm Mode Deployment**            | Configure interfaces, set up virtual servers, enable routing, apply security policies, monitor traffic flow. |
-| **SSL/TLS Decryption and Inspection**  | Install SSL certificates, configure SSL profiles, attach profiles to servers, enable SSL forward proxy, monitor and adjust. |
-| **SSL/TLS Management**                 | Regularly update SSL certificates, monitor performance, enforce strong cipher suites, implement best practices, audit and review. |
+| **Feature**                           | **Steps**                                                                                                                         |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **One-Arm Mode Deployment**           | Configure network interface, set up virtual server, configure NAT, apply security policies, monitor and adjust.                   |
+| **Two-Arm Mode Deployment**           | Configure interfaces, set up virtual servers, enable routing, apply security policies, monitor traffic flow.                      |
+| **SSL/TLS Decryption and Inspection** | Install SSL certificates, configure SSL profiles, attach profiles to servers, enable SSL forward proxy, monitor and adjust.       |
+| **SSL/TLS Management**                | Regularly update SSL certificates, monitor performance, enforce strong cipher suites, implement best practices, audit and review. |
 
 **6. Application Protection Techniques**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **XSS Protection**                     | Activate XSS attack signatures, configure specific signatures, set up input validation, ensure output encoding, implement Content Security Policy (CSP), apply changes and monitor logs. |
-| **SQL Injection Protection**           | Activate SQLi attack signatures, configure specific signatures, set up parameter validation, use prepared statements, apply changes and monitor logs. |
-| **CSRF Protection**                    | Activate CSRF protection, configure settings, set up CSRF tokens, implement SameSite cookies, apply changes and monitor logs. |
-| **Cookie Protection**                  | Activate cookie protection, configure security settings, set HTTPOnly and Secure flags, implement cookie integrity with signing and encryption, apply changes and monitor logs. |
-| **Session Protection**                 | Activate session protection, configure session handling settings, set up session timeouts, implement IP and device binding, apply changes and monitor logs. |
+| **Feature**                  | **Steps**                                                                                                                                                                                |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **XSS Protection**           | Activate XSS attack signatures, configure specific signatures, set up input validation, ensure output encoding, implement Content Security Policy (CSP), apply changes and monitor logs. |
+| **SQL Injection Protection** | Activate SQLi attack signatures, configure specific signatures, set up parameter validation, use prepared statements, apply changes and monitor logs.                                    |
+| **CSRF Protection**          | Activate CSRF protection, configure settings, set up CSRF tokens, implement SameSite cookies, apply changes and monitor logs.                                                            |
+| **Cookie Protection**        | Activate cookie protection, configure security settings, set HTTPOnly and Secure flags, implement cookie integrity with signing and encryption, apply changes and monitor logs.          |
+| **Session Protection**       | Activate session protection, configure session handling settings, set up session timeouts, implement IP and device binding, apply changes and monitor logs.                              |
 
 **7. Data and Logging Management**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **Data Guard**                         | Activate Data Guard, configure sensitive data patterns, set masking rules, apply Data Guard to policies, monitor logs, define custom patterns, apply and monitor custom data protection. |
-| **Logging and Reporting**              | Activate logging, select log destination, define log levels, configure filters, apply logging settings, review logs regularly, access reporting module, customize report parameters, generate and review reports, export and share reports, schedule regular reporting. |
+| **Feature**               | **Steps**                                                                                                                                                                                                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Data Guard**            | Activate Data Guard, configure sensitive data patterns, set masking rules, apply Data Guard to policies, monitor logs, define custom patterns, apply and monitor custom data protection.                                                                                |
+| **Logging and Reporting** | Activate logging, select log destination, define log levels, configure filters, apply logging settings, review logs regularly, access reporting module, customize report parameters, generate and review reports, export and share reports, schedule regular reporting. |
 
 **8. File and Parameter Enforcement**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **File Type Enforcement**              | Define allowed file types, set actions for violations, apply changes, monitor for compliance.      |
-| **Global File Type Settings**          | Add global file types, configure actions for all policies, apply settings, monitor compliance.     |
-| **File Type Learning**                 | Enable file type learning, review and approve learned file types, update policies, monitor compliance. |
-| **Parameter Enforcement**              | Define allowed parameters, configure actions for violations, apply changes, monitor compliance.     |
-| **Global Parameter Settings**          | Add global parameters, configure actions for all policies, apply settings, monitor compliance.     |
-| **Parameter Learning**                 | Enable parameter learning, review and approve learned parameters, update policies, monitor compliance. |
-| **Parameter Types**                    | Identify and configure parameter types, set actions for violations, apply changes, monitor compliance. |
-| **Blocking Parameter Tampering**       | Define validation rules for parameters, set actions for violations, apply changes, monitor compliance. |
-| **Entity Enforcement**                 | Identify entities (e.g., URLs, parameters), define rules for them, set actions for violations, apply changes, monitor compliance. |
+| **Feature**                      | **Steps**                                                                                                                         |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **File Type Enforcement**        | Define allowed file types, set actions for violations, apply changes, monitor for compliance.                                     |
+| **Global File Type Settings**    | Add global file types, configure actions for all policies, apply settings, monitor compliance.                                    |
+| **File Type Learning**           | Enable file type learning, review and approve learned file types, update policies, monitor compliance.                            |
+| **Parameter Enforcement**        | Define allowed parameters, configure actions for violations, apply changes, monitor compliance.                                   |
+| **Global Parameter Settings**    | Add global parameters, configure actions for all policies, apply settings, monitor compliance.                                    |
+| **Parameter Learning**           | Enable parameter learning, review and approve learned parameters, update policies, monitor compliance.                            |
+| **Parameter Types**              | Identify and configure parameter types, set actions for violations, apply changes, monitor compliance.                            |
+| **Blocking Parameter Tampering** | Define validation rules for parameters, set actions for violations, apply changes, monitor compliance.                            |
+| **Entity Enforcement**           | Identify entities (e.g., URLs, parameters), define rules for them, set actions for violations, apply changes, monitor compliance. |
 
 **9. Bot Defense and DoS Protection**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **Bot Defense Profile**                | Create and configure bot defense profile, define detection and response actions, apply profile, monitor and adjust. |
-| **Blocking Suspicious Browsers**       | Configure browser blocking rules, set actions for violations, apply changes, monitor and adjust. |
-| **Layer 7 DoS Protection**             | Create DoS protection profile, configure detection settings, define response actions, apply profile, monitor and adjust. |
-| **Behavioral Layer 7 DoS Protection**  | Enable behavioral analysis, configure baseline traffic patterns, define detection criteria, set actions for anomalies, apply changes, monitor and adjust. |
+| **Feature**                           | **Steps**                                                                                                                                                 |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bot Defense Profile**               | Create and configure bot defense profile, define detection and response actions, apply profile, monitor and adjust.                                       |
+| **Blocking Suspicious Browsers**      | Configure browser blocking rules, set actions for violations, apply changes, monitor and adjust.                                                          |
+| **Layer 7 DoS Protection**            | Create DoS protection profile, configure detection settings, define response actions, apply profile, monitor and adjust.                                  |
+| **Behavioral Layer 7 DoS Protection** | Enable behavioral analysis, configure baseline traffic patterns, define detection criteria, set actions for anomalies, apply changes, monitor and adjust. |
 
 **10. Attack Detection and Prevention**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **Single Username Attacks**            | Configure detection settings for single username attacks, define response actions, apply profile, monitor and adjust. |
-| **Multi-Username Attacks**             | Configure detection settings for multi-username attacks, define response actions, apply profile, monitor and adjust. |
-| **Distributed Brute Force Attacks**    | Enable protection for distributed brute force attacks, configure detection settings, define response actions, apply settings, monitor and adjust. |
-| **Credential Stuffing Attacks**        | Enable protection for credential stuffing attacks, configure detection settings, define response actions, apply profile, monitor and adjust. |
+| **Feature**                         | **Steps**                                                                                                                                         |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Single Username Attacks**         | Configure detection settings for single username attacks, define response actions, apply profile, monitor and adjust.                             |
+| **Multi-Username Attacks**          | Configure detection settings for multi-username attacks, define response actions, apply profile, monitor and adjust.                              |
+| **Distributed Brute Force Attacks** | Enable protection for distributed brute force attacks, configure detection settings, define response actions, apply settings, monitor and adjust. |
+| **Credential Stuffing Attacks**     | Enable protection for credential stuffing attacks, configure detection settings, define response actions, apply profile, monitor and adjust.      |
 
 **11. Threat Detection Techniques**
 
-| **Feature**                            | **Steps**                                                                                         |
-|----------------------------------------|---------------------------------------------------------------------------------------------------|
-| **Using Attack Signatures**            | Enable attack signatures, select appropriate sets, configure enforcement actions, apply settings, monitor and update signatures. |
-| **Custom Attack Signatures**           | Create custom attack signatures, define detection details, set response actions, apply signatures, test for effectiveness, monitor and adjust. |
-| **Detection by Username**              | Enable username-based tracking, define detection criteria, configure response actions, apply settings, monitor and adjust. |
-| **Detection by Device**                | Enable device-based tracking, define detection criteria, configure response actions, apply settings, monitor and adjust. |
-
+| **Feature**                  | **Steps**                                                                                                                                      |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Using Attack Signatures**  | Enable attack signatures, select appropriate sets, configure enforcement actions, apply settings, monitor and update signatures.               |
+| **Custom Attack Signatures** | Create custom attack signatures, define detection details, set response actions, apply signatures, test for effectiveness, monitor and adjust. |
+| **Detection by Username**    | Enable username-based tracking, define detection criteria, configure response actions, apply settings, monitor and adjust.                     |
+| **Detection by Device**      | Enable device-based tracking, define detection criteria, configure response actions, apply settings, monitor and adjust.                       |

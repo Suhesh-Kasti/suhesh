@@ -10,31 +10,53 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
+var __defNormalProp = (obj, key, value) =>
+  key in obj
+    ? __defProp(obj, key, {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value,
+      })
+    : (obj[key] = value);
+var __commonJS = (cb, mod) =>
+  function __require() {
+    return (
+      mod ||
+        (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod),
+      mod.exports
+    );
+  };
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
+  if ((from && typeof from === "object") || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? __defProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod,
+  )
+);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
@@ -54,25 +76,47 @@ var require_main = __commonJS({
     function shouldUsePeriodicNotesSettings(periodicity) {
       var _a, _b;
       const periodicNotes = window.app.plugins.getPlugin("periodic-notes");
-      return periodicNotes && ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a[periodicity]) == null ? void 0 : _b.enabled);
+      return (
+        periodicNotes &&
+        ((_b =
+          (_a = periodicNotes.settings) == null ? void 0 : _a[periodicity]) ==
+        null
+          ? void 0
+          : _b.enabled)
+      );
     }
     function getDailyNoteSettings() {
       var _a, _b, _c, _d;
       try {
         const { internalPlugins, plugins } = window.app;
         if (shouldUsePeriodicNotesSettings("daily")) {
-          const { format: format2, folder: folder2, template: template2 } = ((_b = (_a = plugins.getPlugin("periodic-notes")) == null ? void 0 : _a.settings) == null ? void 0 : _b.daily) || {};
+          const {
+            format: format2,
+            folder: folder2,
+            template: template2,
+          } = ((_b =
+            (_a = plugins.getPlugin("periodic-notes")) == null
+              ? void 0
+              : _a.settings) == null
+            ? void 0
+            : _b.daily) || {};
           return {
             format: format2 || DEFAULT_DAILY_NOTE_FORMAT,
             folder: (folder2 == null ? void 0 : folder2.trim()) || "",
-            template: (template2 == null ? void 0 : template2.trim()) || ""
+            template: (template2 == null ? void 0 : template2.trim()) || "",
           };
         }
-        const { folder, format, template } = ((_d = (_c = internalPlugins.getPluginById("daily-notes")) == null ? void 0 : _c.instance) == null ? void 0 : _d.options) || {};
+        const { folder, format, template } =
+          ((_d =
+            (_c = internalPlugins.getPluginById("daily-notes")) == null
+              ? void 0
+              : _c.instance) == null
+            ? void 0
+            : _d.options) || {};
         return {
           format: format || DEFAULT_DAILY_NOTE_FORMAT,
           folder: (folder == null ? void 0 : folder.trim()) || "",
-          template: (template == null ? void 0 : template.trim()) || ""
+          template: (template == null ? void 0 : template.trim()) || "",
         };
       } catch (err) {
         console.info("No custom daily note settings found!", err);
@@ -82,20 +126,40 @@ var require_main = __commonJS({
       var _a, _b, _c, _d, _e, _f, _g;
       try {
         const pluginManager = window.app.plugins;
-        const calendarSettings = (_a = pluginManager.getPlugin("calendar")) == null ? void 0 : _a.options;
-        const periodicNotesSettings = (_c = (_b = pluginManager.getPlugin("periodic-notes")) == null ? void 0 : _b.settings) == null ? void 0 : _c.weekly;
+        const calendarSettings =
+          (_a = pluginManager.getPlugin("calendar")) == null
+            ? void 0
+            : _a.options;
+        const periodicNotesSettings =
+          (_c =
+            (_b = pluginManager.getPlugin("periodic-notes")) == null
+              ? void 0
+              : _b.settings) == null
+            ? void 0
+            : _c.weekly;
         if (shouldUsePeriodicNotesSettings("weekly")) {
           return {
             format: periodicNotesSettings.format || DEFAULT_WEEKLY_NOTE_FORMAT,
-            folder: ((_d = periodicNotesSettings.folder) == null ? void 0 : _d.trim()) || "",
-            template: ((_e = periodicNotesSettings.template) == null ? void 0 : _e.trim()) || ""
+            folder:
+              ((_d = periodicNotesSettings.folder) == null
+                ? void 0
+                : _d.trim()) || "",
+            template:
+              ((_e = periodicNotesSettings.template) == null
+                ? void 0
+                : _e.trim()) || "",
           };
         }
         const settings2 = calendarSettings || {};
         return {
           format: settings2.weeklyNoteFormat || DEFAULT_WEEKLY_NOTE_FORMAT,
-          folder: ((_f = settings2.weeklyNoteFolder) == null ? void 0 : _f.trim()) || "",
-          template: ((_g = settings2.weeklyNoteTemplate) == null ? void 0 : _g.trim()) || ""
+          folder:
+            ((_f = settings2.weeklyNoteFolder) == null ? void 0 : _f.trim()) ||
+            "",
+          template:
+            ((_g = settings2.weeklyNoteTemplate) == null
+              ? void 0
+              : _g.trim()) || "",
         };
       } catch (err) {
         console.info("No custom weekly note settings found!", err);
@@ -105,11 +169,20 @@ var require_main = __commonJS({
       var _a, _b, _c, _d;
       const pluginManager = window.app.plugins;
       try {
-        const settings2 = shouldUsePeriodicNotesSettings("monthly") && ((_b = (_a = pluginManager.getPlugin("periodic-notes")) == null ? void 0 : _a.settings) == null ? void 0 : _b.monthly) || {};
+        const settings2 =
+          (shouldUsePeriodicNotesSettings("monthly") &&
+            ((_b =
+              (_a = pluginManager.getPlugin("periodic-notes")) == null
+                ? void 0
+                : _a.settings) == null
+              ? void 0
+              : _b.monthly)) ||
+          {};
         return {
           format: settings2.format || DEFAULT_MONTHLY_NOTE_FORMAT,
           folder: ((_c = settings2.folder) == null ? void 0 : _c.trim()) || "",
-          template: ((_d = settings2.template) == null ? void 0 : _d.trim()) || ""
+          template:
+            ((_d = settings2.template) == null ? void 0 : _d.trim()) || "",
         };
       } catch (err) {
         console.info("No custom monthly note settings found!", err);
@@ -119,11 +192,20 @@ var require_main = __commonJS({
       var _a, _b, _c, _d;
       const pluginManager = window.app.plugins;
       try {
-        const settings2 = shouldUsePeriodicNotesSettings("quarterly") && ((_b = (_a = pluginManager.getPlugin("periodic-notes")) == null ? void 0 : _a.settings) == null ? void 0 : _b.quarterly) || {};
+        const settings2 =
+          (shouldUsePeriodicNotesSettings("quarterly") &&
+            ((_b =
+              (_a = pluginManager.getPlugin("periodic-notes")) == null
+                ? void 0
+                : _a.settings) == null
+              ? void 0
+              : _b.quarterly)) ||
+          {};
         return {
           format: settings2.format || DEFAULT_QUARTERLY_NOTE_FORMAT,
           folder: ((_c = settings2.folder) == null ? void 0 : _c.trim()) || "",
-          template: ((_d = settings2.template) == null ? void 0 : _d.trim()) || ""
+          template:
+            ((_d = settings2.template) == null ? void 0 : _d.trim()) || "",
         };
       } catch (err) {
         console.info("No custom quarterly note settings found!", err);
@@ -133,11 +215,20 @@ var require_main = __commonJS({
       var _a, _b, _c, _d;
       const pluginManager = window.app.plugins;
       try {
-        const settings2 = shouldUsePeriodicNotesSettings("yearly") && ((_b = (_a = pluginManager.getPlugin("periodic-notes")) == null ? void 0 : _a.settings) == null ? void 0 : _b.yearly) || {};
+        const settings2 =
+          (shouldUsePeriodicNotesSettings("yearly") &&
+            ((_b =
+              (_a = pluginManager.getPlugin("periodic-notes")) == null
+                ? void 0
+                : _a.settings) == null
+              ? void 0
+              : _b.yearly)) ||
+          {};
         return {
           format: settings2.format || DEFAULT_YEARLY_NOTE_FORMAT,
           folder: ((_c = settings2.folder) == null ? void 0 : _c.trim()) || "",
-          template: ((_d = settings2.template) == null ? void 0 : _d.trim()) || ""
+          template:
+            ((_d = settings2.template) == null ? void 0 : _d.trim()) || "",
         };
       } catch (err) {
         console.info("No custom yearly note settings found!", err);
@@ -151,13 +242,10 @@ var require_main = __commonJS({
       const newParts = [];
       for (let i = 0, l = parts.length; i < l; i++) {
         const part = parts[i];
-        if (!part || part === ".")
-          continue;
-        else
-          newParts.push(part);
+        if (!part || part === ".") continue;
+        else newParts.push(part);
       }
-      if (parts[0] === "")
-        newParts.unshift("");
+      if (parts[0] === "") newParts.unshift("");
       return newParts.join("/");
     }
     function basename(fullPath) {
@@ -191,12 +279,18 @@ var require_main = __commonJS({
         return Promise.resolve(["", null]);
       }
       try {
-        const templateFile = metadataCache.getFirstLinkpathDest(templatePath, "");
+        const templateFile = metadataCache.getFirstLinkpathDest(
+          templatePath,
+          "",
+        );
         const contents = await vault.cachedRead(templateFile);
         const IFoldInfo = window.app.foldManager.load(templateFile);
         return [contents, IFoldInfo];
       } catch (err) {
-        console.error(`Failed to read the daily note template '${templatePath}'`, err);
+        console.error(
+          `Failed to read the daily note template '${templatePath}'`,
+          err,
+        );
         new obsidian.Notice("Failed to read the daily note template");
         return ["", null];
       }
@@ -211,7 +305,10 @@ var require_main = __commonJS({
     function isFormatAmbiguous(format, granularity) {
       if (granularity === "week") {
         const cleanFormat = removeEscapedCharacters(format);
-        return /w{1,2}/i.test(cleanFormat) && (/M{1,4}/.test(cleanFormat) || /D{1,4}/.test(cleanFormat));
+        return (
+          /w{1,2}/i.test(cleanFormat) &&
+          (/M{1,4}/.test(cleanFormat) || /D{1,4}/.test(cleanFormat))
+        );
       }
       return false;
     }
@@ -227,7 +324,7 @@ var require_main = __commonJS({
         week: getWeeklyNoteSettings,
         month: getMonthlyNoteSettings,
         quarter: getQuarterlyNoteSettings,
-        year: getYearlyNoteSettings
+        year: getYearlyNoteSettings,
       };
       const format = getSettings[granularity]().format.split("/").pop();
       const noteDate = window.moment(filename, format, true);
@@ -242,15 +339,14 @@ var require_main = __commonJS({
               filename,
               // If format contains week, remove day & month formatting
               format.replace(/M{1,4}/g, "").replace(/D{1,4}/g, ""),
-              false
+              false,
             );
           }
         }
       }
       return noteDate;
     }
-    var DailyNotesFolderMissingError = class extends Error {
-    };
+    var DailyNotesFolderMissingError = class extends Error {};
     async function createDailyNote2(date) {
       const app = window.app;
       const { vault } = app;
@@ -260,21 +356,39 @@ var require_main = __commonJS({
       const filename = date.format(format);
       const normalizedPath = await getNotePath(folder, filename);
       try {
-        const createdFile = await vault.create(normalizedPath, templateContents.replace(/{{\s*date\s*}}/gi, filename).replace(/{{\s*time\s*}}/gi, moment4().format("HH:mm")).replace(/{{\s*title\s*}}/gi, filename).replace(/{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi, (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
-          const now2 = moment4();
-          const currentDate = date.clone().set({
-            hour: now2.get("hour"),
-            minute: now2.get("minute"),
-            second: now2.get("second")
-          });
-          if (calc) {
-            currentDate.add(parseInt(timeDelta, 10), unit);
-          }
-          if (momentFormat) {
-            return currentDate.format(momentFormat.substring(1).trim());
-          }
-          return currentDate.format(format);
-        }).replace(/{{\s*yesterday\s*}}/gi, date.clone().subtract(1, "day").format(format)).replace(/{{\s*tomorrow\s*}}/gi, date.clone().add(1, "d").format(format)));
+        const createdFile = await vault.create(
+          normalizedPath,
+          templateContents
+            .replace(/{{\s*date\s*}}/gi, filename)
+            .replace(/{{\s*time\s*}}/gi, moment4().format("HH:mm"))
+            .replace(/{{\s*title\s*}}/gi, filename)
+            .replace(
+              /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+              (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+                const now2 = moment4();
+                const currentDate = date.clone().set({
+                  hour: now2.get("hour"),
+                  minute: now2.get("minute"),
+                  second: now2.get("second"),
+                });
+                if (calc) {
+                  currentDate.add(parseInt(timeDelta, 10), unit);
+                }
+                if (momentFormat) {
+                  return currentDate.format(momentFormat.substring(1).trim());
+                }
+                return currentDate.format(format);
+              },
+            )
+            .replace(
+              /{{\s*yesterday\s*}}/gi,
+              date.clone().subtract(1, "day").format(format),
+            )
+            .replace(
+              /{{\s*tomorrow\s*}}/gi,
+              date.clone().add(1, "d").format(format),
+            ),
+        );
         app.foldManager.save(createdFile, IFoldInfo);
         return createdFile;
       } catch (err) {
@@ -289,9 +403,13 @@ var require_main = __commonJS({
     function getAllDailyNotes2() {
       const { vault } = window.app;
       const { folder } = getDailyNoteSettings();
-      const dailyNotesFolder = vault.getAbstractFileByPath(obsidian.normalizePath(folder));
+      const dailyNotesFolder = vault.getAbstractFileByPath(
+        obsidian.normalizePath(folder),
+      );
       if (!dailyNotesFolder) {
-        throw new DailyNotesFolderMissingError("Failed to find daily notes folder");
+        throw new DailyNotesFolderMissingError(
+          "Failed to find daily notes folder",
+        );
       }
       const dailyNotes = {};
       obsidian.Vault.recurseChildren(dailyNotesFolder, (note) => {
@@ -305,8 +423,7 @@ var require_main = __commonJS({
       });
       return dailyNotes;
     }
-    var WeeklyNotesFolderMissingError = class extends Error {
-    };
+    var WeeklyNotesFolderMissingError = class extends Error {};
     function getDaysOfWeek() {
       const { moment: moment4 } = window;
       let weekStart = moment4.localeData()._week.dow;
@@ -317,7 +434,7 @@ var require_main = __commonJS({
         "wednesday",
         "thursday",
         "friday",
-        "saturday"
+        "saturday",
       ];
       while (weekStart) {
         daysOfWeek.push(daysOfWeek.shift());
@@ -335,24 +452,37 @@ var require_main = __commonJS({
       const filename = date.format(format);
       const normalizedPath = await getNotePath(folder, filename);
       try {
-        const createdFile = await vault.create(normalizedPath, templateContents.replace(/{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi, (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
-          const now2 = window.moment();
-          const currentDate = date.clone().set({
-            hour: now2.get("hour"),
-            minute: now2.get("minute"),
-            second: now2.get("second")
-          });
-          if (calc) {
-            currentDate.add(parseInt(timeDelta, 10), unit);
-          }
-          if (momentFormat) {
-            return currentDate.format(momentFormat.substring(1).trim());
-          }
-          return currentDate.format(format);
-        }).replace(/{{\s*title\s*}}/gi, filename).replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm")).replace(/{{\s*(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\s*:(.*?)}}/gi, (_, dayOfWeek, momentFormat) => {
-          const day = getDayOfWeekNumericalValue(dayOfWeek);
-          return date.weekday(day).format(momentFormat.trim());
-        }));
+        const createdFile = await vault.create(
+          normalizedPath,
+          templateContents
+            .replace(
+              /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+              (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+                const now2 = window.moment();
+                const currentDate = date.clone().set({
+                  hour: now2.get("hour"),
+                  minute: now2.get("minute"),
+                  second: now2.get("second"),
+                });
+                if (calc) {
+                  currentDate.add(parseInt(timeDelta, 10), unit);
+                }
+                if (momentFormat) {
+                  return currentDate.format(momentFormat.substring(1).trim());
+                }
+                return currentDate.format(format);
+              },
+            )
+            .replace(/{{\s*title\s*}}/gi, filename)
+            .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
+            .replace(
+              /{{\s*(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\s*:(.*?)}}/gi,
+              (_, dayOfWeek, momentFormat) => {
+                const day = getDayOfWeekNumericalValue(dayOfWeek);
+                return date.weekday(day).format(momentFormat.trim());
+              },
+            ),
+        );
         window.app.foldManager.save(createdFile, IFoldInfo);
         return createdFile;
       } catch (err) {
@@ -371,9 +501,13 @@ var require_main = __commonJS({
       }
       const { vault } = window.app;
       const { folder } = getWeeklyNoteSettings();
-      const weeklyNotesFolder = vault.getAbstractFileByPath(obsidian.normalizePath(folder));
+      const weeklyNotesFolder = vault.getAbstractFileByPath(
+        obsidian.normalizePath(folder),
+      );
       if (!weeklyNotesFolder) {
-        throw new WeeklyNotesFolderMissingError("Failed to find weekly notes folder");
+        throw new WeeklyNotesFolderMissingError(
+          "Failed to find weekly notes folder",
+        );
       }
       obsidian.Vault.recurseChildren(weeklyNotesFolder, (note) => {
         if (note instanceof obsidian.TFile) {
@@ -386,8 +520,7 @@ var require_main = __commonJS({
       });
       return weeklyNotes;
     }
-    var MonthlyNotesFolderMissingError = class extends Error {
-    };
+    var MonthlyNotesFolderMissingError = class extends Error {};
     async function createMonthlyNote(date) {
       const { vault } = window.app;
       const { template, format, folder } = getMonthlyNoteSettings();
@@ -395,21 +528,31 @@ var require_main = __commonJS({
       const filename = date.format(format);
       const normalizedPath = await getNotePath(folder, filename);
       try {
-        const createdFile = await vault.create(normalizedPath, templateContents.replace(/{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi, (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
-          const now2 = window.moment();
-          const currentDate = date.clone().set({
-            hour: now2.get("hour"),
-            minute: now2.get("minute"),
-            second: now2.get("second")
-          });
-          if (calc) {
-            currentDate.add(parseInt(timeDelta, 10), unit);
-          }
-          if (momentFormat) {
-            return currentDate.format(momentFormat.substring(1).trim());
-          }
-          return currentDate.format(format);
-        }).replace(/{{\s*date\s*}}/gi, filename).replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm")).replace(/{{\s*title\s*}}/gi, filename));
+        const createdFile = await vault.create(
+          normalizedPath,
+          templateContents
+            .replace(
+              /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+              (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+                const now2 = window.moment();
+                const currentDate = date.clone().set({
+                  hour: now2.get("hour"),
+                  minute: now2.get("minute"),
+                  second: now2.get("second"),
+                });
+                if (calc) {
+                  currentDate.add(parseInt(timeDelta, 10), unit);
+                }
+                if (momentFormat) {
+                  return currentDate.format(momentFormat.substring(1).trim());
+                }
+                return currentDate.format(format);
+              },
+            )
+            .replace(/{{\s*date\s*}}/gi, filename)
+            .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
+            .replace(/{{\s*title\s*}}/gi, filename),
+        );
         window.app.foldManager.save(createdFile, IFoldInfo);
         return createdFile;
       } catch (err) {
@@ -428,9 +571,13 @@ var require_main = __commonJS({
       }
       const { vault } = window.app;
       const { folder } = getMonthlyNoteSettings();
-      const monthlyNotesFolder = vault.getAbstractFileByPath(obsidian.normalizePath(folder));
+      const monthlyNotesFolder = vault.getAbstractFileByPath(
+        obsidian.normalizePath(folder),
+      );
       if (!monthlyNotesFolder) {
-        throw new MonthlyNotesFolderMissingError("Failed to find monthly notes folder");
+        throw new MonthlyNotesFolderMissingError(
+          "Failed to find monthly notes folder",
+        );
       }
       obsidian.Vault.recurseChildren(monthlyNotesFolder, (note) => {
         if (note instanceof obsidian.TFile) {
@@ -443,8 +590,7 @@ var require_main = __commonJS({
       });
       return monthlyNotes;
     }
-    var QuarterlyNotesFolderMissingError = class extends Error {
-    };
+    var QuarterlyNotesFolderMissingError = class extends Error {};
     async function createQuarterlyNote(date) {
       const { vault } = window.app;
       const { template, format, folder } = getQuarterlyNoteSettings();
@@ -452,21 +598,31 @@ var require_main = __commonJS({
       const filename = date.format(format);
       const normalizedPath = await getNotePath(folder, filename);
       try {
-        const createdFile = await vault.create(normalizedPath, templateContents.replace(/{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi, (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
-          const now2 = window.moment();
-          const currentDate = date.clone().set({
-            hour: now2.get("hour"),
-            minute: now2.get("minute"),
-            second: now2.get("second")
-          });
-          if (calc) {
-            currentDate.add(parseInt(timeDelta, 10), unit);
-          }
-          if (momentFormat) {
-            return currentDate.format(momentFormat.substring(1).trim());
-          }
-          return currentDate.format(format);
-        }).replace(/{{\s*date\s*}}/gi, filename).replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm")).replace(/{{\s*title\s*}}/gi, filename));
+        const createdFile = await vault.create(
+          normalizedPath,
+          templateContents
+            .replace(
+              /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+              (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+                const now2 = window.moment();
+                const currentDate = date.clone().set({
+                  hour: now2.get("hour"),
+                  minute: now2.get("minute"),
+                  second: now2.get("second"),
+                });
+                if (calc) {
+                  currentDate.add(parseInt(timeDelta, 10), unit);
+                }
+                if (momentFormat) {
+                  return currentDate.format(momentFormat.substring(1).trim());
+                }
+                return currentDate.format(format);
+              },
+            )
+            .replace(/{{\s*date\s*}}/gi, filename)
+            .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
+            .replace(/{{\s*title\s*}}/gi, filename),
+        );
         window.app.foldManager.save(createdFile, IFoldInfo);
         return createdFile;
       } catch (err) {
@@ -485,9 +641,13 @@ var require_main = __commonJS({
       }
       const { vault } = window.app;
       const { folder } = getQuarterlyNoteSettings();
-      const quarterlyFolder = vault.getAbstractFileByPath(obsidian.normalizePath(folder));
+      const quarterlyFolder = vault.getAbstractFileByPath(
+        obsidian.normalizePath(folder),
+      );
       if (!quarterlyFolder) {
-        throw new QuarterlyNotesFolderMissingError("Failed to find quarterly notes folder");
+        throw new QuarterlyNotesFolderMissingError(
+          "Failed to find quarterly notes folder",
+        );
       }
       obsidian.Vault.recurseChildren(quarterlyFolder, (note) => {
         if (note instanceof obsidian.TFile) {
@@ -500,8 +660,7 @@ var require_main = __commonJS({
       });
       return quarterly;
     }
-    var YearlyNotesFolderMissingError = class extends Error {
-    };
+    var YearlyNotesFolderMissingError = class extends Error {};
     async function createYearlyNote(date) {
       const { vault } = window.app;
       const { template, format, folder } = getYearlyNoteSettings();
@@ -509,21 +668,31 @@ var require_main = __commonJS({
       const filename = date.format(format);
       const normalizedPath = await getNotePath(folder, filename);
       try {
-        const createdFile = await vault.create(normalizedPath, templateContents.replace(/{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi, (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
-          const now2 = window.moment();
-          const currentDate = date.clone().set({
-            hour: now2.get("hour"),
-            minute: now2.get("minute"),
-            second: now2.get("second")
-          });
-          if (calc) {
-            currentDate.add(parseInt(timeDelta, 10), unit);
-          }
-          if (momentFormat) {
-            return currentDate.format(momentFormat.substring(1).trim());
-          }
-          return currentDate.format(format);
-        }).replace(/{{\s*date\s*}}/gi, filename).replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm")).replace(/{{\s*title\s*}}/gi, filename));
+        const createdFile = await vault.create(
+          normalizedPath,
+          templateContents
+            .replace(
+              /{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+              (_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+                const now2 = window.moment();
+                const currentDate = date.clone().set({
+                  hour: now2.get("hour"),
+                  minute: now2.get("minute"),
+                  second: now2.get("second"),
+                });
+                if (calc) {
+                  currentDate.add(parseInt(timeDelta, 10), unit);
+                }
+                if (momentFormat) {
+                  return currentDate.format(momentFormat.substring(1).trim());
+                }
+                return currentDate.format(format);
+              },
+            )
+            .replace(/{{\s*date\s*}}/gi, filename)
+            .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
+            .replace(/{{\s*title\s*}}/gi, filename),
+        );
         window.app.foldManager.save(createdFile, IFoldInfo);
         return createdFile;
       } catch (err) {
@@ -542,9 +711,13 @@ var require_main = __commonJS({
       }
       const { vault } = window.app;
       const { folder } = getYearlyNoteSettings();
-      const yearlyNotesFolder = vault.getAbstractFileByPath(obsidian.normalizePath(folder));
+      const yearlyNotesFolder = vault.getAbstractFileByPath(
+        obsidian.normalizePath(folder),
+      );
       if (!yearlyNotesFolder) {
-        throw new YearlyNotesFolderMissingError("Failed to find yearly notes folder");
+        throw new YearlyNotesFolderMissingError(
+          "Failed to find yearly notes folder",
+        );
       }
       obsidian.Vault.recurseChildren(yearlyNotesFolder, (note) => {
         if (note instanceof obsidian.TFile) {
@@ -565,7 +738,13 @@ var require_main = __commonJS({
         return true;
       }
       const periodicNotes = app.plugins.getPlugin("periodic-notes");
-      return periodicNotes && ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.daily) == null ? void 0 : _b.enabled);
+      return (
+        periodicNotes &&
+        ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.daily) ==
+        null
+          ? void 0
+          : _b.enabled)
+      );
     }
     function appHasWeeklyNotesPluginLoaded2() {
       var _a, _b;
@@ -574,25 +753,49 @@ var require_main = __commonJS({
         return true;
       }
       const periodicNotes = app.plugins.getPlugin("periodic-notes");
-      return periodicNotes && ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.weekly) == null ? void 0 : _b.enabled);
+      return (
+        periodicNotes &&
+        ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.weekly) ==
+        null
+          ? void 0
+          : _b.enabled)
+      );
     }
     function appHasMonthlyNotesPluginLoaded() {
       var _a, _b;
       const { app } = window;
       const periodicNotes = app.plugins.getPlugin("periodic-notes");
-      return periodicNotes && ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.monthly) == null ? void 0 : _b.enabled);
+      return (
+        periodicNotes &&
+        ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.monthly) ==
+        null
+          ? void 0
+          : _b.enabled)
+      );
     }
     function appHasQuarterlyNotesPluginLoaded() {
       var _a, _b;
       const { app } = window;
       const periodicNotes = app.plugins.getPlugin("periodic-notes");
-      return periodicNotes && ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.quarterly) == null ? void 0 : _b.enabled);
+      return (
+        periodicNotes &&
+        ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.quarterly) ==
+        null
+          ? void 0
+          : _b.enabled)
+      );
     }
     function appHasYearlyNotesPluginLoaded() {
       var _a, _b;
       const { app } = window;
       const periodicNotes = app.plugins.getPlugin("periodic-notes");
-      return periodicNotes && ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.yearly) == null ? void 0 : _b.enabled);
+      return (
+        periodicNotes &&
+        ((_b = (_a = periodicNotes.settings) == null ? void 0 : _a.yearly) ==
+        null
+          ? void 0
+          : _b.enabled)
+      );
     }
     function getPeriodicNoteSettings(granularity) {
       const getSettings = {
@@ -600,7 +803,7 @@ var require_main = __commonJS({
         week: getWeeklyNoteSettings,
         month: getMonthlyNoteSettings,
         quarter: getQuarterlyNoteSettings,
-        year: getYearlyNoteSettings
+        year: getYearlyNoteSettings,
       }[granularity];
       return getSettings();
     }
@@ -608,7 +811,7 @@ var require_main = __commonJS({
       const createFn = {
         day: createDailyNote2,
         month: createMonthlyNote,
-        week: createWeeklyNote2
+        week: createWeeklyNote2,
       };
       return createFn[granularity](date);
     }
@@ -648,13 +851,13 @@ var require_main = __commonJS({
     exports.getWeeklyNoteSettings = getWeeklyNoteSettings;
     exports.getYearlyNote = getYearlyNote;
     exports.getYearlyNoteSettings = getYearlyNoteSettings;
-  }
+  },
 });
 
 // src/main.ts
 var main_exports = {};
 __export(main_exports, {
-  default: () => PomodoroTimerPlugin
+  default: () => PomodoroTimerPlugin,
 });
 module.exports = __toCommonJS(main_exports);
 
@@ -662,8 +865,7 @@ module.exports = __toCommonJS(main_exports);
 var import_obsidian4 = require("obsidian");
 
 // node_modules/svelte/src/runtime/internal/utils.js
-function noop() {
-}
+function noop() {}
 function run(fn) {
   return fn();
 }
@@ -677,7 +879,9 @@ function is_function(thing) {
   return typeof thing === "function";
 }
 function safe_not_equal(a, b) {
-  return a != a ? b == b : a !== b || a && typeof a === "object" || typeof a === "function";
+  return a != a
+    ? b == b
+    : a !== b || (a && typeof a === "object") || typeof a === "function";
 }
 function is_empty(obj) {
   return Object.keys(obj).length === 0;
@@ -697,10 +901,13 @@ function component_subscribe(component, store, callback) {
 }
 
 // node_modules/svelte/src/runtime/internal/globals.js
-var globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : (
-  // @ts-ignore Node typings have this
-  global
-);
+var globals =
+  typeof window !== "undefined"
+    ? window
+    : typeof globalThis !== "undefined"
+      ? globalThis
+      : // @ts-ignore Node typings have this
+        global;
 
 // node_modules/svelte/src/runtime/internal/ResizeObserverSingleton.js
 var ResizeObserverSingleton = class {
@@ -711,7 +918,11 @@ var ResizeObserverSingleton = class {
      * @readonly
      * @type {WeakMap<Element, import('./private.js').Listener>}
      */
-    __publicField(this, "_listeners", "WeakMap" in globals ? /* @__PURE__ */ new WeakMap() : void 0);
+    __publicField(
+      this,
+      "_listeners",
+      "WeakMap" in globals ? /* @__PURE__ */ new WeakMap() : void 0,
+    );
     /**
      * @private
      * @type {ResizeObserver}
@@ -739,16 +950,21 @@ var ResizeObserverSingleton = class {
    */
   _getObserver() {
     var _a;
-    return (_a = this._observer) != null ? _a : this._observer = new ResizeObserver((entries) => {
-      var _a2;
-      for (const entry of entries) {
-        ResizeObserverSingleton.entries.set(entry.target, entry);
-        (_a2 = this._listeners.get(entry.target)) == null ? void 0 : _a2(entry);
-      }
-    });
+    return (_a = this._observer) != null
+      ? _a
+      : (this._observer = new ResizeObserver((entries) => {
+          var _a2;
+          for (const entry of entries) {
+            ResizeObserverSingleton.entries.set(entry.target, entry);
+            (_a2 = this._listeners.get(entry.target)) == null
+              ? void 0
+              : _a2(entry);
+          }
+        }));
   }
 };
-ResizeObserverSingleton.entries = "WeakMap" in globals ? /* @__PURE__ */ new WeakMap() : void 0;
+ResizeObserverSingleton.entries =
+  "WeakMap" in globals ? /* @__PURE__ */ new WeakMap() : void 0;
 
 // node_modules/svelte/src/runtime/internal/dom.js
 var is_hydrating = false;
@@ -771,11 +987,9 @@ function append_styles(target, style_sheet_id, styles) {
   }
 }
 function get_root_for_style(node) {
-  if (!node)
-    return document;
+  if (!node) return document;
   const root = node.getRootNode ? node.getRootNode() : node.ownerDocument;
-  if (root && /** @type {ShadowRoot} */
-  root.host) {
+  if (root && /** @type {ShadowRoot} */ root.host) {
     return (
       /** @type {ShadowRoot} */
       root
@@ -787,7 +1001,7 @@ function append_stylesheet(node, style) {
   append(
     /** @type {Document} */
     node.head || node,
-    style
+    style,
   );
   return style.sheet;
 }
@@ -801,8 +1015,7 @@ function detach(node) {
 }
 function destroy_each(iterations, detaching) {
   for (let i = 0; i < iterations.length; i += 1) {
-    if (iterations[i])
-      iterations[i].d(detaching);
+    if (iterations[i]) iterations[i].d(detaching);
   }
 }
 function element(name) {
@@ -825,8 +1038,7 @@ function listen(node, event, handler, options) {
   return () => node.removeEventListener(event, handler, options);
 }
 function attr(node, attribute, value) {
-  if (value == null)
-    node.removeAttribute(attribute);
+  if (value == null) node.removeAttribute(attribute);
   else if (node.getAttribute(attribute) !== value)
     node.setAttribute(attribute, value);
 }
@@ -835,10 +1047,8 @@ function children(element2) {
 }
 function set_data(text2, data) {
   data = "" + data;
-  if (text2.data === data)
-    return;
-  text2.data = /** @type {string} */
-  data;
+  if (text2.data === data) return;
+  text2.data = /** @type {string} */ data;
 }
 function set_input_value(input, value) {
   input.value = value == null ? "" : value;
@@ -856,7 +1066,7 @@ function get_custom_elements_slots(element2) {
     /** @param {Element} node */
     (node) => {
       result[node.slot || "default"] = true;
-    }
+    },
   );
   return result;
 }
@@ -914,8 +1124,7 @@ function flush() {
     set_current_component(null);
     dirty_components.length = 0;
     flushidx = 0;
-    while (binding_callbacks.length)
-      binding_callbacks.pop()();
+    while (binding_callbacks.length) binding_callbacks.pop()();
     for (let i = 0; i < render_callbacks.length; i += 1) {
       const callback = render_callbacks[i];
       if (!seen_callbacks.has(callback)) {
@@ -945,7 +1154,9 @@ function update($$) {
 function flush_render_callbacks(fns) {
   const filtered = [];
   const targets = [];
-  render_callbacks.forEach((c) => fns.indexOf(c) === -1 ? filtered.push(c) : targets.push(c));
+  render_callbacks.forEach((c) =>
+    fns.indexOf(c) === -1 ? filtered.push(c) : targets.push(c),
+  );
   targets.forEach((c) => c());
   render_callbacks = filtered;
 }
@@ -957,7 +1168,7 @@ function group_outros() {
   outros = {
     r: 0,
     c: [],
-    p: outros
+    p: outros,
     // parent group
   };
 }
@@ -975,14 +1186,12 @@ function transition_in(block, local) {
 }
 function transition_out(block, local, detach2, callback) {
   if (block && block.o) {
-    if (outroing.has(block))
-      return;
+    if (outroing.has(block)) return;
     outroing.add(block);
     outros.c.push(() => {
       outroing.delete(block);
       if (callback) {
-        if (detach2)
-          block.d(1);
+        if (detach2) block.d(1);
         callback();
       }
     });
@@ -994,11 +1203,15 @@ function transition_out(block, local, detach2, callback) {
 
 // node_modules/svelte/src/runtime/internal/each.js
 function ensure_array_like(array_like_or_iterator) {
-  return (array_like_or_iterator == null ? void 0 : array_like_or_iterator.length) !== void 0 ? array_like_or_iterator : Array.from(array_like_or_iterator);
+  return (array_like_or_iterator == null
+    ? void 0
+    : array_like_or_iterator.length) !== void 0
+    ? array_like_or_iterator
+    : Array.from(array_like_or_iterator);
 }
 
 // node_modules/svelte/src/shared/boolean_attributes.js
-var _boolean_attributes = (
+var _boolean_attributes =
   /** @type {const} */
   [
     "allowfullscreen",
@@ -1025,9 +1238,8 @@ var _boolean_attributes = (
     "readonly",
     "required",
     "reversed",
-    "selected"
-  ]
-);
+    "selected",
+  ];
 var boolean_attributes = /* @__PURE__ */ new Set([..._boolean_attributes]);
 
 // node_modules/svelte/src/runtime/internal/Component.js
@@ -1064,12 +1276,21 @@ function make_dirty(component, i) {
     schedule_update();
     component.$$.dirty.fill(0);
   }
-  component.$$.dirty[i / 31 | 0] |= 1 << i % 31;
+  component.$$.dirty[(i / 31) | 0] |= 1 << i % 31;
 }
-function init(component, options, instance6, create_fragment6, not_equal, props, append_styles2 = null, dirty = [-1]) {
+function init(
+  component,
+  options,
+  instance6,
+  create_fragment6,
+  not_equal,
+  props,
+  append_styles2 = null,
+  dirty = [-1],
+) {
   const parent_component = current_component;
   set_current_component(component);
-  const $$ = component.$$ = {
+  const $$ = (component.$$ = {
     fragment: null,
     ctx: [],
     // state
@@ -1083,25 +1304,27 @@ function init(component, options, instance6, create_fragment6, not_equal, props,
     on_disconnect: [],
     before_update: [],
     after_update: [],
-    context: new Map(options.context || (parent_component ? parent_component.$$.context : [])),
+    context: new Map(
+      options.context || (parent_component ? parent_component.$$.context : []),
+    ),
     // everything else
     callbacks: blank_object(),
     dirty,
     skip_bound: false,
-    root: options.target || parent_component.$$.root
-  };
+    root: options.target || parent_component.$$.root,
+  });
   append_styles2 && append_styles2($$.root);
   let ready = false;
-  $$.ctx = instance6 ? instance6(component, options.props || {}, (i, ret, ...rest) => {
-    const value = rest.length ? rest[0] : ret;
-    if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
-      if (!$$.skip_bound && $$.bound[i])
-        $$.bound[i](value);
-      if (ready)
-        make_dirty(component, i);
-    }
-    return ret;
-  }) : [];
+  $$.ctx = instance6
+    ? instance6(component, options.props || {}, (i, ret, ...rest) => {
+        const value = rest.length ? rest[0] : ret;
+        if ($$.ctx && not_equal($$.ctx[i], ($$.ctx[i] = value))) {
+          if (!$$.skip_bound && $$.bound[i]) $$.bound[i](value);
+          if (ready) make_dirty(component, i);
+        }
+        return ret;
+      })
+    : [];
   $$.update();
   ready = true;
   run_all($$.before_update);
@@ -1115,8 +1338,7 @@ function init(component, options, instance6, create_fragment6, not_equal, props,
     } else {
       $$.fragment && $$.fragment.c();
     }
-    if (options.intro)
-      transition_in(component.$$.fragment);
+    if (options.intro) transition_in(component.$$.fragment);
     mount_component(component, options.target, options.anchor);
     end_hydrating();
     flush();
@@ -1174,7 +1396,7 @@ if (typeof HTMLElement === "function") {
     async connectedCallback() {
       this.$$cn = true;
       if (!this.$$c) {
-        let create_slot = function(name) {
+        let create_slot = function (name) {
           return () => {
             let node;
             const obj = {
@@ -1195,7 +1417,7 @@ if (typeof HTMLElement === "function") {
                 if (detaching) {
                   detach(node);
                 }
-              }
+              },
             };
             return obj;
           };
@@ -1214,7 +1436,12 @@ if (typeof HTMLElement === "function") {
         for (const attribute of this.attributes) {
           const name = this.$$g_p(attribute.name);
           if (!(name in this.$$d)) {
-            this.$$d[name] = get_custom_element_value(name, attribute.value, this.$$p_d, "toProp");
+            this.$$d[name] = get_custom_element_value(
+              name,
+              attribute.value,
+              this.$$p_d,
+              "toProp",
+            );
           }
         }
         this.$$c = new this.$$ctor({
@@ -1223,9 +1450,9 @@ if (typeof HTMLElement === "function") {
             ...this.$$d,
             $$slots,
             $$scope: {
-              ctx: []
-            }
-          }
+              ctx: [],
+            },
+          },
         });
         const reflect_attributes = () => {
           this.$$r = true;
@@ -1236,12 +1463,15 @@ if (typeof HTMLElement === "function") {
                 key,
                 this.$$d[key],
                 this.$$p_d,
-                "toAttribute"
+                "toAttribute",
               );
               if (attribute_value == null) {
                 this.removeAttribute(this.$$p_d[key].attribute || key);
               } else {
-                this.setAttribute(this.$$p_d[key].attribute || key, attribute_value);
+                this.setAttribute(
+                  this.$$p_d[key].attribute || key,
+                  attribute_value,
+                );
               }
             }
           }
@@ -1262,10 +1492,14 @@ if (typeof HTMLElement === "function") {
     // and setting attributes through setAttribute etc, this is helpful
     attributeChangedCallback(attr2, _oldValue, newValue) {
       var _a;
-      if (this.$$r)
-        return;
+      if (this.$$r) return;
       attr2 = this.$$g_p(attr2);
-      this.$$d[attr2] = get_custom_element_value(attr2, newValue, this.$$p_d, "toProp");
+      this.$$d[attr2] = get_custom_element_value(
+        attr2,
+        newValue,
+        this.$$p_d,
+        "toProp",
+      );
       (_a = this.$$c) == null ? void 0 : _a.$set({ [attr2]: this.$$d[attr2] });
     }
     disconnectedCallback() {
@@ -1278,16 +1512,22 @@ if (typeof HTMLElement === "function") {
       });
     }
     $$g_p(attribute_name) {
-      return Object.keys(this.$$p_d).find(
-        (key) => this.$$p_d[key].attribute === attribute_name || !this.$$p_d[key].attribute && key.toLowerCase() === attribute_name
-      ) || attribute_name;
+      return (
+        Object.keys(this.$$p_d).find(
+          (key) =>
+            this.$$p_d[key].attribute === attribute_name ||
+            (!this.$$p_d[key].attribute &&
+              key.toLowerCase() === attribute_name),
+        ) || attribute_name
+      );
     }
   };
 }
 function get_custom_element_value(prop, value, props_definition, transform) {
   var _a;
   const type = (_a = props_definition[prop]) == null ? void 0 : _a.type;
-  value = type === "Boolean" && typeof value !== "boolean" ? value != null : value;
+  value =
+    type === "Boolean" && typeof value !== "boolean" ? value != null : value;
   if (!transform || !props_definition[prop]) {
     return value;
   } else if (transform === "toAttribute") {
@@ -1354,8 +1594,7 @@ var SvelteComponent = class {
     callbacks.push(callback);
     return () => {
       const index = callbacks.indexOf(callback);
-      if (index !== -1)
-        callbacks.splice(index, 1);
+      if (index !== -1) callbacks.splice(index, 1);
     };
   }
   /**
@@ -1376,11 +1615,17 @@ var PUBLIC_VERSION = "4";
 
 // node_modules/svelte/src/runtime/internal/disclose-version/index.js
 if (typeof window !== "undefined")
-  (window.__svelte || (window.__svelte = { v: /* @__PURE__ */ new Set() })).v.add(PUBLIC_VERSION);
+  (
+    window.__svelte || (window.__svelte = { v: /* @__PURE__ */ new Set() })
+  ).v.add(PUBLIC_VERSION);
 
 // src/TaskItemComponent.svelte
 function add_css(target) {
-  append_styles(target, "svelte-u70618", ".pomodoro-tasks-item-desc.svelte-u70618{flex:1;overflow:hidden;width:100%;pointer-events:none;cursor:pointer}");
+  append_styles(
+    target,
+    "svelte-u70618",
+    ".pomodoro-tasks-item-desc.svelte-u70618{flex:1;overflow:hidden;width:100%;pointer-events:none;cursor:pointer}",
+  );
 }
 function create_fragment(ctx) {
   let div;
@@ -1401,7 +1646,7 @@ function create_fragment(ctx) {
         detach(div);
       }
       ctx[3](null);
-    }
+    },
   };
 }
 function instance($$self, $$props, $$invalidate) {
@@ -1419,17 +1664,23 @@ function instance($$self, $$props, $$invalidate) {
     });
   }
   $$self.$$set = ($$props2) => {
-    if ("render" in $$props2)
-      $$invalidate(1, render = $$props2.render);
-    if ("content" in $$props2)
-      $$invalidate(2, content = $$props2.content);
+    if ("render" in $$props2) $$invalidate(1, (render = $$props2.render));
+    if ("content" in $$props2) $$invalidate(2, (content = $$props2.content));
   };
   return [el, render, content, div_binding];
 }
 var TaskItemComponent = class extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance, create_fragment, safe_not_equal, { render: 1, content: 2 }, add_css);
+    init(
+      this,
+      options,
+      instance,
+      create_fragment,
+      safe_not_equal,
+      { render: 1, content: 2 },
+      add_css,
+    );
   }
 };
 var TaskItemComponent_default = TaskItemComponent;
@@ -1439,8 +1690,7 @@ var import_obsidian = require("obsidian");
 var import_obsidian_daily_notes_interface = __toESM(require_main());
 
 // src/serializer/TaskModels.ts
-var _TaskRegularExpressions = class {
-};
+var _TaskRegularExpressions = class {};
 var TaskRegularExpressions = _TaskRegularExpressions;
 TaskRegularExpressions.dateFormat = "YYYY-MM-DD";
 TaskRegularExpressions.dateTimeFormat = "YYYY-MM-DD HH:mm";
@@ -1460,17 +1710,27 @@ TaskRegularExpressions.afterCheckboxRegex = / *(.*)/u;
 // See Task.extractTaskComponents() for abstraction around this regular expression.
 // That is private for now, but could be made public in future if needed.
 TaskRegularExpressions.taskRegex = new RegExp(
-  _TaskRegularExpressions.indentationRegex.source + _TaskRegularExpressions.listMarkerRegex.source + " +" + _TaskRegularExpressions.checkboxRegex.source + _TaskRegularExpressions.afterCheckboxRegex.source,
-  "u"
+  _TaskRegularExpressions.indentationRegex.source +
+    _TaskRegularExpressions.listMarkerRegex.source +
+    " +" +
+    _TaskRegularExpressions.checkboxRegex.source +
+    _TaskRegularExpressions.afterCheckboxRegex.source,
+  "u",
 );
 // Used with the "Create or Edit Task" command to parse indentation and status if present
 TaskRegularExpressions.nonTaskRegex = new RegExp(
-  _TaskRegularExpressions.indentationRegex.source + _TaskRegularExpressions.listMarkerRegex.source + "? *(" + _TaskRegularExpressions.checkboxRegex.source + ")?" + _TaskRegularExpressions.afterCheckboxRegex.source,
-  "u"
+  _TaskRegularExpressions.indentationRegex.source +
+    _TaskRegularExpressions.listMarkerRegex.source +
+    "? *(" +
+    _TaskRegularExpressions.checkboxRegex.source +
+    ")?" +
+    _TaskRegularExpressions.afterCheckboxRegex.source,
+  "u",
 );
 // Used with "Toggle Done" command to detect a list item that can get a checkbox added to it.
 TaskRegularExpressions.listItemRegex = new RegExp(
-  _TaskRegularExpressions.indentationRegex.source + _TaskRegularExpressions.listMarkerRegex.source
+  _TaskRegularExpressions.indentationRegex.source +
+    _TaskRegularExpressions.listMarkerRegex.source,
 );
 // Match on block link at end.
 TaskRegularExpressions.blockLinkRegex = / \^[a-zA-Z0-9-]+$/u;
@@ -1485,7 +1745,7 @@ TaskRegularExpressions.blockLinkRegex = / \^[a-zA-Z0-9-]+$/u;
 //  If hashTags is modified, please update 'Recognising Tags' in Tags.md in the docs.
 TaskRegularExpressions.hashTags = /(^|\s)#[^ !@#$%^&*(),.?":{}|<>]+/g;
 TaskRegularExpressions.hashTagsFromEnd = new RegExp(
-  _TaskRegularExpressions.hashTags.source + "$"
+  _TaskRegularExpressions.hashTags.source + "$",
 );
 
 // src/utils.ts
@@ -1495,14 +1755,13 @@ function getTemplater(app) {
 }
 async function parseWithTemplater(app, tfile, templateContent, log) {
   const templater = getTemplater(app);
-  if (!templater)
-    return templateContent;
+  if (!templater) return templateContent;
   const preamble = `<%* const log = ${JSON.stringify(
-    log
+    log,
   )}; log.begin = moment(log.begin); log.end = moment(log.end); %>`;
   return await templater.templater.parse_template(
     { target_file: tfile, run_mode: 4 },
-    `${preamble}${templateContent}`
+    `${preamble}${templateContent}`,
   );
 }
 var ensureFileExists = async (app, path) => {
@@ -1538,33 +1797,45 @@ var join = (...partSegments) => {
   const newParts = [];
   for (let i = 0, l = parts.length; i < l; i++) {
     const part = parts[i];
-    if (!part || part === ".")
-      continue;
-    else
-      newParts.push(part);
+    if (!part || part === ".") continue;
+    else newParts.push(part);
   }
-  if (parts[0] === "")
-    newParts.unshift("");
+  if (parts[0] === "") newParts.unshift("");
   return newParts.join("/");
 };
 var getDailyNoteFile = async () => {
-  const file = (0, import_obsidian_daily_notes_interface.getDailyNote)((0, import_obsidian.moment)(), (0, import_obsidian_daily_notes_interface.getAllDailyNotes)());
+  const file = (0, import_obsidian_daily_notes_interface.getDailyNote)(
+    (0, import_obsidian.moment)(),
+    (0, import_obsidian_daily_notes_interface.getAllDailyNotes)(),
+  );
   if (!file) {
-    return await (0, import_obsidian_daily_notes_interface.createDailyNote)((0, import_obsidian.moment)());
+    return await (0, import_obsidian_daily_notes_interface.createDailyNote)(
+      (0, import_obsidian.moment)(),
+    );
   }
   return file;
 };
 var getWeeklyNoteFile = async () => {
-  const file = (0, import_obsidian_daily_notes_interface.getWeeklyNote)((0, import_obsidian.moment)(), (0, import_obsidian_daily_notes_interface.getAllWeeklyNotes)());
+  const file = (0, import_obsidian_daily_notes_interface.getWeeklyNote)(
+    (0, import_obsidian.moment)(),
+    (0, import_obsidian_daily_notes_interface.getAllWeeklyNotes)(),
+  );
   if (!file) {
-    return await (0, import_obsidian_daily_notes_interface.createWeeklyNote)((0, import_obsidian.moment)());
+    return await (0, import_obsidian_daily_notes_interface.createWeeklyNote)(
+      (0, import_obsidian.moment)(),
+    );
   }
   return file;
 };
 var HASH_TAGS_REG_EXP = /(^|\s)#[^ !@#$%^&*(),.?":{}|<>]+/g;
 function extractHashtags(description) {
   var _a, _b;
-  return (_b = (_a = description.match(HASH_TAGS_REG_EXP)) == null ? void 0 : _a.map((tag) => tag.trim())) != null ? _b : [];
+  return (_b =
+    (_a = description.match(HASH_TAGS_REG_EXP)) == null
+      ? void 0
+      : _a.map((tag) => tag.trim())) != null
+    ? _b
+    : [];
 }
 function extractTaskComponents(line) {
   const regexMatch = line.match(TaskRegularExpressions.taskRegex);
@@ -1601,9 +1872,11 @@ function toInlineFieldRegex(innerFieldRegex) {
     /[)\]]/,
     /(?: *,)?/,
     // Allow trailing comma, enables workaround from #1913 for rendering issue
-    /$/
+    /$/,
     // Regexes are matched from the end of the string forwards
-  ].map((val) => val instanceof RegExp ? val.source : val).join("");
+  ]
+    .map((val) => (val instanceof RegExp ? val.source : val))
+    .join("");
   return new RegExp(fieldRegex, innerFieldRegex.flags);
 }
 
@@ -1611,7 +1884,7 @@ function toInlineFieldRegex(innerFieldRegex) {
 var subscriber_queue = [];
 function readable(value, start) {
   return {
-    subscribe: writable(value, start).subscribe
+    subscribe: writable(value, start).subscribe,
   };
 }
 function writable(value, start = noop) {
@@ -1679,8 +1952,8 @@ function derived(stores, fn, initial_value) {
         cleanup = is_function(result) ? result : noop;
       }
     };
-    const unsubscribers = stores_array.map(
-      (store, i) => subscribe(
+    const unsubscribers = stores_array.map((store, i) =>
+      subscribe(
         store,
         (value) => {
           values[i] = value;
@@ -1691,8 +1964,8 @@ function derived(stores, fn, initial_value) {
         },
         () => {
           pending |= 1 << i;
-        }
-      )
+        },
+      ),
     );
     started = true;
     sync();
@@ -1713,7 +1986,7 @@ var DEFAULT_SYMBOLS = {
     Medium: "\u{1F53C}",
     Low: "\u{1F53D}",
     Lowest: "\u23EC",
-    None: ""
+    None: "",
   },
   startDateSymbol: "\u{1F6EB}",
   createdDateSymbol: "\u2795",
@@ -1734,8 +2007,8 @@ var DEFAULT_SYMBOLS = {
     doneDateRegex: /✅ *(\d{4}-\d{2}-\d{2})$/u,
     cancelledDateRegex: /❌ *(\d{4}-\d{2}-\d{2})$/u,
     recurrenceRegex: /🔁 ?([a-zA-Z0-9, !]+)$/iu,
-    pomodorosRegex: toInlineFieldRegex(/🍅:: *(\d* *\/? *\d*)/)
-  }
+    pomodorosRegex: toInlineFieldRegex(/🍅:: *(\d* *\/? *\d*)/),
+  },
 };
 var DefaultTaskSerializer = class {
   constructor(symbols) {
@@ -1775,7 +2048,7 @@ var DefaultTaskSerializer = class {
   deserialize(line) {
     const { TaskFormatRegularExpressions } = this.symbols;
     let matched;
-    let priority = "3" /* None */;
+    let priority = "3"; /* None */
     let startDate = null;
     let scheduledDate = null;
     let dueDate = null;
@@ -1790,99 +2063,111 @@ var DefaultTaskSerializer = class {
     do {
       matched = false;
       const pomodorosMatch = line.match(
-        TaskFormatRegularExpressions.pomodorosRegex
+        TaskFormatRegularExpressions.pomodorosRegex,
       );
       if (pomodorosMatch !== null) {
         pomodoros = pomodorosMatch[1];
-        line = line.replace(TaskFormatRegularExpressions.pomodorosRegex, "").trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.pomodorosRegex, "")
+          .trim();
         matched = true;
       }
       const priorityMatch = line.match(
-        TaskFormatRegularExpressions.priorityRegex
+        TaskFormatRegularExpressions.priorityRegex,
       );
       if (priorityMatch !== null) {
         priority = this.parsePriority(priorityMatch[1]);
-        line = line.replace(TaskFormatRegularExpressions.priorityRegex, "").trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.priorityRegex, "")
+          .trim();
         matched = true;
       }
       const doneDateMatch = line.match(
-        TaskFormatRegularExpressions.doneDateRegex
+        TaskFormatRegularExpressions.doneDateRegex,
       );
       if (doneDateMatch !== null) {
         doneDate = window.moment(
           doneDateMatch[1],
-          TaskRegularExpressions.dateFormat
+          TaskRegularExpressions.dateFormat,
         );
-        line = line.replace(TaskFormatRegularExpressions.doneDateRegex, "").trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.doneDateRegex, "")
+          .trim();
         matched = true;
       }
       const cancelledDateMatch = line.match(
-        TaskFormatRegularExpressions.cancelledDateRegex
+        TaskFormatRegularExpressions.cancelledDateRegex,
       );
       if (cancelledDateMatch !== null) {
         cancelledDate = window.moment(
           cancelledDateMatch[1],
-          TaskRegularExpressions.dateFormat
+          TaskRegularExpressions.dateFormat,
         );
-        line = line.replace(
-          TaskFormatRegularExpressions.cancelledDateRegex,
-          ""
-        ).trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.cancelledDateRegex, "")
+          .trim();
         matched = true;
       }
       const dueDateMatch = line.match(
-        TaskFormatRegularExpressions.dueDateRegex
+        TaskFormatRegularExpressions.dueDateRegex,
       );
       if (dueDateMatch !== null) {
         dueDate = window.moment(
           dueDateMatch[1],
-          TaskRegularExpressions.dateFormat
+          TaskRegularExpressions.dateFormat,
         );
-        line = line.replace(TaskFormatRegularExpressions.dueDateRegex, "").trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.dueDateRegex, "")
+          .trim();
         matched = true;
       }
       const scheduledDateMatch = line.match(
-        TaskFormatRegularExpressions.scheduledDateRegex
+        TaskFormatRegularExpressions.scheduledDateRegex,
       );
       if (scheduledDateMatch !== null) {
         scheduledDate = window.moment(
           scheduledDateMatch[1],
-          TaskRegularExpressions.dateFormat
+          TaskRegularExpressions.dateFormat,
         );
-        line = line.replace(
-          TaskFormatRegularExpressions.scheduledDateRegex,
-          ""
-        ).trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.scheduledDateRegex, "")
+          .trim();
         matched = true;
       }
       const startDateMatch = line.match(
-        TaskFormatRegularExpressions.startDateRegex
+        TaskFormatRegularExpressions.startDateRegex,
       );
       if (startDateMatch !== null) {
         startDate = window.moment(
           startDateMatch[1],
-          TaskRegularExpressions.dateFormat
+          TaskRegularExpressions.dateFormat,
         );
-        line = line.replace(TaskFormatRegularExpressions.startDateRegex, "").trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.startDateRegex, "")
+          .trim();
         matched = true;
       }
       const createdDateMatch = line.match(
-        TaskFormatRegularExpressions.createdDateRegex
+        TaskFormatRegularExpressions.createdDateRegex,
       );
       if (createdDateMatch !== null) {
         createdDate = window.moment(
           createdDateMatch[1],
-          TaskRegularExpressions.dateFormat
+          TaskRegularExpressions.dateFormat,
         );
-        line = line.replace(TaskFormatRegularExpressions.createdDateRegex, "").trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.createdDateRegex, "")
+          .trim();
         matched = true;
       }
       const recurrenceMatch = line.match(
-        TaskFormatRegularExpressions.recurrenceRegex
+        TaskFormatRegularExpressions.recurrenceRegex,
       );
       if (recurrenceMatch !== null) {
         recurrenceRule = recurrenceMatch[1].trim();
-        line = line.replace(TaskFormatRegularExpressions.recurrenceRegex, "").trim();
+        line = line
+          .replace(TaskFormatRegularExpressions.recurrenceRegex, "")
+          .trim();
         matched = true;
       }
       const tagsMatch = line.match(TaskRegularExpressions.hashTagsFromEnd);
@@ -1890,12 +2175,12 @@ var DefaultTaskSerializer = class {
         line = line.replace(TaskRegularExpressions.hashTagsFromEnd, "").trim();
         matched = true;
         const tagName = tagsMatch[0].trim();
-        trailingTags = trailingTags.length > 0 ? [tagName, trailingTags].join(" ") : tagName;
+        trailingTags =
+          trailingTags.length > 0 ? [tagName, trailingTags].join(" ") : tagName;
       }
       runs++;
     } while (matched && runs <= maxRuns);
-    if (trailingTags.length > 0)
-      line += " " + trailingTags;
+    if (trailingTags.length > 0) line += " " + trailingTags;
     return {
       description: line,
       priority,
@@ -1907,7 +2192,7 @@ var DefaultTaskSerializer = class {
       cancelledDate,
       recurrenceRule,
       pomodoros,
-      tags: extractHashtags(line)
+      tags: extractHashtags(line),
     };
   }
 };
@@ -1921,7 +2206,7 @@ var DATAVIEW_SYMBOLS = {
     Medium: "priority:: medium",
     Low: "priority:: low",
     Lowest: "priority:: lowest",
-    None: ""
+    None: "",
   },
   startDateSymbol: "start::",
   createdDateSymbol: "created::",
@@ -1933,21 +2218,17 @@ var DATAVIEW_SYMBOLS = {
   pomodorosSymbol: "\u{1F345}::",
   TaskFormatRegularExpressions: {
     priorityRegex: toInlineFieldRegex(
-      /priority:: *(highest|high|medium|low|lowest)/
+      /priority:: *(highest|high|medium|low|lowest)/,
     ),
     startDateRegex: toInlineFieldRegex(/start:: *(\d{4}-\d{2}-\d{2})/),
     createdDateRegex: toInlineFieldRegex(/created:: *(\d{4}-\d{2}-\d{2})/),
-    scheduledDateRegex: toInlineFieldRegex(
-      /scheduled:: *(\d{4}-\d{2}-\d{2})/
-    ),
+    scheduledDateRegex: toInlineFieldRegex(/scheduled:: *(\d{4}-\d{2}-\d{2})/),
     dueDateRegex: toInlineFieldRegex(/due:: *(\d{4}-\d{2}-\d{2})/),
     doneDateRegex: toInlineFieldRegex(/completion:: *(\d{4}-\d{2}-\d{2})/),
-    cancelledDateRegex: toInlineFieldRegex(
-      /cancelled:: *(\d{4}-\d{2}-\d{2})/
-    ),
+    cancelledDateRegex: toInlineFieldRegex(/cancelled:: *(\d{4}-\d{2}-\d{2})/),
     recurrenceRegex: toInlineFieldRegex(/repeat:: *([a-zA-Z0-9, !]+)/),
-    pomodorosRegex: toInlineFieldRegex(/🍅:: *(\d* *\/? *\d*)/)
-  }
+    pomodorosRegex: toInlineFieldRegex(/🍅:: *(\d* *\/? *\d*)/),
+  },
 };
 var DataviewTaskSerializer = class extends DefaultTaskSerializer {
   constructor() {
@@ -1973,11 +2254,11 @@ var DataviewTaskSerializer = class extends DefaultTaskSerializer {
 
 // src/serializer/index.ts
 var POMODORO_REGEX = new RegExp(
-  "(?:(?=[^\\]]+\\])\\[|(?=[^)]+\\))\\() *\u{1F345}:: *(\\d* *\\/? *\\d*) *[)\\]](?: *,)?"
+  "(?:(?=[^\\]]+\\])\\[|(?=[^)]+\\))\\() *\u{1F345}:: *(\\d* *\\/? *\\d*) *[)\\]](?: *,)?",
 );
 var DESERIALIZERS = {
   TASKS: new DefaultTaskSerializer(DEFAULT_SYMBOLS),
-  DATAVIEW: new DataviewTaskSerializer()
+  DATAVIEW: new DataviewTaskSerializer(),
 };
 
 // src/Tasks.ts
@@ -1985,14 +2266,14 @@ var Tasks = class {
   constructor(plugin) {
     this.unsubscribers = [];
     this.state = {
-      list: []
+      list: [],
     };
     this.plugin = plugin;
     this._store = writable(this.state);
     this.unsubscribers.push(
       this._store.subscribe((state) => {
         this.state = state;
-      })
+      }),
     );
     this.unsubscribers.push(
       derived(this.plugin.tracker, ($tracker) => {
@@ -2006,39 +2287,46 @@ var Tasks = class {
         } else {
           this.clearTasks();
         }
-      })
+      }),
     );
     this.subscribe = this._store.subscribe;
     this.plugin.registerEvent(
-      plugin.app.metadataCache.on(
-        "changed",
-        (file, content, cache) => {
-          var _a, _b;
-          if (file.extension === "md" && file == this.plugin.tracker.file) {
-            let tasks = resolveTasks(
-              this.plugin.getSettings().taskFormat,
-              file,
-              content,
-              cache
-            );
-            this._store.update((state) => {
-              state.list = tasks;
-              return state;
-            });
-            if ((_b = (_a = this.plugin.tracker) == null ? void 0 : _a.task) == null ? void 0 : _b.blockLink) {
-              let task = tasks.find(
-                (item) => {
-                  var _a2, _b2;
-                  return item.blockLink && item.blockLink === ((_b2 = (_a2 = this.plugin.tracker) == null ? void 0 : _a2.task) == null ? void 0 : _b2.blockLink);
-                }
+      plugin.app.metadataCache.on("changed", (file, content, cache) => {
+        var _a, _b;
+        if (file.extension === "md" && file == this.plugin.tracker.file) {
+          let tasks = resolveTasks(
+            this.plugin.getSettings().taskFormat,
+            file,
+            content,
+            cache,
+          );
+          this._store.update((state) => {
+            state.list = tasks;
+            return state;
+          });
+          if (
+            (_b = (_a = this.plugin.tracker) == null ? void 0 : _a.task) == null
+              ? void 0
+              : _b.blockLink
+          ) {
+            let task = tasks.find((item) => {
+              var _a2, _b2;
+              return (
+                item.blockLink &&
+                item.blockLink ===
+                  ((_b2 =
+                    (_a2 = this.plugin.tracker) == null ? void 0 : _a2.task) ==
+                  null
+                    ? void 0
+                    : _b2.blockLink)
               );
-              if (task) {
-                this.plugin.tracker.sync(task);
-              }
+            });
+            if (task) {
+              this.plugin.tracker.sync(task);
             }
           }
         }
-      )
+      }),
     );
   }
   static getDeserializer(format) {
@@ -2051,22 +2339,22 @@ var Tasks = class {
           this.plugin.getSettings().taskFormat,
           file,
           c,
-          this.plugin.app.metadataCache.getFileCache(file)
+          this.plugin.app.metadataCache.getFileCache(file),
         );
         this._store.update(() => ({
-          list: tasks
+          list: tasks,
         }));
       });
     } else {
       this._store.update(() => ({
         file,
-        list: []
+        list: [],
       }));
     }
   }
   clearTasks() {
     this._store.update(() => ({
-      list: []
+      list: [],
     }));
   }
   destroy() {
@@ -2102,18 +2390,51 @@ function resolveTasks(format, file, content, metadata) {
         blockLink: components.blockLink,
         checked: rawElement.task != "" && rawElement.task != " ",
         description: detail.description,
-        done: (_b = (_a = detail.doneDate) == null ? void 0 : _a.format(dateformat)) != null ? _b : "",
-        due: (_d = (_c = detail.dueDate) == null ? void 0 : _c.format(dateformat)) != null ? _d : "",
-        created: (_f = (_e = detail.createdDate) == null ? void 0 : _e.format(dateformat)) != null ? _f : "",
-        cancelled: (_h = (_g = detail.cancelledDate) == null ? void 0 : _g.format(dateformat)) != null ? _h : "",
-        scheduled: (_j = (_i = detail.scheduledDate) == null ? void 0 : _i.format(dateformat)) != null ? _j : "",
-        start: (_l = (_k = detail.startDate) == null ? void 0 : _k.format(dateformat)) != null ? _l : "",
+        done:
+          (_b =
+            (_a = detail.doneDate) == null ? void 0 : _a.format(dateformat)) !=
+          null
+            ? _b
+            : "",
+        due:
+          (_d =
+            (_c = detail.dueDate) == null ? void 0 : _c.format(dateformat)) !=
+          null
+            ? _d
+            : "",
+        created:
+          (_f =
+            (_e = detail.createdDate) == null
+              ? void 0
+              : _e.format(dateformat)) != null
+            ? _f
+            : "",
+        cancelled:
+          (_h =
+            (_g = detail.cancelledDate) == null
+              ? void 0
+              : _g.format(dateformat)) != null
+            ? _h
+            : "",
+        scheduled:
+          (_j =
+            (_i = detail.scheduledDate) == null
+              ? void 0
+              : _i.format(dateformat)) != null
+            ? _j
+            : "",
+        start:
+          (_l =
+            (_k = detail.startDate) == null ? void 0 : _k.format(dateformat)) !=
+          null
+            ? _l
+            : "",
         priority: detail.priority,
         recurrence: detail.recurrenceRule,
         expected: expected ? parseInt(expected) : 0,
         actual: actual === "" ? 0 : parseInt(actual),
         tags: detail.tags,
-        line: lineNr
+        line: lineNr,
       };
       cache[lineNr] = item;
     }
@@ -2154,143 +2475,175 @@ var _PomodoroSettings = class extends import_obsidian2.PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    new import_obsidian2.Setting(containerEl).setName("Enable Status Bar Timer").addToggle((toggle) => {
-      toggle.setValue(this._settings.useStatusBarTimer);
-      toggle.onChange((value) => {
-        this.updateSettings({ useStatusBarTimer: value });
+    new import_obsidian2.Setting(containerEl)
+      .setName("Enable Status Bar Timer")
+      .addToggle((toggle) => {
+        toggle.setValue(this._settings.useStatusBarTimer);
+        toggle.onChange((value) => {
+          this.updateSettings({ useStatusBarTimer: value });
+        });
       });
-    });
-    new import_obsidian2.Setting(containerEl).setName("Low Animation FPS").setDesc("If you encounter high CPU usage, you can enable this option to lower the animation FPS to save CPU resources").addToggle((toggle) => {
-      toggle.setValue(this._settings.lowFps);
-      toggle.onChange((value) => {
-        this.updateSettings({ lowFps: value });
+    new import_obsidian2.Setting(containerEl)
+      .setName("Low Animation FPS")
+      .setDesc(
+        "If you encounter high CPU usage, you can enable this option to lower the animation FPS to save CPU resources",
+      )
+      .addToggle((toggle) => {
+        toggle.setValue(this._settings.lowFps);
+        toggle.onChange((value) => {
+          this.updateSettings({ lowFps: value });
+        });
       });
-    });
-    new import_obsidian2.Setting(containerEl).setHeading().setName("Notification");
-    new import_obsidian2.Setting(containerEl).setName("Use System Notification").addToggle((toggle) => {
-      toggle.setValue(this._settings.useSystemNotification);
-      toggle.onChange((value) => {
-        this.updateSettings({ useSystemNotification: value });
+    new import_obsidian2.Setting(containerEl)
+      .setHeading()
+      .setName("Notification");
+    new import_obsidian2.Setting(containerEl)
+      .setName("Use System Notification")
+      .addToggle((toggle) => {
+        toggle.setValue(this._settings.useSystemNotification);
+        toggle.onChange((value) => {
+          this.updateSettings({ useSystemNotification: value });
+        });
       });
-    });
-    new import_obsidian2.Setting(containerEl).setName("Sound Notification").addToggle((toggle) => {
-      toggle.setValue(this._settings.notificationSound);
-      toggle.onChange((value) => {
-        this.updateSettings({ notificationSound: value }, true);
+    new import_obsidian2.Setting(containerEl)
+      .setName("Sound Notification")
+      .addToggle((toggle) => {
+        toggle.setValue(this._settings.notificationSound);
+        toggle.onChange((value) => {
+          this.updateSettings({ notificationSound: value }, true);
+        });
       });
-    });
     if (this._settings.notificationSound) {
-      new import_obsidian2.Setting(containerEl).setName("Custom Notification Audio").addText((text2) => {
-        text2.inputEl.style.width = "100%";
-        text2.setPlaceholder("path/to/sound.mp3");
-        text2.setValue(this._settings.customSound);
-        text2.onChange((value) => {
-          this.updateSettings({ customSound: value });
-        });
-      }).addExtraButton((button) => {
-        button.setIcon("play");
-        button.setTooltip("play");
-        button.onClick(() => {
-          var _a;
-          (_a = this.plugin.timer) == null ? void 0 : _a.playAudio();
-        });
-      });
-    }
-    new import_obsidian2.Setting(containerEl).setHeading().setName("Task");
-    new import_obsidian2.Setting(containerEl).setName("Enable Task Tracking").setDesc(
-      "Important: Enabling this feature will automatically add a block ID when activating a task, unless a block ID is already present."
-    ).addToggle((toggle) => {
-      toggle.setValue(this._settings.enableTaskTracking);
-      toggle.onChange((value) => {
-        this.updateSettings({ enableTaskTracking: value });
-      });
-    });
-    new import_obsidian2.Setting(containerEl).setName("Show Task Progress Background").addToggle((toggle) => {
-      toggle.setValue(this._settings.showTaskProgress);
-      toggle.onChange((value) => {
-        this.updateSettings({ showTaskProgress: value });
-      });
-    });
-    new import_obsidian2.Setting(containerEl).setName("Task Format").addDropdown((dropdown) => {
-      dropdown.selectEl.style.width = "160px";
-      dropdown.addOptions({
-        TASKS: "Tasks Emoji Format",
-        DATAVIEW: "Dataview"
-      });
-      dropdown.setValue(this._settings.taskFormat);
-      dropdown.onChange((value) => {
-        this.updateSettings(
-          { taskFormat: value },
-          true
-        );
-      });
-    });
-    new import_obsidian2.Setting(containerEl).setHeading().setName("Log");
-    new import_obsidian2.Setting(containerEl).setName("Log File").addDropdown((dropdown) => {
-      dropdown.selectEl.style.width = "160px";
-      dropdown.addOptions({ NONE: "None" });
-      if ((0, import_obsidian_daily_notes_interface2.appHasDailyNotesPluginLoaded)()) {
-        dropdown.addOptions({ DAILY: "Daily note" });
-      }
-      if ((0, import_obsidian_daily_notes_interface2.appHasWeeklyNotesPluginLoaded)()) {
-        dropdown.addOptions({ WEEKLY: "Weekly note" });
-      }
-      dropdown.addOptions({ FILE: "File" });
-      dropdown.setValue(this._settings.logFile);
-      dropdown.onChange((value) => {
-        this.updateSettings({ logFile: value }, true);
-      });
-    });
-    if (this._settings.logFile != "NONE") {
-      if (this._settings.logFile === "FILE") {
-        new import_obsidian2.Setting(containerEl).setName("Log file path").setDesc("The file to log pomodoro sessions to").addText((text2) => {
-          text2.inputEl.style.width = "300px";
-          text2.setValue(this._settings.logPath);
+      new import_obsidian2.Setting(containerEl)
+        .setName("Custom Notification Audio")
+        .addText((text2) => {
+          text2.inputEl.style.width = "100%";
+          text2.setPlaceholder("path/to/sound.mp3");
+          text2.setValue(this._settings.customSound);
           text2.onChange((value) => {
-            this.updateSettings({ logPath: value });
+            this.updateSettings({ customSound: value });
+          });
+        })
+        .addExtraButton((button) => {
+          button.setIcon("play");
+          button.setTooltip("play");
+          button.onClick(() => {
+            var _a;
+            (_a = this.plugin.timer) == null ? void 0 : _a.playAudio();
           });
         });
-      }
-      new import_obsidian2.Setting(containerEl).setName("Log Level").addDropdown((dropdown) => {
-        dropdown.selectEl.style.width = "160px";
-        dropdown.addOptions({
-          ALL: "All",
-          WORK: "Work",
-          BREAK: "Break"
-        });
-        dropdown.setValue(this._settings.logLevel);
-        dropdown.onChange((value) => {
-          this.updateSettings({ logLevel: value });
+    }
+    new import_obsidian2.Setting(containerEl).setHeading().setName("Task");
+    new import_obsidian2.Setting(containerEl)
+      .setName("Enable Task Tracking")
+      .setDesc(
+        "Important: Enabling this feature will automatically add a block ID when activating a task, unless a block ID is already present.",
+      )
+      .addToggle((toggle) => {
+        toggle.setValue(this._settings.enableTaskTracking);
+        toggle.onChange((value) => {
+          this.updateSettings({ enableTaskTracking: value });
         });
       });
+    new import_obsidian2.Setting(containerEl)
+      .setName("Show Task Progress Background")
+      .addToggle((toggle) => {
+        toggle.setValue(this._settings.showTaskProgress);
+        toggle.onChange((value) => {
+          this.updateSettings({ showTaskProgress: value });
+        });
+      });
+    new import_obsidian2.Setting(containerEl)
+      .setName("Task Format")
+      .addDropdown((dropdown) => {
+        dropdown.selectEl.style.width = "160px";
+        dropdown.addOptions({
+          TASKS: "Tasks Emoji Format",
+          DATAVIEW: "Dataview",
+        });
+        dropdown.setValue(this._settings.taskFormat);
+        dropdown.onChange((value) => {
+          this.updateSettings({ taskFormat: value }, true);
+        });
+      });
+    new import_obsidian2.Setting(containerEl).setHeading().setName("Log");
+    new import_obsidian2.Setting(containerEl)
+      .setName("Log File")
+      .addDropdown((dropdown) => {
+        dropdown.selectEl.style.width = "160px";
+        dropdown.addOptions({ NONE: "None" });
+        if (
+          (0,
+          import_obsidian_daily_notes_interface2.appHasDailyNotesPluginLoaded)()
+        ) {
+          dropdown.addOptions({ DAILY: "Daily note" });
+        }
+        if (
+          (0,
+          import_obsidian_daily_notes_interface2.appHasWeeklyNotesPluginLoaded)()
+        ) {
+          dropdown.addOptions({ WEEKLY: "Weekly note" });
+        }
+        dropdown.addOptions({ FILE: "File" });
+        dropdown.setValue(this._settings.logFile);
+        dropdown.onChange((value) => {
+          this.updateSettings({ logFile: value }, true);
+        });
+      });
+    if (this._settings.logFile != "NONE") {
+      if (this._settings.logFile === "FILE") {
+        new import_obsidian2.Setting(containerEl)
+          .setName("Log file path")
+          .setDesc("The file to log pomodoro sessions to")
+          .addText((text2) => {
+            text2.inputEl.style.width = "300px";
+            text2.setValue(this._settings.logPath);
+            text2.onChange((value) => {
+              this.updateSettings({ logPath: value });
+            });
+          });
+      }
+      new import_obsidian2.Setting(containerEl)
+        .setName("Log Level")
+        .addDropdown((dropdown) => {
+          dropdown.selectEl.style.width = "160px";
+          dropdown.addOptions({
+            ALL: "All",
+            WORK: "Work",
+            BREAK: "Break",
+          });
+          dropdown.setValue(this._settings.logLevel);
+          dropdown.onChange((value) => {
+            this.updateSettings({ logLevel: value });
+          });
+        });
       const hasTemplater = !!getTemplater(this.app);
       let example = "";
       if (this._settings.logFormat == "SIMPLE") {
         example = `**WORK(25m)**: from ${(0, import_obsidian2.moment)().subtract(25, "minutes").format("HH:mm")} - ${(0, import_obsidian2.moment)().format("HH:mm")}`;
       }
       if (this._settings.logFormat == "VERBOSE") {
-        example = `- \u{1F345} (pomodoro::WORK) (duration:: 25m) (begin:: ${(0, import_obsidian2.moment)().subtract(25, "minutes").format("YYYY-MM-DD HH:mm")}) - (end:: ${(0, import_obsidian2.moment)().format(
-          "YYYY-MM-DD HH:mm"
-        )})`;
+        example = `- \u{1F345} (pomodoro::WORK) (duration:: 25m) (begin:: ${(0, import_obsidian2.moment)().subtract(25, "minutes").format("YYYY-MM-DD HH:mm")}) - (end:: ${(0,
+        import_obsidian2.moment)().format("YYYY-MM-DD HH:mm")})`;
       }
-      new import_obsidian2.Setting(containerEl).setName("Log Format").setDesc(example).addDropdown((dropdown) => {
-        dropdown.selectEl.style.width = "160px";
-        dropdown.addOptions({
-          SIMPLE: "Simple",
-          VERBOSE: "Verbose",
-          CUSTOM: "Custom"
+      new import_obsidian2.Setting(containerEl)
+        .setName("Log Format")
+        .setDesc(example)
+        .addDropdown((dropdown) => {
+          dropdown.selectEl.style.width = "160px";
+          dropdown.addOptions({
+            SIMPLE: "Simple",
+            VERBOSE: "Verbose",
+            CUSTOM: "Custom",
+          });
+          dropdown.setValue(this._settings.logFormat);
+          dropdown.onChange((value) => {
+            this.updateSettings({ logFormat: value }, true);
+          });
         });
-        dropdown.setValue(this._settings.logFormat);
-        dropdown.onChange((value) => {
-          this.updateSettings(
-            { logFormat: value },
-            true
-          );
-        });
-      });
       if (this._settings.logFormat == "CUSTOM") {
         const logTemplate = new import_obsidian2.Setting(containerEl).setName(
-          "Log template"
+          "Log template",
         );
         if (hasTemplater) {
           logTemplate.addTextArea((text2) => {
@@ -2303,27 +2656,29 @@ var _PomodoroSettings = class extends import_obsidian2.PluginSettingTab {
             });
           });
         } else {
-          logTemplate.setDesc(
-            createFragment((fragment) => {
-              const text1 = document.createElement("span");
-              text1.setText("Requires ");
-              text1.style.color = "var(--text-error)";
-              const a = document.createElement("a");
-              a.setText("Templater");
-              a.href = "obsidian://show-plugin?id=templater-obsidian";
-              const text2 = document.createElement("span");
-              text2.setText(
-                " plugin to be enabled, then click the refresh button"
-              );
-              text2.style.color = "var(--text-error)";
-              fragment.append(text1, a, text2);
-            })
-          ).addButton((button) => {
-            button.setIcon("refresh-ccw");
-            button.onClick(() => {
-              this.display();
+          logTemplate
+            .setDesc(
+              createFragment((fragment) => {
+                const text1 = document.createElement("span");
+                text1.setText("Requires ");
+                text1.style.color = "var(--text-error)";
+                const a = document.createElement("a");
+                a.setText("Templater");
+                a.href = "obsidian://show-plugin?id=templater-obsidian";
+                const text2 = document.createElement("span");
+                text2.setText(
+                  " plugin to be enabled, then click the refresh button",
+                );
+                text2.style.color = "var(--text-error)";
+                fragment.append(text1, a, text2);
+              }),
+            )
+            .addButton((button) => {
+              button.setIcon("refresh-ccw");
+              button.onClick(() => {
+                this.display();
+              });
             });
-          });
         }
       }
     }
@@ -2353,11 +2708,9 @@ PomodoroSettings.DEFAULT_SETTINGS = {
   logFormat: "VERBOSE",
   useSystemNotification: false,
   taskFormat: "TASKS",
-  lowFps: false
+  lowFps: false,
 };
-PomodoroSettings.settings = writable(
-  _PomodoroSettings.DEFAULT_SETTINGS
-);
+PomodoroSettings.settings = writable(_PomodoroSettings.DEFAULT_SETTINGS);
 
 // src/stores.ts
 var settings = PomodoroSettings.settings;
@@ -2365,7 +2718,11 @@ var settings = PomodoroSettings.settings;
 // src/TasksComponent.svelte
 var import_obsidian3 = require("obsidian");
 function add_css2(target) {
-  append_styles(target, "svelte-1ipipwe", ".pomodoro-tasks-wrapper.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%;border:1px solid var(--background-modifier-border);border-radius:5px}.pomodoro-tasks-header-title.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%;background-color:var(--background-modifier-active-hover);padding:0.5rem 1rem;font-size:1rem;font-weight:bold;display:flex;justify-content:space-between;align-items:flex-end}.pomodoro-tasks-header-title.svelte-1ipipwe .pomodoro-tasks-file-name.svelte-1ipipwe.svelte-1ipipwe{flex:1;text-wrap:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:5px}.pomodoro-tasks-file-name.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer}.pomodoro-tasks-header-title.svelte-1ipipwe .pomodoro-tasks-count.svelte-1ipipwe.svelte-1ipipwe{width:50px}.pomodoro-tasks-list.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe,.pomodoro-tasks-active.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{border-top:1px solid var(--background-modifier-border);width:100%}.pomodoro-tasks-item.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{display:flex;flex-direction:column;width:100%;padding:0.5rem 1rem;display:flex}.pomodoro-tasks-list.svelte-1ipipwe .pomodoro-tasks-item.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer}.pomodoro-tasks-toolbar.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%}.pomodoro-tasks-count.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{color:var(--text-faint);font-size:0.8rem;text-wrap:nowrap}.pomodoro-tasks-filters.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{padding:0.5rem 1rem}.pomodoro-tasks-text-filter.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{border-top:1px solid var(--background-modifier-border);padding:0.5rem 0rem}.pomodoro-tasks-wrapper.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe{width:100%;font-size:0.8rem;border:none;border-radius:0;background:transparent}.pomodoro-tasks-wrapper.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe:active{border:none;box-shadow:none}.pomodoro-tasks-wrapper.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe:focus{border:none;box-shadow:none}.pomodoro-tasks-text-filter.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe{height:0.8rem}.pomodoro-tasks-filter.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{font-size:0.8rem;padding:1px 7px;border-radius:10px;cursor:pointer;color:var(--text-muted)}.pomodoro-tasks-name.svelte-1ipipwe svg.svelte-1ipipwe.svelte-1ipipwe{margin-right:5px}.pomodoro-tasks-name.svelte-1ipipwe svg.svelte-1ipipwe.svelte-1ipipwe{color:var(--color-blue)}.pomodoro-tasks-checked.svelte-1ipipwe .pomodoro-tasks-name.svelte-1ipipwe svg.svelte-1ipipwe{color:var(--color-green)}.pomodoro-tasks-name.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%;display:flex;align-items:baseline}.filter-active.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{background-color:var(--interactive-accent);color:var(--text-on-accent-inverted)}.pomodoro-tasks-item.svelte-1ipipwe+.pomodoro-tasks-item.svelte-1ipipwe.svelte-1ipipwe{border-top:1px solid var(--background-modifier-border)}.pomodoro-tasks-checked.svelte-1ipipwe .pomodoro-tasks-name.svelte-1ipipwe.svelte-1ipipwe{text-decoration:line-through;color:var(--text-muted)}.pomodoro-tasks-pin.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer;padding-right:3px}.pomodoro-tasks-remove.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer}.pomodoro-tasks-progress.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{font-size:0.7rem;color:var(--text-muted);text-align:end;text-wrap:nowrap;overflow:hidden}");
+  append_styles(
+    target,
+    "svelte-1ipipwe",
+    ".pomodoro-tasks-wrapper.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%;border:1px solid var(--background-modifier-border);border-radius:5px}.pomodoro-tasks-header-title.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%;background-color:var(--background-modifier-active-hover);padding:0.5rem 1rem;font-size:1rem;font-weight:bold;display:flex;justify-content:space-between;align-items:flex-end}.pomodoro-tasks-header-title.svelte-1ipipwe .pomodoro-tasks-file-name.svelte-1ipipwe.svelte-1ipipwe{flex:1;text-wrap:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:5px}.pomodoro-tasks-file-name.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer}.pomodoro-tasks-header-title.svelte-1ipipwe .pomodoro-tasks-count.svelte-1ipipwe.svelte-1ipipwe{width:50px}.pomodoro-tasks-list.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe,.pomodoro-tasks-active.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{border-top:1px solid var(--background-modifier-border);width:100%}.pomodoro-tasks-item.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{display:flex;flex-direction:column;width:100%;padding:0.5rem 1rem;display:flex}.pomodoro-tasks-list.svelte-1ipipwe .pomodoro-tasks-item.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer}.pomodoro-tasks-toolbar.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%}.pomodoro-tasks-count.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{color:var(--text-faint);font-size:0.8rem;text-wrap:nowrap}.pomodoro-tasks-filters.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{padding:0.5rem 1rem}.pomodoro-tasks-text-filter.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{border-top:1px solid var(--background-modifier-border);padding:0.5rem 0rem}.pomodoro-tasks-wrapper.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe{width:100%;font-size:0.8rem;border:none;border-radius:0;background:transparent}.pomodoro-tasks-wrapper.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe:active{border:none;box-shadow:none}.pomodoro-tasks-wrapper.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe:focus{border:none;box-shadow:none}.pomodoro-tasks-text-filter.svelte-1ipipwe input.svelte-1ipipwe.svelte-1ipipwe{height:0.8rem}.pomodoro-tasks-filter.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{font-size:0.8rem;padding:1px 7px;border-radius:10px;cursor:pointer;color:var(--text-muted)}.pomodoro-tasks-name.svelte-1ipipwe svg.svelte-1ipipwe.svelte-1ipipwe{margin-right:5px}.pomodoro-tasks-name.svelte-1ipipwe svg.svelte-1ipipwe.svelte-1ipipwe{color:var(--color-blue)}.pomodoro-tasks-checked.svelte-1ipipwe .pomodoro-tasks-name.svelte-1ipipwe svg.svelte-1ipipwe{color:var(--color-green)}.pomodoro-tasks-name.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{width:100%;display:flex;align-items:baseline}.filter-active.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{background-color:var(--interactive-accent);color:var(--text-on-accent-inverted)}.pomodoro-tasks-item.svelte-1ipipwe+.pomodoro-tasks-item.svelte-1ipipwe.svelte-1ipipwe{border-top:1px solid var(--background-modifier-border)}.pomodoro-tasks-checked.svelte-1ipipwe .pomodoro-tasks-name.svelte-1ipipwe.svelte-1ipipwe{text-decoration:line-through;color:var(--text-muted)}.pomodoro-tasks-pin.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer;padding-right:3px}.pomodoro-tasks-remove.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{cursor:pointer}.pomodoro-tasks-progress.svelte-1ipipwe.svelte-1ipipwe.svelte-1ipipwe{font-size:0.7rem;color:var(--text-muted);text-align:end;text-wrap:nowrap;overflow:hidden}",
+  );
 }
 function get_each_context(ctx, list, i) {
   const child_ctx = ctx.slice();
@@ -2379,17 +2736,15 @@ function create_if_block(ctx) {
   let span0;
   let t0;
   let span1;
-  let t1_value = (
+  let t1_value =
     /*$tracker*/
-    ctx[6].file.name + ""
-  );
+    ctx[6].file.name + "";
   let t1;
   let t2;
   let span2;
-  let t3_value = (
+  let t3_value =
     /*filtered*/
-    ctx[5].length + ""
-  );
+    ctx[5].length + "";
   let t3;
   let t4;
   let t5;
@@ -2398,21 +2753,17 @@ function create_if_block(ctx) {
   let mounted;
   let dispose;
   function select_block_type(ctx2, dirty) {
-    if (!/*$tracker*/
-    ctx2[6].pinned)
-      return create_if_block_5;
+    if (!(/*$tracker*/ ctx2[6].pinned)) return create_if_block_5;
     return create_else_block_1;
   }
   let current_block_type = select_block_type(ctx, -1);
   let if_block0 = current_block_type(ctx);
-  let if_block1 = (
+  let if_block1 =
     /*$tasks*/
-    ctx[4].list.length > 0 && create_if_block_3(ctx)
-  );
-  let if_block2 = (
+    ctx[4].list.length > 0 && create_if_block_3(ctx);
+  let if_block2 =
     /*filtered*/
-    ctx[5].length > 0 && create_if_block_1(ctx)
-  );
+    ctx[5].length > 0 && create_if_block_1(ctx);
   return {
     c() {
       div2 = element("div");
@@ -2428,11 +2779,9 @@ function create_if_block(ctx) {
       t3 = text(t3_value);
       t4 = text(" tasks");
       t5 = space();
-      if (if_block1)
-        if_block1.c();
+      if (if_block1) if_block1.c();
       t6 = space();
-      if (if_block2)
-        if_block2.c();
+      if (if_block2) if_block2.c();
       attr(span0, "class", "pomodoro-tasks-pin svelte-1ipipwe");
       attr(span1, "class", "pomodoro-tasks-file-name svelte-1ipipwe");
       attr(span2, "class", "pomodoro-tasks-count svelte-1ipipwe");
@@ -2454,11 +2803,9 @@ function create_if_block(ctx) {
       append(span2, t3);
       append(span2, t4);
       append(div1, t5);
-      if (if_block1)
-        if_block1.m(div1, null);
+      if (if_block1) if_block1.m(div1, null);
       append(div2, t6);
-      if (if_block2)
-        if_block2.m(div2, null);
+      if (if_block2) if_block2.m(div2, null);
       current = true;
       if (!mounted) {
         dispose = [
@@ -2466,20 +2813,23 @@ function create_if_block(ctx) {
             span0,
             "click",
             /*togglePinned*/
-            ctx[9]
+            ctx[9],
           ),
           listen(
             span1,
             "click",
             /*openFile*/
-            ctx[14]
-          )
+            ctx[14],
+          ),
         ];
         mounted = true;
       }
     },
     p(ctx2, dirty) {
-      if (current_block_type !== (current_block_type = select_block_type(ctx2, dirty))) {
+      if (
+        current_block_type !==
+        (current_block_type = select_block_type(ctx2, dirty))
+      ) {
         if_block0.d(1);
         if_block0 = current_block_type(ctx2);
         if (if_block0) {
@@ -2487,13 +2837,15 @@ function create_if_block(ctx) {
           if_block0.m(span0, null);
         }
       }
-      if ((!current || dirty & /*$tracker*/
-      64) && t1_value !== (t1_value = /*$tracker*/
-      ctx2[6].file.name + ""))
+      if (
+        (!current || dirty /*$tracker*/ & 64) &&
+        t1_value !== (t1_value = /*$tracker*/ ctx2[6].file.name + "")
+      )
         set_data(t1, t1_value);
-      if ((!current || dirty & /*filtered*/
-      32) && t3_value !== (t3_value = /*filtered*/
-      ctx2[5].length + ""))
+      if (
+        (!current || dirty /*filtered*/ & 32) &&
+        t3_value !== (t3_value = /*filtered*/ ctx2[5].length + "")
+      )
         set_data(t3, t3_value);
       if (
         /*$tasks*/
@@ -2516,8 +2868,7 @@ function create_if_block(ctx) {
       ) {
         if (if_block2) {
           if_block2.p(ctx2, dirty);
-          if (dirty & /*filtered*/
-          32) {
+          if (dirty /*filtered*/ & 32) {
             transition_in(if_block2, 1);
           }
         } else {
@@ -2535,8 +2886,7 @@ function create_if_block(ctx) {
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       transition_in(if_block2);
       current = true;
     },
@@ -2549,13 +2899,11 @@ function create_if_block(ctx) {
         detach(div2);
       }
       if_block0.d();
-      if (if_block1)
-        if_block1.d();
-      if (if_block2)
-        if_block2.d();
+      if (if_block1) if_block1.d();
+      if (if_block2) if_block2.d();
       mounted = false;
       run_all(dispose);
-    }
+    },
   };
 }
 function create_else_block_1(ctx) {
@@ -2579,7 +2927,11 @@ function create_else_block_1(ctx) {
       attr(line1, "x2", "12");
       attr(line1, "y1", "17");
       attr(line1, "y2", "22");
-      attr(path0, "d", "M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h12");
+      attr(
+        path0,
+        "d",
+        "M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h12",
+      );
       attr(path1, "d", "M15 9.34V6h1a2 2 0 0 0 0-4H7.89");
       attr(svg, "xmlns", "http://www.w3.org/2000/svg");
       attr(svg, "width", "12");
@@ -2603,7 +2955,7 @@ function create_else_block_1(ctx) {
       if (detaching) {
         detach(svg);
       }
-    }
+    },
   };
 }
 function create_if_block_5(ctx) {
@@ -2619,7 +2971,11 @@ function create_if_block_5(ctx) {
       attr(line, "x2", "12");
       attr(line, "y1", "17");
       attr(line, "y2", "22");
-      attr(path, "d", "M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z");
+      attr(
+        path,
+        "d",
+        "M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z",
+      );
       attr(svg, "xmlns", "http://www.w3.org/2000/svg");
       attr(svg, "width", "12");
       attr(svg, "height", "12");
@@ -2640,7 +2996,7 @@ function create_if_block_5(ctx) {
       if (detaching) {
         detach(svg);
       }
-    }
+    },
   };
 }
 function create_if_block_3(ctx) {
@@ -2664,15 +3020,13 @@ function create_if_block_3(ctx) {
   let input;
   let mounted;
   let dispose;
-  let if_block = (
+  let if_block =
     /*$tracker*/
-    ctx[6].task && create_if_block_4(ctx)
-  );
+    ctx[6].task && create_if_block_4(ctx);
   return {
     c() {
       div0 = element("div");
-      if (if_block)
-        if_block.c();
+      if (if_block) if_block.c();
       t0 = space();
       div2 = element("div");
       div1 = element("div");
@@ -2688,12 +3042,30 @@ function create_if_block_3(ctx) {
       div3 = element("div");
       input = element("input");
       attr(div0, "class", "pomodoro-tasks-active svelte-1ipipwe");
-      attr(span0, "class", span0_class_value = "pomodoro-tasks-filter " + /*status*/
-      (ctx[2] === "" ? "filter-active" : "") + " svelte-1ipipwe");
-      attr(span1, "class", span1_class_value = "pomodoro-tasks-filter " + /*status*/
-      (ctx[2] === "todo" ? "filter-active" : "") + " svelte-1ipipwe");
-      attr(span2, "class", span2_class_value = "pomodoro-tasks-filter " + /*status*/
-      (ctx[2] === "completed" ? "filter-active" : "") + " svelte-1ipipwe");
+      attr(
+        span0,
+        "class",
+        (span0_class_value =
+          "pomodoro-tasks-filter " /*status*/ +
+          (ctx[2] === "" ? "filter-active" : "") +
+          " svelte-1ipipwe"),
+      );
+      attr(
+        span1,
+        "class",
+        (span1_class_value =
+          "pomodoro-tasks-filter " /*status*/ +
+          (ctx[2] === "todo" ? "filter-active" : "") +
+          " svelte-1ipipwe"),
+      );
+      attr(
+        span2,
+        "class",
+        (span2_class_value =
+          "pomodoro-tasks-filter " /*status*/ +
+          (ctx[2] === "completed" ? "filter-active" : "") +
+          " svelte-1ipipwe"),
+      );
       attr(div1, "class", "pomodoro-tasks-filters svelte-1ipipwe");
       attr(div2, "class", "pomodoro-tasks-toolbar svelte-1ipipwe");
       attr(input, "type", "text");
@@ -2703,8 +3075,7 @@ function create_if_block_3(ctx) {
     },
     m(target, anchor) {
       insert(target, div0, anchor);
-      if (if_block)
-        if_block.m(div0, null);
+      if (if_block) if_block.m(div0, null);
       insert(target, t0, anchor);
       insert(target, div2, anchor);
       append(div2, div1);
@@ -2722,7 +3093,7 @@ function create_if_block_3(ctx) {
       set_input_value(
         input,
         /*query*/
-        ctx[3]
+        ctx[3],
       );
       if (!mounted) {
         dispose = [
@@ -2730,26 +3101,26 @@ function create_if_block_3(ctx) {
             span0,
             "click",
             /*click_handler*/
-            ctx[17]
+            ctx[17],
           ),
           listen(
             span1,
             "click",
             /*click_handler_1*/
-            ctx[18]
+            ctx[18],
           ),
           listen(
             span2,
             "click",
             /*click_handler_2*/
-            ctx[19]
+            ctx[19],
           ),
           listen(
             input,
             "input",
             /*input_input_handler*/
-            ctx[20]
-          )
+            ctx[20],
+          ),
         ];
         mounted = true;
       }
@@ -2770,28 +3141,41 @@ function create_if_block_3(ctx) {
         if_block.d(1);
         if_block = null;
       }
-      if (dirty & /*status*/
-      4 && span0_class_value !== (span0_class_value = "pomodoro-tasks-filter " + /*status*/
-      (ctx2[2] === "" ? "filter-active" : "") + " svelte-1ipipwe")) {
+      if (
+        dirty /*status*/ & 4 &&
+        span0_class_value !==
+          (span0_class_value =
+            "pomodoro-tasks-filter " /*status*/ +
+            (ctx2[2] === "" ? "filter-active" : "") +
+            " svelte-1ipipwe")
+      ) {
         attr(span0, "class", span0_class_value);
       }
-      if (dirty & /*status*/
-      4 && span1_class_value !== (span1_class_value = "pomodoro-tasks-filter " + /*status*/
-      (ctx2[2] === "todo" ? "filter-active" : "") + " svelte-1ipipwe")) {
+      if (
+        dirty /*status*/ & 4 &&
+        span1_class_value !==
+          (span1_class_value =
+            "pomodoro-tasks-filter " /*status*/ +
+            (ctx2[2] === "todo" ? "filter-active" : "") +
+            " svelte-1ipipwe")
+      ) {
         attr(span1, "class", span1_class_value);
       }
-      if (dirty & /*status*/
-      4 && span2_class_value !== (span2_class_value = "pomodoro-tasks-filter " + /*status*/
-      (ctx2[2] === "completed" ? "filter-active" : "") + " svelte-1ipipwe")) {
+      if (
+        dirty /*status*/ & 4 &&
+        span2_class_value !==
+          (span2_class_value =
+            "pomodoro-tasks-filter " /*status*/ +
+            (ctx2[2] === "completed" ? "filter-active" : "") +
+            " svelte-1ipipwe")
+      ) {
         attr(span2, "class", span2_class_value);
       }
-      if (dirty & /*query*/
-      8 && input.value !== /*query*/
-      ctx2[3]) {
+      if (dirty /*query*/ & 8 && input.value /*query*/ !== ctx2[3]) {
         set_input_value(
           input,
           /*query*/
-          ctx2[3]
+          ctx2[3],
         );
       }
     },
@@ -2803,11 +3187,10 @@ function create_if_block_3(ctx) {
         detach(t6);
         detach(div3);
       }
-      if (if_block)
-        if_block.d();
+      if (if_block) if_block.d();
       mounted = false;
       run_all(dispose);
-    }
+    },
   };
 }
 function create_if_block_4(ctx) {
@@ -2829,8 +3212,9 @@ function create_if_block_4(ctx) {
       span = element("span");
       span.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x svelte-1ipipwe"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>`;
       attr(input, "type", "text");
-      input.value = input_value_value = /*$tracker*/
-      (_a = ctx[6].task) == null ? void 0 : _a.name;
+      input.value = input_value_value =
+        /*$tracker*/
+        (_a = ctx[6].task) == null ? void 0 : _a.name;
       attr(input, "class", "svelte-1ipipwe");
       attr(span, "class", "pomodoro-tasks-remove svelte-1ipipwe");
       attr(div0, "class", "pomodoro-tasks-name svelte-1ipipwe");
@@ -2848,23 +3232,28 @@ function create_if_block_4(ctx) {
             input,
             "input",
             /*changeTaskName*/
-            ctx[10]
+            ctx[10],
           ),
           listen(
             span,
             "click",
             /*removeTask*/
-            ctx[11]
-          )
+            ctx[11],
+          ),
         ];
         mounted = true;
       }
     },
     p(ctx2, dirty) {
       var _a;
-      if (dirty & /*$tracker*/
-      64 && input_value_value !== (input_value_value = /*$tracker*/
-      (_a = ctx2[6].task) == null ? void 0 : _a.name) && input.value !== input_value_value) {
+      if (
+        dirty /*$tracker*/ & 64 &&
+        input_value_value !==
+          (input_value_value =
+            /*$tracker*/
+            (_a = ctx2[6].task) == null ? void 0 : _a.name) &&
+        input.value !== input_value_value
+      ) {
         input.value = input_value_value;
       }
     },
@@ -2874,7 +3263,7 @@ function create_if_block_4(ctx) {
       }
       mounted = false;
       run_all(dispose);
-    }
+    },
   };
 }
 function create_if_block_1(ctx) {
@@ -2882,15 +3271,16 @@ function create_if_block_1(ctx) {
   let current;
   let each_value = ensure_array_like(
     /*filtered*/
-    ctx[5]
+    ctx[5],
   );
   let each_blocks = [];
   for (let i = 0; i < each_value.length; i += 1) {
     each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
   }
-  const out = (i) => transition_out(each_blocks[i], 1, 1, () => {
-    each_blocks[i] = null;
-  });
+  const out = (i) =>
+    transition_out(each_blocks[i], 1, 1, () => {
+      each_blocks[i] = null;
+    });
   return {
     c() {
       div = element("div");
@@ -2909,11 +3299,13 @@ function create_if_block_1(ctx) {
       current = true;
     },
     p(ctx2, dirty) {
-      if (dirty & /*progress, filtered, activeTask, showTaskMenu, progressText, r*/
-      45472) {
+      if (
+        dirty /*progress, filtered, activeTask, showTaskMenu, progressText, r*/ &
+        45472
+      ) {
         each_value = ensure_array_like(
           /*filtered*/
-          ctx2[5]
+          ctx2[5],
         );
         let i;
         for (i = 0; i < each_value.length; i += 1) {
@@ -2936,8 +3328,7 @@ function create_if_block_1(ctx) {
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       for (let i = 0; i < each_value.length; i += 1) {
         transition_in(each_blocks[i]);
       }
@@ -2955,7 +3346,7 @@ function create_if_block_1(ctx) {
         detach(div);
       }
       destroy_each(each_blocks, detaching);
-    }
+    },
   };
 }
 function create_else_block(ctx) {
@@ -2987,7 +3378,7 @@ function create_else_block(ctx) {
       if (detaching) {
         detach(svg);
       }
-    }
+    },
   };
 }
 function create_if_block_2(ctx) {
@@ -3017,7 +3408,7 @@ function create_if_block_2(ctx) {
       if (detaching) {
         detach(svg);
       }
-    }
+    },
   };
 }
 function create_each_block(ctx) {
@@ -3027,13 +3418,12 @@ function create_each_block(ctx) {
   let taskitemcomponent;
   let t1;
   let div1;
-  let t2_value = (
+  let t2_value =
     /*progressText*/
     ctx[13](
       /*item*/
-      ctx[23]
-    ) + ""
-  );
+      ctx[23],
+    ) + "";
   let t2;
   let t3;
   let div2_class_value;
@@ -3052,22 +3442,20 @@ function create_each_block(ctx) {
   let if_block = current_block_type(ctx);
   taskitemcomponent = new TaskItemComponent_default({
     props: {
-      render: (
+      render:
         /*r*/
-        ctx[7]
-      ),
-      content: (
+        ctx[7],
+      content:
         /*item*/
-        ctx[23].description
-      )
-    }
+        ctx[23].description,
+    },
   });
   function click_handler_3() {
     return (
       /*click_handler_3*/
       ctx[21](
         /*item*/
-        ctx[23]
+        ctx[23],
       )
     );
   }
@@ -3084,13 +3472,24 @@ function create_each_block(ctx) {
       t3 = space();
       attr(div0, "class", "pomodoro-tasks-name svelte-1ipipwe");
       attr(div1, "class", "pomodoro-tasks-progress svelte-1ipipwe");
-      set_style(div2, "background", "linear-gradient(to right, rgba(var(--color-green-rgb),0.25) " + /*progress*/
-      ctx[12](
-        /*item*/
-        ctx[23]
-      ) + "%, transparent 0%)");
-      attr(div2, "class", div2_class_value = "pomodoro-tasks-item " + /*item*/
-      (ctx[23].checked ? "pomodoro-tasks-checked" : "") + " svelte-1ipipwe");
+      set_style(
+        div2,
+        "background",
+        "linear-gradient(to right, rgba(var(--color-green-rgb),0.25) " /*progress*/ +
+          ctx[12](
+            /*item*/
+            ctx[23],
+          ) +
+          "%, transparent 0%)",
+      );
+      attr(
+        div2,
+        "class",
+        (div2_class_value =
+          "pomodoro-tasks-item " /*item*/ +
+          (ctx[23].checked ? "pomodoro-tasks-checked" : "") +
+          " svelte-1ipipwe"),
+      );
     },
     m(target, anchor) {
       insert(target, div2, anchor);
@@ -3106,26 +3505,31 @@ function create_each_block(ctx) {
       if (!mounted) {
         dispose = [
           listen(div2, "click", click_handler_3),
-          listen(div2, "contextmenu", function() {
-            if (is_function(
-              /*showTaskMenu*/
-              ctx[15](
-                /*item*/
-                ctx[23]
+          listen(div2, "contextmenu", function () {
+            if (
+              is_function(
+                /*showTaskMenu*/
+                ctx[15](
+                  /*item*/
+                  ctx[23],
+                ),
               )
-            ))
+            )
               ctx[15](
                 /*item*/
-                ctx[23]
+                ctx[23],
               ).apply(this, arguments);
-          })
+          }),
         ];
         mounted = true;
       }
     },
     p(new_ctx, dirty) {
       ctx = new_ctx;
-      if (current_block_type !== (current_block_type = select_block_type_1(ctx, dirty))) {
+      if (
+        current_block_type !==
+        (current_block_type = select_block_type_1(ctx, dirty))
+      ) {
         if_block.d(1);
         if_block = current_block_type(ctx);
         if (if_block) {
@@ -3134,35 +3538,46 @@ function create_each_block(ctx) {
         }
       }
       const taskitemcomponent_changes = {};
-      if (dirty & /*filtered*/
-      32)
-        taskitemcomponent_changes.content = /*item*/
-        ctx[23].description;
+      if (dirty /*filtered*/ & 32)
+        taskitemcomponent_changes.content = /*item*/ ctx[23].description;
       taskitemcomponent.$set(taskitemcomponent_changes);
-      if ((!current || dirty & /*filtered*/
-      32) && t2_value !== (t2_value = /*progressText*/
-      ctx[13](
-        /*item*/
-        ctx[23]
-      ) + ""))
+      if (
+        (!current || dirty /*filtered*/ & 32) &&
+        t2_value !==
+          (t2_value =
+            /*progressText*/
+            ctx[13](
+              /*item*/
+              ctx[23],
+            ) + "")
+      )
         set_data(t2, t2_value);
-      if (!current || dirty & /*filtered*/
-      32) {
-        set_style(div2, "background", "linear-gradient(to right, rgba(var(--color-green-rgb),0.25) " + /*progress*/
-        ctx[12](
-          /*item*/
-          ctx[23]
-        ) + "%, transparent 0%)");
+      if (!current || dirty /*filtered*/ & 32) {
+        set_style(
+          div2,
+          "background",
+          "linear-gradient(to right, rgba(var(--color-green-rgb),0.25) " /*progress*/ +
+            ctx[12](
+              /*item*/
+              ctx[23],
+            ) +
+            "%, transparent 0%)",
+        );
       }
-      if (!current || dirty & /*filtered*/
-      32 && div2_class_value !== (div2_class_value = "pomodoro-tasks-item " + /*item*/
-      (ctx[23].checked ? "pomodoro-tasks-checked" : "") + " svelte-1ipipwe")) {
+      if (
+        !current ||
+        (dirty /*filtered*/ & 32 &&
+          div2_class_value !==
+            (div2_class_value =
+              "pomodoro-tasks-item " /*item*/ +
+              (ctx[23].checked ? "pomodoro-tasks-checked" : "") +
+              " svelte-1ipipwe"))
+      ) {
         attr(div2, "class", div2_class_value);
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       transition_in(taskitemcomponent.$$.fragment, local);
       current = true;
     },
@@ -3178,25 +3593,22 @@ function create_each_block(ctx) {
       destroy_component(taskitemcomponent);
       mounted = false;
       run_all(dispose);
-    }
+    },
   };
 }
 function create_fragment2(ctx) {
   let if_block_anchor;
   let current;
-  let if_block = (
+  let if_block =
     /*$tracker*/
-    ctx[6].file && create_if_block(ctx)
-  );
+    ctx[6].file && create_if_block(ctx);
   return {
     c() {
-      if (if_block)
-        if_block.c();
+      if (if_block) if_block.c();
       if_block_anchor = empty();
     },
     m(target, anchor) {
-      if (if_block)
-        if_block.m(target, anchor);
+      if (if_block) if_block.m(target, anchor);
       insert(target, if_block_anchor, anchor);
       current = true;
     },
@@ -3207,8 +3619,7 @@ function create_fragment2(ctx) {
       ) {
         if (if_block) {
           if_block.p(ctx2, dirty);
-          if (dirty & /*$tracker*/
-          64) {
+          if (dirty /*$tracker*/ & 64) {
             transition_in(if_block, 1);
           }
         } else {
@@ -3226,8 +3637,7 @@ function create_fragment2(ctx) {
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       transition_in(if_block);
       current = true;
     },
@@ -3239,17 +3649,34 @@ function create_fragment2(ctx) {
       if (detaching) {
         detach(if_block_anchor);
       }
-      if (if_block)
-        if_block.d(detaching);
-    }
+      if (if_block) if_block.d(detaching);
+    },
   };
 }
 function instance2($$self, $$props, $$invalidate) {
   let filtered;
   let $settings;
-  let $tasks, $$unsubscribe_tasks = noop, $$subscribe_tasks = () => ($$unsubscribe_tasks(), $$unsubscribe_tasks = subscribe(tasks, ($$value) => $$invalidate(4, $tasks = $$value)), tasks);
-  let $tracker, $$unsubscribe_tracker = noop, $$subscribe_tracker = () => ($$unsubscribe_tracker(), $$unsubscribe_tracker = subscribe(tracker, ($$value) => $$invalidate(6, $tracker = $$value)), tracker);
-  component_subscribe($$self, settings, ($$value) => $$invalidate(22, $settings = $$value));
+  let $tasks,
+    $$unsubscribe_tasks = noop,
+    $$subscribe_tasks = () => (
+      $$unsubscribe_tasks(),
+      ($$unsubscribe_tasks = subscribe(tasks, ($$value) =>
+        $$invalidate(4, ($tasks = $$value)),
+      )),
+      tasks
+    );
+  let $tracker,
+    $$unsubscribe_tracker = noop,
+    $$subscribe_tracker = () => (
+      $$unsubscribe_tracker(),
+      ($$unsubscribe_tracker = subscribe(tracker, ($$value) =>
+        $$invalidate(6, ($tracker = $$value)),
+      )),
+      tracker
+    );
+  component_subscribe($$self, settings, ($$value) =>
+    $$invalidate(22, ($settings = $$value)),
+  );
   $$self.$$.on_destroy.push(() => $$unsubscribe_tasks());
   $$self.$$.on_destroy.push(() => $$unsubscribe_tracker());
   let { tasks } = $$props;
@@ -3280,7 +3707,7 @@ function instance2($$self, $$props, $$invalidate) {
       return 0;
     }
     if (item.expected > 0 && item.actual >= 0) {
-      return (item.actual / item.expected * 100).toFixed(2);
+      return ((item.actual / item.expected) * 100).toFixed(2);
     }
     return 0;
   };
@@ -3303,7 +3730,11 @@ function instance2($$self, $$props, $$invalidate) {
         }
       }
     } else {
-      return actual > 10 ? `\u{1F345} x ${actual}` : actual > 0 ? `${"\u{1F345}".repeat(actual)}` : `- -`;
+      return actual > 10
+        ? `\u{1F345} x ${actual}`
+        : actual > 0
+          ? `${"\u{1F345}".repeat(actual)}`
+          : `- -`;
     }
   };
   const openFile = (e) => {
@@ -3318,9 +3749,9 @@ function instance2($$self, $$props, $$invalidate) {
     });
     menu.showAtMouseEvent(e);
   };
-  const click_handler = () => $$invalidate(2, status = "");
-  const click_handler_1 = () => $$invalidate(2, status = "todo");
-  const click_handler_2 = () => $$invalidate(2, status = "completed");
+  const click_handler = () => $$invalidate(2, (status = ""));
+  const click_handler_1 = () => $$invalidate(2, (status = "todo"));
+  const click_handler_2 = () => $$invalidate(2, (status = "completed"));
   function input_input_handler() {
     query = this.value;
     $$invalidate(3, query);
@@ -3330,30 +3761,32 @@ function instance2($$self, $$props, $$invalidate) {
   };
   $$self.$$set = ($$props2) => {
     if ("tasks" in $$props2)
-      $$subscribe_tasks($$invalidate(0, tasks = $$props2.tasks));
+      $$subscribe_tasks($$invalidate(0, (tasks = $$props2.tasks)));
     if ("tracker" in $$props2)
-      $$subscribe_tracker($$invalidate(1, tracker = $$props2.tracker));
-    if ("render" in $$props2)
-      $$invalidate(16, render = $$props2.render);
+      $$subscribe_tracker($$invalidate(1, (tracker = $$props2.tracker)));
+    if ("render" in $$props2) $$invalidate(16, (render = $$props2.render));
   };
   $$self.$$.update = () => {
-    if ($$self.$$.dirty & /*$tasks, query, status*/
-    28) {
-      $:
-        $$invalidate(5, filtered = $tasks ? $tasks.list.filter((item) => {
-          let statusMatch = true;
-          let textMatch = true;
-          if (query) {
-            textMatch = item.name.toLowerCase().includes(query.toLowerCase());
-          }
-          if (status) {
-            if (status === "todo")
-              statusMatch = !item.checked;
-            if (status === "completed")
-              statusMatch = item.checked;
-          }
-          return statusMatch && textMatch;
-        }) : []);
+    if ($$self.$$.dirty /*$tasks, query, status*/ & 28) {
+      $: $$invalidate(
+        5,
+        (filtered = $tasks
+          ? $tasks.list.filter((item) => {
+              let statusMatch = true;
+              let textMatch = true;
+              if (query) {
+                textMatch = item.name
+                  .toLowerCase()
+                  .includes(query.toLowerCase());
+              }
+              if (status) {
+                if (status === "todo") statusMatch = !item.checked;
+                if (status === "completed") statusMatch = item.checked;
+              }
+              return statusMatch && textMatch;
+            })
+          : []),
+      );
     }
   };
   return [
@@ -3378,20 +3811,32 @@ function instance2($$self, $$props, $$invalidate) {
     click_handler_1,
     click_handler_2,
     input_input_handler,
-    click_handler_3
+    click_handler_3,
   ];
 }
 var TasksComponent = class extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance2, create_fragment2, safe_not_equal, { tasks: 0, tracker: 1, render: 16 }, add_css2);
+    init(
+      this,
+      options,
+      instance2,
+      create_fragment2,
+      safe_not_equal,
+      { tasks: 0, tracker: 1, render: 16 },
+      add_css2,
+    );
   }
 };
 var TasksComponent_default = TasksComponent;
 
 // src/TimerSettingsComponent.svelte
 function add_css3(target) {
-  append_styles(target, "svelte-5jyrhn", ".pomodoro-settings-wrapper.svelte-5jyrhn.svelte-5jyrhn,.pomodoro-settings-list.svelte-5jyrhn.svelte-5jyrhn,.pomodoro-settings-item.svelte-5jyrhn.svelte-5jyrhn{width:100%}.pomodoro-settings-wrapper.svelte-5jyrhn.svelte-5jyrhn{border:1px solid var(--background-modifier-border);border-radius:5px}.pomodoro-settings-item.svelte-5jyrhn.svelte-5jyrhn{display:flex;font-size:0.8rem;align-items:center;justify-content:space-between;height:2rem;padding:0.5rem 1rem}.pomodoro-settings-item.svelte-5jyrhn+.pomodoro-settings-item.svelte-5jyrhn{border-top:1px solid var(--background-modifier-border)}.pomodoro-settings-item.svelte-5jyrhn input[type='number'].svelte-5jyrhn{font-size:0.8rem;border:none;border-radius:0;height:0.8rem;text-align:end;background:transparent}.pomodoro-settings-item.svelte-5jyrhn input[type='number'].svelte-5jyrhn:active{border:none;box-shadow:none}.pomodoro-settings-item.svelte-5jyrhn input[type='number'].svelte-5jyrhn:focus{border:none;box-shadow:none}");
+  append_styles(
+    target,
+    "svelte-5jyrhn",
+    ".pomodoro-settings-wrapper.svelte-5jyrhn.svelte-5jyrhn,.pomodoro-settings-list.svelte-5jyrhn.svelte-5jyrhn,.pomodoro-settings-item.svelte-5jyrhn.svelte-5jyrhn{width:100%}.pomodoro-settings-wrapper.svelte-5jyrhn.svelte-5jyrhn{border:1px solid var(--background-modifier-border);border-radius:5px}.pomodoro-settings-item.svelte-5jyrhn.svelte-5jyrhn{display:flex;font-size:0.8rem;align-items:center;justify-content:space-between;height:2rem;padding:0.5rem 1rem}.pomodoro-settings-item.svelte-5jyrhn+.pomodoro-settings-item.svelte-5jyrhn{border-top:1px solid var(--background-modifier-border)}.pomodoro-settings-item.svelte-5jyrhn input[type='number'].svelte-5jyrhn{font-size:0.8rem;border:none;border-radius:0;height:0.8rem;text-align:end;background:transparent}.pomodoro-settings-item.svelte-5jyrhn input[type='number'].svelte-5jyrhn:active{border:none;box-shadow:none}.pomodoro-settings-item.svelte-5jyrhn input[type='number'].svelte-5jyrhn:focus{border:none;box-shadow:none}",
+  );
 }
 function create_fragment3(ctx) {
   let div16;
@@ -3468,16 +3913,14 @@ function create_fragment3(ctx) {
       div13 = element("div");
       input4 = element("input");
       attr(div0, "class", "pomodoro-settings-label");
-      input0.value = input0_value_value = /*$settings*/
-      ctx[0].workLen;
+      input0.value = input0_value_value = /*$settings*/ ctx[0].workLen;
       attr(input0, "min", "1");
       attr(input0, "type", "number");
       attr(input0, "class", "svelte-5jyrhn");
       attr(div1, "class", "pomodoro-settings-control");
       attr(div2, "class", "pomodoro-settings-item svelte-5jyrhn");
       attr(div3, "class", "pomodoro-settings-label");
-      input1.value = input1_value_value = /*$settings*/
-      ctx[0].breakLen;
+      input1.value = input1_value_value = /*$settings*/ ctx[0].breakLen;
       attr(input1, "min", "0");
       attr(input1, "type", "number");
       attr(input1, "class", "svelte-5jyrhn");
@@ -3518,85 +3961,82 @@ function create_fragment3(ctx) {
       append(div8, t7);
       append(div8, div7);
       append(div7, input2);
-      input2.checked = /*$settings*/
-      ctx[0].autostart;
+      input2.checked = /*$settings*/ ctx[0].autostart;
       append(div15, t8);
       append(div15, div11);
       append(div11, div9);
       append(div11, t10);
       append(div11, div10);
       append(div10, input3);
-      input3.checked = /*$settings*/
-      ctx[0].notificationSound;
+      input3.checked = /*$settings*/ ctx[0].notificationSound;
       append(div15, t11);
       append(div15, div14);
       append(div14, div12);
       append(div14, t13);
       append(div14, div13);
       append(div13, input4);
-      input4.checked = /*$settings*/
-      ctx[0].logFocused;
+      input4.checked = /*$settings*/ ctx[0].logFocused;
       if (!mounted) {
         dispose = [
           listen(
             input0,
             "change",
             /*updateWorkLen*/
-            ctx[1]
+            ctx[1],
           ),
           listen(
             input1,
             "change",
             /*updateBreakLen*/
-            ctx[2]
+            ctx[2],
           ),
           listen(
             input2,
             "change",
             /*input2_change_handler*/
-            ctx[3]
+            ctx[3],
           ),
           listen(
             input3,
             "change",
             /*input3_change_handler*/
-            ctx[4]
+            ctx[4],
           ),
           listen(
             input4,
             "change",
             /*input4_change_handler*/
-            ctx[5]
-          )
+            ctx[5],
+          ),
         ];
         mounted = true;
       }
     },
     p(ctx2, [dirty]) {
-      if (dirty & /*$settings*/
-      1 && input0_value_value !== (input0_value_value = /*$settings*/
-      ctx2[0].workLen) && input0.value !== input0_value_value) {
+      if (
+        dirty /*$settings*/ & 1 &&
+        input0_value_value !==
+          (input0_value_value = /*$settings*/ ctx2[0].workLen) &&
+        input0.value !== input0_value_value
+      ) {
         input0.value = input0_value_value;
       }
-      if (dirty & /*$settings*/
-      1 && input1_value_value !== (input1_value_value = /*$settings*/
-      ctx2[0].breakLen) && input1.value !== input1_value_value) {
+      if (
+        dirty /*$settings*/ & 1 &&
+        input1_value_value !==
+          (input1_value_value = /*$settings*/ ctx2[0].breakLen) &&
+        input1.value !== input1_value_value
+      ) {
         input1.value = input1_value_value;
       }
-      if (dirty & /*$settings*/
-      1) {
-        input2.checked = /*$settings*/
-        ctx2[0].autostart;
+      if (dirty /*$settings*/ & 1) {
+        input2.checked = /*$settings*/ ctx2[0].autostart;
       }
-      if (dirty & /*$settings*/
-      1) {
-        input3.checked = /*$settings*/
-        ctx2[0].notificationSound;
+      if (dirty /*$settings*/ & 1) {
+        input3.checked = /*$settings*/ ctx2[0].notificationSound;
       }
-      if (dirty & /*$settings*/
-      1) {
-        input4.checked = /*$settings*/
-        ctx2[0].logFocused;
+      if (dirty /*$settings*/ & 1) {
+        input4.checked = /*$settings*/ ctx2[0].logFocused;
       }
     },
     i: noop,
@@ -3607,12 +4047,14 @@ function create_fragment3(ctx) {
       }
       mounted = false;
       run_all(dispose);
-    }
+    },
   };
 }
 function instance3($$self, $$props, $$invalidate) {
   let $settings;
-  component_subscribe($$self, settings, ($$value) => $$invalidate(0, $settings = $$value));
+  component_subscribe($$self, settings, ($$value) =>
+    $$invalidate(0, ($settings = $$value)),
+  );
   const updateWorkLen = (e) => {
     const target = e.target;
     const value = parseInt(target.value);
@@ -3653,20 +4095,32 @@ function instance3($$self, $$props, $$invalidate) {
     updateBreakLen,
     input2_change_handler,
     input3_change_handler,
-    input4_change_handler
+    input4_change_handler,
   ];
 }
 var TimerSettingsComponent = class extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance3, create_fragment3, safe_not_equal, {}, add_css3);
+    init(
+      this,
+      options,
+      instance3,
+      create_fragment3,
+      safe_not_equal,
+      {},
+      add_css3,
+    );
   }
 };
 var TimerSettingsComponent_default = TimerSettingsComponent;
 
 // src/TimerViewComponent.svelte
 function add_css4(target) {
-  append_styles(target, "svelte-1bkzjfd", ".container.svelte-1bkzjfd.svelte-1bkzjfd{width:100%;min-width:200px;display:flex;flex-direction:column;height:100%}.main.svelte-1bkzjfd.svelte-1bkzjfd{width:100%;display:flex;flex-direction:column;align-items:center;z-index:2}.timer.svelte-1bkzjfd.svelte-1bkzjfd{position:relative;width:160px;height:160px}.timer.svelte-1bkzjfd svg.svelte-1bkzjfd{-webkit-transform:rotate(-90deg);transform:rotate(-90deg);z-index:3}.timer-display.svelte-1bkzjfd.svelte-1bkzjfd{position:absolute;width:100%;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:4;padding:30px}.timer-text.svelte-1bkzjfd.svelte-1bkzjfd{display:block;color:var(--pomodoro-timer-text-color);font-size:1.1em;font-weight:bold;margin-block-start:1rem;margin-block-end:1.75rem}.status.svelte-1bkzjfd.svelte-1bkzjfd{font-size:0.7rem;display:flex;align-items:center}.status.svelte-1bkzjfd span.svelte-1bkzjfd{display:inline-block}.circle_timer.svelte-1bkzjfd.svelte-1bkzjfd{stroke:var(--pomodoro-timer-color)}.circle_animation.svelte-1bkzjfd.svelte-1bkzjfd{stroke-dasharray:440;stroke-dashoffset:440;stroke:var(--pomodoro-timer-elapsed-color)}.btn-group.svelte-1bkzjfd.svelte-1bkzjfd{margin-top:1rem;display:flex;justify-content:space-between;width:160px}.control.svelte-1bkzjfd.svelte-1bkzjfd{cursor:pointer}.control.svelte-1bkzjfd.svelte-1bkzjfd:hover{opacity:0.7}.control.svelte-1bkzjfd svg.svelte-1bkzjfd:active{opacity:0.5}.pomodoro-extra.svelte-1bkzjfd.svelte-1bkzjfd{width:100%;margin-top:2rem}.breath.svelte-1bkzjfd.svelte-1bkzjfd{width:5px;height:5px;margin-top:5px;display:inline-block;position:absolute;left:55px;background-color:var(--pomodoro-timer-dot-color);border-radius:5px;transform:translate(-50%, -50%);animation:svelte-1bkzjfd-blink 1s linear infinite}@keyframes svelte-1bkzjfd-blink{0%,100%{opacity:1}50%{opacity:0}}");
+  append_styles(
+    target,
+    "svelte-1bkzjfd",
+    ".container.svelte-1bkzjfd.svelte-1bkzjfd{width:100%;min-width:200px;display:flex;flex-direction:column;height:100%}.main.svelte-1bkzjfd.svelte-1bkzjfd{width:100%;display:flex;flex-direction:column;align-items:center;z-index:2}.timer.svelte-1bkzjfd.svelte-1bkzjfd{position:relative;width:160px;height:160px}.timer.svelte-1bkzjfd svg.svelte-1bkzjfd{-webkit-transform:rotate(-90deg);transform:rotate(-90deg);z-index:3}.timer-display.svelte-1bkzjfd.svelte-1bkzjfd{position:absolute;width:100%;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:4;padding:30px}.timer-text.svelte-1bkzjfd.svelte-1bkzjfd{display:block;color:var(--pomodoro-timer-text-color);font-size:1.1em;font-weight:bold;margin-block-start:1rem;margin-block-end:1.75rem}.status.svelte-1bkzjfd.svelte-1bkzjfd{font-size:0.7rem;display:flex;align-items:center}.status.svelte-1bkzjfd span.svelte-1bkzjfd{display:inline-block}.circle_timer.svelte-1bkzjfd.svelte-1bkzjfd{stroke:var(--pomodoro-timer-color)}.circle_animation.svelte-1bkzjfd.svelte-1bkzjfd{stroke-dasharray:440;stroke-dashoffset:440;stroke:var(--pomodoro-timer-elapsed-color)}.btn-group.svelte-1bkzjfd.svelte-1bkzjfd{margin-top:1rem;display:flex;justify-content:space-between;width:160px}.control.svelte-1bkzjfd.svelte-1bkzjfd{cursor:pointer}.control.svelte-1bkzjfd.svelte-1bkzjfd:hover{opacity:0.7}.control.svelte-1bkzjfd svg.svelte-1bkzjfd:active{opacity:0.5}.pomodoro-extra.svelte-1bkzjfd.svelte-1bkzjfd{width:100%;margin-top:2rem}.breath.svelte-1bkzjfd.svelte-1bkzjfd{width:5px;height:5px;margin-top:5px;display:inline-block;position:absolute;left:55px;background-color:var(--pomodoro-timer-dot-color);border-radius:5px;transform:translate(-50%, -50%);animation:svelte-1bkzjfd-blink 1s linear infinite}@keyframes svelte-1bkzjfd-blink{0%,100%{opacity:1}50%{opacity:0}}",
+  );
 }
 function create_if_block_42(ctx) {
   let span;
@@ -3682,7 +4136,7 @@ function create_if_block_42(ctx) {
       if (detaching) {
         detach(span);
       }
-    }
+    },
   };
 }
 function create_else_block_12(ctx) {
@@ -3700,7 +4154,7 @@ function create_else_block_12(ctx) {
       if (detaching) {
         detach(span);
       }
-    }
+    },
   };
 }
 function create_if_block_32(ctx) {
@@ -3718,7 +4172,7 @@ function create_if_block_32(ctx) {
       if (detaching) {
         detach(span);
       }
-    }
+    },
   };
 }
 function create_else_block2(ctx) {
@@ -3738,7 +4192,7 @@ function create_else_block2(ctx) {
           span,
           "click",
           /*pause*/
-          ctx[9]
+          ctx[9],
         );
         mounted = true;
       }
@@ -3750,7 +4204,7 @@ function create_else_block2(ctx) {
       }
       mounted = false;
       dispose();
-    }
+    },
   };
 }
 function create_if_block_22(ctx) {
@@ -3770,7 +4224,7 @@ function create_if_block_22(ctx) {
           span,
           "click",
           /*start*/
-          ctx[7]
+          ctx[7],
         );
         mounted = true;
       }
@@ -3782,7 +4236,7 @@ function create_if_block_22(ctx) {
       }
       mounted = false;
       dispose();
-    }
+    },
   };
 }
 function create_if_block_12(ctx) {
@@ -3799,8 +4253,7 @@ function create_if_block_12(ctx) {
     },
     p: noop,
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       transition_in(timersettingscomponent.$$.fragment, local);
       current = true;
     },
@@ -3810,7 +4263,7 @@ function create_if_block_12(ctx) {
     },
     d(detaching) {
       destroy_component(timersettingscomponent, detaching);
-    }
+    },
   };
 }
 function create_if_block2(ctx) {
@@ -3818,19 +4271,16 @@ function create_if_block2(ctx) {
   let current;
   taskscomponent = new TasksComponent_default({
     props: {
-      tasks: (
+      tasks:
         /*tasks*/
-        ctx[1]
-      ),
-      tracker: (
+        ctx[1],
+      tracker:
         /*tracker*/
-        ctx[2]
-      ),
-      render: (
+        ctx[2],
+      render:
         /*render*/
-        ctx[3]
-      )
-    }
+        ctx[3],
+    },
   });
   return {
     c() {
@@ -3842,23 +4292,15 @@ function create_if_block2(ctx) {
     },
     p(ctx2, dirty) {
       const taskscomponent_changes = {};
-      if (dirty & /*tasks*/
-      2)
-        taskscomponent_changes.tasks = /*tasks*/
-        ctx2[1];
-      if (dirty & /*tracker*/
-      4)
-        taskscomponent_changes.tracker = /*tracker*/
-        ctx2[2];
-      if (dirty & /*render*/
-      8)
-        taskscomponent_changes.render = /*render*/
-        ctx2[3];
+      if (dirty /*tasks*/ & 2) taskscomponent_changes.tasks = /*tasks*/ ctx2[1];
+      if (dirty /*tracker*/ & 4)
+        taskscomponent_changes.tracker = /*tracker*/ ctx2[2];
+      if (dirty /*render*/ & 8)
+        taskscomponent_changes.render = /*render*/ ctx2[3];
       taskscomponent.$set(taskscomponent_changes);
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       transition_in(taskscomponent.$$.fragment, local);
       current = true;
     },
@@ -3868,7 +4310,7 @@ function create_if_block2(ctx) {
     },
     d(detaching) {
       destroy_component(taskscomponent, detaching);
-    }
+    },
   };
 }
 function create_fragment4(ctx) {
@@ -3883,10 +4325,9 @@ function create_fragment4(ctx) {
   let t2;
   let div1;
   let span1;
-  let t3_value = (
+  let t3_value =
     /*$timer*/
-    ctx[4].remained.human + ""
-  );
+    ctx[4].remained.human + "";
   let t3;
   let t4;
   let svg0;
@@ -3908,10 +4349,9 @@ function create_fragment4(ctx) {
   let current;
   let mounted;
   let dispose;
-  let if_block0 = (
+  let if_block0 =
     /*$timer*/
-    ctx[4].running && create_if_block_42(ctx)
-  );
+    ctx[4].running && create_if_block_42(ctx);
   function select_block_type(ctx2, dirty) {
     if (
       /*$timer*/
@@ -3923,9 +4363,7 @@ function create_fragment4(ctx) {
   let current_block_type = select_block_type(ctx, -1);
   let if_block1 = current_block_type(ctx);
   function select_block_type_1(ctx2, dirty) {
-    if (!/*$timer*/
-    ctx2[4].running)
-      return create_if_block_22;
+    if (!(/*$timer*/ ctx2[4].running)) return create_if_block_22;
     return create_else_block2;
   }
   let current_block_type_1 = select_block_type_1(ctx, -1);
@@ -3946,7 +4384,8 @@ function create_fragment4(ctx) {
     return -1;
   }
   if (~(current_block_type_index = select_block_type_2(ctx, -1))) {
-    if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    if_block3 = if_blocks[current_block_type_index] =
+      if_block_creators[current_block_type_index](ctx);
   }
   return {
     c() {
@@ -3955,8 +4394,7 @@ function create_fragment4(ctx) {
       div3 = element("div");
       div2 = element("div");
       div0 = element("div");
-      if (if_block0)
-        if_block0.c();
+      if (if_block0) if_block0.c();
       t0 = space();
       if_block1.c();
       t1 = space();
@@ -3984,8 +4422,7 @@ function create_fragment4(ctx) {
       span4.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-2 svelte-1bkzjfd"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg>`;
       t9 = space();
       div6 = element("div");
-      if (if_block3)
-        if_block3.c();
+      if (if_block3) if_block3.c();
       attr(span0, "class", "svelte-1bkzjfd");
       attr(div0, "class", "status control svelte-1bkzjfd");
       attr(span1, "class", "timer-text svelte-1bkzjfd");
@@ -4007,7 +4444,7 @@ function create_fragment4(ctx) {
         circle1,
         "stroke-dashoffset",
         /*strokeOffset*/
-        ctx[6]
+        ctx[6],
       );
       attr(svg0, "class", "timer svelte-1bkzjfd");
       attr(svg0, "width", "160");
@@ -4028,8 +4465,7 @@ function create_fragment4(ctx) {
       append(div5, div3);
       append(div3, div2);
       append(div2, div0);
-      if (if_block0)
-        if_block0.m(div0, null);
+      if (if_block0) if_block0.m(div0, null);
       append(div0, t0);
       if_block1.m(div0, null);
       append(div0, t1);
@@ -4064,32 +4500,32 @@ function create_fragment4(ctx) {
             div0,
             "click",
             /*toggleMode*/
-            ctx[11]
+            ctx[11],
           ),
           listen(
             div1,
             "click",
             /*toggleTimer*/
-            ctx[10]
+            ctx[10],
           ),
           listen(
             span2,
             "click",
             /*click_handler*/
-            ctx[13]
+            ctx[13],
           ),
           listen(
             span3,
             "click",
             /*reset*/
-            ctx[8]
+            ctx[8],
           ),
           listen(
             span4,
             "click",
             /*click_handler_1*/
-            ctx[14]
-          )
+            ctx[14],
+          ),
         ];
         mounted = true;
       }
@@ -4109,7 +4545,10 @@ function create_fragment4(ctx) {
         if_block0.d(1);
         if_block0 = null;
       }
-      if (current_block_type !== (current_block_type = select_block_type(ctx2, dirty))) {
+      if (
+        current_block_type !==
+        (current_block_type = select_block_type(ctx2, dirty))
+      ) {
         if_block1.d(1);
         if_block1 = current_block_type(ctx2);
         if (if_block1) {
@@ -4117,20 +4556,24 @@ function create_fragment4(ctx) {
           if_block1.m(div0, t1);
         }
       }
-      if ((!current || dirty & /*$timer*/
-      16) && t3_value !== (t3_value = /*$timer*/
-      ctx2[4].remained.human + ""))
+      if (
+        (!current || dirty /*$timer*/ & 16) &&
+        t3_value !== (t3_value = /*$timer*/ ctx2[4].remained.human + "")
+      )
         set_data(t3, t3_value);
-      if (!current || dirty & /*strokeOffset*/
-      64) {
+      if (!current || dirty /*strokeOffset*/ & 64) {
         set_style(
           circle1,
           "stroke-dashoffset",
           /*strokeOffset*/
-          ctx2[6]
+          ctx2[6],
         );
       }
-      if (current_block_type_1 === (current_block_type_1 = select_block_type_1(ctx2, dirty)) && if_block2) {
+      if (
+        current_block_type_1 ===
+          (current_block_type_1 = select_block_type_1(ctx2, dirty)) &&
+        if_block2
+      ) {
         if_block2.p(ctx2, dirty);
       } else {
         if_block2.d(1);
@@ -4157,7 +4600,8 @@ function create_fragment4(ctx) {
         if (~current_block_type_index) {
           if_block3 = if_blocks[current_block_type_index];
           if (!if_block3) {
-            if_block3 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx2);
+            if_block3 = if_blocks[current_block_type_index] =
+              if_block_creators[current_block_type_index](ctx2);
             if_block3.c();
           } else {
             if_block3.p(ctx2, dirty);
@@ -4170,8 +4614,7 @@ function create_fragment4(ctx) {
       }
     },
     i(local) {
-      if (current)
-        return;
+      if (current) return;
       transition_in(if_block3);
       current = true;
     },
@@ -4183,8 +4626,7 @@ function create_fragment4(ctx) {
       if (detaching) {
         detach(div7);
       }
-      if (if_block0)
-        if_block0.d();
+      if (if_block0) if_block0.d();
       if_block1.d();
       if_block2.d();
       if (~current_block_type_index) {
@@ -4192,13 +4634,21 @@ function create_fragment4(ctx) {
       }
       mounted = false;
       run_all(dispose);
-    }
+    },
   };
 }
 var offset = 440;
 function instance4($$self, $$props, $$invalidate) {
   let strokeOffset;
-  let $timer, $$unsubscribe_timer = noop, $$subscribe_timer = () => ($$unsubscribe_timer(), $$unsubscribe_timer = subscribe(timer, ($$value) => $$invalidate(4, $timer = $$value)), timer);
+  let $timer,
+    $$unsubscribe_timer = noop,
+    $$subscribe_timer = () => (
+      $$unsubscribe_timer(),
+      ($$unsubscribe_timer = subscribe(timer, ($$value) =>
+        $$invalidate(4, ($timer = $$value)),
+      )),
+      timer
+    );
   $$self.$$.on_destroy.push(() => $$unsubscribe_timer());
   let { timer } = $$props;
   $$subscribe_timer();
@@ -4227,10 +4677,10 @@ function instance4($$self, $$props, $$invalidate) {
   };
   const toggleExtra = (value) => {
     if (extra === value) {
-      $$invalidate(5, extra = "close");
+      $$invalidate(5, (extra = "close"));
       return;
     }
-    $$invalidate(5, extra = value);
+    $$invalidate(5, (extra = value));
   };
   const click_handler = () => {
     toggleExtra("tasks");
@@ -4240,19 +4690,17 @@ function instance4($$self, $$props, $$invalidate) {
   };
   $$self.$$set = ($$props2) => {
     if ("timer" in $$props2)
-      $$subscribe_timer($$invalidate(0, timer = $$props2.timer));
-    if ("tasks" in $$props2)
-      $$invalidate(1, tasks = $$props2.tasks);
-    if ("tracker" in $$props2)
-      $$invalidate(2, tracker = $$props2.tracker);
-    if ("render" in $$props2)
-      $$invalidate(3, render = $$props2.render);
+      $$subscribe_timer($$invalidate(0, (timer = $$props2.timer)));
+    if ("tasks" in $$props2) $$invalidate(1, (tasks = $$props2.tasks));
+    if ("tracker" in $$props2) $$invalidate(2, (tracker = $$props2.tracker));
+    if ("render" in $$props2) $$invalidate(3, (render = $$props2.render));
   };
   $$self.$$.update = () => {
-    if ($$self.$$.dirty & /*$timer*/
-    16) {
-      $:
-        $$invalidate(6, strokeOffset = $timer.remained.millis / $timer.count * offset);
+    if ($$self.$$.dirty /*$timer*/ & 16) {
+      $: $$invalidate(
+        6,
+        (strokeOffset = ($timer.remained.millis / $timer.count) * offset),
+      );
     }
   };
   return [
@@ -4270,7 +4718,7 @@ function instance4($$self, $$props, $$invalidate) {
     toggleMode,
     toggleExtra,
     click_handler,
-    click_handler_1
+    click_handler_1,
   ];
 }
 var TimerViewComponent = class extends SvelteComponent {
@@ -4286,9 +4734,9 @@ var TimerViewComponent = class extends SvelteComponent {
         timer: 0,
         tasks: 1,
         tracker: 2,
-        render: 3
+        render: 3,
       },
-      add_css4
+      add_css4,
     );
   }
 };
@@ -4322,10 +4770,10 @@ var TimerView = class extends import_obsidian4.ItemView {
             content,
             el,
             "",
-            this
+            this,
           );
-        }
-      }
+        },
+      },
     });
   }
   async onClose() {
@@ -4342,7 +4790,12 @@ var import_obsidian8 = require("obsidian");
 
 // src/clock.worker.ts
 function inlineWorker() {
-  let blob = new Blob(['"use strict";var i=!1,t,f,n,s,a=!1,l=e=>{i&&(t===void 0?(t=e,s=e,requestAnimationFrame(l)):(n+=e-s,a?n>=1e3&&(self.postMessage(n),n=0):self.postMessage(e-s),requestAnimationFrame(l),s=e))};self.onmessage=async({data:e})=>{e.start?(a=e.lowFps,i||(i=!0,n=0,f=new Date().getTime(),requestAnimationFrame(l))):(i=!1,t=void 0,f=void 0,s=void 0)};\n'], { type: "text/javascript" });
+  let blob = new Blob(
+    [
+      '"use strict";var i=!1,t,f,n,s,a=!1,l=e=>{i&&(t===void 0?(t=e,s=e,requestAnimationFrame(l)):(n+=e-s,a?n>=1e3&&(self.postMessage(n),n=0):self.postMessage(e-s),requestAnimationFrame(l),s=e))};self.onmessage=async({data:e})=>{e.start?(a=e.lowFps,i||(i=!0,n=0,f=new Date().getTime(),requestAnimationFrame(l))):(i=!1,t=void 0,f=void 0,s=void 0)};\n',
+    ],
+    { type: "text/javascript" },
+  );
   let url = URL.createObjectURL(blob);
   let worker = new Worker(url);
   URL.revokeObjectURL(url);
@@ -4364,8 +4817,11 @@ var Logger = class {
     if (logFile) {
       const logText = await this.toText(log, logFile);
       if (logText) {
-        await this.plugin.app.vault.append(logFile, `
-${logText}`);
+        await this.plugin.app.vault.append(
+          logFile,
+          `
+${logText}`,
+        );
       }
     }
     return logFile;
@@ -4376,9 +4832,7 @@ ${logText}`);
       return;
     }
     if (settings2.logFocused && ctx.task.path && ctx.task.path.endsWith("md")) {
-      const file = this.plugin.app.vault.getAbstractFileByPath(
-        ctx.task.path
-      );
+      const file = this.plugin.app.vault.getAbstractFileByPath(ctx.task.path);
       if (file && file instanceof import_obsidian6.TFile) {
         return file;
       }
@@ -4417,7 +4871,7 @@ ${logText}`);
       end: new Date().getTime(),
       session: ctx.duration,
       task: ctx.task,
-      finished: ctx.count == ctx.elapsed
+      finished: ctx.count == ctx.elapsed,
     };
   }
   async toText(log, file) {
@@ -4428,7 +4882,7 @@ ${logText}`);
           this.plugin.app,
           file,
           settings2.logTemplate,
-          log
+          log,
         );
       } catch (e) {
         new import_obsidian6.Notice("Invalid template");
@@ -4443,13 +4897,13 @@ ${logText}`);
       let end = (0, import_obsidian6.moment)(log.end);
       if (settings2.logFormat === "SIMPLE") {
         return `**${log.mode}(${log.duration}m)**: ${begin.format(
-          "HH:mm"
+          "HH:mm",
         )} - ${end.format("HH:mm")}`;
       }
       if (settings2.logFormat === "VERBOSE") {
         const emoji = log.mode == "WORK" ? "\u{1F345}" : "\u{1F964}";
         return `- ${emoji} (pomodoro::${log.mode}) (duration:: ${log.duration}m) (begin:: ${begin.format(
-          "YYYY-MM-DD HH:mm"
+          "YYYY-MM-DD HH:mm",
         )}) - (end:: ${end.format("YYYY-MM-DD HH:mm")})`;
       }
       return "";
@@ -4458,7 +4912,8 @@ ${logText}`);
 };
 
 // src/Notification.ts
-var Notification_default = "data:audio/ogg;base64,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AABQ4AAAEGCDpsTiAIWGrAQAQgIAHIpiWZrmeZ4niqapmiRJ0zxPFEXRNE1TVUmSpnmeKIqiaZqmqrIsTfM8URRF01RVVYWmeZ4oiqJpqqrqwvM8TxRF0TRV1XXheZ4niqJomqrquhBFUTRN01RNVXVdIIqmaZqqqqquC0RPFE1TVV3XdYHniaJpqqqrui4QTdNUVVV1XVkGmKZpqqrryjJAVVXVdV1XlgGqqqqu67qyDFBV13VdWZZlAK7rurIsywIAAA4cAAACjKCTjCqLsNGECw9AoSErAoAoAADAGKYUU8owJiGkEBrGJIQUQiYlpdJSqiCkUlIpFYRUSiolo5RSailVEFIpqZQKQiollVIAANiBAwDYgYVQaMhKACAPAIAwRinGGHNOIqQUY845JxFSijHnnJNKMeacc85JKRlzzDnnpJTOOeecc1JK5pxzzjkppXPOOeeclFJK55xzTkopJYTOQSellNI555wTAABU4AAAEGCjyOYEI0GFhqwEAFIBAAyOY1ma5nmiaJqWJGma53meKJqmJkma5nmeJ4qqyfM8TxRF0TRVled5niiKommqKtcVRdM0TVVVXbIsiqZpmqrqujBN01RV13VdmKZpqqrrui5sW1VV1XVlGbatqqrqurIMXNd1ZdmWgSy7ruzasgAA8AQHAKACG1ZHOCkaCyw0ZCUAkAEAQBiDkEIIIWUQQgohhJRSCAkAABhwAAAIMKEMFBqyEgBIBQAAjLHWWmuttdZAZ6211lprrYDMWmuttdZaa6211lprrbXWUmuttdZaa6211lprrbXWWmuttdZaa6211lprrbXWWmuttdZaa6211lprrbXWWmuttdZaay2llFJKKaWUUkoppZRSSimllFJKBQD6VTgA+D/YsDrCSdFYYKEhKwGAcAAAwBilGHMMQimlVAgx5px0VFqLsUKIMeckpNRabMVzzkEoIZXWYiyecw5CKSnFVmNRKYRSUkottliLSqGjklJKrdVYjDGppNZai63GYoxJKbTUWosxFiNsTam12GqrsRhjayottBhjjMUIX2RsLabaag3GCCNbLC3VWmswxhjdW4ultpqLMT742lIsMdZcAAB3gwMARIKNM6wknRWOBhcashIACAkAIBBSijHGGHPOOeekUow55pxzDkIIoVSKMcaccw5CCCGUjDHmnHMQQgghhFJKxpxzEEIIIYSQUuqccxBCCCGEEEopnXMOQgghhBBCKaWDEEIIIYQQSiilpBRCCCGEEEIIqaSUQgghhFJCKCGVlFIIIYQQQiklpJRSCiGEUkIIoYSUUkophRBCCKWUklJKKaUSSgklhBJSKSmlFEoIIZRSSkoppVRKCaGEEkopJaWUUkohhBBKKQUAABw4AAAEGEEnGVUWYaMJFx6AQkNWAgBkAACQopRSKS1FgiKlGKQYS0YVc1BaiqhyDFLNqVLOIOYklogxhJSTVDLmFEIMQuocdUwpBi2VGELGGKTYckuhcw4AAABBAICAkAAAAwQFMwDA4ADhcxB0AgRHGwCAIERmiETDQnB4UAkQEVMBQGKCQi4AVFhcpF1cQJcBLujirgMhBCEIQSwOoIAEHJxwwxNveMINTtApKnUgAAAAAAANAPAAAJBcABER0cxhZGhscHR4fICEiIyQCAAAAAAAGQB8AAAkJUBERDRzGBkaGxwdHh8gISIjJAEAgAACAAAAACCAAAQEBAAAAAAAAgAAAAQET2dnUwAAwK4AAAAAAACJwwLMAgAAAEXnPAdCK/UtKSssMCsrNjc+9e3u7fsrPj8//wf/Aez/AP8CPkFB/wL48/P39fD/Auro6fXr6urw5eft/PDv6+nj4Ovv7uvvnEYfdl6fRB9OLrboB8AwFWg3LDiKarTdtniIoSBIpAHEhoNSw9/+h1jjAzJ2LPGUWIf+4val9G0oDWPHEk+Jdfgvbj+UvhpKvAAiAABGoRk4OCkkx1xVVdWiooba1MFsNO1WsQIgU8HMaDAKI0apmOksDMIiTTpN0zRN0zSdTqfpNE2SpEmTTlqxwYBwUZbFqBJVOklEgsBLfMKOZEKkEFCmkMkHiOqZUCrFuQzQs5Iqxg02CoUdanIj0iIAy2OLEABBuSQCJJHwiFIg+x90cdbO2PYijkDpsnJXnt1btPqTAcYTxLRaY9BTx40UspeH+L0bbbUOcreh1OnBAWCcaVlRagxgCx1osskIxq5t5c9PEGeG+8qzdGmG1Qg+FAwHnMJBBdzET+GgCi7+W2QADGMFihqmRWtCe70pIqDIodAGz8F+KvvNBGKBwJkApEKf4jh8KvQpjqPdxQYxgQKgdqtaEYTiQ2Bd/XZZukGR+IuIkdDcmwO0woEl92+JA+u0uJFqAzhZAcBYI4jSdLqSK2QSgcd4vH8mp6/Tt0bmLrYArMIRxW1X4Yji2heAIGYFogQzU1UVIFE0QSDgARMyhgPmop/q9sj2TYa8zg60wskADrQVjptw9Gdk1E0AlgQKRKxY1Wyiw9XARUCR0TiyLKmaTkQz0eSvOHSbKhmswvEivl+J40W52KKXAJVUAUgwsQmm0OlZxelOsRhXrdZpFbHaRbcNoqc0xMLpAF48Fk4H8OKrtMCRKgAWw9FwFJWwitQkWIpBJ3F3i0hDR4/b0KTuPrzEGXoN8hpnmDXwPoCBDlIgCkBFFVSj00uNIkSp4WOyrzVJ0uS6qiiPaxtJLyrF5v729C/5A+zM2UrjrO7M2UrjrF1XK4oIhqkCxYrFGnO/kG273W5bVNvtdkuk3477J/J+Ie+T2D/j646MDwEs22FJuOW6bIcl4Zbr1m8Tj1PKxDo4GFZMB+32hKZLQgVEkJJ1QiQmQVR6i2WvFM//FOfQb1WVFp2KSlM9AZrJRSh+MsNVQSH8q9kJkclFKH4yw1VBIfyr2QnxJbOqKBVFGVk3s1aURSUlIe3pZBB2ATiJ+apJMDipTVUkRgARsFhjAYMxYsVYi2LUWqNYwaKiiAqgoI6GCiAAQiReCQOiYeCYqKRKp9qKRpsCAKHiE4kjxoIie8QKQqQQWYnGBgBQ/QstLf4E1IExYRjGKQiRpz2EIlTTdlNwCsAIX9V/lLZCwaYCc4IikZKqTnUDVQAA1wEQkHxVdJJQ1aapovM4mBCMAbjTi+nRbTupIqqU0qLDcJObD3ulMhDuAmv6zB4OTLgmvmS3RjaAIcxcewB8yggKHjqWuLLGevGyndBXz0nkLXQscWWN9eJlO6GvnpPI27lpB6wMiKhTF5gw6KJuGQkAOGzYhJyukqCJhnKsXAQAECwOIlYLGGqoaQIYa6011gpgVS0AAAAAgNowrKCiOCJWBQAA2fFKNEYJFQ3iwmhiQseSkMAJA9nERY2QECAgyS+BMQAojEs0JgCVblDSEzYgR5WIYywD2Htv0IZKUVK61TohUiACCwGgEOI6pe2W6rSVtkodkzQAHSGQ0kjbqU5V05a0KkQKYAMEWJ+m+lXYQMvObQGqv5ToflQ6N0fn7o1CkwZeVpAIG0MFYLYBPimWuO25IPymaLqMV8jPk2KJ254Lwm+Kpst4hfx8XpNRk5EhwEoHAJjCOip1CwCAw+HTldhImLQpFnO5EADAKAgiFqugAlAWgKixAgAKADa7o8VBAECBUDEJFY04YXwQGxOjIBIfRuIjAXaM5Ua3E6VNAQCEKix0igaAQhsCAGCIjU1gIauBLgRQfDRRxVrCAPitCAAQxCcSY4B+ABBgQSQmPk4JYyIIAAAAHITOgEPFOl4EBsusPBEOoDnABaCkm7ZwvaSqI1Qyx7aBeXPGn1u7ztCQ0GgM4lCfV5EJcKTsOgAaZqPPAHAYhwHIAH4Z1mbaknq7B5hpiGJcIPtfmo2Zt6TV7gFmaqIYF8h+5zVltSaQwEoHAJjCOmuyBAASDmfSKgEm+ZBUrooAEDVYDMaAGgUgSsCoggIAAKiKqAGgKKCQUJGYxKOJRMJQOAzCSBAfjVNsHEY02k63KiEAQDFTLBU9AFxFAACARIkP7PeoKHsAkU6iaZtOGyEYJYMBDIkkFJi40ACbQISSEhh/4ABtSSZMEI0J5aiwQEpMxIIBLgBuSZHoatDtRtukJKrwAuBAoImkqunZkYoKYjDk7c1g6G1zLNhkBzYAZfH4NuBoQlBTjYqhAWsANtbIFbL6AzDO76uZmkcK7wvsXGjkCln9ARjn99VMwyOF9wV2NnyAmmqltpJFRCVWJi62BVYGpNoaYBUIFI6iTpQJAAkneWVtKldVBICKNUaNiFWjGHUEE3EwHexW02qaptW0GxZHiyGGiBgiqKpijKBGBAQVQFDUpnYVa0WMtSgo0CQ6oRIKWty4UwJAaFdmaKXbIzRtpUHNHgCAiUQSt43Uyw5SrVZ1VLcsWiUIBqJtevRsgkiKQJ50ROfTLegkgQC4qipQTdP06BlvBiM2sYyWAOyrK0+15ygI2qUArrnzeStTzrO7JOS9C9Alr9j7J1DP08CmNAcENQEADNsXO+yG7YsddivHhAVTKBBMxcFRrQKGKAJxMsNbie1/hAxXH/2RipABBRRdKIngrYoulETwVv1VkrYYAk27gVVNSRgTm5hE4yGIM7awGq3bdrtpEheRDEGnE9VW1Y5l8p5iRkfQonkAFNvZtsy4Yjvblhm3cm4igQANiEpHLgA4YrdZsJsm4mg4ImIFLMb7MVhxAXmZSFS2jTkqLYg0ejAgKb5nqlQBBOEF3SfpgvCC7pN0K/cFk4pgAUWdssgFAJuJo9UwEbGZBihGxIhIElXpQdq7ZTtt0SjNrbQ06CElbBSvrooAOgnewPT/5r18RruFwdNRq5PgDUz/b97LZ7RbGDwdtfqBUpFFGVnJ2mwLI71OWdQRAOLBJHbA8UpgA6byBzA9AMQRDDmCYXXKRaBW1RprLapGTcMwHS2OanUEB4vdYowBRUWxVlQFQFQQdbQialpUFCwWwzRFVAAAVFTUZjfspiECKggA3SBtUKFpKU3SswkwNIhmPYjLUkFRHZWi9KxGBFKxowwNMgkTJxrjwMImA8CG3q9mEAm1AY9gEhqBBUZJEeAihXv0FgkOBDpU/1ItDADtuuToBuXLfYmubfjLheg60gCK6b/TNqoqiLR2uCCggJ0BAJAslJjT3SgdQFhiR2gVNg5QAL45zsepX/4f3XDmaJo9vvRyxNrmOB+nfvl/dMOZo2n2+NLLEWs32N6uTKinTglEWRQPLEC/pT4wgwVgDRS1GQA0ha0FGNQVmKk3AAAsDwipWwQQA1GbCXabWhxELBZjFARrUItVFDXAUAUAAEAdDLEjAoCIRdVRUcAwFBBRUQFEAatiVQHAEVMAEAAAAAB1tDuIMRYAACChFCGBwzBiGdFDTAqgpHq07uxtwhSBOQSOcVwQjbGFQMWWoF0Nx17YXtmrqpNqAwDNBz7/xpjEgAEgTgACKEGpV6FR3ZCKpK3nMgMmg9Lq1FdaewKYplEwACAAZBzEJ+xRAQAEjGM7FADeKB4md41L/sjHUfxMk0Vyo3iY3DUu+SMfR/EzTRbJ5zVZT1kCWVbyCgMA1FaS6Q0TwBqISgKcYu4VsLUBAIgkRYq2AIhBjQFEwaioKIJgOKigAACAiooRAEAtjqajKQoKYKzBiAAAAABgQ8QYKwAAAIQ4kcSEoYMwCGOD+JggGgCJhCJ0QKdNQQgAAADESzrU2qBIXAgGEJjoeStgteGOVxiJxoTCAAENx6sN/bIBAAWAbfh5+ikSALgy6YXWmmegD/XiPu/hX9GWtN2SktxWBGBdLQC45Llgb8C4rZABAACMFBd2VQEAUGgdAF54HWAtF8+jK2ZIOlc7TZNx4XWAtVw8j66YIelc7TRNxjdgVhpZ1AuIauENiKgFJi+QAWy0wSkZqPMWACtcpK4EMCKgYsHi4KCgDo6GKWoEMSqAqjWiqKogxogCICCCaRWbDQBVE3GwoIIAVtNAAUABAAAVAMNuJoogxJG4WIF0vImOAgAQ0ZjYRKIIAAAIlVBYKQOobo8mQFXJCIACWw4Tj42EgSVQyHZ7GROvmKRnGwDiaqAJBCQ6up1IgkTwAAAAAEiQOFCtvtMiGQV2H0CqbQzMHo7aUSVwBBsFCjwqiEDiNhCVPiEY65A5q+lGgpjQ4DJCgNkL5arapPOOAba43aBcxR8wvLx+/BDyslRZ3G5QruIPGF5eP34IeVmqfMgiizoZRaWGarW//Uys2sS6QAt8bgHYEHCLg5pYkwEAFMKqbgUCFmMFwYpVbIYKFova7HZHq1VN0zRtNguqapqOhk0MFFDDbqoAoCKYqgqgggKqdouJgSIYtRYEQQEYH4/YgCRNt1W1bO+G6rACABCbIGFMvGzTII0G2dphfIhkERfFgiYiGpBupZkz9mEnqtCBUch00k3boRQAAAAm6vhuqz867balVQlwNI4+jF24FvTz67J20uq/YQccDgUYP79fR1OD/awChQC7KSAAg0GO77ShBFDOSsunwyDxDjYA7Fwoq9y/pO5cKKvcv6RjG0jCzAioaphWVOJjlGhM4iF3MEm63U6TVNuRQBAXE0p1kzTzhitDVv9uK3VFAwIE2wVffg5UwXbBl5eC+me9SaRA8ZUxAUgCoCIiYi0mIBZBTUEgwIo4PhqbE922iohNGBvit0RKxJfCO5iraqttAQzhBV1+lhNDeEGXn+XEyr0ZTILiG/oSAqA2wxSr1WqCabGDioDFwX60RSQxIWDFJiYUSNxnpyhVgYhv3R/RIA4ZetkdiM0/4JkIvlOoH60UIWW67A7E5h9wTQTvLdSPxpAyfMiKmmpZTYWail6fxTspawOEmtCcBTqlTCvHHNZIWTcBgAjhqqwARLFGRaw1FrDa7eBo2G0WAywYNUasihUsKIAaRK2xRgXAKC4uEjUAaCpIp6tUsYC80kGAEOCEkYTGgw+CTTyuglKq39uf1SeMSn8sM0f1pVIxheVAlmVGACuwgJvlmhIENvKu0xLNjQF1EEKHiVGUIBogLG2nSioFqoRMlDrgaCYBmgrMNHCdLXQCABlHME6XTgQboJvFAfTrSDciTZVOW2Vyh0KptO01EKBAC3v/kcetfIfoviPGxgC+Kbbkel27R3UEtxrxU1MiA2yKLble1+5RHcGtRvzUlMgANzA+RFkLqCqgDWdlAFBRG82VmAUwwyR84AmiBySHNYnaMgFAhDBXBWA6GmKYqoqaVguq1ogCqFELiDpaTTUEAAAAUBAxFky7iIEoCCAAYNgtdsOKRVE1BEcDABRRETCIIgjEhokmBmKCmKggDgHIkGgCZBkwADg2kVBGAUlboenRLYg3NE0sfG6RBwkBab4piQLVMz2rW+k0UASZDS3gL4G7egZCSqmX+gDQeAcwe0WLlEmLAk8FV+/tOOpEkl/JhHI3NFQIriGIAeryzsOO2eZgrrQ1AB4ZVszkDuJ87GJEPiEFVY4MK2ZyB3E+djEin5CCKj9oIyaAq0j0gGqdDMBZBdrZnIQNEj7JVlbY9DIBRB6RIoBiYrEhFouoOFrU0TBNqyEiCIYFU+yqFgAxTQQENWBVQQEQAABDrKaAoCjqgAAgDnbTYgoAAgCgqBIVYAkAID6MiYlCFD4lqklXh6TlMAAQlyA+QCAACN4ZInVb6e8Iv6YxUREABhwoMTG8s7dbs/lkEIDCSldJSdNTUVVnBAia/VSBK7TOgAsAmPtKIqBgYCICZAAkY0u246UwXkQkAoyQq2ing6PrGhmAqB+RDm3LDrkSAH44zepeXn8OipGro0uBFQ+nWd3L689BMXJ1dCmw4o1FvEXURABZ4YEWQKRVQDZXLUDWJlubHDbbTgBFJBdjgQimaRhYrKoYjoIFLCCIESMIAqhYFRQUAEVQuwEAAIAYYhMDw7SrBRABAOyGmoohAKBITExUjo8NQsIIAFbiCeJlADA0SKVU2h4N9BUAHO9X51ycbwhJz55NCmhV0VWUbmcRkITosS+djLcfAAKAUL4SaapTCUUjAAIoPY+GMJdWCyxFANiH8Eexy7EOgFAFun33K21IqtumGhJ+4xhb2cfacGcRYAPQcsf5Hfq0TVN0kbMjAz44zZlqCfAeNLOLDr0kJjE4zZlqCfBONLOLDr0kJjEfwC8AAPqwV8GEyZbkwyaJYLNtkCNEqiQHdtO0YxioRQVUUQGQKKjNMGxWVAEAABBDHA0HQ0RExaamgAKWYkLHxFkmGk0kEBqNVmcuAVDNhCoADIkKjAF0um01iYkwtCzZQZhoDAC8PhCgmq50AlAARooTEtBRFAg9UynkZTFbcG2DAtV0ejaqio5KQkp+CYDRJqWatu1A0CEAwL30CEnoqMBFnQECKGyQxwzh3CsYDILPO/0g6TbpUSpttZXUMDohTUlpwJUGsgBsuTriNVUpqukKAh4/hAK+uM2Y/bz+Pgyn1tAX+ZKwxOI2Y/bz+vswnFpDX+RLwhLnHwAAAGAOllUwG/tiAZI35bjCVYS5KkCRAABKAIAAqNrFZhEAABBwtDmaqAGqIIACgXE0LmEQGzgm1gkiiSTGdujA2AI0is5MLwWAiZlRAlIKvUEFJIAAEyaIswACNAkhBUEQbwPoIgkUBVVtT5oqFz5WALolqEud0sTQjBYKpe3ZLf3qFAQU4CL6Qn2vAmcNAFRfWehTooMEClHgvxUDYEeVMHEi2IAdAGiIWESpZxcTHEoGDGMD8uLFdOYxSpaIYCFitkIHIG+xWjVocBmCz6UhA/53zcrFBeRMDCdXFxFP0Yp/16xcXEDOxHBydRHxFK14fgIAzEEwOblxZTnHwmaBKqliASoJEAAKIFhMBxXAEJshVhEAAGKIJWE0iEQcxESUSFxUQRgbwQ4w0qBIjVECKFLVS0BxMZGIAQEIwKESlREAAEDCSJQYbtPAA1gYwngkHPcu0hAlklCAEQAUFaVbRQ0E9KeNVUmK6tlVNHAJSD3KKlSlEU0kgGdCYtEZopqVYZNcG0SWHId5EUwVOuAAkPep7osvYvyzAfAVaEAO1blapTpFU1X888Ay26KQG2BygGK+jpSXDUVSCbqqVwVVAJ6HHfSLC9R96W7vygGuSN510C8uUPehu70rB7gi5xcAgGnBAwGQTFcCkk1BZWUxC5tdECtuCmEEUCQAALFaLaYBAAAAqg4qAAAAKoZhtyqoCKJiU0NUFBE11XBIRQEEFIaRSCKxsUEYITZBQoJIJC4uYlnGGI00sdTrAYQ0UwUAAMQ4jhgVCHAqbgcoIGEogwGDkE6TqjSQF/gsAUEqemqqrVTTYG7v2zSgHm01FxzOAJ927C8WVQUA4G3HsHOG/SsByCrGCytF6hwlo0IujFSupkeQ5dQqlP0oqhSB0PLwxJq00t1UikqopurvchPi+n4kBLcNIRYLj6KiSg0hPu8+Hukl++IFcj4Mk1BPLgIQ6SX74gVyPgyTUE8uAnD+AAAgsw6AGxKrYCbqwJWVk5wpYEWYIxUgqgABgGAwqgAAgKmoAQAAACIGVhXk+IR2IhAEUhAGTkxUQiYwDoTGVGchtABCmGsQAECYwPFxRoAU1VS37ZFGqds2WbWdHo0oqkpRlC5RcTbOAVgZUm1SWjSdEpwcB6P2F3JJpYWQIZhzUdA1S4dRIK+JqFJ0NIVFjwWKIRpt5KdJSXbiUigDQFp5d8hfijF7rltBMBGQzaCpXRHh0qu6dWLa3nCEAiEjfEutltt1zHqHSBYAvgjmp907mHkwbLxxAItgftq9g5kHw8YbB3Be0EYfAMAboAawCiZjT1pZzDGHy3KkKgJYBKupgKoFNYEKAAAQFRQAAABEHW2OpoICwkRiY0gA8SSIkECRCIk6DIDAAEIxN2gEAAAAEI2PJkZCwAA2iiRUxCCho1AqiggSicQD2CBoRjH7I9vBF9qkm1TbTacb0v8hFhb6eNOXsbRzEgADiieUBxMDKOCahbToE19+KMJeb0t3g0BhkFAABkCARDJ7Xhg/XFHifjxIGkiyImSr7c5A3Vkn2Z9VHHxQBzYAJsfiBoox58VQAB7ZJafdN5j9YthV+KdLBCayS067bzD7xbCr8E+XCMz5iqjUARSRQGQ1AGcViFiFxaSTTcxhyJKyilURwKqKGEAwKADWWIsCAAAAYDhaTQAFsToapiECECaMKiYmgHhFYxOFIBIGhIo3tg0AjoslEAgAAMUSl4iBzOZEBeJjYhWCAQDs3VQdQC6fRIxsy3FIBD0NHWqIAqpnE958bXqNA9rwIS1xIBwZYrF8wS/X4gMBoTkWjJZKWp2oCMyAndmHaCrkjquFw7ZK8kkGXGgA3f3w0MfKviy8DUpsizOAwYEBjAwPHIJQatIAvofN1MUFPi812bisF1jZw2bq4gKfl5psXNYLrNzoY38CADwQAMG0ua1NOW6SmOXKqgigoqo2NdTRVBUHFJGAAACwqF0BAAAQw+Jgt0K84iKBiQTRaGAMGoS5GYBUTIUWgCBIJCZeAAAAgILERGMTqAY2kUrPtA1VpPsCjAPHYQwYAQHdJmnLJoBOXxdU21bPdDvwBzkmQKFbSfe2ZmgEsPfsr92BURsaO4EMxUpJNdEtEdRAQtAOHUlVNd0C0AwiIHzELX1awdSrmP5UHgHA13qydwahHnPp9ejJU9f9O+EDw0cWaJAp0iG0vey7zuSiq3WdYgM+9xzSkwvobDRHdYEmkM5zzyE9uYDORXN0LtIE0uH8AgAwCQ8MQJtVMKuy1m7FXIjlEObKClCUAFAQXB+zeABAAEyxmyIAAAAqahcBAAAEQ9QCBNF4EsQBocIwGsQnCENHwhAgDI1iKoxaQCItTRWRwRFV2p6hSkZKFvvFF+Zar+xTX9TlA/HvShPRdtJNKlo750pAaDuFjAdDAAb6hQ0QgYqOJElFMoDZYuFiri/fpReu7W2DGhhWpQg/VuOlKNeC6w2wR38OQKlDUwLfLdKKhP4F3LZpm6qC0jIZAoZMMJY+4t2oHb5LHFEA3gbNm2YF1RbFiFzkC0G0QfOmWUG1RjEiF/lC0HAbEG9SbQCqPNADCCYIhumwNq0OLFfMlSOAmuoAiIqq1azUWFVQwBq1AACmaTEUAABAEHFQAABA7A6OYqgTj4lg4kNFjQSgMJHERGUAASK0SOAgEgrlUwtpugGqgmqK6ITCZtRtJg9VpY1EJ1XS2GtKRJU0eiLyyoSUQIOVpNJ2tVKo+FxAU4SYSKlOW2lRTYAidAsOCzG4jhBwVQCB5vqrWHun21XKBvOD2woCREeyaAjRR3Sci9e/TTG3TYIG3YfA3vwFd7ZJP31U3ccZ/tYcNM0FbJ84TlcdQ4nQ4a05aJoL2L44TpcdQ4nQ4Xwo6y0KIAK2DfEgmbKT1oBVjiFWZFUswhoxAICxKgLYHex2VUBAAABVR0c7QEis42MSxEfig3gnmjCITRBKYYRIGJUCAWl7pgUAACKMSVSQAjj35a403Q8QFlHibAAQe3UcMTLGhr0PTdOBdDpNQmKHGheAQrop0qlqiyIdA84cr0t1SCGUEyoCffhMlZ55jHipK5uNa0IBcMpHfKI2NP8nlohoTzBIdhtwZozoQ29EokMjYi0moMbcQN7ZgIQkErsm3kWLjbgdWgAB/ke12+wFvi6aGYV6zJM0f1S7zV7g66KZUajHPElzPjLrrScCiMD24YEE6DGdNq2s3KYGOMJcFYkxYowFEMQKoBhY7QoAAIDd0aoAAACIaRcFwIpRIgEEOD5OShiRCRyJAIEBAECRSIJIrAEHYAknJhIDpo9tqG7PbltBSIsv5WkyIQ7yaaXVpm31TJNSeu/ICpjSQ35lLuqBqDL5hemIUhz9YghwZyLToZQqTXVDxNd8rALClCQeIMIWQ58/T5mmgWqSQnpoBjdYpgG6zfJ94qnK6w5Nccovk5FoVDJGM8EYmukkrplqyH0sWRQwAA4Afpjl5tUHbH8YZhDq0UlwmOXm1QdsfxhmEOrRSXB+AQDYNsxBsDIA1GSmaZNzLscsltWAKgLICgAANQSxCgAAAIiDIgIAAICKigKJBFHHWLIUjUs0NojYAoNDSVG1eoNOByC0wiABIIiNSYwF4MEMGCmIRhODgPZ5Jk2TdNoAENTLfskFlLTA8UTLl3N+K6Cf8CPcaqogwVY4CsT0FV0GBBqIY18yJxEvRHpZf4eSgdCB0ACYBUCPV36HONp7Hm2IGe7zFiAoEJiOeKoUHRK0TfyCXv00zZiZbcgGAHZaey0uApYmAB64tZbT96B1cbwjF/KLZAK31nL6HrQujnfkQn6RzPkDAABZNwEe6AMk02bTJsu5LDbA5SJIAdQAAFBjrKIAAACoKaIAAABqURytgEKLuEQcJLQiRIjGxYZRy45HxgqKKvUaAKk36gAAQCSSeEyiVtpcVKWqenZKFVa7DCKhZwmkDPhSbq/VZJkD2tKJdNqeKqlVCFrmDFouTBoFzG0DAVQgXv0OoClkJL0VczVN74gbpxHWUhAcCmCCQIV+7KZDoSRRPdMqxZs2gJ8VUDYKBrBSyRMTOU9W21Um0yC2G3tpIqdWZwMYAL6HDebVC+y69LeJlk0EZQ8bzKsX2HXpbxMtngjK+QMAAFktAM4qmDG5nTblZBWqilWMAKIASABiONsiAAAAINgt4ihY0VBOND6ITaggNlbReMWFkSghUYcCBQVLAQhMLKQEAKLRxBgAAABITDTxCEDYYDIK43HUGMSiCdjRmHgMABihVEG3Kh17zMutc4AAItEwJB4BAU1PRUFVtamOL7164FeCQLyY1ifYOG7DbqBKRNtRKmmatN1WtVA/kQprMsYI2+HQqWgSQarxpq7tGMBtVNiAY2eQ2y3rxTZXmAAZEIBGwBsXGg+ftGCoGl7nDMfRHXwu3VGy0MdTAniuc4bj5A4+i+4oWejjiQDz+QkAcENiFQjTwXsxGIZNDXDEckgWQSgkAACAXdSiAAAAYHcQBxRLThgkFHFSrOKCMAxEJD6IOBKA0agmOjMhAGlqZtAAisQlQgwAAACIBAkSjQ1AIQMAYSRBQtsWO22rppsqBRUQVEcJl4MgAL6msmyaanVTRQERGADkdAIAkhUilbYqyWpCdAJAqwXbCwAWlgGxKqB6KySp6rnU1FKQRk4Byc1v10fAgQkhSMxphE6qOkpCi3dlR4jZAC4gzZDKvTIz0ofE67bSRQIUbQgEUImmG37Wpg8ut6zJAH5HDabVDew81OFUjooCd9NgWt3AzkMdTuWoKHAe7cRievBAAGRYBUId1gAXs2KWy1blAsRmM00TQE3TQQEQHEwFAABQU+0mAAAAitjsIgAAAOJgN5FI4CDRWGKjIcJxDiPExMaEgWVHFYVloEqnLankMt4OpJNEoEBFdFptEspRaE2kadNQbY+0qo7HqvkMRUBTnapKQWkVgDBQPKF+eEQM2CYR+Wixqr1uEddLP0GHHHWhXwIoEVCg81II8aXbfTT9EiKAfqNOo5kIICCjrpJ6qtdc3SI6oQ0yAM7QCHtncAHsrt/iafN+fd79ySIBAL4n5cfRB0xcBC0JezxO7En5cfQBExdBS8IejxPnQ5Z1AVEFbbihhVWgl9MmryzLZbGDi7EqhBprUAFUBQDsFkdEAAAA1NFqigCAAACmOtotoGhcgtggUNSy5UQioSJhGAkIJaIGACA+JqJ4AIxlbKLECTCSvkNS3baaShHQgq4xd0AwBkLSJk1Xp3pUK2W5HcqGuIQDCvzRIUAAcATyQr4JdwDyzi2acMYolo4tdQQjAnoDABgKjVlp6WoqSpJqorQdJKibgUA1KSKwQSBmVkZMBb87dM5Fh/loAQFt0Kzt8s9bOGlJ17bzQpaCQgAA3sbMlO4YqEWxcfQi6tTWDEt3DNSi2Dh6EXU6vwAA7MINPUynTSsrx1xoKMtVEcoqQACoGFbUBAAAFKsKCiDFKI5ogsABQTQuGkO8iYsqlB0gpBEMelUCwsRSAgBAbBCvwAAAoJgEsUochQ3gIHBcFCPcObUz3aZHFQiiez7xRp2xwRW1aaXbs6meqVSOs3oB2KrG9ch0Z+EcANI6rRsaQaAMLeLQHNcrnU6w3jlt7JA/aHOEim6lKoJSLdVp20alqEMaW0wgI4QNAO17BDS34j3aJSYfjctQx7BpgJvj7fBXGPbUr88ZmgPYAB5Y5c/Fa2A9rmJHoX6NElgJrPLH4gW+rnEVOwr1a5TAysWC+Er11hZAFoCMGoAHBiBYBSNrk0k1IIexGlCWIxVCxLBarIhoksZGEjAiVlUAUQQArCACAACAIyAAAABisWADAAAQcLDaWNH06FQ6sdpWOiUASpLqNG3PIO8NVI+mZ0NBCiIrfVu3gXSqmraHalKKhK4/woLMK6mgkp6qhQZQ+CobipaSEk9MVCHotJKqqWiLFY6aaVlBQWgDAmrpH0JSUaug4FlgGiEGZCwAJvplFyD6TUf4pG+cq/IBBhzrBvNxVhEAC2ADnme118P3wH7pbydzcV2KJs9qr6fvgf3S307m4jpFzh8AAFBPBmAO+kynTaOmoUNZkQqJIJQAEgAxYBUAAADUBqoAgUwQiUsQTRBaxMXYRAgcElgWemEpTJCA1JsoEgAUJdGIAQAAUGxMkCChABtAWIk7BFDovUTTdjUNSAVov1JsTMvAjHNICEgOgwiAbHgpvSGFSqInPYJi9qEWxAZsWAwYyXa5Y6Cx7bcR6IEmVaCisYQ2KrTj9rMNBgziuGfeSAf5dCez2mKADGTXovtxpHmBehGqSAAcILt630a6zJxNyAD+RyX2xRNsO5gGYS+8LwLxVyX2xRNsu5gGYS+8LwKxfwEAmIAPQA0ASKtAX7NpZbk2lXPEK4IwAqgCgIJg2EwRAAAAELEAAACo1QomAACAYVgtdlA0NtEw1oEjQnFRKd3o2emmCRGWOq1RAqAaLI0SDJVCp9VKKkBaQayi6YKUgnD9SW39WYNrdFJNq5FSLGwigbh7npDzznLGhQCA0dcj46o0INhLsWJI29VWKhBUJ4fRlhR9MmQ4kV1nPWIitQSNcLRtqPOGAwDiXAy9h6oKFZIlegHIAH2cFaP6MUEUzh4XzUy7J/hz6Y9ROS4RiLhoZto9wZ9Hf4zKcYlAnF8AAGbhgQRosQqkaeUVK2Z1cOWqEMoEkACxWxwwAAAAUDVEAAAAELWbYgMAAEREHKxCQGxMQiKxioRWGI0Jg1DxJIhGA5sA9FKvEVICYLTAATIIh3GxUWRTVgL0bLodSBL4/O4LAAt090Iq3WpcL7qVityHkzi0u4RfpBAAIOYqr2OADRlgrjcxGtomdqvFNZMr+hmA5jAblA6kSksiLeltClUUOkhjsgs2ZAWCSUv0ZD1V+t3bwtdAmRQQBBelwN/zvGr7jJ3rw66QAVCe9szX1R3MvPTDiVxUuTNp0Hzd3cHMSz+cyEWVO3N+AgB8AGoSABmmk8dpQI6rNjlqclUIZQJIACCoqIICAKCGg2GaAhKxSpAwVBRbYYKEMQFRhQ4NyOgVczOdKgBhprMQANGEsYElAAAAIEwkoiCgYQAJO5pAAOqxUoLYMcQRIEAYwGARjwNLuNKGaDGUIkYS8aEEFnSNaW6LipRuJKoBMNPRimQARmCbEPAv0ZVq0iLQSIgmes9fFcBsdmguqca1BiBTzEN0+aKJYG8QDaCUCLqR8AkDAnpEPpikDg3CNgCE2+3JwXudBy8zAqEhAD4nVdbFbXC/ynKbHRejK5HNnFRZF7fB/SrLbXZcjK5ENvsPAACUtQEwB8EqsNZg0KSgGZBjVjlXLiSCUE2AAFBRtaIAAAAgNgs2BQAAMGyIA4Cg2MU0TAVBQVyg+LjYIBFiwvhI2qbaNE3PqGo1GDEzEVICQquXAgCiTlwAIDAiPHEBL0WTngGixYJS8bsA1YPROl1pqqmqNIq8IYgQQK51m9KhShVViQCO1arEbnM1FHCDTQcqX1gUG9Fb+3EQwIsGFAEcoEYnWFMaO6rtBnbfeIADHLrwFpE/IT6iiTaXoJABsuvG2OEO9keADQB+5sz3xQq+rrZOE+ePJGfNfF/s4Osq6zQD548k+ycAwBULANRGYNps8hrMuU3FyrEqhDIBAADgYAAAAIDFYA2AYyq4UmKJSxAbjQsCnetp0rTpNG3TJhiFpaJIAIyWGgkQl2hcNBQAAACgSGKikUABrktB0+nZSSlRiAqItmcSpOD3lidKAXADN600OgopOPwbhACDUZiqm/ll+msDBNEY7Ute0qeUAoGt7z9JpVvdigIrrTaYNuSMgQC+ki8P7xDvq8V4VkwdGAVUgQCQY+JO9KDReqi4QYAGMRSQr63HdldthOzySzS74HAAPqYcHFc30PvkMe3K0UUCxpSD4+oG+iyPaWeOLiIN+w8AAKgNgLMKZq0EFsMaLMesUBU1OSRWVAEkABhjUQQAAADDFIvNBqqIGGIamAgQAiMKiY3ERmJDh+m0PXqmR7fTdESgN7PQmiAB1aBTAQDFJhIRAAAAChMTjRiALP2lAijXO4mAgpCyWo5QkwOIR9s0SZdKq2QjhlBAIiuUrXq2HzHaAFjfS6MUEXzAOHB/huO7tUdsqS8RmeIOV6cZMgRJtyKg1HHQ251CgChFh26AILql6IY1RXSEQj+Agz5zBhjGz7ETvlp3iMklAYAAZABPZ2dTAADAXgEAAAAAAInDAswDAAAAZ1GkXyzl6N/i2+vi4Ofu3eDk5urc6+jg5Ojh6uzn6ero7+Dz7eTk5u7n4+zj4Obx7H52zJbZCqKnptiZo4sI69kxm2Yr8J6aYmeOLiLM+yNr6hYBkJiAG/pYBbNqE7PMirlWjjhGKlLpT7oIoMYaAcRmNx3sAAAAoIIqAAAAgoOC4pgEsXExgliCqOjRo0e3tO06qXTaFgCAmLhEsAEqiE7bM1BJZ0xtelRaRVFJOff0yJvVBALaf2j3faEFwQdIAMFFbBMGBEIC1BQ45+I3WqMGSyAgNK1FzPXqxMSrYZuo0FEwBEDZqm3QbapKyeG3PXl2ADTMB3A0EPiFRp9rXNP8IYFMIwDbCN/mh0NzXQapUxTXVgCe1rTb6j5QE0PLHLoQSlrTbqv7QE0MLXPoQijnS1EnE5BARm0CXGEAQG0kVoHI5rCycrKpAcUKqYhgxQCoVasARkQVAAAAUUdUAAAAFKwRAABA7I5qOiAZJxImHiEIReBIEIF44ggiKIgChFSkKumQgLqCgGq7eqRCEIi00aaL65CFlrO2oql0KtWpUnV6D8HGdVrNEKCnBCSbqMMtxcYpTaEQ0kGSpNpuKQH9pSsc9B4PNKAKjWwi60U7JhXQs1Aa2zsL7QAYBCDkTw8ux5cP6ZPiNkPIZJUvwG2TxFhoLgzbB7kLCI4N3jcFx+F7SFxMk7BfEJHpm4Lj8D0kLqZJ2C+IyOw/AABQrRfAmSCYNG1ah5xkRU0RFqkQigQAoBaxCgAAAIBhNR2tAgRBwpAwklAmjO9RhaqKpk016HSKubkEwKCoAAAx8YljAAAAxQYJYg0CcODEo7FIsNcO1aOpNgUogtbUiroQaB2nR6eV6qkTQTY5K6gK9Cii2+0iErEsAGaYKnPx0XAAlEhUqbaDgkNZAX0lRGrv3WUB8p4voKJNpwUtMXmu7B4NQAAFQmpVNYNcsYwPxCDAEISNofUCYQO7KAQBHL5HJbcXr0HnKsvTzEK9WEaSvSm3vXoNOkfpn2YW6sUykq4Xu+ArzFQXoACimgXAAwMwrAKjOSnLuTBsCjVFWAQpAlHDQRGsgmEzsWYMKIBYUQXUWlEFAABARVABAADAqmoxAAAAUQex2aRpOz2apq2qqKYDHFD0TNNWCj3sABRAPCEAxgJazRDfaw76d9ctf9HdBFzdYT5l5u9t/ROqiAFcpBKeY3ZLBxD5u6uXWlqZNCBNv4ouDLkV4gw0IKEjKUhGPGLa3wsIzWQgBjeB+xLkMgNmYwDDN7lpBt+QNMFgHAA+hgzL4gJVzTqlyPGEoGnsmCmLC1Q165QixxOC2G8R9dRKkGhXgQ2+rVhuAMmVVVWsNYoBEGOMAQAAtavVUQkTIYwDiEgR4ju1oJNqq2mqSQGOi4/EyhgAoGfPTgEAgMK4aCQqALVwv1At82+BIBpHBAwAhkbpRBU6nAF2m7RFp9Jp28Jh/xzpvsLCZ7iGtuETxaV/5oBlwZ2Dzqr6U2iA0i2V6hA2HyvAMG+Z5WZsvuMgORjDZm8QgIamz245gDap3PrBZDENJNPIkFHnyvOw7Qv1WwNXzCEoUgJ+trT66gJvU7mGEnngLBGYs6XVdxd4TeUaSuSBs0Rgzh8AAIhKADwQAMu02cQ1oGRVVrlCWFEkAAAQY4wBAABATbtVAQAAwCqOqCqMDWKChLEKFBWKJAhAkYhDCEKM1GikXkoAqTcVKgAARGITKk4BHFBttzqRlDtQAZXqVFOgEqzEm8sjtDiASJRAp6000sJbDxi7iVZaVTqJgiQUAdNcO3pjfQAyFKSW0laVptJN2wZUdB601nI8bIAANALVygfxyTVLXJGGAA4UQCFAREt1EyJ/TQ4AZLhpSrYRt4LlCabDSBULk51uQggAHte01tM7mHlZmpuwF9oLWeKa1np6BzMfS3MT9kJ7Icv5BQDAwplOm04x52SFIcSK5KqiSAAoYDqYpkUBQAqiUSceKGorcGwkAIKEQRgq6qhAh0SVAFJnaSoBwInGxwkAAACisbGJ2gAAoJi4+GgMgEOAQ5HQUWFMh4i2Z48mCgAoqcMdhRZrPsYgEmID9LWr8OtwqG+JAjQDNA47Oit/+hRgA1CkOpVUJI0eWkIkcZ21hgEaBNhrW2A73XyWnUFngBl2lsBnLgKZ+eCATTMADsKONFpeMxfU1oL2Ro3izsFpBr72tOetF9h2Fc1JyYV6IhFrTnveeoFtR9GcxIV6IhH7DwAAZG0CzEGwCmZMm9aAHHMhVqSqECoJAECxxlgAAAAAK+poKAAAGFhsjhZAYSJhEMSGMTIJ1Ujbs9vo0TO0TTATRr2UAGgsjAIAK2FMojYAsMGGQHGOtUHtc0iPbo8AorolX07H5uzAKU1H9GibbuAdPoRtbSZElW4FVX1oUsALl9ILjtlnA6ik6s7PfWxgdkvLsglRDFng2/O0IEQ4+rM3wAYU0CbHidFoUrbQDNAEwlaAADM796mrSkLL9m6gHufk960P+Dx0w+yEerG8kkCJe3L7xQd8PrphdkK9WF5JoOxfAAC2DWcVTF+dtAY4x1VIIVUVBYAAwGbBagUAAADA6mgzbGAiicaBLctBbI9qOq20SUjTYhAW5goAimouJQAQmzARCwAAgCCSMN4mAJISela3Rxs2BpO4orHGGBQKZt1yKEFosYSmKN2e3RSJOlE39OVJW2mb0hEKbikAQ0vYOFsQiw5AAKQeR5WmVOkE0VbnzrcfnFHBHJpp1d2Oo3Zv3ZraoN2ggG8abpi/odtAYAM4iIJjzzWdHNGQJHLt100GbQoGHobMlNMB6qzWbbNTOnUUCENmyukAdVbrttkpnToK7F8AACZgDqRpneQ1ILfJZbkKqaIIACiIg01RAAAAAIvNYggoDBMEhAGEmDBBj26PpNMQo/QsDGi0qiIA9AoCAJQwoQMDAACgmCA+MTFsTBpUKj2liWL60gInIAyiAAjRFqVD/ivEAIQKVU1TlW6q6YhooA9w9XQEUd0gtQtrDLnzETmb0sEB6y60yZSKttJTpA2nlRQj0IBqgkIA3YgcTQfSebwF8efCBJAbKA0ByOEOc84Rk2O4DIGuEdR33ejKupMewthpvr2elwImOBeNAb4GVfaL16B5uaaTue6fCYg1p7JfvAbNwzWdzHX/TEDsj8h6igSUMC04KwNATZZMNq1cjquyIlUVK2KMAChiVUFUDbshAAAAgIg1gsqOd6gYwkiciMRINW16dKrbRnUDAHICDAAAAEGiiSgACBgwKIY4DOortoBS3SYFEGY75Je6TArsaIloqtqm28HVNr7t6Pm6ppvfPxpkIn0BCKUAGED1j0SJ0OgBJWr0BnfhADynDUCdDWjBH3SLQOYGDEBqaFoisSCRTIAMARB0s6vHu8v6l4axTj2EfUpuYgMGXhclz7sIDvSJbcfhYchDKHVS8ryL4EBfbDsOD2MeQjl/AACQUVMC3JBYBZNqE3NWjrlikapCKAIAAMZYEQAAAEzTmwAAAABWxAYYiEXR+Jh4ETXERoM4h45aUozQqTqtKgWATmcqAABKWDk2EYkAJUq16dlJSXy3kGo6aQWFknJnq/SCA+CM1uLserW0s5v8IaKv6Pm/DGLbG2wCHQeIBhEBoZHaYxGJeY1r9bHrsuQYGXCBRNipFbuOLvlRkmYcH8Phzg7gJ9qjE/TYlyJegL5ugIwA2YlhCGfIJlJFgAaedrTXrR8wq+i3I4V/YSqKgrSjvW79gFlBvx0l/AtTUUxA+xcAgD54IAB6rAIt08p5wGoVYkVyVVEEAAC1qYPVKgoAAOCIAwAAAIhYxVAAAABRtRqIaCRQXGw0xmFITLTpMZtO0zZVUj206KQ0VwWAwEIV0PoARqHjIyBI1fXWtF0CBKbH4sAAKibU35ZXoloCncWLxVUEmqq2o2CqAWijkkpX2gKUosAImWduoao6IUhBffajKAAo8H3ISNdDE12zNAYAIcNd09xvhc8TEFAyIcMGbnBg1wsu4xxj2Lr7+dwAdgS+xiTnixd4LYYWhT1mCqwxyeniBaYmhkbYY6bA/gMAAHUFwA2L6XQyZHJhOa5CrJCqigqAALCiAAAAAFjthgAgkZggEjWBI0bD6EEVKpVui06OTKOVAhCY6wAAcCQ+agwAAFIkmtAh4ABQEEYSOiWgE5UNxAWBDIAM0B8bSBiACAACoORhApT3YTy4AFeEjEJSafqVWpEUcREGEIC4nYUmEAoCVQhQQErPVDXaJmiTnLbc7MHzBvc156gLSor9RJL47WeA4ADgLFzuJFC7N2wgA6KAuLjQzW/Bi9YOLJjYs6WttwWoAZ62VLZX98FtCst2a02dC2cilbSlsr26D24rLNttNHUunIlUbovgFwCAHZiDZRVMqk0rK8dcm6qqCipiRTEcFTVNFAEAQA27o10AAAAAxCp2AQAAwKoOiuIiYRASjURDA0Kjx1KRABhVMwkAJIxJDAAEQBK6jaaJitMXHzptTwUi6P5qV7Ewm52QtlQaaTstxEtrCZTSaof3BOcMQPPyFWgnbgPHBsLlFEmpYwT73Ts7jSYKQGYLUZVUumkKJIZFzvbTHxy0bAIcG+QzWUqC/UO0CARwqhiTcYHQUXlcUq1xSLSH9OLooQmADR52DKetO4hV9NMIw8UrIwEKO4bTxR3EDPppGC5eGcP+iKxTAwiBDZgIgJrAKhDqljflmCurCqlijVEAUIsigIHVZgMAAACwalUAAAAwsAiBg4hJTBDEObSC+FTPamtRqbaadAIAhDEJAwCAogpCJ0ieiyaKEgZEogBgABU9EHFL1ADH14eiOUxI1yEiKkp6tDhCxMhkA+cKpWufAPo4AxUQ9yMtv/JpAYlLQ8lVAcgAyp5RVAAfJqBfC5CVRgZylqg0nVU2AdgIkDdFoLMrnbHs713b3b1lldwUswXexiTWrQ+Ythh2mKFeuF9IpY1J7FsfMK0x7LBDvXC/kMz+BwAAAJgDYRVs3yRLcFZxVVZVVRQFAIAiAQAABCyiAgAAmDbDAUSiIYEDOwwgNr5mSxrpSbICBtNcBlgDoFV1CEAKYQEAAACKSeAQACADtokDQgvXBUPAqxcLQEiqmnQMEwEAAFhgfdE5fzBRjC8CUS9Kfl9s9OVJpglvWuwZ4qJkAKhYrYlKdbUhsZ956ZiYrQDIAenk9tWjYvGEGxSiPxhcpFNterUBMDmsEXVdOa9RmAHO2FnRtH6B0+ZGP8IE1zCD3ew6dRAAHnZU16sPmO6s267D8UXgIeyorlcfMN1Zt12H44vAw/kIdeoBREA/4cYMJghiTJs2Q8wxV1ZVVbFqLQCoVaOAOthQEwAAQHDENAQAAAAcxSIigYIwJkE8cfFxgQIrLsQoPkiLASvWAABEImEChIXAxMsA/lF/1ibpWdUiaJF4DRuhWWAW2qqqhtJtQxl3RyskAIAdBijm5TmWFQB4u1FWohHWhlak28G7m9d5A/F+2akih0YDAuiQ3AMPQiyPhFuib0oDwQHBBfKYVi+GEAsN24CIuymCfwb9KyL7WWnNFJMvpusZsNx2AR52VOatD5jpylXsPH2EkDqEHZV56wNmhnIVOw8fIaRyQ+BD1tTJAMC24YEFyDCtTWtASSwUEKmqImpaTavFBKymoyOCUWMBBAFALY7YAQAAAAeLogAAAIhVrUCccRiJRjwACkMDAIATiU80MHCUhKalOirxVyxU0lURoRAoZ67RYDKdNW1T1WjTpVLGzCC/IH0JUumUQv0BENrwF51MAiBBUXQrZOKVC+gFNA3XUwfAsRU3ISQSpZMqlMVPo0HIRqBRvaWxLHDjgJsSAIamiwuBvcM+Z9ep58LhxPjdIQwDnobktncvsMdZml1HqJ9hANKQ3PbuBfYYS7PrCPUzDDDsq3ZgQGS9JcADA7Csgm2rrJxZjlmhpqqqIg6mYRcAsZgGACqIAAAAgGGgAgAAgGlVCwAAAKbNpopMJNbRMCAeYmPV0XZa1VSPNLoBmEBajR6IodPQ16kJLVxw5cTtlyHnvN9/sOFvqnSTDOP87kCgVbYEwEAAwIsR3W3yPmYaRYDvNw50FCpMTMg9t+LTp9Q5C1Ua0m1KBTH7nlFmpW9vNtmxIQCEHTXhzJ2pAoENagiAmjv/0Dh07uMLWXrwOm3nrGAAfnZUj7vnwHL644471LMvJA9nR/W4ew4spz/ueEI9+0LysB/9wGASHliASKtAT3PwGizHXFlVVVEbggCI3W4gIA52q80EAABAVQxDAQAAUNPmoAAAgBqOajNVOE5xYbxxgJSodHVS3a6IBuA0JbTdtlshA28BkugpEIqkiQBdVADchFZSTbVa1W1L6kTUDAIhAQEg8FmjTwDpcg6R4wOEBlAH+OTe6DgRImn0FnuLgIGcYFEPdihnIn+nwETasTyLofnQ8rxxtOsycABMaPVgckbcpqdu/fW1Bao2P8VDdnB5sKm4HR6AAh525JaL50CZuQ6zHm9mlEA8nSWJ/eI1UGWvw6wz5M2MEog5X9TWBECAqCkC4IbAKpBq08rKMVdWVVWx1hgMAIACxopYBQAAAKtpUQAAAMAwDIsjapxSEB0aE4tipTAuQUSBiOAgjKIoAAAmoRKVUYghRKdTKVw3RzWVHikAFK1TcRQE03JpFIvqpilkgQHwSyLf3xdIBkqdo7FVcTTHhk1Gg+C7t9NH1JImZw1nNABkMDg+SivCQkSjVyRVBfgCZKAFnJNSxGyRwgZ0hwxmexxwbHObsF7v/llgx+ybrISmAD6G5Ld390HNuKaZx+ZiPc6MIfnt3X1wU65p5rm5cI/zcP4AACBrlABzMEzrpiAccsyVVVUVWQAAEGPUAAAAAGAaYhUQgeJFJAwTNVbo+JgwGkRCAhsMqlabodAAyERqJAA4mmgUAAAAIEwkYUw8gI2EpoeuSgy33sbEYQECQKH0TCGiIMADTOZAgO2gbZA4m6OUCoqkk4TqCEQQIJBcDXe2EWv7GUbpgC+uwM2Puf4Mh27QNEOgH+CZA8KrKYmIiluElOlAm9B3GEKDAF0TBpU2Q0M4bjAOs6XtIWjYu93ak1C/E3DUI7nlAH52JK9XN7DLtNcxumfYI1awPZwdievdbVBX7XWMboY9YoE97A9ZrZNASLQH5mBYBUJt2ugqq1xVVaxRMQYAgwKIg2k3EQAAAFCr2WwAAAAohil2kUhAGE0Qho4Jwyhtt9M2na6maRvVBAAUTaAQAJipFKJnj1SReTtUN9WVgtDd1ryiFtAO/TYlRVw6DQVNpCdWQEWqGwivSAgDGgBATqY7k9/ZigCEbU12NtRPMsC0iBZHgUyGlUblY8+nl1bTBkzfVTAZJ5Bba7BZ9GY2ewjHjLgqb5vWCG1IJBUjRDTN01Coa43dciurRjMCHnYkp5sf0FPR7Li9maA0hB3J6eoH9HI0Mx5vLigzfgEA2D48kADBKpCm3TBYjptIrKoqygAAoForNVUAAABMwyYAAACIqsWiAAAAhtV0VJqkiY6udJo0PdvqmZ5pKdV0mkJvxEwVAEJrhgC2ZUwUOU4GmHWn3+lmIUgBCQDAjkP3yQ6MASIyEHIEiIgoYKySFdoyp5Ta5iocyL30Qh7dhAcCAQJeZG9ZFSiCCyACaRsQ1IrSzvXczXvgek/9NHv3kDMBZHADIebaodMgZEW81gmmGxxic/4h2CNZ69g9y9oPMwaqoosffnZEx9MTZBftGu46Qn1Piwl0ODui4+kJsqtyDXcdob4nYgJlf6S6lQAE7MCZIJgxHTJjuSyXVVUVo2otAGANgIodwxQAAABAxDStpoho4rICSVEx3HDrnunRNhEVAQDE0IQ2AAAAMWF8IMAAIkwoQIw0odKz262AChToBMoEeEXYhfYfaCooZMEA2ACmWvuqH7xkyK5aCJn3hbRNA/54nw7nCFHpSGMjvAeC4C9JLy4G5PZJ4+tsaHeLbDy2yeegK3kHIy5b2zqwNlIkgwQISgveMEOkG1SHod9Fw8t7fWjz9Y2vzWWDHBR+diQvNx/QS41retY77MVzJepNYUf+vHmCXqZd07PeLp4rSS8R7K9UbwFIAUINgDnoM2VuciaHsnLlqqqKEYwFAKwAYC3WKAAAAKhawISkB1qdStUIYqkkYtw2DT01XdVUVQCAwIkRAAAAECZINCoAFeF8DWIGLQIAQCXX0wgQGu1n5MCEAzhDHFecAQgk6SIYAKEgCLXws8q5AvQss4asVj39C7QIAdDo8c2cWgjRYmwkOFODQXGOQMdJR7erVy5S+YPNe0uUxi0ZcscFrUswGdTx6b7bSnDC8My5pACrw9SciZh9RgDbNQOediS3d+8gp9MfT89QT2VFuqQdye3DO8ip9MfTCfVUVqQ7nI9UNxJQwgTcsJgg2FQ3BZWUY64sV1VFsAgAKmoAsKrFURUAAEARVQUAAABspoCwIzGOD8IYEUYHHRMJicbZQgoBAIBojBK1oZJo06NbqP1uHDhMBAEIAQHdtpRAeAhLQISmaNJUt9ukpJ+DOzBraUV6qUTEaAQeSvmi5xlhL7HYNpiIEzY+EbDvbED7HhnAAQfhG6EhqBU+/ywV7Wg6O5RAy/yRiWXZIn3MG7uzdxIDcjDVnmQS3v4OK7/d11dnHhC3YwQMPnbkt0+/oKfYV/OMtxNUQnkYO/Lbp1/QU+yrecbbCSqhPJyPVDcBSugP3DCY1kmnBXO5clVV1ai1RgHAoIA6mKKGAAAAYNpMBEBICuIUdZwdm2i6I0LxEBEBRAwAIBIECWUAALATDcJYDDRVJE2PahLURZDj4qIAADJxwXVWqxDdIdctGRsi8YGNRClB0ICxA9ElKQC6JijSIKNHfJnIlLkpOZJ35Nid1mRNTRRD+t5nA9DeHYMHiE/6EZo5S47X0eApc+5ECY7qcib9p97X0IZbI3T5cnXoXC8PUSamN4m0JLt+dDfYnmunQ0OjWwc+dsTHzS8YF9ZixO09QkQPY0d83PyCcWUtRpzeI0Q05yvVWwYgAdUoAW5YTCuLmMxkuVy5qqpqjGABwBgVwGIxqgAAAGAiCiAIcUDoeBMbxMcpUCoMQsuCEAAAJxJnZAAAIC7ixGMBYiDd6hmVonhkmK9Vg7uLVRk8mdnPk6128gLpyy4mRV6FzjIySbbTAcHvttHhCAok3uO50tfWD2JWlVxFqoV2OC91e1AfwkI9+Orv/9sVG/LBsKuhQC0utlWzO+85i+G2yebKZUaFNnluDNNDG3b2fEGgNetcBqCJyR52BMvDN5gphmZ3x8X7lWgdwo5gefoGM8nQ7O64eL+InvYvAADbhjkY6rRJQSPlcuWqqqKaAADUsNqsAgAAAGCzqgByQKggLoiRFB9N2HTTaVxJW1XVbTBqzFQFASA1GgEARJ2IBQAg3R7dHm0UAiAccVycDHidZV30UAUoQaRgVYiuSDBymM9FlaTbIAJG5iAwAoCFNKHAhAsQYBAeArabtPwZKYyQwHZU/ZTXHUarSAtGzbI+cOLKh1n79aG6LM3jArejuyiHXdLNQvsI3M5X3YSICQjo3CZUR1rKEQ1lXYorqjGoR/140PMwOpxl45xkAB52RPvDN6gu5jV9w6l8K5E6hCHR/vQDqot5Td90Kt9KJA/7I9UtAyAQPQgC6DPtTZkccW5VVVXFiBWLAlgVBLBbHRFTAAAAUDUNFAJIBunVSKsQieBooB6dbrc62nUTAMxrBQAAcJgwQWyIyXmnVCVNOq0URhAhAwB02rYAJYDdLyrlMG3jvft8KYOTFJ4BGEcAAArRWYAQEjQRAPoMgL+12wYBPMzFFGJJSKHycrOwAyEAcTPZEHgfPfcX9DoIwwntu2ocTX4Qw3EIrZWmI1yz6jYQoXVvlV50/+qtjVXrYm27l77lGDABqHVZAT52ROfLL+hGXNOJ04VoinCnsSM4n35BN+IaZrxdiKZg/7Q/Ur0ZgAxMQrsKpGlTPjjHXENVVTEiigKoNQIgYrHZEAAAAIDEhASNELaJjVihCcOEUrTVaasiAej06BYAAFB6TJUSAEGAXWe40NgwJwa66aQJEBLBZXEH5xrB+Q7PCdQooGCe6lFU6aAEJd4QgKo+A5JrqteVsT1nE3iyD8rfBPiha9erJqa+utDWjlzfGwhiDBKA80QjvXn5VaG6cs0WAaMUfX1HMaiZXUb7jJBMV1vLns5WRvc9csCFzEjVB3zBNT52BOfdD6hdtGsano54SeswdgTn3Q+oXbRrGG7HvKR1OB+p3gQoA7Nww2AVzKhNzIaYy1VVVTEoRgAAq4BYDWujoQAAABXWSgQAAADBaqggJBODApIiQXwQ5xJaoQEEAAAoSDwBwCYoRaRnmxZ7FmiqRzcoFIwv/lgXqWI65x1OXy/ML2JoX8QWGBsFguoTCd0MmEYU4mg9CQ5GYI1QQqnPJt0PI3kuagFCFsf5VhnI1YnRqP5XIh2htu+X72Z4rclmGxzGo6jEqem6jQ5zQpzR6F8AuIaI0bTwZrzQ71txLQcEAz52RNunX+CvmK/m9LcL75jBjCHB9u0X+MPmq9n97UI7ykP7lupNgCzd0MOE08orkxVzVVVVjMGiABhjLACgWFCAoJqe3XQ6uhHFRwIIA4cKhDHgKmLiQwQAAABEE49GAQAAwpjYhMJgNMjQgWjNoNMApWfT7UAVMHExMlT00wDhlEbVtUqjiOjuE0GgHmm9yRI+hwYbU9MWooChkXGwSliOe363E7CLRa6Aln+ay2l8LdVOjLJ/S6dNteAn8OBohxxMl1k7ZjdKei3dZaibgr/3jmuhp7c3440UnDl0W7Tw8JeBHSADPnYElw+/oHYyH9uux8WoROBh7Agun35B7dB8bDsfF6MSgafzleqWAJFA1hsAZxVsmmzaCJaLVVVVMQYRADCIAcBgAQAAAEAMw2aIEIRBbUgkYWwQjcbFS7IdOghsSwDgaJiIBAAAIMUpYWAyACAIEo3IAFwIEI0eZQIhBl6hdAenDbfbSKNN0wmRRCx9UlJGhjKKcWAGXhiuNmCguUbE/NDxCtoaOWpIFkeYOLuL9tIT/ZmL/bXXchnfqTmaysJ7vIr4iTz97jHJ7Ev4GgAuNwW3wx3HMcd8Lik8uImB8pb+qlMtNzi1YnMkEVChAT52hLe3H5A3mq/kzsfJmRCmsSO8vf2AvMl8JXeeTo8JYdhv1C0DSMxBm9m08kYol4tVVRVr1FgVAGNUAQAU19EiINsopopYhSGBE7WbSqq6ibQNgBglEh8LAAAAsTFVUgAAAECOVBkBUBIAkDREisdA3jalp7YpQGo4KjVnC70GKk6JK1VVbYBXQAYyLiywQql1153SgDPgsB6wYCnMFFvd1dqfdF7dxeJa+ocw0G9BT7ayxLaJN/bh6+jKRDE4BroGCoBRhZzFEKqdndMBsomv++c1TfLw8VHQU/mkPBTs5m1LWjV8AD52RNe3X5APsg7PeLtwpkTiaeyIrm+/IB9kHZ7xdmFPiaTT+RC1JUAJ04Z2Wps2imKuqqqq1qoiAGrFCCCiNjsAgFAgJxLjkBgThoTxVsYKZMDA7nZ6FAAAwAliYgwAAKCYxKMC8KG0tdqbBDsNVNOkU4AUEUToxCdOCJ2olFT1KE0TglBKgoUBABwgAxtdEPMm4NaHSrIGo1k4EDCiGoG8hCnXJpYbb1daMNffMbBn8e3hUeL70xENbLOpsbvuevczoPvYgMDPqLJ9d34tsdkEsl36Afrh9i5sb21r2w6XQwMBPnZkj5ffgYnaup24nbDIPIwd6ePD78BEbT3uuJ1mJuDhXG1igaIGwK6NplFReWhIqKqiDobdVAWwOJgAYjFWAACBCCPxMY5GiVVUYayjUpyJRIUBAML4WAEAoLm+eq0AkKu26VkyOChpemoSCi9MAqSqRxsgVQB6mqBndDsIMTggCAMGtLWAQgKMoBQiQy+qAjYZRYqxUvLFl+ge3uZctUWs2L2RF5JH+DbGgEGsU4SeOWBdTwOyFyMAICJyJa2bcYSMDcKw+5RsBXKgW27UMVdnzclYCbTsIjJ4aiohh1ZoV14gkTR0qEjARgA+dmSPp19QC7Wr2fG4cE+SnsaO7PHwC+qgdjUzP104JYmbxpdQL4AEqQbAXgW7Zk1YRVUuV1VVBcWoAqBYFABFAAAAAFDDcDAJaaptVTfSbdtOk7aaRtJNtQBAVDMCAACqZ9tDADOW6YQaFgnBJKIARNNRkUKA4B+KSscAYIiRLSZ0YEAgAmB5EIhktV7WtQzvABCR4d+M/qkeLeLPAQbOaLRYJPdbXTGj8KoTHAT3yiUVnxYfJqMylf51p2bb5AwGcOCAaqcjwRQkzJ3zezAtooX4fRYJOXTngr3XBpvjFmygBD52pI+XXzAHtfXY8XjgLCWop7Ejfbz8gjmkrceOtwfOUgLrMD5E1AWQWHAmnHYqb3LlqqqqYC1YAIwBQK3q6AgAENBquslp9dTQ1akSEgBAXDSMAAAAQFSxcQYAAIiJSTwmBAATxIUhIHYfqJ7VA0AAGwgxoWifgmuEFMAbSK+6ZUtC5YwYgoPe4HohCcyP2BD2e//YsffgoBwQym2SO6UunSAbiuanG7GQcfcJDuX03RQlja7rdj5Z6J9DDHwwyjYONerEDWWW0nx3t/SHV0euwzb/5DrktyWIEmtIhkZQPoY0z5e/vpFrKnm7NVsUhrGjfj799YNcU8nHrdmiMDQ/RNQLELAtGNMGy+Qw5aqEqqqIdY1RAFQVQEXsjgoARFJRltpUqvzW/uMeoDqdFgDQ5qrbAgAAThDEIcChRLrpBly/hAfP8XpBxIBUHHsUYJB40gLZIRPEAkwF9hkZa5DGYYhJiVWSMQhnA5miaQ0jX4BCe+pgrjS7ZqBbOHGVYnU8p/Z7c+dLa/z6utLz7KdhY5CFL1nJpJlMY006cgeMbNjOyMIf+O6O4qp1rzl3yHS/Afrz8WKZ0IlMrE5B87Otd0EJbAA+dqTvT7+gbsjj9nRcPDwST2NH+v7wC/qGXMcz3E7zSDSND1HUSiBhM3BqowmrjDjXEBuqqiKqFgOAVRFAY6MNMwIABBWlqUbpVqUtZVFNo1MAwARDAQAAQIpLEAsA0LY99QA7A1VtOqIKrhSANN22qQLALbpkn6yDkRXAFQGKFdlBGAZCAgQUxoob3JhiMCrHUvWST57WGoAWT0qCsyUMNHRs95PhaItNWImf+PYgPQYkGUm0VfwU+s5SkKhELkfPt9vTZySMAD8S1oW+wz8YRw7w0ZysNy6HIDf3gwF/No+w2BhqSlERqWpk55zWAAcEPnbUz5fffCHXdupxcXpm9DR21M+n3/yIazvdcXF6Zizji0otQAKiBsAcJNPKwqpR5RKqqqoqRg0WQMUqAEYtBgAAAFDDsCEQirZJJdGRbta0LloCAEAkoQEAAAAljBIB0JAkTdNNhdrOb/HyxULAeFPr91VNLAspkKRBpZKqrBYDJCuBAAKdk9N/cnXYvqYXdudmdehWei22MaxE2/vq1NlyZBlZIGEq93y253D2tIVzYHSdDGvWlyvss3Qr7Wd4XnfNhs6VmIDhUECNpb373Pyb/zDQvYxuAtX4bN2RJiNm8D4/1PhuE8SMZABPZ2dTAARG4gEAAAAAAInDAswEAAAAUYEyEiHl6ubl6Ovh7N/p5+rl5ebf497e79fa2cLEyb29wsTFwqA+dvTPp+Cb52ct7nR8aQacxo7xefObB7IWJ92+NANOgcckYHpwwyCoRpMC5kgl5KqqimE4OIoCIHYAxDTUEAAAAFTVRABknpccTGhZVI+2lAAAIEoiMgDQVM9ORyKkbdOjKRRdAKDpqAoBHcUvamXE3gjpIccuE6EBlC2MsEahU2AwBIhZopS8RwDKjhG+/m6DNZpsgkk164DpFTjGCAvb/vPkfJV+YVqBwPuWnIRkeAgveg6HjvdXP1p31tVF8RJpGWhaNY1+1/SHDp0XdhhSrHZrjmMRghAXX5vNgXs73P21I6IAPnZkHx9+gT/Iuv1rx5sTDDCMHcXHh1+QN2Sdfsr2SZQHxkeoKQMQoA9nwmbTKOKqhKqqYhVrFQCxHQBHFhlMAABEQsiMEbVJb52qqgYAQPWEAgAAAMVUEgAAAGEwNBohJReq7bSt8EQvgNJpCSgkLHenZQXgWEcOrHCRJSMH8RApl3QZY1u2V1FV+5SBj1PC4E1muDvVs6EwNK/Nyu65ugvxE7U/2/2LaFrNfXK7h2xk9AojLIvry+nzdfTNG9EQCeKVQqIOzggbu2hoWTB2Qa2cVuRbEBfMTlGgnna0eaZ2V1hJ8Gk+tHAGPnYU77dfEA/EdKfjKmbuaewo3m+/IB6I6U63qzRzT4y3UE8CBGfaYIlGJOcaqqoKocYYBEDEWgSUcd3UHEO1o5WqbgqwEk+YCAIAACBXGZMzAAAAQTRhAQAAsBONJzAboCp69KyiZGm4iJT+/1GAJnkUgyoAkALBQAB7VHVGquxCGHjFDwBjShCYJlUSXj6oho0d7y92IRwWhoSv20+hWt3pl+8JIb/8HJfv/RdsgbkFIMpoSJ4q4zmuDG/etpzlhHdLHGwBtqsJoGQk4uA4F8aLg7hh05XxgWrUonXpFMy6yTyfqWk+dqz3u9+YEMldti8aiYexY71f/MaBSO50fK0p85QfoZ4AKEAfzrQ2KWhEhFhVVVUUMVYAEKsAWEwxDAUAAXIKBQBAYGXQkMIGAFBaPAYAAIAgGg8AAGAlGheGAIagTa4qC+rWBLopKQCiMCoiF+DxxNOnYh3Hpa4ux76QvJWUIERAgVmJgZIPpOC6yAEsBCYysgv2tMTFavQBMJLXYntCXcp1INvswqN6LLr8Sdbvc+/Bn+gXC5GhfchGyBG75XdwSAZ4N8Amt+qFeR+jGp9WaLnVHGyk82qknf2BMCDGYW/SyZQ4PnZ0z6fgC/L9Md3huMq+yDyNHd3z4Rfki5iO4yp7JXEH+hcAgAnYNWrCKopUQlVVFQUAAGLB0QYAIEBIb5MRxLZDILTQodNoBYBQhQQAUIJICACA6lk9AUDSs7qAwwoslhQYEHiuBVSq0wABBF9HkFGo5Ai8LHcQQmCwgLSfsQSCBBpQYEov17sQ91swmLBmY9fS35/LSY8J8hDbEWxhY7QCfhU6v1tnIuvJ3nrun4/xav9yWa5X9UYiJXYh7RB+KBAadEG3sTXSlrlrqLoRLVjG/HSOxViQeR7m8r4nO8eZPfVCMmScAn52dB9vAf/A4Y+3d7h1KSkhYDo7uo8PAf/A4Y+3t6NLCQ9BU/QHAAAqkQBnWoNhFaUq5qGqKoQCAABRAwAAAICMDbUuIY1EZBg8OqkVAAgFAMDEIwAAAHCcYgEAAMBObDpACUg6SLlERF4CGWEgAEjv+Yt/pQkMEHhLJgjTFRjgVu4T9xxiAChAskSkEAQgE+0YN0cXj0kY/YmMrR9TH/Zc2TjFK2iSRKZNrMpmjS+M9Bw8+cVCsnhtIyFRv4yG95H7izhNbCWjCUDR0UoyFJqGn/culit0C3qtfXUXVse0qBe1OPjmWbg0mAY+dvSPp1+gH0RxHNcLkhzGjv7xEnyBfj+KU7brBUlOzD8BAM6ssrCKaFW5CqkqCgAQEOBHgCxsBSowYNCoQgCAVgJEExMrAwAAgBODAQAAIBKnEAAAACXqwAQABDagmp62UgKSr+80gZHpc3TqaxtfkcQScAyObWzIhg4DQ4lNz48SpWwyTAGSDH1LGnm1GWNDO59PQpt3gbkNe+ZnDe21vd7nPC0Q5VBzjVfV6fi4X5O2i3nU9N92NNoPtBvXMEPUMJy28q7ya+AY1U6Lt64fGdf5wfF7YLLUzeSYlgLs0AA+dvTPp4Bfpx/DybdDzwDT2NE/PwT8goQ/hhOnC8GLRAOFfgIAtKtAmtUoU1W5qqooAgAAAACGISJA+h4pKPp+Fp3MBtQCgPBSAQgTjcYIAAC0PfsBAABWopIAaBghhR5WEwg8DKB0QysopfoXM6wA2G0MlBnJpQKBhZIwJgSjBDCA12Q0CVWo8EqTrriQYiHBzV8YHw9rxPSJJcbMHbMfxfdXTT29ert/3ZMDqWR4vHaP304nRmL9X1NxM9s/g2FPfvy0qrpQ6UoTXAs4EbZiDqDv6ppRmR6uxT+H69vS3akSOT2EWYAShb1D2152XB6n4Kfnx7DT7c2wKk5lx+VxCn56fjQ7bC9YFSf8CwDAgiWoRpOCBq0qoaqqqAQAABXTYqIAwM4Bh6kr0ElzSwmAkDopAUBhhcoUAACADEGhAKCppkdTEqUuK9qqQCTIg5BGtwSoIHC4RcTXexYgrY6KYvc8B1XCTWyAO8VNSAMQGgOWWo+Plk8viiPULsze3sWxEiuPtnPKc+dKbXQXCw/dykr1lQBzCyxZ9E65V6q79RbStFr4U1GP0AHA4SFs9nZL79gwBPdgJo05MhzmzUcaxWGkJDGfI9PgwwBedqyPp+AH9PvR/NjeXFAayo71cRd/QCHE8HW8S0N5oOAnAMCoEUuNIpXAqpCqogAAAOBUxgoBnVYn9AAIYUAARMLExAAAANKumAMAVNszAYDqVM8AhmgVYUAQBhRYirNHQLxGCARavrLIRfIpgb7Xp1AF0pgAkizwnFrMb4MnAYpxMEYO6X0miQ79AofuMXa069ORu6Y8Xg61bZk0I7LAEgoiC4dHq7KnJyzH4XJV+F+PTr0qnL1CPUxYlxdD9WeTHhyiGbLYM4Tq2jYXLk5Gu3Prpn3LZjNkwYtyKC7s4a/+piUSHGjVAX52LO+7+AWKEMdPe7qeLjJPZ8fyfgj4BQp/HD/ldj1fZJ2gt1CPBBJjFjWpjVSVUFVV1ApGBUAs5MYNQGISEwUAAKTtWQBANd0AAAAcHw0AQFD0bgxagyBQACgfJyEg0nQAKMC3PciEp4DHy5M0LM7oS9N7jDTFxbOrawe0oHFWTIA1akmxBSDDXBPeF84X0cnfqcNCOLAM93VsYj/tPdp+H2vbX03oxMdXreHzliyBZWMc2WMRb7XEuXNOpBKvw04kyZgCwNEAtIpSOJMKB9NBCmUkx3Y16ec1wwlR59NtM03cxjDEAV527K+rgD/FH9Ndbp+hPJUdp+dW/IGAhO0et4/SAMDqI7ImAAEm4dRGk0qnqqGqqmJbAQDYrgDZaiIAAMAGgREpAwAC4gwAAABQGQMAPfRo6wDRomKxbCoVIKNeAtJVbSEpBSo2NEnghUxVixPgCRemkXjIuJXpJiJV6kqLeiEdIVkMQFtGxkT1id9YGSlcFq12OnHS/2TVe81fbqnO3eX4VU6X6yQVzuHdYPmxANuavKzJK9ePghyL/Wi7/r3+upH3/lYkOxAyG6i6Q32WdmRM+sWaRtE5PzKaKnVffcO3UNXu7puNgKuzAX52XJ+H+AcKEcdOtzcnVR7Ojuvr8Af0hzju9vbmJMoT9U3WqQCgOWGDOcpI5apCqooxxxERABULADCAvCcBECaMBQAAqPR2+wCgX6oGAIBopDIhSYnR9AaBU/JJInlhAwCycCDLatZBgGEwIFtIL6E0ArOsbbpQ1RhgSjFAzjBTrDRUHAoJEUsZLK6TY6zl8Zd7Stf2RnZcrO7MYf1FS14x61YxUXOIdnRsZGx49r1Az8/k9mvCRWvR6jl4IXeqZ1UXGuwel0MY1lhXOWes6Wg2rv7wrEzfyZqvuaQNYe9WXLMbSh8+hpweF/ELRCD17Xav35zEQKax43TfCvgFwj/16XbWbwZiIBOMHhOABbvWBjWKVAlChVQVsWqKAGDYAFBRqwIUgAbASBACAODhBQAAKp0EAHR7dApQOlV0kQ1QpOipKCgBEdxzlMJyXS/PCYQdAlkO5NaKQi9q0pP+u4+nxBSiXJqVt+956SKmf+z3PF/5o5uTb8hCPxq7jNY1aevhYuE6MzxNRrBlmdgWiAlF/902EhjBI52YlYX0zv3fz8bF+o7VR1Sjm6DEKYC5u+y4D+/oXL3zqAzz5MGk7eL/b1gTtlpTgQDMfnacXjcBv0Dop27fdKYH3rnSdHacXjcBv0D4p7u9nfmhmCtNMLiYACNqdGpEDVVCRZCq5mw21EwByKbNEKSFJSQ03U4DAFR7VQAAbXUAAACEocMBAIxRcYl2d6AScY0CqlYrAQRAAQQFwnLZ7CJICupKGMOiJFp6qeI25OOiz3tvrNoR8lVJAa68ALawBQ5j1+RYJX0gFSr12MT3/iEV5BC7KNPfc3+Y0wEbW74FaOR8LY885mE7RKvTkWckPv99uQWkI1u6RrOBzWHYDhD1hvnVQR7CoWAkhL17hn4+O2/b2zlahw1ehpwfp/gHECRu73TWb/5hIEPZcX5sxT8gQxzvci9vVmFogB4CMGDXsFMjqqpykaoKZmIiAoBiU0BqTooCAAAlADA4FAMAQKcaAKC6nQIEIJ5AoUMbxM7AilIBKMArRkLjFbEyfPKZ1aPVpVYZ95JLSu6EIUyT9+qHnv9G7qH9KdT2cRyIX4/MY9ecXqzUtodyXl35Cqf0i7oj9Vb359wtzpMjHX1/+8zK8OV6XUPFtvo9jkz0/GCwLN1Z4Q4EbgBNNa09GmXy0cxaY63IdCzr+s903y7OpZrGvSTvBkUAfnZ83CZ/vEMCs9zLq0ESycPZ8XFbBD9ePyHYzvJqIo28AQY3AZrT2umMVA1VVRWsYhEBQK0GAGAlAHHxBgAAtL1NAECEAgAAlokDwAC1aJallA5AuxpAOYAET9gAjEIypKEGUKdXEixPAYbxEkMXNBRk4jtpGATVi4plrnnEwg1kvVNrTx9O46s/6dN6hzgnE3LxeB+rlhe/8+pama/+XhibNjZCwIPR4Xz34/2eyI/Itn6t23z4us1gMNogb0XriBk09tEM0/x0DqPNuvIpR75Rvp+FHPsO/n2OuAlX5y9qIAA+dhxfF32uGSTydlzzueQwdhwfW32vAhL5ei/X1KI4weBCgNFoRFRqpBqqQqoKlbVRUwAsaigA0iuoppsCAFxrAQDqCgDQTRcAqDMHlX7T6UJRZkiIQBCsALhEgPSeUpJxVpuU4pojteo6cw7lA+ufEYSmMBu/zxRPNlUeZg5mXBG7blyIvRoY1WV+e+2JZR5/vjGu7XO2Y95hOOwaC/PYshDQL3aWe7B/PT0nLRexGHQrd9Gq65m8c8gNCBzewMKPcFIIeU+Pjr25Wici/o8JC2OQpan3VXqLHXvT2AA+dpzvh77XAhJub8+5RUVpGjvO90PfawEJT19nvrCK0gSDmwBjFnVq0qGqoUKqCqajTQUAbAAAWgA4PooBAGCmdwkA0OkXAACA+IoAAHChzRCHgTACga4a6AUACQyR1bRsTE55gfSExpClkklXi1sZVSYww24KgAtqN4rz/u1sH57hEQAISZKMscUrP3r/8ujS1E6WwtF1zu+4zifhocwmvw3Gd0uNe4hMOOW8pwMI9ADCCBsX7eY5lN4fRqEBgMk0D+btCkNSEnvbfDWtfoh1CJUgLo5N3uXc2NkQwQAedtzeF70vBCLbjou5MIQdt/dZ7wtFRMftYi4MMLptALaRSWeSqqEKqapiOJhWAXI2LagYZEe4ZYQwkfhIEIoCAPQrAYB4aQDoLzqtWEAXDABgAkeVFFFIFCIDqlYsB0ZriUKGNrIXQJRlnwQGE0DDkOnGEXihuruzrbxhKjfFToaXozqPAThTTwIcXbZsMPJ5ZT1SqSgokq/xh7M76X91HOukbW9yd0Oavz6Wi1OfMjSjwqwSxgg4HKuRX11X7UcjdSdpA825SM4NcRlpDoayH1yXnDuDmGq9X2jKz3XaJIOFk+pyT4ZQj9tB2xbgDD52/NymLy8kJcfbTWPMNHb83BZe8f6k4HiKozETGM1GFFLpKCRUVVUVbY8DdJv+hH6n0xsAQNOBA4ALAOjNJRPNOpRZZCZAtlemJoffGpInmbABAASgAOi74FIv7eGgMv26tbWpiof8QbLp1rTn9xlyOGnrJMVxkhJfIGFJRt0nLuyfjZCQbwDbw+LEcycmx2obbKmhVG1i59fP0wR60ufa81WXn8kwLAzw5td+ZVKegVsO4IBiQRDd066WI/u89L8e3G8GXGwhpIp9kSTogGxHjmByhkQAPnb83NYvLyQ123TrCTGMHT+3jZf3Jw3H1l0QYwAjGxGVmjSzqoogVaW6/QJ2z4Dq0RYABQAVCiiA6gFwAACALgDA21rMp6bCA0liLAc99nptlAE9AQAsa3CAAXprURSIaZOP56szymaGndRwLnZfbfMXVztd5HgQRhhPtSXVsB2JL2EQ9qPC9X32e75o6vWo5EfXGls9IWp606c72Su0xZqCe7QqdZ+HF3mKZuvr9d+uO+DINVloIZBzXh9j/cpk/6LDpBfp9IkNC508H50oXqWm9TXmx9gKETY+dvx76G/siIwjPYax49/DfH2H6HBkQwxgZESlUulI1VRVVVxlcwptErRVKwAAAAdpCqBJADwTNMBQwzTBVbGhxQ8KRVs30wZW1ddEaV0wA0BboFipoKng2Uau5cj7pt/5oxWo4iFz8t1TDNWmD2cnV//t8JISN9WsejuY3t63ntcjOkEudme7ZI6tTSffQzzx58F32ZFjB2zABrEKJAPfMEJ2J3pZ9Cf7Xqxcj/yo6DbbaRBoAayYBbgYJnG5uYJVa9Ni/wmh61XX6eeaCeSSeV+3NdZgbuQPPnb899RfFgQcGMaO/56al/UDbpgADKhUKpVKp8GqXCFVoR0oJBgF4KSMAoQorcu0gRxqptcajEG7+WdvWADLGuoMALAAAwBosNWM9dIzDVzlNunNP6vU7ZKUNXS+PbeSfrIHZMtCsDpPrRnZ/b4R+JVlMFJNbcSs41c/n08xReOeRZPk74U7+nqdfw6dijuOhVZMuZlY6MmFQrp1xy5G3HYODMwbBLeHscLD1kokcKav79xxRelebX+YD4GV3w7bZGg+dvz31LysH/CEaez476l5WT/gCRMAVCqVSqUzVLGqkKpaYS0A16hll52uIaj4B1zDdl2DaVeAiXR6ELqLMACgAADFcKrovmJpMdDUryMpUV30m0+SS57uYU5pqmep3f2MMBYWF8KyLAnLO/aeFrqdu16YNsHEumncnEPwzGDhOu231CykdWfc2yDxC6mpI2+vK+eean2+x8yAl4Rq5LqABTQ5gPZ7Te/jjrW3GqlxC2MLnpHArjyE9qjadt49Fay+2dAHPnb895S8rB/whGns+O+peVk/4IYJwIBKpVKpUQarqqqqUAGcoLZgGfBV8WPOnyfrAY6Jj6ynSb16cbK75s7s7d+Pyg84kkYDGgCAZe9i7wTcJ80UXE2SqVL6dv64vTUtVrKk6armKapTBoQFFjZ/STKyjWoBTa1E+S9OvlqHA3czrt3SObZcrMcV4+oynUeYH+8p+fAsx7Rr/2XiB6KPpX4OQkFxGGeAAkaR9FTmSWf6aK29mP8dtCDZRMtQlGTHhxZ/qF9BA9YKPnb899S8rB9wwzR2/PeQXxYEPGECgEqlwmIqnaGqqqoKcNH8oCt6qu03CzbE9GFJEq2w6y6FMWg0hoUGALCGu+w1VqsX3N8/Oye1c7rKD4WKZ839qICZSfopdp2oJGPJ1iuBkbCFLlnpptz0SN39KiyzTzA87ZHbaVvwBg3HcB45jAwLhZWXixUpXprXlMX99l1q5M60AGpchkZjmkwb5natxk5vOufY+Rxaa8+RzB4N7aEbx2YyUkUh2I0NPnb895S8rB9wwzR2/PfUvKwfcGACVCqVSqXSVEJVFVJVAGBZAAVYAADgDdrBjOU81BBXLwsLC6l53xfSHVbfBaAABoOxQAHLYz4WH+XL9vlxV7tPVpFtDqCHddq0v+//Qfjkxye8+gATgx1KWFMOrHyLv/qf8U7z0HSOMUaoTki5447/q94pf7t6eFhYut/vsQjoeGHKaH5bjPg/CBmlcaZQZ/8Ywa0NA81efx3yqHGHCPibYRECwTkFQtfcPnb895RfFgQ8YRpT/ne6L1MAAwAwoFKpVCo1KqqqqioAUAGo7FnoWu198Zoo6m5w+zZtOU30YSPOoVEPfTCaRx2guGCBC4BSqEtV63Jvi1VVVYPaGuq5TBZX06L23dyTlSKLXfu1QBJgtFZRVP1Uqr0q2m8Loy6XOp1rRzi+kFPmqngnO/LmJceQ1y+dXDs21QrXRaMmGtcdiGsrJxk1QALQUHbHZD66/t7t1nUxKbJbco31cw7V8PVZQ5KTMAgqG1U+dvz31LysH3BgGjv+e5ovEwImDAAGVCqVSs3ESmBVSFVBA4AFXa0D+DAAbBnw3MkIyjw1ZmD9ktqopviAlxoYuKtyAQALXM1ozDveWVaTHLrPembnnv5f7D1866KGq2s3NPSpNaG/SCHZYKe/Dut9M9US41aqezkM8ZHPOJ6iqZYfLCPMjZCE0d6prJ5E52CuR+tx3wTth9ae0TENRfahAVvYDYatiDtjb2e5TIPhk4COrwvdQwiRwqkfoQ20cSGwAUoAPnb895RfFgQ8YRo7/ntqXtYPODABGFCpVCqVpplDxaqqilgAAAsSay3w44cdqGjLWjt01S/6AA06HeAYaC5c6gLAAAAA4+KEoT+ufl9rGxPorASm9zuGb4eOyVl9/GnVbLAV3hJU12pZSAbLcAE2lr4sZAR2yn8/9jqtn4zU7uKWi2OnwOHir3uRJ3ux1pV1NcVN9fHkqUa62fI7th1h7yJRDA2IKYSWYBbK8LV49UbtzrnqjjpFqy2S69hPP2ou3jtk/A8+dvz3lF8WAg4MY8d/T/NlQsCEAcCASqVSaToNsVgVUlUDgEWDACqJCi+D1jbPZfFXb1vLiDq0t9w9YGt1sCwAWABAAdRBNhRNwsxb82n9sZHW0dmQuJTQaxabfBraJEXtqnpGhgAJX590fr/+wwZ0IftGBshMX50QQPqx0DUr1gCd0NNzTjIhFbzwevr7YqMtqtWBZPdSdGauKcC72WxAisERmonmr1C/JMN6QNvQFDv6jB9iOsZb+d9CwBsEgyNXAT6m/N9H/AIDBjCW/O9MXzoDbgAAGFBhMQBUqliJsIogVSEYAFA1AH3FikpeMFTVUKHq1dYwjjR3APRPq9MNSzxxLDh4j1ft6d7Tl6mnx8wI8LwH7pfIrl/Loj0fpieXC9eADAAS6P3ZMsiyDJDYrahUvv8XqVTOCwubdpieaEMTwNs0vanrlkB7ReqS1rHzc/L2lot1fS5TB1nOCVQcbAA=";
+var Notification_default =
+  "data:audio/ogg;base64,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AABQ4AAAEGCDpsTiAIWGrAQAQgIAHIpiWZrmeZ4niqapmiRJ0zxPFEXRNE1TVUmSpnmeKIqiaZqmqrIsTfM8URRF01RVVYWmeZ4oiqJpqqrqwvM8TxRF0TRV1XXheZ4niqJomqrquhBFUTRN01RNVXVdIIqmaZqqqqquC0RPFE1TVV3XdYHniaJpqqqrui4QTdNUVVV1XVkGmKZpqqrryjJAVVXVdV1XlgGqqqqu67qyDFBV13VdWZZlAK7rurIsywIAAA4cAAACjKCTjCqLsNGECw9AoSErAoAoAADAGKYUU8owJiGkEBrGJIQUQiYlpdJSqiCkUlIpFYRUSiolo5RSailVEFIpqZQKQiollVIAANiBAwDYgYVQaMhKACAPAIAwRinGGHNOIqQUY845JxFSijHnnJNKMeacc85JKRlzzDnnpJTOOeecc1JK5pxzzjkppXPOOeeclFJK55xzTkopJYTOQSellNI555wTAABU4AAAEGCjyOYEI0GFhqwEAFIBAAyOY1ma5nmiaJqWJGma53meKJqmJkma5nmeJ4qqyfM8TxRF0TRVled5niiKommqKtcVRdM0TVVVXbIsiqZpmqrqujBN01RV13VdmKZpqqrrui5sW1VV1XVlGbatqqrqurIMXNd1ZdmWgSy7ruzasgAA8AQHAKACG1ZHOCkaCyw0ZCUAkAEAQBiDkEIIIWUQQgohhJRSCAkAABhwAAAIMKEMFBqyEgBIBQAAjLHWWmuttdZAZ6211lprrYDMWmuttdZaa6211lprrbXWUmuttdZaa6211lprrbXWWmuttdZaa6211lprrbXWWmuttdZaa6211lprrbXWWmuttdZaay2llFJKKaWUUkoppZRSSimllFJKBQD6VTgA+D/YsDrCSdFYYKEhKwGAcAAAwBilGHMMQimlVAgx5px0VFqLsUKIMeckpNRabMVzzkEoIZXWYiyecw5CKSnFVmNRKYRSUkottliLSqGjklJKrdVYjDGppNZai63GYoxJKbTUWosxFiNsTam12GqrsRhjayottBhjjMUIX2RsLabaag3GCCNbLC3VWmswxhjdW4ultpqLMT742lIsMdZcAAB3gwMARIKNM6wknRWOBhcashIACAkAIBBSijHGGHPOOeekUow55pxzDkIIoVSKMcaccw5CCCGUjDHmnHMQQgghhFJKxpxz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";
 
 // src/Timer.ts
 var DEFAULT_TASK = {
@@ -4481,7 +4936,7 @@ var DEFAULT_TASK = {
   priority: "",
   recurrence: "",
   tags: [],
-  line: -1
+  line: -1,
 };
 var _Timer = class {
   constructor(plugin) {
@@ -4500,20 +4955,20 @@ var _Timer = class {
       startTime: null,
       inSession: false,
       duration: plugin.getSettings().workLen,
-      count
+      count,
     };
     let store = writable(this.state);
     this.update = store.update;
     this.store = derived(store, ($state) => ({
       ...$state,
       remained: this.remain($state.count, $state.elapsed),
-      finished: $state.count == $state.elapsed
+      finished: $state.count == $state.elapsed,
     }));
     this.subscribe = this.store.subscribe;
     this.unsubscribers.push(
       this.store.subscribe((state) => {
         this.state = state;
-      })
+      }),
     );
     this.clock = inlineWorker();
     this.clock.onmessage = ({ data }) => {
@@ -4523,12 +4978,12 @@ var _Timer = class {
   remain(count, elapsed) {
     let remained = count - elapsed;
     let min = Math.floor(remained / 6e4);
-    let sec = Math.floor(remained % 6e4 / 1e3);
+    let sec = Math.floor((remained % 6e4) / 1e3);
     let minStr = min < 10 ? `0${min}` : min.toString();
     let secStr = sec < 10 ? `0${sec}` : sec.toString();
     return {
       millis: remained,
-      human: `${minStr} : ${secStr}`
+      human: `${minStr} : ${secStr}`,
     };
   }
   toMillis(minutes) {
@@ -4568,10 +5023,24 @@ var _Timer = class {
   createLogContext(s) {
     var _a, _b, _c, _d, _e, _f, _g;
     let state = { ...s };
-    let task = ((_a = this.plugin.tracker) == null ? void 0 : _a.task) ? { ...this.plugin.tracker.task } : { ...DEFAULT_TASK };
+    let task = ((_a = this.plugin.tracker) == null ? void 0 : _a.task)
+      ? { ...this.plugin.tracker.task }
+      : { ...DEFAULT_TASK };
     if (!task.path) {
-      task.path = (_d = (_c = (_b = this.plugin.tracker) == null ? void 0 : _b.file) == null ? void 0 : _c.path) != null ? _d : "";
-      task.fileName = (_g = (_f = (_e = this.plugin.tracker) == null ? void 0 : _e.file) == null ? void 0 : _f.name) != null ? _g : "";
+      task.path =
+        (_d =
+          (_c = (_b = this.plugin.tracker) == null ? void 0 : _b.file) == null
+            ? void 0
+            : _c.path) != null
+          ? _d
+          : "";
+      task.fileName =
+        (_g =
+          (_f = (_e = this.plugin.tracker) == null ? void 0 : _e.file) == null
+            ? void 0
+            : _f.name) != null
+          ? _g
+          : "";
     }
     return { ...state, task };
   }
@@ -4596,7 +5065,7 @@ var _Timer = class {
       s.running = true;
       this.clock.postMessage({
         start: true,
-        lowFps: this.plugin.getSettings().lowFps
+        lowFps: this.plugin.getSettings().lowFps,
       });
       return s;
     });
@@ -4613,7 +5082,7 @@ var _Timer = class {
     state.running = false;
     this.clock.postMessage({
       start: false,
-      lowFps: this.plugin.getSettings().lowFps
+      lowFps: this.plugin.getSettings().lowFps,
     });
     state.startTime = null;
     state.elapsed = 0;
@@ -4627,7 +5096,7 @@ var _Timer = class {
       const sysNotification = new Notification({
         title: "Pomodoro Timer",
         body: text2,
-        silent: true
+        silent: true,
       });
       sysNotification.on("click", () => {
         if (logFile) {
@@ -4656,7 +5125,7 @@ var _Timer = class {
       state.running = false;
       this.clock.postMessage({
         start: false,
-        lowFps: this.plugin.getSettings().lowFps
+        lowFps: this.plugin.getSettings().lowFps,
       });
       return state;
     });
@@ -4675,7 +5144,7 @@ var _Timer = class {
       }
       this.clock.postMessage({
         start: false,
-        lowFps: this.plugin.getSettings().lowFps
+        lowFps: this.plugin.getSettings().lowFps,
       });
       state.startTime = null;
       state.elapsed = 0;
@@ -4698,7 +5167,8 @@ var _Timer = class {
     let audio = _Timer.DEFAULT_NOTIFICATION_AUDIO;
     let customSound = this.plugin.getSettings().customSound;
     if (customSound) {
-      const soundFile = this.plugin.app.vault.getAbstractFileByPath(customSound);
+      const soundFile =
+        this.plugin.app.vault.getAbstractFileByPath(customSound);
       if (soundFile && soundFile instanceof import_obsidian7.TFile) {
         const soundSrc = this.plugin.app.vault.getResourcePath(soundFile);
         audio = new Audio(soundSrc);
@@ -4733,16 +5203,19 @@ Timer.DEFAULT_NOTIFICATION_AUDIO = new Audio(Notification_default);
 
 // src/StatusBarComponent.svelte
 function add_css5(target) {
-  append_styles(target, "svelte-1azmbrd", ".item-icon.svelte-1azmbrd{padding-top:0}.st-timer.svelte-1azmbrd{display:inline-flex;align-items:center}");
+  append_styles(
+    target,
+    "svelte-1azmbrd",
+    ".item-icon.svelte-1azmbrd{padding-top:0}.st-timer.svelte-1azmbrd{display:inline-flex;align-items:center}",
+  );
 }
 function create_if_block3(ctx) {
   let span1;
   let span0;
   let t0;
-  let t1_value = (
+  let t1_value =
     /*$store*/
-    ctx[2].remained.human + ""
-  );
+    ctx[2].remained.human + "";
   let t1;
   let mounted;
   let dispose;
@@ -4780,20 +5253,23 @@ function create_if_block3(ctx) {
             span1,
             "click",
             /*toggleTimer*/
-            ctx[4]
+            ctx[4],
           ),
           listen(
             span1,
             "contextmenu",
             /*ctxMenu*/
-            ctx[5]
-          )
+            ctx[5],
+          ),
         ];
         mounted = true;
       }
     },
     p(ctx2, dirty) {
-      if (current_block_type !== (current_block_type = select_block_type(ctx2, dirty))) {
+      if (
+        current_block_type !==
+        (current_block_type = select_block_type(ctx2, dirty))
+      ) {
         if_block.d(1);
         if_block = current_block_type(ctx2);
         if (if_block) {
@@ -4801,9 +5277,10 @@ function create_if_block3(ctx) {
           if_block.m(span0, null);
         }
       }
-      if (dirty & /*$store*/
-      4 && t1_value !== (t1_value = /*$store*/
-      ctx2[2].remained.human + ""))
+      if (
+        dirty /*$store*/ & 4 &&
+        t1_value !== (t1_value = /*$store*/ ctx2[2].remained.human + "")
+      )
         set_data(t1, t1_value);
     },
     d(detaching) {
@@ -4814,7 +5291,7 @@ function create_if_block3(ctx) {
       ctx[7](null);
       mounted = false;
       run_all(dispose);
-    }
+    },
   };
 }
 function create_else_block3(ctx) {
@@ -4860,7 +5337,7 @@ function create_else_block3(ctx) {
       if (detaching) {
         detach(svg);
       }
-    }
+    },
   };
 }
 function create_if_block_13(ctx) {
@@ -4906,24 +5383,21 @@ function create_if_block_13(ctx) {
       if (detaching) {
         detach(svg);
       }
-    }
+    },
   };
 }
 function create_fragment5(ctx) {
   let if_block_anchor;
-  let if_block = (
+  let if_block =
     /*$settings*/
-    ctx[3].useStatusBarTimer && create_if_block3(ctx)
-  );
+    ctx[3].useStatusBarTimer && create_if_block3(ctx);
   return {
     c() {
-      if (if_block)
-        if_block.c();
+      if (if_block) if_block.c();
       if_block_anchor = empty();
     },
     m(target, anchor) {
-      if (if_block)
-        if_block.m(target, anchor);
+      if (if_block) if_block.m(target, anchor);
       insert(target, if_block_anchor, anchor);
     },
     p(ctx2, [dirty]) {
@@ -4949,15 +5423,24 @@ function create_fragment5(ctx) {
       if (detaching) {
         detach(if_block_anchor);
       }
-      if (if_block)
-        if_block.d(detaching);
-    }
+      if (if_block) if_block.d(detaching);
+    },
   };
 }
 function instance5($$self, $$props, $$invalidate) {
   let $settings;
-  let $store, $$unsubscribe_store = noop, $$subscribe_store = () => ($$unsubscribe_store(), $$unsubscribe_store = subscribe(store, ($$value) => $$invalidate(2, $store = $$value)), store);
-  component_subscribe($$self, settings, ($$value) => $$invalidate(3, $settings = $$value));
+  let $store,
+    $$unsubscribe_store = noop,
+    $$subscribe_store = () => (
+      $$unsubscribe_store(),
+      ($$unsubscribe_store = subscribe(store, ($$value) =>
+        $$invalidate(2, ($store = $$value)),
+      )),
+      store
+    );
+  component_subscribe($$self, settings, ($$value) =>
+    $$invalidate(3, ($settings = $$value)),
+  );
   $$self.$$.on_destroy.push(() => $$unsubscribe_store());
   let { store } = $$props;
   $$subscribe_store();
@@ -4969,7 +5452,11 @@ function instance5($$self, $$props, $$invalidate) {
   const ctxMenu = (e) => {
     const menu = new import_obsidian8.Menu();
     menu.addItem((item) => {
-      const p = $store.running ? "Pause" : $store.inSession ? "Resume" : "Start";
+      const p = $store.running
+        ? "Pause"
+        : $store.inSession
+          ? "Resume"
+          : "Start";
       item.setTitle(p).onClick(() => {
         store.toggleTimer();
       });
@@ -5018,26 +5505,45 @@ function instance5($$self, $$props, $$invalidate) {
   }
   $$self.$$set = ($$props2) => {
     if ("store" in $$props2)
-      $$subscribe_store($$invalidate(0, store = $$props2.store));
+      $$subscribe_store($$invalidate(0, (store = $$props2.store)));
   };
   $$self.$$.update = () => {
-    if ($$self.$$.dirty & /*statusbar, mode, $store*/
-    70) {
+    if ($$self.$$.dirty /*statusbar, mode, $store*/ & 70) {
       $: {
         if (statusbar && mode !== $store.mode) {
-          $$invalidate(6, mode = $store.mode);
+          $$invalidate(6, (mode = $store.mode));
           const tooltip = mode === "WORK" ? "Work" : "Break";
-          (0, import_obsidian8.setTooltip)(statusbar, tooltip, { delay: 300, placement: "top" });
+          (0, import_obsidian8.setTooltip)(statusbar, tooltip, {
+            delay: 300,
+            placement: "top",
+          });
         }
       }
     }
   };
-  return [store, statusbar, $store, $settings, toggleTimer, ctxMenu, mode, span1_binding];
+  return [
+    store,
+    statusbar,
+    $store,
+    $settings,
+    toggleTimer,
+    ctxMenu,
+    mode,
+    span1_binding,
+  ];
 }
 var StatusBarComponent = class extends SvelteComponent {
   constructor(options) {
     super();
-    init(this, options, instance5, create_fragment5, safe_not_equal, { store: 0 }, add_css5);
+    init(
+      this,
+      options,
+      instance5,
+      create_fragment5,
+      safe_not_equal,
+      { store: 0 },
+      add_css5,
+    );
   }
 };
 var StatusBarComponent_default = StatusBarComponent;
@@ -5045,7 +5551,7 @@ var StatusBarComponent_default = StatusBarComponent;
 // src/TaskTracker.ts
 var import_obsidian9 = require("obsidian");
 var DEFAULT_TRACKER_STATE = {
-  pinned: false
+  pinned: false,
 };
 var TaskTracker = class {
   constructor(plugin) {
@@ -5054,7 +5560,7 @@ var TaskTracker = class {
       let file = this.plugin.app.vault.getAbstractFileByPath(task.path);
       if (file && file instanceof import_obsidian9.TFile && task.line >= 0) {
         const leaf = this.plugin.app.workspace.getLeaf(
-          import_obsidian9.Keymap.isModEvent(event)
+          import_obsidian9.Keymap.isModEvent(event),
         );
         leaf.openFile(file, { eState: { line: task.line } });
       }
@@ -5066,7 +5572,7 @@ var TaskTracker = class {
     this.unsubscribers.push(
       this.store.subscribe((state) => {
         this.state = state;
-      })
+      }),
     );
     plugin.registerEvent(
       //loadtasks on file change
@@ -5075,14 +5581,17 @@ var TaskTracker = class {
         if (!this.state.pinned) {
           this.store.update((state) => {
             var _a;
-            if (((_a = state.file) == null ? void 0 : _a.path) !== (file == null ? void 0 : file.path)) {
+            if (
+              ((_a = state.file) == null ? void 0 : _a.path) !==
+              (file == null ? void 0 : file.path)
+            ) {
               state.task = void 0;
             }
             state.file = file != null ? file : state.file;
             return state;
           });
         }
-      })
+      }),
     );
     plugin.app.workspace.onLayoutReady(() => {
       let file = this.plugin.app.workspace.getActiveFile();
@@ -5156,7 +5665,7 @@ var TaskTracker = class {
   openFile(event) {
     if (this.state.file) {
       const leaf = this.plugin.app.workspace.getLeaf(
-        import_obsidian9.Keymap.isModEvent(event)
+        import_obsidian9.Keymap.isModEvent(event),
       );
       leaf.openFile(this.state.file);
     }
@@ -5164,8 +5673,7 @@ var TaskTracker = class {
   get pinned() {
     return this.state.pinned;
   }
-  finish() {
-  }
+  finish() {}
   destory() {
     for (let unsub of this.unsubscribers) {
       unsub();
@@ -5173,7 +5681,10 @@ var TaskTracker = class {
   }
   sync(task) {
     var _a;
-    if (((_a = this.state.task) == null ? void 0 : _a.blockLink) && this.state.task.blockLink === task.blockLink) {
+    if (
+      ((_a = this.state.task) == null ? void 0 : _a.blockLink) &&
+      this.state.task.blockLink === task.blockLink
+    ) {
       this.store.update((state) => {
         if (state.task) {
           let name = state.task.name;
@@ -5184,10 +5695,12 @@ var TaskTracker = class {
     }
   }
   async updateActual() {
-    if (this.plugin.getSettings().enableTaskTracking && this.task && this.task.blockLink) {
-      let file = this.plugin.app.vault.getAbstractFileByPath(
-        this.task.path
-      );
+    if (
+      this.plugin.getSettings().enableTaskTracking &&
+      this.task &&
+      this.task.blockLink
+    ) {
+      let file = this.plugin.app.vault.getAbstractFileByPath(this.task.path);
       if (file && file instanceof import_obsidian9.TFile) {
         let f = file;
         this.store.update((state) => {
@@ -5236,12 +5749,10 @@ var TaskTracker = class {
             }
             line = line.replace(/🍅:: *(\d* *\/? *\d* *)/, text2).trim();
           } else {
-            let detail = DESERIALIZERS[format].deserialize(
-              components.body
-            );
+            let detail = DESERIALIZERS[format].deserialize(components.body);
             line = line.replace(
               detail.description,
-              `${detail.description} [\u{1F345}:: 1]`
+              `${detail.description} [\u{1F345}:: 1]`,
             );
           }
           lines[lineNr] = line;
@@ -5250,9 +5761,13 @@ var TaskTracker = class {
             "changed",
             file,
             content,
-            metadata
+            metadata,
           );
-          (_a = this.plugin.app.workspace.getActiveViewOfType(import_obsidian9.MarkdownView)) == null ? void 0 : _a.load();
+          (_a = this.plugin.app.workspace.getActiveViewOfType(
+            import_obsidian9.MarkdownView,
+          )) == null
+            ? void 0
+            : _a.load();
           break;
         }
       }
@@ -5281,14 +5796,17 @@ var PomodoroTimerPlugin = class extends import_obsidian10.Plugin {
     });
     const status = this.addStatusBarItem();
     status.className = `${status.className} mod-clickable`;
-    new StatusBarComponent_default({ target: status, props: { store: this.timer } });
+    new StatusBarComponent_default({
+      target: status,
+      props: { store: this.timer },
+    });
     this.addCommand({
       id: "toggle-timer",
       name: "Toggle timer",
       callback: () => {
         var _a;
         (_a = this.timer) == null ? void 0 : _a.toggleTimer();
-      }
+      },
     });
     this.addCommand({
       id: "toggle-timer-panel",
@@ -5301,7 +5819,7 @@ var PomodoroTimerPlugin = class extends import_obsidian10.Plugin {
         } else {
           this.activateView();
         }
-      }
+      },
     });
     this.addCommand({
       id: "reset-timer",
@@ -5310,22 +5828,27 @@ var PomodoroTimerPlugin = class extends import_obsidian10.Plugin {
         var _a;
         (_a = this.timer) == null ? void 0 : _a.reset();
         new import_obsidian10.Notice("Timer reset");
-      }
+      },
     });
     this.addCommand({
       id: "toggle-mode",
       name: "Toggle timer mode",
       callback: () => {
         var _a;
-        (_a = this.timer) == null ? void 0 : _a.toggleMode((t) => {
-          new import_obsidian10.Notice(`Timer mode: ${t.mode}`);
-        });
-      }
+        (_a = this.timer) == null
+          ? void 0
+          : _a.toggleMode((t) => {
+              new import_obsidian10.Notice(`Timer mode: ${t.mode}`);
+            });
+      },
     });
   }
   getSettings() {
     var _a;
-    return ((_a = this.settingTab) == null ? void 0 : _a.getSettings()) || PomodoroSettings.DEFAULT_SETTINGS;
+    return (
+      ((_a = this.settingTab) == null ? void 0 : _a.getSettings()) ||
+      PomodoroSettings.DEFAULT_SETTINGS
+    );
   }
   onunload() {
     var _a, _b, _c, _d;
@@ -5344,7 +5867,7 @@ var PomodoroTimerPlugin = class extends import_obsidian10.Plugin {
       leaf = workspace.getRightLeaf(false);
       await leaf.setViewState({
         type: VIEW_TYPE_TIMER,
-        active: true
+        active: true,
       });
     }
     workspace.revealLeaf(leaf);

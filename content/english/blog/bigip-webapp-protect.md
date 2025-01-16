@@ -35,7 +35,9 @@ You know what's cool? BIG-IP can offer comprehensive protection for your web app
 5. BIG-IP's Advanced WAF provides protection from the OWASP Top 10 Web Application security risks.
 
 # Security Layers
+
 ### **Process :=**
+
 To configure comprehensive protection for your web application, you'll need to follow these friendly steps:
 
 1. Enter a unique name for your configuration and select the security layers you want to enable. We've got options like Security Policy, Bot Defense, Behavioral Analysis DoS, IP Intelligence, Geolocation Enforcement, and IP Whitelist.
@@ -55,23 +57,29 @@ To configure comprehensive protection for your web application, you'll need to f
 8. Click "Save & Next" to proceed to the next step, or "Save Draft" to come back later.
 
 # Security Policies
-### **Process :=** 
+
+### **Process :=**
+
 For the security policy, you'll need to select the enforcement mode and policy type. Let's break it down:
 
 ### Enforcement Mode
+
 **Transparent**: We won't block requests from attacking IP addresses or to attacked URLs. We'll just monitor and log the traffic.
 **Blocking**: We'll actively block connections from attacking IP addresses or requests to attacked URLs.
 
 ### Policy Type
- **Generic**: We'll create a Rapid Deployment Policy (RDP) with basic protection, manual learning of false positives, and no entity learning.
+
+**Generic**: We'll create a Rapid Deployment Policy (RDP) with basic protection, manual learning of false positives, and no entity learning.
 **Application Specific**: We'll create a policy specifically configured for your application's needs.
 
 ### Bot Defense
+
 Bot Defense is like a superhero that helps identify and mitigate attacks before they cause any damage to your site. Here's how you can configure it:
 
 1. **Select the enforcement mode**:
-    - **Transparent**: We'll log mitigation and verification actions but won't perform any actions on the traffic.
-    - **Blocking**: We'll perform and log mitigation and verification actions.
+
+   - **Transparent**: We'll log mitigation and verification actions but won't perform any actions on the traffic.
+   - **Blocking**: We'll perform and log mitigation and verification actions.
 
 2. **Select the profile template** based on your application's security requirements. The template determines the default values for mitigation and verification settings.
 
@@ -82,28 +90,30 @@ Bot Defense is like a superhero that helps identify and mitigate attacks before 
 5. **Select the mitigation action** for each bot category (you can keep the defaults).
 
 ### DoS Profile Properties
+
 Configuring the DoS Profile properties helps us detect and mitigate those pesky Denial of Service attacks. Here's how you can set it up:
 
 1. **Operation Mode**:
-    - **Transparent**: We won't block requests from attacking IP addresses or to attacked URLs.
-    - **Blocking**: We'll block connections from attacking IP addresses or requests to attacked URLs.
+
+   - **Transparent**: We won't block requests from attacking IP addresses or to attacked URLs.
+   - **Blocking**: We'll block connections from attacking IP addresses or requests to attacked URLs.
 
 2. **Enable Bad Actors Behavior Detection** to detect clients exhibiting anomalous behavior and participating in the DoS attack.
 
 3. **Enable Request Signatures Detection** to generate signatures describing patterns of the attack traffic for efficient mitigation.
 
 4. **Select the Mitigation Mode** based on your environment's requirements. Available options include:
-    - No mitigation
-    - Standard protection
-    - Conservative protection
-    - Aggressive protection
+   - No mitigation
+   - Standard protection
+   - Conservative protection
+   - Aggressive protection
 
-| Mitigation Mode | Description |
-|-----------------|--------------|
-| No mitigation | We'll learn and monitor traffic behavior, but take no action. |
-| Standard protection | If Bad Actors Detection is enabled, we'll slow down requests from anomalous IP addresses based on anomaly detection confidence and server health. We'll rate limit requests from anomalous IP addresses and, if necessary, all requests based on server health. We'll limit concurrent connections from anomalous IP addresses and, if necessary, all concurrent connections based on server health. If Request Signatures Detection is enabled, we'll block requests matching attack signatures. |
-| Conservative protection | If Bad Actors Detection is enabled, we'll slow down and rate limit requests from anomalous IP addresses based on anomaly detection confidence and server health. If Request Signatures Detection is enabled, we'll block requests matching attack signatures. |
-| Aggressive protection | If Bad Actors Detection is enabled, we'll slow down requests from anomalous IP addresses based on anomaly detection confidence and server health. We'll rate limit requests from anomalous IP addresses and, if necessary, all requests based on server health. We'll limit concurrent connections from anomalous IP addresses and, if necessary, all concurrent connections based on server health. We'll proactively perform all protection actions (even before an attack) and increase their impact. If Request Signatures Detection is enabled, we'll block requests matching attack signatures and increase the impact of blocked requests. |
+| Mitigation Mode         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No mitigation           | We'll learn and monitor traffic behavior, but take no action.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Standard protection     | If Bad Actors Detection is enabled, we'll slow down requests from anomalous IP addresses based on anomaly detection confidence and server health. We'll rate limit requests from anomalous IP addresses and, if necessary, all requests based on server health. We'll limit concurrent connections from anomalous IP addresses and, if necessary, all concurrent connections based on server health. If Request Signatures Detection is enabled, we'll block requests matching attack signatures.                                                                                                                                                 |
+| Conservative protection | If Bad Actors Detection is enabled, we'll slow down and rate limit requests from anomalous IP addresses based on anomaly detection confidence and server health. If Request Signatures Detection is enabled, we'll block requests matching attack signatures.                                                                                                                                                                                                                                                                                                                                                                                     |
+| Aggressive protection   | If Bad Actors Detection is enabled, we'll slow down requests from anomalous IP addresses based on anomaly detection confidence and server health. We'll rate limit requests from anomalous IP addresses and, if necessary, all requests based on server health. We'll limit concurrent connections from anomalous IP addresses and, if necessary, all concurrent connections based on server health. We'll proactively perform all protection actions (even before an attack) and increase their impact. If Request Signatures Detection is enabled, we'll block requests matching attack signatures and increase the impact of blocked requests. |
 
 5. **Enable Accelerated Signatures** to detect signatures before establishing a connection (optional).
 
@@ -112,11 +122,13 @@ Configuring the DoS Profile properties helps us detect and mitigate those pesky 
 7. **Enable Approved-only Signatures** to limit request signature detection to approved signatures only (optional).
 
 ### Geolocation Enforcement
+
 Geolocation Enforcement is like a virtual bouncer that allows you to decide which countries can access your web application. We'll match the client's IP address to its physical location and, if your security policy allows that location, we'll grant access to your application.
 
 Simply select the countries you want to allow or disallow access from.
 
 ### IP Whitelist
+
 The IP Whitelist is a special list of trusted IP addresses that we'll exempt from security checks. Sources on the whitelist are never blocked, even if found in the IP Intelligence database.
 
 1. Enter the IP address and associated netmask that needs to be allowed and considered safe.
@@ -126,6 +138,7 @@ The IP Whitelist is a special list of trusted IP addresses that we'll exempt fro
 > **Note**: If you leave the trusted IP address list empty, we'll treat all traffic as untrusted.
 
 ### Virtual Server
+
 A virtual server is like a traffic cop that manages the flow of application traffic. It's represented by a virtual IP address, like `165.160.15.20`. When clients send traffic to a virtual server, we listen for that traffic, process the associated configuration, and direct the traffic according to the policy result and settings.
 
 To assign your security policy to a virtual server:
@@ -144,10 +157,10 @@ To assign your security policy to a virtual server:
 
 7. Configure the server SSL profile for authenticating servers (create a new one or use an existing profile).
 
-
 # OWASP Top 10
 
 This part of this blog emphasizes on how can we use BigIP to secure our webapp from OWASP Top 10 vulmnarabilities.
+
 ## 1. Broken Access Control
 
 Access control enforces policy such that users cannot act outside of their intended permissions. Failure of access control typically leads to unauthorized information disclosure, modification, or destruction of all data or performing a business function outside the user's limits.
@@ -296,5 +309,3 @@ SSRF flaws occur whenever a web application is fetching a remote resource withou
 This new section covers the OWASP Top 10 Web Application Security Risks and how BIG-IP's security policy and additional measures can mitigate each risk. It should fit nicely with the previous content and provide a comprehensive overview of web application security and protection measures.
 
 > If you are unsure about OWASP Top 10 or want to learn more you can click on the button below to goto OWASP Top 10 Cheatsheet.
-
-

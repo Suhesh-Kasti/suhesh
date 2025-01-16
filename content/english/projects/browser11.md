@@ -31,5 +31,3 @@ This project served as a fantastic learning experience for me in several aspects
 - Troubleshooting and debugging web applications.
 
 ##### [Here's the link to my project on GitHub.](https://github.com/Suhesh-Kasti/windowsEleven)
-
-

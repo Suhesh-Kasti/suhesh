@@ -1,41 +1,33 @@
 <div class="bg-body dark:bg-darkmode-body">
-  {{ $image := .Params.image }}
-  {{ if $image }}
-    {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "mb-6 w-full rounded") }}
-  {{ end }}
+  {{ $image := .Params.image }} {{ if $image }} {{ partial "image" (dict "Src"
+  $image "Alt" .Title "Class" "mb-6 w-full rounded") }} {{ end }}
   <h4 class="mb-3">
-    <a href="{{ .RelPermalink }}">
-      {{ .Title }}
-    </a>
+    <a href="{{ .RelPermalink }}"> {{ .Title }} </a>
   </h4>
-<ul class="mb-4">
-  <li class="mr-4 inline-block">
-    <i class="fa-regular fa-folder mr-2"></i>
-    {{ $categories := .Params.project_categories }}
-    {{ range $i, $p := $categories }}
-      <a href="{{ `project_categories/` | absLangURL }}{{ $p | urlize | lower }}/">{{ $p | humanize }}</a>
-      {{ if ne $i (sub (len $categories) 1) }}
-        {{ ", " }}
-      {{ end }}
-    {{ end }}
-  </li>
-</ul>
+  <ul class="mb-4">
+    <li class="mr-4 inline-block">
+      <i class="fa-regular fa-folder mr-2"></i>
+      {{ $categories := .Params.project_categories }} {{ range $i, $p :=
+      $categories }}
+      <a
+        href="{{ `project_categories/` | absLangURL }}{{ $p | urlize | lower }}/"
+        >{{ $p | humanize }}</a
+      >
+      {{ if ne $i (sub (len $categories) 1) }} {{ ", " }} {{ end }} {{ end }}
+    </li>
+  </ul>
   <p class="mb-6">{{ .Params.description }}</p>
 
-<div class="mb-6">
-  <strong>Tags: </strong>
-  {{ $tags := .Params.project_tags }}
-  {{ range $i, $tag := $tags }}
-    <a href="{{ `project_tags/` | absLangURL }}{{ $tag | urlize | lower }}/">{{ $tag | humanize }}</a>
-    {{ if ne $i (sub (len $tags) 1) }}
-      {{ ", " }}
-    {{ end }}
-  {{ end }}
-</div>
+  <div class="mb-6">
+    <strong>Tags: </strong>
+    {{ $tags := .Params.project_tags }} {{ range $i, $tag := $tags }}
+    <a href="{{ `project_tags/` | absLangURL }}{{ $tag | urlize | lower }}/"
+      >{{ $tag | humanize }}</a
+    >
+    {{ if ne $i (sub (len $tags) 1) }} {{ ", " }} {{ end }} {{ end }}
+  </div>
 
   <a class="btn btn-outline-primary btn-sm" href="{{ .RelPermalink }}">
     {{ i18n "read_more" }}
   </a>
 </div>
-
-

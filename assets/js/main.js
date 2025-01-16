@@ -2,37 +2,37 @@
 (function () {
   "use strict";
 
-// Clickable checkboxes
-const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-checkboxes.forEach(checkbox => {
-  // remove the disabled attribute; added by kramdown by default
-  checkbox.removeAttribute('disabled');
-});
+  // Clickable checkboxes
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach((checkbox) => {
+    // remove the disabled attribute; added by kramdown by default
+    checkbox.removeAttribute("disabled");
+  });
 
-// Initialize banner slider
-const bannerSlider = new Swiper(".banner-slider", {
-  slidesPerView: 1,
-  spaceBetween: 30,
-  loop: true,
-  effect: "fade",
-  autoplay: {
-    delay: 5000,
-    disableOnInteraction: false,
-  },
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-  breakpoints: {
-    768: {
-      effect: "fade",
-    }
-  }
-});
+  // Initialize banner slider
+  const bannerSlider = new Swiper(".banner-slider", {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    loop: true,
+    effect: "fade",
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      768: {
+        effect: "fade",
+      },
+    },
+  });
 
   // Dropdown Menu Toggler For Mobile
   // ----------------------------------------
@@ -46,135 +46,140 @@ const bannerSlider = new Swiper(".banner-slider", {
     });
   });
 
-// Enhanced Accordion functionality
-document.addEventListener('DOMContentLoaded', function() {
-  const accordions = document.querySelectorAll('.accordion');
-  
-  function initializeAccordion(accordion) {
-    const items = accordion.querySelectorAll('.accordion-item');
-    const headers = accordion.querySelectorAll('.accordion-header');
-    
-    // Set initial ARIA attributes
-    headers.forEach((header, index) => {
-      const content = header.nextElementSibling;
-      const headerId = `accordion-header-${index}`;
-      const contentId = `accordion-content-${index}`;
-      
-      header.setAttribute('id', headerId);
-      header.setAttribute('aria-controls', contentId);
-      header.setAttribute('aria-expanded', 'false');
-      header.setAttribute('role', 'button');
-      header.setAttribute('tabindex', '0');
-      
-      content.setAttribute('id', contentId);
-      content.setAttribute('role', 'region');
-      content.setAttribute('aria-labelledby', headerId);
-    });
-    
-    // Handle click and keyboard events
-    headers.forEach(header => {
-      const handleInteraction = (event) => {
-        if (event.type === 'keydown' && !['Enter', ' '].includes(event.key)) {
-          return;
-        }
-        
-        event.preventDefault();
+  // Enhanced Accordion functionality
+  document.addEventListener("DOMContentLoaded", function () {
+    const accordions = document.querySelectorAll(".accordion");
+
+    function initializeAccordion(accordion) {
+      const items = accordion.querySelectorAll(".accordion-item");
+      const headers = accordion.querySelectorAll(".accordion-header");
+
+      // Set initial ARIA attributes
+      headers.forEach((header, index) => {
         const content = header.nextElementSibling;
-        const parent = header.parentElement;
-        const isExpanded = header.getAttribute('aria-expanded') === 'true';
-        
-        // Toggle current accordion
-        header.setAttribute('aria-expanded', !isExpanded);
-        parent.classList.toggle('active');
-        
-        if (!isExpanded) {
-          content.style.maxHeight = `${content.scrollHeight}px`;
-          content.classList.add('active');
-        } else {
-          content.style.maxHeight = '0px';
-          content.classList.remove('active');
-        }
-        
-        // Close other open accordions
-        items.forEach(item => {
-          if (item !== parent && item.classList.contains('active')) {
-            const siblingHeader = item.querySelector('.accordion-header');
-            const siblingContent = item.querySelector('.accordion-content');
-            
-            siblingHeader.setAttribute('aria-expanded', 'false');
-            item.classList.remove('active');
-            siblingContent.style.maxHeight = '0px';
-            siblingContent.classList.remove('active');
+        const headerId = `accordion-header-${index}`;
+        const contentId = `accordion-content-${index}`;
+
+        header.setAttribute("id", headerId);
+        header.setAttribute("aria-controls", contentId);
+        header.setAttribute("aria-expanded", "false");
+        header.setAttribute("role", "button");
+        header.setAttribute("tabindex", "0");
+
+        content.setAttribute("id", contentId);
+        content.setAttribute("role", "region");
+        content.setAttribute("aria-labelledby", headerId);
+      });
+
+      // Handle click and keyboard events
+      headers.forEach((header) => {
+        const handleInteraction = (event) => {
+          if (event.type === "keydown" && !["Enter", " "].includes(event.key)) {
+            return;
           }
-        });
-      };
-      
-      header.addEventListener('click', handleInteraction);
-      header.addEventListener('keydown', handleInteraction);
-    });
-  }
-  
-  // Initialize all accordions
-  accordions.forEach(initializeAccordion);
-  
-  // Optional: Open first item in each accordion
-  accordions.forEach(accordion => {
-    const firstItem = accordion.querySelector('.accordion-item');
-    if (firstItem) {
-      const header = firstItem.querySelector('.accordion-header');
-      const content = firstItem.querySelector('.accordion-content');
-      
-      firstItem.classList.add('active');
-      header.setAttribute('aria-expanded', 'true');
-      content.classList.add('active');
-      content.style.maxHeight = `${content.scrollHeight}px`;
+
+          event.preventDefault();
+          const content = header.nextElementSibling;
+          const parent = header.parentElement;
+          const isExpanded = header.getAttribute("aria-expanded") === "true";
+
+          // Toggle current accordion
+          header.setAttribute("aria-expanded", !isExpanded);
+          parent.classList.toggle("active");
+
+          if (!isExpanded) {
+            content.style.maxHeight = `${content.scrollHeight}px`;
+            content.classList.add("active");
+          } else {
+            content.style.maxHeight = "0px";
+            content.classList.remove("active");
+          }
+
+          // Close other open accordions
+          items.forEach((item) => {
+            if (item !== parent && item.classList.contains("active")) {
+              const siblingHeader = item.querySelector(".accordion-header");
+              const siblingContent = item.querySelector(".accordion-content");
+
+              siblingHeader.setAttribute("aria-expanded", "false");
+              item.classList.remove("active");
+              siblingContent.style.maxHeight = "0px";
+              siblingContent.classList.remove("active");
+            }
+          });
+        };
+
+        header.addEventListener("click", handleInteraction);
+        header.addEventListener("keydown", handleInteraction);
+      });
     }
+
+    // Initialize all accordions
+    accordions.forEach(initializeAccordion);
+
+    // Optional: Open first item in each accordion
+    accordions.forEach((accordion) => {
+      const firstItem = accordion.querySelector(".accordion-item");
+      if (firstItem) {
+        const header = firstItem.querySelector(".accordion-header");
+        const content = firstItem.querySelector(".accordion-content");
+
+        firstItem.classList.add("active");
+        header.setAttribute("aria-expanded", "true");
+        content.classList.add("active");
+        content.style.maxHeight = `${content.scrollHeight}px`;
+      }
+    });
   });
-});
-
-
 
   // Testimonial Slider
   // ----------------------------------------
-const testimonialSwiper = new Swiper(".testimonial-slider", {
-  spaceBetween: 24,
-  loop: true,
-  autoplay: {
-    delay: 3000,
-    disableOnInteraction: false,
-  },
-  pagination: {
-    el: ".testimonial-slider-pagination",
-    type: "bullets",
-    clickable: true,
-  },
-  breakpoints: {
-    768: {
-      slidesPerView: 2,
+  const testimonialSwiper = new Swiper(".testimonial-slider", {
+    spaceBetween: 24,
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
     },
-    992: {
-      slidesPerView: 3,
+    pagination: {
+      el: ".testimonial-slider-pagination",
+      type: "bullets",
+      clickable: true,
     },
-  },
-});
-// Pause autoplay on mouse enter (desktop)
-document.querySelector('.testimonial-slider').addEventListener('mouseenter', function() {
-  testimonialSwiper.autoplay.stop();
-});
+    breakpoints: {
+      768: {
+        slidesPerView: 2,
+      },
+      992: {
+        slidesPerView: 3,
+      },
+    },
+  });
+  // Pause autoplay on mouse enter (desktop)
+  document
+    .querySelector(".testimonial-slider")
+    .addEventListener("mouseenter", function () {
+      testimonialSwiper.autoplay.stop();
+    });
 
-// Resume autoplay on mouse leave (desktop)
-document.querySelector('.testimonial-slider').addEventListener('mouseleave', function() {
-  testimonialSwiper.autoplay.start();
-});
+  // Resume autoplay on mouse leave (desktop)
+  document
+    .querySelector(".testimonial-slider")
+    .addEventListener("mouseleave", function () {
+      testimonialSwiper.autoplay.start();
+    });
 
-// Pause autoplay on touch start (mobile and tablets)
-document.querySelector('.testimonial-slider').addEventListener('touchstart', function() {
-  testimonialSwiper.autoplay.stop();
-});
+  // Pause autoplay on touch start (mobile and tablets)
+  document
+    .querySelector(".testimonial-slider")
+    .addEventListener("touchstart", function () {
+      testimonialSwiper.autoplay.stop();
+    });
 
-// Resume autoplay on touch end (mobile and tablets)
-document.querySelector('.testimonial-slider').addEventListener('touchend', function() {
-  testimonialSwiper.autoplay.start();
-});
-
+  // Resume autoplay on touch end (mobile and tablets)
+  document
+    .querySelector(".testimonial-slider")
+    .addEventListener("touchend", function () {
+      testimonialSwiper.autoplay.start();
+    });
 })();

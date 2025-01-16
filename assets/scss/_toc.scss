@@ -3,37 +3,37 @@
 /* Base TOC Container */
 .table-of-contents,
 #TableOfContents {
-    @apply text-base font-primary;
+  @apply text-base font-primary;
 }
 
 /* All Lists */
 .table-of-contents ul,
 #TableOfContents ul {
-    @apply list-none p-0 m-0;
+  @apply list-none p-0 m-0;
 }
 
 /* First Level List */
 .table-of-contents > ul,
 #TableOfContents > ul {
-    @apply space-y-2;
+  @apply space-y-2;
 }
 
 /* Nested Lists */
 .table-of-contents ul ul,
 #TableOfContents ul ul {
-    @apply mt-2 ml-4 space-y-1;
+  @apply mt-2 ml-4 space-y-1;
 }
 
 /* List Items */
 .table-of-contents li,
 #TableOfContents li {
-    @apply my-1 leading-relaxed;
+  @apply my-1 leading-relaxed;
 }
 
 /* Links */
 .table-of-contents a,
 #TableOfContents a {
-    @apply block py-1 px-2 rounded-md
+  @apply block py-1 px-2 rounded-md
            text-text dark:text-darkmode-text
            hover:bg-theme-light dark:hover:bg-darkmode-theme-light
            hover:text-primary dark:hover:text-darkmode-primary
@@ -44,7 +44,7 @@
 /* Active Link */
 .table-of-contents a.active,
 #TableOfContents a.active {
-    @apply bg-theme-light dark:bg-darkmode-theme-light
+  @apply bg-theme-light dark:bg-darkmode-theme-light
            text-primary dark:text-darkmode-primary
            font-medium;
 }
@@ -52,23 +52,23 @@
 /* First Level Items */
 .table-of-contents > ul > li > a,
 #TableOfContents > ul > li > a {
-    @apply font-medium text-base;
+  @apply font-medium text-base;
 }
 
 /* Second Level Items */
 .table-of-contents > ul > li > ul > li > a,
 #TableOfContents > ul > li > ul > li > a {
-    @apply text-sm;
+  @apply text-sm;
 }
 
 /* Third Level Items */
 .table-of-contents > ul > li > ul > li > ul > li > a,
 #TableOfContents > ul > li > ul > li > ul > li > a {
-    @apply text-sm pl-4;
+  @apply text-sm pl-4;
 }
 
 /* Optional: Add a subtle border to indicate nesting */
 .table-of-contents ul ul,
 #TableOfContents ul ul {
-    @apply border-l-2 border-border dark:border-darkmode-border;
+  @apply border-l-2 border-border dark:border-darkmode-border;
 }

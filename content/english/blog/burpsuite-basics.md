@@ -6,7 +6,13 @@ date: 2024-03-12T20:53:06+05:45
 image: "/images/blog/burpsuite/burpsuiteui.png"
 categories: ["Cybersecurity"]
 author: "Suhesh Kasti"
-tags: ["BurpSuite", "Web App Security", "Penetration Testing", "Vulnerability Scanning"]
+tags:
+  [
+    "BurpSuite",
+    "Web App Security",
+    "Penetration Testing",
+    "Vulnerability Scanning",
+  ]
 buttons:
   - label: "See the whole Burpsuite series"
     url: "/notes/japanese/katakana/katakana_english.pdf"
@@ -40,7 +46,8 @@ Visit the [official Burp Suite website](https://portswigger.net/burp/releases/co
 In windows, you can simply download the installer and follow the installation wizard.
 
 Alternately, burpsuite can also be installed in windows using winget. Open powershell and type the following the following command:
-``` ps1
+
+```ps1
 winget instal --id=PortSwigger.BurpSuite.Community  -e
 ```
 
@@ -53,6 +60,7 @@ There might be available burpsuite's native package in your distribution's repos
 
 I did not find burpsuite in official Debian/Ubuntu repositories so you need to download and extract the files, then run the `./burpsuite_community` script.
 You can search in your distribution's repository as it might have the package.
+
 ```bash
 sudo apt search burpsuite
 ```
@@ -61,6 +69,7 @@ sudo apt search burpsuite
 
 I did not find burpsuite in official Red Hat repositories so you need to download and extract the files, then run the `./burpsuite_community` script.
 You can search in your distribution's repository as it might have the package.
+
 ```bash
 sudo dnf search burpsuite
 ```
@@ -68,17 +77,20 @@ sudo dnf search burpsuite
 #### For Arch:
 
 Burpsuite is not present in the official arch repository but it can be easily build and install it from Arch user repository using the command:
+
 ```bash
 yay -Ss burpsuite
 yay -S burpsuite OR
 yay -S burpsuite-pro
 ```
-Or you can also use [chaotic aur](https://aur.chaotic.cx/) where the community edition is already built. 
+
+Or you can also use [chaotic aur](https://aur.chaotic.cx/) where the community edition is already built.
 
 ## macOS
 
 macOS users need to download the installer, mount the disk image, and drag the Burp Suite application to your Applications folder.
 Or you can use the Homebrew package manager for a hassle-free installation:
+
 ```bash
 brew install --cask burp-suite
 ```
@@ -94,6 +106,7 @@ brew install --cask burp-suite
 4. **Configuration:** Customize settings, configure target scope, and explore various options within each module.
 
 5. **Documentation:** Refer to the [official documentation](https://portswigger.net/burp/documentation) for in-depth information on Burp Suite's features and functionalities.
+
 ## Why Use BurpSuite?
 
 BurpSuite is an essential tool for web application security professionals and developers for several reasons:

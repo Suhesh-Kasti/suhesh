@@ -20,8 +20,6 @@ social:
   - name: linkedin
     icon: fa-brands fa-linkedin-in
     link: https://linkedin.com/in/sazan991
-
 ---
 
 is a skilled Django developer, proficient in crafting web applications using Python. His expertise in coding brings innovative solutions to projects while constantly seeking to enhance his skills in the dynamic field of web development.
-

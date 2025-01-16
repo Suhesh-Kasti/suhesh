@@ -20,6 +20,7 @@ $user_id = $_GET['user_id'];
 $query = "SELECT * FROM users WHERE id = $user_id";
 $result = $conn->query($query);
 ```
+
 {{< /accordion >}}
 
 #### 2. Cryptographic Failures
@@ -33,6 +34,7 @@ Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 byte[] cipherText = cipher.doFinal(plainText);
 ```
+
 {{< /accordion >}}
 
 #### 3. Injection
@@ -46,6 +48,7 @@ user_input = request.args.get('user_input')
 query = f"SELECT * FROM users WHERE name = '{user_input}'"
 result = db.execute(query)
 ```
+
 {{< /accordion >}}
 
 #### 4. Insecure Design
@@ -67,6 +70,7 @@ Security misconfiguration is the most commonly seen issue. This is commonly a re
 ]>
 <root>&xxe;</root>
 ```
+
 {{< /accordion >}}
 
 #### 6. Vulnerable and Outdated Components
@@ -84,10 +88,13 @@ Application functions related to authentication and session management are often
 // Insecure code vulnerable to session fixation
 function createSession() {
   const sessionId = req.cookies.sessionId || uuid.v4();
-  res.cookie('sessionId', sessionId);
-  sessions[sessionId] = { /* session data */ };
+  res.cookie("sessionId", sessionId);
+  sessions[sessionId] = {
+    /* session data */
+  };
 }
 ```
+
 {{< /accordion >}}
 
 #### 8. Software and Data Integrity Failures
@@ -112,5 +119,5 @@ SSRF flaws occur whenever a web application is fetching a remote resource withou
 url = params[:url]
 response = Net::HTTP.get_response(URI(url))
 ```
-{{< /accordion >}}
 
+{{< /accordion >}}

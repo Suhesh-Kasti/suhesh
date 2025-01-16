@@ -11,10 +11,12 @@ draft: false
 My setup is fairly simple. I use a number of tools and plugins for testing. This page lists out all the tools I use with appropriate links. Here I will also include links from where as a beginner you can start in cyber.
 
 ## Hardware
-Let's start from the hardware level. This is the setup that is recommended for smooth practice although you can easily get started with specs much lower than the ones shown below 
+
+Let's start from the hardware level. This is the setup that is recommended for smooth practice although you can easily get started with specs much lower than the ones shown below
 
 {{< tabs >}}
 {{< tab "CPU" >}}
+
 <div class="flex justify-between">
   <div class="w-1/2 pr-4">
     <h5 class="font-semibold">Laptop</h5>
@@ -36,6 +38,7 @@ Let's start from the hardware level. This is the setup that is recommended for s
 {{< /tab >}}
 
 {{< tab "RAM" >}}
+
 <div class="flex justify-between">
   <div class="w-1/2 pr-4">
     <h5 class="font-semibold">Laptop</h5>
@@ -55,6 +58,7 @@ Let's start from the hardware level. This is the setup that is recommended for s
 {{< /tab >}}
 
 {{< tab "Storage" >}}
+
 <div class="flex justify-between">
   <div class="w-1/2 pr-4">
     <h5 class="font-semibold">Laptop</h5>
@@ -74,6 +78,7 @@ Let's start from the hardware level. This is the setup that is recommended for s
 {{< /tab >}}
 
 {{< tab "GPU" >}}
+
 <div class="flex justify-between">
   <div class="w-1/2 pr-4">
     <h5 class="font-semibold">Laptop</h5>
@@ -93,6 +98,7 @@ Let's start from the hardware level. This is the setup that is recommended for s
 {{< /tab >}}
 
 {{< tab "Networking" >}}
+
 <div class="flex justify-between">
   <div class="w-1/2 pr-4">
     <h5 class="font-semibold">Laptop</h5>
@@ -112,6 +118,7 @@ Let's start from the hardware level. This is the setup that is recommended for s
 {{< /tab >}}
 
 {{< tab "Miscellaneous" >}}
+
 <div class="flex justify-between">
   <div class="w-1/2 pr-4">
     <h5 class="font-semibold">Laptop</h5>
@@ -136,51 +143,57 @@ Let's start from the hardware level. This is the setup that is recommended for s
 
 </br>
 
-## Operating System 
-For the operating system, I recommend Kali Linux for beginners but you can consider other options as well by simply installing your tools on your preferred OS. Personally I would recommend using a linux based distro or maybe [dual booting](/blog/dual_booting). 
+## Operating System
 
-For my setup I have dual booted Linux and Windows. I find arch linux easy to use and has all the tools required for pentesting whilst for report purposes Office works just on windows so I have to run windows as well. You can find below the list of recommeded distros and how to setup chaotic aur and black arch repos in arch and arch based distros.   
+For the operating system, I recommend Kali Linux for beginners but you can consider other options as well by simply installing your tools on your preferred OS. Personally I would recommend using a linux based distro or maybe [dual booting](/blog/dual_booting).
+
+For my setup I have dual booted Linux and Windows. I find arch linux easy to use and has all the tools required for pentesting whilst for report purposes Office works just on windows so I have to run windows as well. You can find below the list of recommeded distros and how to setup chaotic aur and black arch repos in arch and arch based distros.
 
 {{< accordion "Recommended distros" >}}
+
 > **Note:** The Levels **Beginner**, **Intermediate** do not represent how easy it is to use or install the distro but how easy it is to begin hacking.
+
 - **Debian Based**
-    - [Kali Linux]() *(Beginner)*
-    - [Ubuntu]() *(Intermediate)*
-    - [Linux Mint]() *(Intermediate)*
-    - [PopOS]() *(Intermediate)*
-    - [Debian]() *(Intermediate)*
-    
+  - [Kali Linux]() _(Beginner)_
+  - [Ubuntu]() _(Intermediate)_
+  - [Linux Mint]() _(Intermediate)_
+  - [PopOS]() _(Intermediate)_
+  - [Debian]() _(Intermediate)_
 - **Arch Based**:
-    - [Black Arch]() *(Intermediate)*
-    - [Endeavour OS]() *(Intermediate)*
-    - [Garuda Linux]() *(Intermediate)*
-    - [Vanilla Arch]() *(Intermediate)*
-
-
+  - [Black Arch]() _(Intermediate)_
+  - [Endeavour OS]() _(Intermediate)_
+  - [Garuda Linux]() _(Intermediate)_
+  - [Vanilla Arch]() _(Intermediate)_
 
 {{< /accordion >}}
 
 {{< accordion "Install Chaotic Aur and Black Arch repos" >}}
 While using arch based distros for pentesting, I find it very useful to install chaotic aur and black arch repos which gives make install tools just one install away.
+
 ##### Chaotic Aur
+
 We start by retrieving the primary key to enable the installation of our keyring and mirror list:
-````bash
+
+```bash
 sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 sudo pacman-key --lsign-key 3056513887B78AEB
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 
-````
+```
 
 Then, we append (adding at the end) the following to `/etc/pacman.conf`:
-````bash
+
+```bash
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
-````
+```
 
 ##### Black Arch Repo
+
 BlackArch Linux is compatible with existing/normal Arch installations. It acts as an unofficial user repository.
-````bash
+
+```bash
 # Run https://blackarch.org/strap.sh as root and follow the instructions.
 $ curl -O https://blackarch.org/strap.sh
 
@@ -195,14 +208,16 @@ $ sudo ./strap.sh
 
 # Enable multilib following https://wiki.archlinux.org/index.php/Official_repositories#Enabling_multilib and run:
 $ sudo pacman -Syu
-````
+```
 
 {{< /accordion >}}
 
 ## Browser
+
 {{< tabs >}}
 
 <!-- Chromium-Based Browsers Tab -->
+
 {{< tab "Chromium Based" >}}
 
 ##### Chromium-Based Browsers:
@@ -235,6 +250,7 @@ $ sudo pacman -Syu
 {{< /tab >}}
 
 <!-- Firefox-Based Browsers Tab -->
+
 {{< tab "Firefox Based" >}}
 
 ##### Firefox-Based Browsers:
@@ -262,7 +278,6 @@ $ sudo pacman -Syu
 15. **Tamper Data** - View and modify HTTP requests for vulnerability testing.
 16. **HackTools** - Useful pentesting tools: payloads, encoders, and more.
 
-
 {{< /accordion >}}
 
 {{< /tab >}}
@@ -270,13 +285,17 @@ $ sudo pacman -Syu
 {{< /tabs >}}
 
 ## Code Editors
+
 {{< tabs >}}
 
 {{< tab "Neovim" >}}
+
 ##### [NvChad](https://nvchad.com/)
+
 Neovim is highly customizable and lightweight, making it ideal for fast coding with minimal distractions.
 
 ###### **Plugins:**
+
 - **[TreeSitter](https://github.com/nvim-treesitter/nvim-treesitter)**: Syntax highlighting and parsing for better code comprehension.
 - **[Telescope](https://github.com/nvim-telescope/telescope.nvim)**: Fuzzy file finder and search tool for quick navigation.
 - **[LSPConfig](https://github.com/neovim/nvim-lspconfig)**: Language Server Protocol for auto-completion and diagnostics.
@@ -292,9 +311,11 @@ Neovim is highly customizable and lightweight, making it ideal for fast coding w
 {{< tab "VS Codium" >}}
 
 ##### [VS Codium](https://vscodium.com/)
+
 VS Codium is the open-source version of [VS Code](https://code.visualstudio.com/) without telemetry, making it a privacy-friendly alternative.
 
 ###### **Extensions:**
+
 - **[Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)**: Python extension for debugging and code formatting.
 - **[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)**: Linter for JavaScript and TypeScript.
 - **[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**: Code formatter for JavaScript, CSS, and other languages.
@@ -312,6 +333,7 @@ VS Codium offers a broad range of open-source extensions to improve your coding 
 {{< /tabs >}}
 
 ## Note taking
+
 {{< tabs >}}
 
 {{< tab "Obsidian" >}}
@@ -360,89 +382,101 @@ VS Codium offers a broad range of open-source extensions to improve your coding 
 {{< /tabs >}}
 
 ## Pentesting Tools
-I am learning the following tools to improve my pentesting skills and I will be writing various blogs related to these 
+
+I am learning the following tools to improve my pentesting skills and I will be writing various blogs related to these
 {{< tabs >}}
 
 {{< tab "Programming Languages" >}}
+
 - [Python](https://www.python.org)
 - [Golang](https://golang.org)
 - [Rust](https://www.rust-lang.org)
 - [Bash](https://www.gnu.org/software/bash/)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "Port Scanning" >}}
+
 - [Nmap](https://nmap.org)
 - [Masscan](https://github.com/robertdavidgraham/masscan)
 - [Unicornscan](https://github.com/unicorn-engine/unicorn)
 - [Rustscan](https://github.com/RustScan/RustScan)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "OSINT" >}}
+
 - [Maltego](https://www.maltego.com)
 - [theHarvester](https://github.com/laramies/theHarvester)
 - [SpiderFoot](https://github.com/smicallef/spiderfoot)
 - [Recon-ng](https://github.com/lanmaster53/recon-ng)
 - [Sherlock](https://github.com/sherlock-project/sherlock)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "Mobile App Testing" >}}
+
 - [Frida](https://frida.re)
 - [Objection](https://github.com/sensepost/objection)
 - [Drozer](https://github.com/WithSecureLabs/drozer)
 - [MobSF](https://github.com/MobSF/Mobile-Security-Framework-MobSF)
 - [APKTool](https://github.com/iBotPeaches/Apktool)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "Webapp Testing" >}}
-- [Burp Suite](https://portswigger.net/burp) *(**PLUGINS:** Autorize, Burp Bounty Pro, Coverter)*
+
+- [Burp Suite](https://portswigger.net/burp) _(**PLUGINS:** Autorize, Burp Bounty Pro, Coverter)_
 - [OWASP ZAP](https://www.zaproxy.org)
 - [Nikto](https://github.com/sullo/nikto)
 - [Feroxbuster](https://github.com/epi052/feroxbuster)
 - [GoBuster](https://github.com/OJ/gobuster)
 - [SQLMap](https://github.com/sqlmapproject/sqlmap)
 - [XSStrike](https://github.com/s0md3v/XSStrike)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "API Testing" >}}
+
 - [Postman](https://www.postman.com)
 - [Insomnia](https://insomnia.rest)
 - [Swagger UI](https://swagger.io/tools/swagger-ui)
 - [Hoppscotch](https://hoppscotch.io)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "WordPress Sites" >}}
+
 - [WPScan](https://wpscan.com)
 - [CMSmap](https://github.com/Dionach/CMSmap)
 - [WPHunter](https://github.com/StefanoDeVuono/WP-Hunter)
 - [Wordfence](https://www.wordfence.com)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "Social Engineering" >}}
+
 - [Social Engineering Toolkit (SET)](https://github.com/trustedsec/social-engineer-toolkit)
 - [Evilginx2](https://github.com/kgretzky/evilginx2)
 - [Phishery](https://github.com/ryhanson/phishery)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "Wordlists" >}}
+
 - [SecLists](https://github.com/danielmiessler/SecLists)
 - [RockYou](https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt)
 - [Dirb](https://github.com/v0re/dirb)
 - [Wordlistctl](https://github.com/random-robbie/wordlistctl)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "Exploitation Frameworks" >}}
+
 - [Metasploit](https://www.metasploit.com)
 - [BeEF](https://github.com/beefproject/beef)
 - [PowerSploit](https://github.com/PowerShellMafia/PowerSploit)
 - [Empire](https://github.com/EmpireProject/Empire)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< tab "Privilege Escalation" >}}
+
 - [LinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
 - [WinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
 - [GTFOBins](https://gtfobins.github.io)
 - [SUDO_KILLER](https://github.com/TH3xACE/SUDO_KILLER)
-{{< /tab >}}
+  {{< /tab >}}
 
 {{< /tabs >}}
 
@@ -453,7 +487,9 @@ I am learning the following tools to improve my pentesting skills and I will be 
 {{< tabs >}}
 
 <!-- Learning Platforms -->
+
 {{< tab "Learning Platforms" >}}
+
 - [Hacklido](https://hacklido.com/)
   - Articles, discussions, and learning resources for security professionals.
 - [SysExplore](https://www.sysexplore.com/)
@@ -484,20 +520,24 @@ I am learning the following tools to improve my pentesting skills and I will be 
   - Free and paid courses on topics including cybersecurity.
 - [Hacker Forum](https://thehackerforum.com/)
   - Online forum for hacking and cybersecurity discussions.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- General CTF Learning -->
+
 {{< tab "General" >}}
+
 - [AperiSolve](https://github.com/Zeecka/AperiSolve)
   - Tool that automatically runs various steganography tools.
 - [John Hammond's CTF Katana](https://github.com/JohnHammond/ctf-katana)
   - Comprehensive repository for solving CTF challenges.
 - [Awesome CTF](https://github.com/apsdehal/awesome-ctf/blob/master/README.md)
   - Cheat sheet for creating and solving CTF challenges.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Hacking Resources -->
+
 {{< tab "Hacking Resources" >}}
+
 - [OSSTMM](https://www.isecom.org/research.html)
   - Open Source Security Testing Methodology Manual.
 - [BlackHills InfoSec](https://www.blackhillsinfosec.com/)
@@ -508,10 +548,12 @@ I am learning the following tools to improve my pentesting skills and I will be 
   - Threat hunting resources and tools.
 - [NIST Glossary](https://csrc.nist.gov/glossary)
   - Cybersecurity terms from NIST.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Linux Resources -->
+
 {{< tab "Linux Learning" >}}
+
 - [Linux.die](https://linux.die.net/)
   - Linux documentation and resources.
 - [Linux Journey](https://linuxjourney.com/)
@@ -520,10 +562,12 @@ I am learning the following tools to improve my pentesting skills and I will be 
   - Articles and tutorials on Linux for professionals.
 - [LinuxOPSys](https://linuxopsys.com/)
   - Linux resources and learning for enthusiasts and professionals.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- InfoSec News -->
+
 {{< tab "InfoSec News" >}}
+
 - [Hacker News](https://thehackernews.com/)
   - Cybersecurity news and articles.
 - [Exploit-DB](https://www.exploit-db.com/)
@@ -532,10 +576,12 @@ I am learning the following tools to improve my pentesting skills and I will be 
   - Search engine for internet-connected devices and vulnerabilities.
 - [BlackHills InfoSec](https://www.blackhillsinfosec.com/)
   - Security news and insights from professionals.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Cheat Sheets -->
+
 {{< tab "Cheat Sheets" >}}
+
 - [Cheatsheet.sh](https://cheatsheet.sh/)
   - Command-line cheat sheets for developers and security professionals.
 - [Roadmap.sh](https://roadmap.sh/)
@@ -548,27 +594,32 @@ I am learning the following tools to improve my pentesting skills and I will be 
   - Useful resources and cheat sheets for pentesting.
 - [GTFOBins](https://gtfobins.github.io/)
   - A collection of Linux binaries useful for exploitation.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Libraries -->
+
 {{< tab "Libraries" >}}
+
 - [PDF Drive](https://www.pdfdrive.com/)
   - Free eBooks for a wide range of topics.
 - [LibraryLOL](https://library.lol/)
   - Online library with various resources, including hacking.
-{{< /tab >}}
+    {{< /tab >}}
 
 {{< /tabs >}}
 
---- 
+---
 
 ## Practice
+
 After learning you can practise here
 
 {{< tabs >}}
 
 <!-- General CTFs -->
+
 {{< tab "General CTFs" >}}
+
 - [HackTheBox](https://hackthebox.com/)
   - The OG box site with curated CTF problems and learning courses.
 - [PicoCTF](https://play.picoctf.org/practice)
@@ -587,10 +638,12 @@ After learning you can practise here
   - Vulnerable virtual machines for self-hosted practice.
 - [CTF Challenge](https://ctfchallenge.com/register)
   - Realistic web challenges for bug bounty practice.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Pwn CTFs -->
+
 {{< tab "Pwn CTFs" >}}
+
 - [pwnable.kr](http://pwnable.kr/index.php)
   - Good variety of pwn challenges.
 - [pwnable.tw](https://pwnable.tw/challenge/)
@@ -605,20 +658,24 @@ After learning you can practise here
   - Learn Return-Oriented Programming techniques.
 - [Phoenix Exploit Education](https://exploit.education/phoenix/)
   - Binary exploitation challenges ranked by difficulty.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Reversing CTFs -->
+
 {{< tab "Reversing CTFs" >}}
+
 - [challenges.re](https://challenges.re/)
   - Extensive reversing challenges across many levels.
 - [reversing.kr](http://reversing.kr/)
   - Reverse engineering challenges for different levels.
 - [crackmes.one](https://crackmes.one)
   - CrackMe challenges for reverse engineering practice.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Web CTFs -->
+
 {{< tab "Web CTFs" >}}
+
 - [websec.fr](http://websec.fr/#)
   - Web challenges for various levels of difficulty.
 - [webhacking.kr](https://webhacking.kr/chall.php)
@@ -629,31 +686,36 @@ After learning you can practise here
   - Web app vulnerability lab for testing.
 - [bWAPP](http://www.itsecgames.com/)
   - Buggy Web App for learning and practicing vulnerabilities.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Crypto CTFs -->
+
 {{< tab "Crypto CTFs" >}}
+
 - [CryptoHack](https://cryptohack.org/)
   - Crypto challenges for all levels.
 - [cryptopals](https://cryptopals.com/)
   - OG crypto challenge site.
 - [CryptoCTF](https://cr.yp.toc.tf)
   - Annual cryptography-based CTF event.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Cloud CTFs -->
+
 {{< tab "Cloud CTFs" >}}
+
 - [CloudFoxable](https://cloudfoxable.bishopfox.com)
   - Walkthrough of cloud-based vulnerabilities using CloudFox.
 - [Flaws.cloud](https://flaws.cloud)
   - AWS-based challenges related to S3, EC2, and Lambda.
-{{< /tab >}}
+    {{< /tab >}}
 
 <!-- Smart Contracts -->
+
 {{< tab "Smart Contracts" >}}
+
 - [Capture the Ether](https://capturetheether.com/)
   - Smart contract security challenges for Ethereum.
-{{< /tab >}}
+    {{< /tab >}}
 
 {{< /tabs >}}
-

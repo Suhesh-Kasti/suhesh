@@ -6,9 +6,9 @@ project_categories: ["subisu", "code"]
 description: "A desktop application made in python that eases the process of learning and teaching."
 draft: false
 project_info:
-- name: "GUI application"
-  icon: "fa fa-desktop"
-  content: "Python Tkinter"
+  - name: "GUI application"
+    icon: "fa fa-desktop"
+    content: "Python Tkinter"
 ---
 
 ### Project Description:
@@ -35,6 +35,3 @@ The development of this GUI application was a valuable learning experience, expa
 - Tkinter
 
 ##### [Link to the GitHub repository for the subisuTSC Training GUI App](https://github.com/Suhesh-Kasti/subisuTSC)
-
-
-

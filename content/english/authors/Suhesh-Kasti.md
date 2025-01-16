@@ -20,7 +20,6 @@ social:
   - name: linkedin
     icon: fa-brands fa-linkedin-in
     link: https://linkedin.com/in/suheshkasti
-
 ---
 
 is a dedicated cybersecurity student, on a mission to understand and tackle the challenges of the digital realm. If you're curious about cybersecurity, exploring ethical hacking, or need a partner to learn together, he's here to tag along.

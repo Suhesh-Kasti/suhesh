@@ -20,7 +20,6 @@ social:
   - name: linkedin
     icon: fa-brands fa-linkedin-in
     link: https://linkedin.com
-
 ---
 
 a passionate gamer and student of React development, merges his enthusiasm for gaming with his studies in React. We see him finding joy in exploring how the two worlds intersect, constantly learning and growing in both his gaming adventures and his coding journey.

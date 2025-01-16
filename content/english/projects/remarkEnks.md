@@ -6,9 +6,9 @@ project_categories: ["subisu", "code"]
 description: "A chrome/firefox extension to automate the process of remarks writing"
 draft: false
 project_info:
-- name: "Web extension"
-  icon: "fas fa-code"
-  content: "Chrome Firefox"
+  - name: "Web extension"
+    icon: "fas fa-code"
+    content: "Chrome Firefox"
 ---
 
 ### Project Description:
@@ -34,5 +34,3 @@ This project was a remarkable journey of learning and growth. I acquired a broad
 The extension became a game-changer for my co-workers and me at Subisu. Its impact was multifaceted. It made daily operations smoother by saving us valuable time and reducing the chances of human error. By automating remark-writing, it allowed us to create standardized, professional communications with customers, ultimately improving their satisfaction. My colleagues and I experienced a slight increase in efficiency, enabling us to focus on providing better service and problem-solving rather than getting bogged down in administrative tasks.
 
 ##### [Here's the link to the GitHub repository for the remarkEnks extension](https://github.com/Suhesh-Kasti/remarksEnks)
-
-

@@ -98,8 +98,6 @@ At the top of the OSI model resides the Application Layer, where communication b
 
 **Example:** Hypertext Transfer Protocol (HTTP), File Transfer Protocol (FTP), and Simple Mail Transfer Protocol (SMTP) are common protocols operating at the Application Layer, facilitating web browsing, file transfer, and email communication, respectively.
 
-
 In this extensive exploration of computer networking, we've journeyed through the intricate layers of the TCP/IP and OSI models, gaining a deeper understanding of how data traverses networks. Armed with this knowledge, we're well-equipped to navigate the complexities of modern networking and embark on further adventures in the realm of computer science.
 
 > "May your connections be strong, your packets swift, and your network adventures filled with discovery!" - Networking Sage
-

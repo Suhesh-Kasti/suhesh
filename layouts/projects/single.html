@@ -1,95 +1,107 @@
 {{ define "main" }}
-  <section class="section pt-7">
-    <div class="container">
-      <div class="row justify-center">
-        <!-- Main Content -->
-        <article class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-          {{ $image:= .Params.image }}
-          {{ if $image }}
-            <div class="mb-10">
-              {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-full rounded") }}
-            </div>
-          {{ end }}
-          
-          <!-- Project Title -->
-          <h1 class="h2 font-bold text-text dark:text-darkmode-text mb-4">
-            {{ .Title }}
-          </h1>
-
-          <!-- Project Categories -->
-          <ul class="flex flex-wrap mb-4">
-            <li class="mr-4 inline-block flex items-center">
-              <i class="fa-regular fa-folder mr-2"></i>
-              {{ $categories:= .Params.project_categories }}
-              {{ range $i, $p := $categories }}
-                <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="text-primary dark:text-darkmode-primary">
-                  {{ . | humanize }}
-                  {{ if ne $i (sub (len $categories) 1) }}, {{ end }}
-                </a>
-              {{ end }}
-            </li>
-          </ul>
-
-          <!-- Project Content -->
-          <div class="prose dark:prose-invert max-w-none mb-10">
-            {{ .Content }}
-          </div>
-        </article>
-      </div>
-
-      <!-- Tags Section -->
-      <div class="row justify-center mt-8">
-        <div class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-          <div class="flex items-center">
-            <h5 class="mr-3">{{ i18n "tags" }} :</h5>
-            <ul class="flex flex-wrap gap-2">
-              {{ $tags:= .Params.project_tags }}
-              {{ range $i,$p:= $tags }}
-                <li>
-                  <a href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/" 
-                     class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-dark rounded px-3 py-1 text-sm">
-                    {{ . | humanize }}
-                  </a>
-                </li>
-              {{ end }}
-            </ul>
-          </div>
+<section class="section pt-7">
+  <div class="container">
+    <div class="row justify-center">
+      <!-- Main Content -->
+      <article
+        class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
+      >
+        {{ $image:= .Params.image }} {{ if $image }}
+        <div class="mb-10">
+          {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-full rounded") }}
         </div>
-      </div>
+        {{ end }}
 
-      <!-- Share Section -->
-      <div class="row justify-center mt-8">
-        <div class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-          {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
-        </div>
-      </div>
+        <!-- Project Title -->
+        <h1 class="h2 font-bold text-text dark:text-darkmode-text mb-4">
+          {{ .Title }}
+        </h1>
 
-      <!-- Comments Section -->
-      {{ if .Site.Config.Services.Disqus.Shortname }}
-        <div class="row justify-center mt-8">
-          <div class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-            <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Comments</h4>
-            {{ template "_internal/disqus.html" . }}
-          </div>
-        </div>
-      {{ end }}
-
-      <!-- Related Posts Section -->
-      {{ $related := (where site.RegularPages "Section" "in" site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!=" .Title) | union (site.RegularPages.Related . ) }}
-      {{ $related = $related | shuffle | first 3 }}
-      {{ with $related }}
-        <div class="section pb-0 mt-12">
-          <h2 class="h3 mb-12">{{ i18n "related_posts" }}</h2>
-          <div class="row">
-            {{ range . }}
-              <div class="lg:col-4">
-                {{ partial "components/blog-card" . }}
-              </div>
+        <!-- Project Categories -->
+        <ul class="flex flex-wrap mb-4">
+          <li class="mr-4 inline-block flex items-center">
+            <i class="fa-regular fa-folder mr-2"></i>
+            {{ $categories:= .Params.project_categories }} {{ range $i, $p :=
+            $categories }}
+            <a
+              href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/"
+              class="text-primary dark:text-darkmode-primary"
+            >
+              {{ . | humanize }} {{ if ne $i (sub (len $categories) 1) }}, {{
+              end }}
+            </a>
             {{ end }}
-          </div>
-        </div>
-      {{ end }}
-    </div>
-  </section>
-{{ end }}
+          </li>
+        </ul>
 
+        <!-- Project Content -->
+        <div class="prose dark:prose-invert max-w-none mb-10">
+          {{ .Content }}
+        </div>
+      </article>
+    </div>
+
+    <!-- Tags Section -->
+    <div class="row justify-center mt-8">
+      <div
+        class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
+      >
+        <div class="flex items-center">
+          <h5 class="mr-3">{{ i18n "tags" }} :</h5>
+          <ul class="flex flex-wrap gap-2">
+            {{ $tags:= .Params.project_tags }} {{ range $i,$p:= $tags }}
+            <li>
+              <a
+                href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/"
+                class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-dark rounded px-3 py-1 text-sm"
+              >
+                {{ . | humanize }}
+              </a>
+            </li>
+            {{ end }}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Share Section -->
+    <div class="row justify-center mt-8">
+      <div
+        class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
+      >
+        {{ partial "social-share" (dict "Context" . "Class" "share-icons"
+        "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    {{ if .Site.Config.Services.Disqus.Shortname }}
+    <div class="row justify-center mt-8">
+      <div
+        class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
+      >
+        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">
+          Comments
+        </h4>
+        {{ template "_internal/disqus.html" . }}
+      </div>
+    </div>
+    {{ end }}
+
+    <!-- Related Posts Section -->
+    {{ $related := (where site.RegularPages "Section" "in"
+    site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!="
+    .Title) | union (site.RegularPages.Related . ) }} {{ $related = $related |
+    shuffle | first 3 }} {{ with $related }}
+    <div class="section pb-0 mt-12">
+      <h2 class="h3 mb-12">{{ i18n "related_posts" }}</h2>
+      <div class="row">
+        {{ range . }}
+        <div class="lg:col-4">{{ partial "components/blog-card" . }}</div>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

@@ -6,11 +6,10 @@ project_categories: ["design"]
 description: "Design is not just a skill for me; it's a passion"
 draft: false
 project_info:
-- name: "Design and Diagrams"
-  icon: "fas fa-palette"
-  content: "Figma Polotno Penpot"
+  - name: "Design and Diagrams"
+    icon: "fas fa-palette"
+    content: "Figma Polotno Penpot"
 ---
-
 
 ### Design Projects Description:
 
@@ -38,7 +37,3 @@ Through these design projects, I've gained a wealth of experience and skills in 
 My design journey has been one of continuous exploration and refinement. I've found immense satisfaction in translating ideas into visual expressions, helping friends create impressive assets for their personal and professional endeavors.
 
 ##### [Explore my design work on Figma](https://www.figma.com/files/recents-and-sharing/recently-viewed?fuid=1005148365251686627)
-
-
-
-

@@ -6,11 +6,10 @@ project_categories: ["linux", "scripts"]
 description: "The world of Linux and Python scripting,"
 draft: false
 project_info:
-- name: "Scripting"
-  icon: "fas fa-terminal"
-  content: "Bash Python"
+  - name: "Scripting"
+    icon: "fas fa-terminal"
+    content: "Bash Python"
 ---
-
 
 ### Scripting and Linux Customization:
 
@@ -40,5 +39,3 @@ My journey into scripting and Linux customization has been an exploration of the
 **Some of my destop ricings and scripts:**
 
 ![Gruvbox](/images/portfolio/ricegruv.png)
-
-

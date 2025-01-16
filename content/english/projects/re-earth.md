@@ -6,9 +6,9 @@ project_categories: ["design", "collaboration", "code"]
 description: "A simple website design based around waste management system"
 draft: false
 project_info:
-- name: "Web design"
-  icon: "fas fa-users"
-  content: "HTML CSS Javascript"
+  - name: "Web design"
+    icon: "fas fa-users"
+    content: "HTML CSS Javascript"
 ---
 
 ### Project Description:
@@ -31,6 +31,3 @@ My involvement in "Re-Earth" allowed me to gain valuable experience and knowledg
 - Application of design and development skills in a meaningful and impactful way.
 
 ##### [Here's the link to the "Re-Earth" project on GitHub.](https://github.com/Anjila21/Re-Earth-Project)
-
-
-

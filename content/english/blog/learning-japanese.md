@@ -61,7 +61,5 @@ Learning Japanese is a dynamic exploration of linguistic artistry, cultural nuan
 
 Ganbatte kudasai (がんばってください)! Best of luck on your Japanese learning adventure!
 
-
-> **Note:** <br> 
-*You can find various notes along with Enku's personal handwritten notes and books in her [official website](https://indulimbu.com.np/) . Also, you can practise what you have learnt in her website. She has gamified the learning experience there.*
-
+> **Note:** <br>
+> _You can find various notes along with Enku's personal handwritten notes and books in her [official website](https://indulimbu.com.np/) . Also, you can practise what you have learnt in her website. She has gamified the learning experience there._

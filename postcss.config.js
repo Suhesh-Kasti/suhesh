@@ -5,7 +5,7 @@ const purgecss = {
     try {
       stats = JSON.parse(content).htmlElements;
     } catch (e) {
-      console.warn('Failed to parse hugo_stats.json:', e);
+      console.warn("Failed to parse hugo_stats.json:", e);
       return [];
     }
     return [
@@ -44,6 +44,7 @@ module.exports = {
   plugins: {
     tailwindcss: {},
     autoprefixer: {},
-    '@fullhuman/postcss-purgecss': process.env.HUGO_ENVIRONMENT === 'production' ? purgecss : false,
+    "@fullhuman/postcss-purgecss":
+      process.env.HUGO_ENVIRONMENT === "production" ? purgecss : false,
   },
 };

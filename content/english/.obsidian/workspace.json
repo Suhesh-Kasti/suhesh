@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "305868a8a5f3e59d",
+        "id": "f05b04d3822977fd",
         "type": "tabs",
         "children": [
           {
-            "id": "c2274c1147f90a05",
+            "id": "662831d5f3a4ec8a",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/dns101.md",
+                "file": "blog/dns102.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "dns101"
+              "title": "dns102"
             }
           }
         ]
@@ -103,8 +103,7 @@
               "title": "Tag Folder"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -162,7 +161,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "blog/dns101.md",
+                "file": "blog/dns102.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -172,7 +171,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for dns101"
+              "title": "Backlinks for dns102"
             }
           },
           {
@@ -181,12 +180,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "blog/dns101.md",
+                "file": "blog/dns102.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from dns101"
+              "title": "Outgoing links from dns102"
             }
           },
           {
@@ -195,10 +194,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "blog/dns101.md"
+                "file": "blog/dns102.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of dns101"
+              "title": "Outline of dns102"
             }
           }
         ]
@@ -214,8 +213,8 @@
             "state": {
               "type": "timer-view",
               "state": {},
-              "icon": "lucide-file",
-              "title": "Plugin no longer active"
+              "icon": "timer",
+              "title": "Timer"
             }
           }
         ]
@@ -231,8 +230,8 @@
             "state": {
               "type": "tagfolder-view",
               "state": {},
-              "icon": "lucide-file",
-              "title": "Plugin no longer active"
+              "icon": "stacked-levels",
+              "title": "Tag Folder"
             }
           },
           {
@@ -270,10 +269,14 @@
       "pdf-plus:PDF++: Toggle auto-paste": false
     }
   },
-  "active": "c2274c1147f90a05",
+  "active": "662831d5f3a4ec8a",
   "lastOpenFiles": [
-    "blog/f5101.md",
+    "Untitled.md",
+    "blog/dns102.md",
+    "blog/bigip-features.md",
+    "images.md",
     "blog/dns101.md",
+    "blog/f5101.md",
     "pool_node_vs.png",
     "blog/half-proxy.md",
     "blog/half-proxy.md~",
@@ -302,7 +305,6 @@
     "2. Area",
     "3. Resource/F5_101_Notes.docx",
     "3. Resource/F5-101dumps 1.pdf",
-    "Untitled.md",
     "1. Project/DEX and ODEX Android.md",
     "templates/FitCheck Checklist.md",
     "1. Project/Classes.dex.md",
@@ -314,9 +316,6 @@
     "1. Project/Machine - Hackers.md",
     "1. Project/Basic Pentesting.md",
     "1. Project/Wireshark Intro.md",
-    "images/Wireshark Intro 2024-08-15 11.32.04.md",
-    "images/wireshark_knowcommand.png",
-    "1. Project/For presentation.md",
-    "1. Project/Default Route.md"
+    "images/wireshark_knowcommand.png"
   ]
 }

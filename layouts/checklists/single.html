@@ -1,28 +1,33 @@
 {{ define "main" }}
 <section class="container mx-auto px-4 py-8">
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-    
-   <!-- Left Section: Table of Contents -->
+    <!-- Left Section: Table of Contents -->
     <aside class="lg:col-span-1">
-      <div class="sticky top-24 p-6 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg">
-        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text font-primary">
+      <div
+        class="sticky top-24 p-6 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg"
+      >
+        <h4
+          class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text font-primary"
+        >
           Table of Contents
         </h4>
-        <nav id="TableOfContents" class="toc-nav">
-          {{ .TableOfContents }}
-        </nav>
+        <nav id="TableOfContents" class="toc-nav">{{ .TableOfContents }}</nav>
       </div>
     </aside>
 
     <!-- Right Section: Checklist Content -->
     <main class="lg:col-span-3">
-      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+      <div
+        class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
+      >
         <article>
-          <h1 class="text-h1-sm md:text-h1 font-bold text-text dark:text-darkmode-text mb-4">
+          <h1
+            class="text-h1-sm md:text-h1 font-bold text-text dark:text-darkmode-text mb-4"
+          >
             {{ .Title }}
           </h1>
           {{ with .Description }}
-            <p class="text-light dark:text-darkmode-light mb-6">{{ . }}</p>
+          <p class="text-light dark:text-darkmode-light mb-6">{{ . }}</p>
           {{ end }}
           <div class="prose dark:prose-invert max-w-none checklist-content">
             {{ .Content }}
@@ -35,21 +40,35 @@
   <!-- Previous/Next Navigation -->
   <div class="mt-8 flex justify-between">
     {{ with .PrevInSection }}
-      <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 mr-4">
-        <span class="block text-sm text-light dark:text-darkmode-light mb-1">Previous</span>
-        <span class="text-primary dark:text-darkmode-primary group-hover:underline">← {{ .Title }}</span>
-      </a>
+    <a
+      href="{{ .Permalink }}"
+      class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 mr-4"
+    >
+      <span class="block text-sm text-light dark:text-darkmode-light mb-1"
+        >Previous</span
+      >
+      <span
+        class="text-primary dark:text-darkmode-primary group-hover:underline"
+        >← {{ .Title }}</span
+      >
+    </a>
     {{ else }}
-      <div class="flex-1 mr-4"></div>
-    {{ end }}
-    
-    {{ with .NextInSection }}
-      <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right">
-        <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>
-        <span class="text-primary dark:text-darkmode-primary group-hover:underline">{{ .Title }} →</span>
-      </a>
+    <div class="flex-1 mr-4"></div>
+    {{ end }} {{ with .NextInSection }}
+    <a
+      href="{{ .Permalink }}"
+      class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right"
+    >
+      <span class="block text-sm text-light dark:text-darkmode-light mb-1"
+        >Next</span
+      >
+      <span
+        class="text-primary dark:text-darkmode-primary group-hover:underline"
+        >{{ .Title }} →</span
+      >
+    </a>
     {{ else }}
-      <div class="flex-1 ml-4"></div>
+    <div class="flex-1 ml-4"></div>
     {{ end }}
   </div>
 </section>

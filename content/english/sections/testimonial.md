@@ -24,7 +24,7 @@ testimonials:
     designation: "Containerization"
     avatar: "/images/skills/docker.svg"
     content: "Docker facilitates containerization, allowing cybersecurity experts to deploy and isolate applications efficiently. Its lightweight and scalable containers streamline the development and deployment of secure applications. I also use it to setup labs for practise."
- 
+
   - name: "BigIP"
     designation: "Web application firewall"
     avatar: "/images/skills/f5.png"
@@ -38,12 +38,12 @@ testimonials:
   - name: "Figma"
     designation: "Designing"
     avatar: "/images/skills/figma.svg"
-    content: "Figma is a collaborative design tool and although its not a security tool I use it to make some creative designs. For developers though its collaborative features make it an excellent choice for designing secure and user-friendly applications." 
+    content: "Figma is a collaborative design tool and although its not a security tool I use it to make some creative designs. For developers though its collaborative features make it an excellent choice for designing secure and user-friendly applications."
 
   - name: "Windows"
     designation: "Operating System"
     avatar: "/images/skills/windows.svg"
-    content: " Windows is by far the most widely used operating system in both personal and enterprise environments. So windows is most of the time the victim of cyberattacks. Understanding windows I think is understanding the incident."   
+    content: " Windows is by far the most widely used operating system in both personal and enterprise environments. So windows is most of the time the victim of cyberattacks. Understanding windows I think is understanding the incident."
 
   - name: "Kubernetes"
     designation: "Containerization"
@@ -69,7 +69,6 @@ testimonials:
     designation: "Soft skills"
     avatar: "/images/skills/communication.svg"
     content: " While being a totally technical domain effective communication is a critical soft skill in cybersecurity. Nothing much to say, as social engineering is the most successful hacking technique to ever exist."
-
 
 # don't create a separate page
 _build:

@@ -6,8 +6,8 @@ logo = "images/logo.png"
 logo_darkmode = "images/logo-darkmode.png"
 # use `px` or `x` with logo_width, example: "100px".
 # Note: logo_width is not work with .svg file
-logo_width = "160px"
-logo_height = "32px"
+logo_width = "125px"
+logo_height = "24px"
 # if logo_webp set false, will not generate WEBP version of logo | default is true
 logo_webp = true
 # logo text will only show when logo is missing.
@@ -34,7 +34,7 @@ copyright = "Copyright &copy; 2023 [Suhesh Kasti](https://t.me/suheshkasti)"
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader
 [preloader]
 enable = false
-preloader = "" # use jpg, png, svg or gif format.
+preloader = "images/avatar.png" # use jpg, png, svg or gif format.
 
 # Navigation button
 [navigation_button]
@@ -47,7 +47,7 @@ link = "contact"
 [search]
 enable = true
 primary_color = "#121212"
-include_sections = ["blog"]
+include_sections = ["blog", "projects", "checklists", "cheatsheets"]
 show_image = true
 show_description = true
 show_tags = true
@@ -87,6 +87,10 @@ button = "I Accept"
 [widgets]
 sidebar = ["categories", "tags"]
 
+########################## Taxonomies ############################
+[taxonomies]
+  category = 'categories'
+  tag = 'tags'
 
 # google map
 [google_map]

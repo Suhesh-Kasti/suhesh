@@ -33,8 +33,8 @@ copyright = "Copyright &copy; 2023 [Suhesh Kasti](https://t.me/suheshkasti)"
 # Preloader
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader
 [preloader]
-enable = false
-preloader = "images/avatar.png" # use jpg, png, svg or gif format.
+enable = true
+preloader = "images/preloader.gif" # use jpg, png, svg or gif format.
 
 # Navigation button
 [navigation_button]

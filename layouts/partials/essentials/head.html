@@ -35,9 +35,6 @@
 <!-- custom script -->
 {{ partialCached "custom-script.html" . }}
 
-<!-- preloader -->
-{{ partial "preloader.html" . }}
-
 <!-- google analytics -->
 {{ if and site.Config.Services.GoogleAnalytics.ID (ne
 site.Config.Services.GoogleAnalytics.ID "G-MEASUREMENT_ID") }} {{ template

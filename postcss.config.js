@@ -37,6 +37,14 @@ const purgecss = {
     /visible/,
     /current/,
     /active/,
+    // Add these new safelist patterns
+    /^highlight/,
+    /^code-header/,
+    /^language-/,
+    /^copy-button/,
+    /^highlight-wrapper/,
+    /^copied/,
+    /^chroma/
   ],
 };
 

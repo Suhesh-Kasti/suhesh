@@ -3,6 +3,8 @@ title: OWASP Top 10
 email: kastisuhesh1@gmail.com
 image: "/images/cheatsheets/owasp.png"
 description: The OWASP Top 10 is a standard awareness document for developers and web application security teams. It represents a broad consensus about the most critical security risks to web applications.
+cheatsheet_categories: ["Standards"]
+cheatsheet_tags: ["owasp"]
 quiz:
   code: owasp101
 wordfill:

@@ -1,0 +1,19 @@
+{{ define "main" }}
+{{ partial "page-header" . }}
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      {{ $paginator := .Paginate .Pages 9 }}
+      {{ range $paginator.Pages }}
+      <div class="lg:col-4 md:col-6 mb-14">
+        {{ partial "components/project-card" . }}
+      </div>
+      {{ end }}
+    </div>
+    <div class="mt-12">
+      {{ partial "components/pagination" . }}
+    </div>
+  </div>
+</section>
+{{ end }}

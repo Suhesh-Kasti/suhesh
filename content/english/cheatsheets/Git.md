@@ -2,6 +2,8 @@
 title: Git
 email: kastisuhesh1@gmail.com
 image: "/images/cheatsheets/git.svg"
+cheatsheet_categories: ["Devops"]
+cheatsheet_tags: ["git", "github", "repository"]
 description: is a distributed version control system for tracking changes in code and coordinating work among multiple developers.
 ---
 

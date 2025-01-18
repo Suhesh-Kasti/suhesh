@@ -2,12 +2,12 @@
 (function () {
   "use strict";
 
-  // Clickable checkboxes
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach((checkbox) => {
-    // remove the disabled attribute; added by kramdown by default
-    checkbox.removeAttribute("disabled");
-  });
+// Clickable checkboxes
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+checkboxes.forEach(checkbox => {
+  // remove the disabled attribute; added by kramdown by default
+  checkbox.removeAttribute('disabled');
+});
 
   // Initialize banner slider
   const bannerSlider = new Swiper(".banner-slider", {

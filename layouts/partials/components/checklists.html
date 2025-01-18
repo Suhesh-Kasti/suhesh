@@ -1,8 +1,35 @@
-<div
-  class="bg-theme-light dark:bg-darkmode-theme-light rounded p-8 text-center"
->
+<div class="bg-theme-light dark:bg-darkmode-theme-light rounded p-8 text-center">
   <h4 class="mb-3">
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
   </h4>
   <p class="mb-4">{{ .Params.description }}</p>
+
+  <!-- Categories -->
+  {{ with .Params.checklist_categories }}
+  <div class="mb-3 text-left">
+    <span class="inline-flex items-center text-text dark:text-darkmode-text">
+      <i class="fas fa-folder-open mr-2"></i>
+      {{ range . }}
+      <a href="{{ "checklist_categories/" | relLangURL }}{{ . | urlize }}" class="ml-2 text-primary dark:text-darkmode-primary hover:underline">
+        {{ . }}
+      </a>
+      {{ end }}
+    </span>
+  </div>
+  {{ end }}
+
+  <!-- Tags -->
+  {{ with .Params.checklist_tags }}
+  <div class="text-left">
+    <span class="inline-flex items-center flex-wrap text-text dark:text-darkmode-text">
+      <i class="fas fa-tags mr-2"></i>
+      Tags:
+      {{ range . }}
+      <a href="{{ "checklist_tags/" | relLangURL }}{{ . | urlize }}" class="ml-2 bg-theme dark:bg-darkmode-theme px-2 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors duration-200 mb-2">
+        {{ . }}
+      </a>
+      {{ end }}
+    </span>
+  </div>
+  {{ end }}
 </div>

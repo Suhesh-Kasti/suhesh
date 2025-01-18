@@ -2,6 +2,8 @@
 title: Kubernetes
 email: kastisuhesh1@gmail.com
 image: "/images/cheatsheets/kubernetes.svg"
+cheatsheet_categories: ["Devops"]
+cheatsheet_tags: ["kubernetes", "pods", "containers", "kubectl"]
 description: is an open-source container orchestration platform that automates the deployment and management of containerized applications.
 ---
 

@@ -2,6 +2,8 @@
 title: Linux
 email: kastisuhesh1@gmail.com
 image: "/images/cheatsheets/linux.svg"
+cheatsheet_categories: ["Operating System"]
+cheatsheet_tags: ["linux", "ubuntu", "RHEL", "redhat", "arch", "kali linux", "parrot os"]
 description: is a stable, secure, and versatile open-source operating system kernel, powering servers, desktops, and diverse devices worldwide.
 ---
 

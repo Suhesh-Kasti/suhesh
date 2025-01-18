@@ -87,11 +87,6 @@ button = "I Accept"
 [widgets]
 sidebar = ["categories", "tags"]
 
-########################## Taxonomies ############################
-[taxonomies]
-  category = 'categories'
-  tag = 'tags'
-
 # google map
 [google_map]
 enable = false

@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #2B2C2F;
+  background-color: #fff;
   z-index: 99999;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -18,6 +18,39 @@
   justify-content: center;
   opacity: 1;
   transition: opacity 0.5s ease;
+}
+
+.dark .preloader {
+  background-color: #1c1c1c;
+}
+
+.loader {
+  width: fit-content;
+  font-weight: bold;
+  font-family: monospace;
+  white-space: pre;
+  font-size: 30px;
+  line-height: 1.2em;
+  height: 1.2em;
+  overflow: hidden;
+  color: #121212;
+}
+
+.dark .loader {
+  color: #fff;
+}
+
+.loader:before {
+  content: "Loading...\A⌰oading...\A⌰⍜ading...\A⌰⍜⏃ding...\A⌰⍜⏃⎅ing...\A⌰⍜⏃⎅⟟ng...\A⌰⍜⏃⎅⟟⋏g...\A⌰⍜⏃⎅⟟⋏☌...\A⌰⍜⏃⎅⟟⋏☌⟒..\A⌰⍜⏃⎅⟟⋏☌⟒⏁.\A⌰⍜⏃⎅⟟⋏☌⟒⏁⋔";
+  white-space: pre;
+  display: inline-block;
+  animation: l39 1s infinite steps(11) alternate;
+}
+
+@keyframes l39 {
+  100% {
+    transform: translateY(-100%);
+  }
 }
 
 #preloader.preloader.loaded {

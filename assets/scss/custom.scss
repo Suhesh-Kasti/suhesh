@@ -201,3 +201,412 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
         padding: 3px 5px;
     }
 }
+
+/* Skills Section Styles */
+.skill-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+}
+
+.skill-card:hover {
+  border-color: var(--primary-color);
+}
+
+.dark .skill-card:hover {
+  border-color: var(--darkmode-primary-color);
+}
+
+.skill-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary-color), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.dark .skill-card::before {
+  background: linear-gradient(to right, var(--darkmode-primary-color), transparent);
+}
+
+.skill-card:hover::before {
+  transform: translateX(0);
+}
+
+.skill-card .skill-topic {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  margin-bottom: 6px;
+}
+
+.skill-topic {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: pulse 2s infinite;
+}
+
+.skill-card:hover .skill-topic {
+  animation: none;
+  opacity: 1;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Skills Slider styles */
+.skills-slider {
+  overflow: hidden;
+  padding-bottom: 40px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.skills-slider .swiper-wrapper {
+  align-items: center;
+}
+
+.skills-slider .swiper-slide {
+  height: auto;
+  opacity: 0.6;
+  transform: scale(0.8);
+  transition: all 0.4s ease;
+  filter: blur(1px);
+}
+
+.skills-slider .swiper-slide-active {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+  z-index: 2;
+}
+
+.skills-slider .swiper-slide-prev,
+.skills-slider .swiper-slide-next {
+  opacity: 0.8;
+  transform: scale(0.9);
+  filter: blur(0);
+  z-index: 1;
+}
+
+.skills-slider .swiper-button-next,
+.skills-slider .swiper-button-prev {
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  color: white;
+  margin-top: -30px;
+  z-index: 10;
+}
+
+.dark .skills-slider .swiper-button-next,
+.dark .skills-slider .swiper-button-prev {
+  background-color: var(--darkmode-primary-color);
+}
+
+.skills-slider .swiper-button-next:after,
+.skills-slider .swiper-button-prev:after {
+  font-size: 16px;
+}
+
+.skills-slider-pagination {
+  position: relative;
+  width: 100%;
+  bottom: 0;
+  z-index: 10;
+}
+
+.skills-slider-pagination .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background-color: #ddd;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.skills-slider-pagination .swiper-pagination-bullet-active {
+  background-color: var(--primary-color);
+  opacity: 1;
+  width: 14px;
+  height: 14px;
+}
+
+.dark .skills-slider-pagination .swiper-pagination-bullet-active {
+  background-color: var(--darkmode-primary-color);
+}
+
+/* Fixed container styles to prevent overflow */
+.container {
+  overflow-x: hidden;
+}
+
+/* Responsive adjustments for skills slider */
+@media (max-width: 767px) {
+  .skills-slider .swiper-button-next,
+  .skills-slider .swiper-button-prev {
+    display: none;
+  }
+
+  .skills-slider .swiper-slide {
+    max-width: 85%;
+  }
+}
+
+@media (min-width: 768px) {
+  .skills-slider {
+    padding: 20px 50px;
+  }
+
+  .skills-slider .swiper-slide {
+    max-width: 90%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .skills-slider {
+    padding: 30px 60px;
+  }
+}
+
+/* Skills slider container */
+.skills-slider-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Fix for container overflow */
+/* Modify these rules to fix the dropdown issue */
+.section, 
+.container:not(.navbar-container), 
+.row:not(.navbar-row),
+.col-12:not(.navbar-col) {
+  overflow-x: hidden;
+}
+
+/* Make sure dropdowns are visible */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown .dropdown-menu {
+  position: absolute;
+  z-index: 1000; /* Ensure it appears above other content */
+  display: none;
+}
+
+.nav-dropdown.active .dropdown-menu {
+  display: block;
+}
+
+/* Ensure nav items expand properly */
+.navbar {
+  overflow: visible !important;
+}
+
+.header-height-fix {
+  overflow: visible !important;
+}
+
+/* Make all navigation elements visible regardless of overflow settings */
+.navigation,
+.navbar,
+.navbar-container,
+.navbar-row,
+.navbar-wrapper,
+.nav-item,
+.nav-dropdown,
+.dropdown-menu {
+  overflow: visible !important;
+}
+
+/* Swiper specific overrides for skills */
+.swiper-button-disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed;
+}
+
+/* Fix for coverflow effect */
+.swiper-slide-shadow-left,
+.swiper-slide-shadow-right {
+  background-image: none !important;
+}
+
+/* Smooth animations for all elements */
+* {
+  transition: background-color 0.3s ease, 
+              color 0.3s ease,
+              transform 0.3s ease,
+              box-shadow 0.3s ease, 
+              border-color 0.3s ease,
+              opacity 0.3s ease;
+}
+
+/* Page transition effect */
+.page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--primary-color);
+  z-index: 9999;
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+.dark .page-transition {
+  background-color: var(--darkmode-primary-color);
+}
+
+/* Hover effects for cards */
+.card,
+.skill-card,
+.content-card,
+.project-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 0.4s ease;
+}
+
+.card:hover,
+.skill-card:hover,
+.content-card:hover,
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card:hover,
+.dark .skill-card:hover,
+.dark .content-card:hover,
+.dark .project-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Button hover effects */
+.btn {
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  transition: all 0.4s ease;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  z-index: -1;
+}
+
+.dark .btn::before {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn:hover::before {
+  height: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Improve navigation animation */
+.nav-item {
+  position: relative;
+}
+
+.nav-item::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.dark .nav-item::after {
+  background-color: var(--darkmode-primary-color);
+}
+
+.nav-item:hover::after {
+  width: 80%;
+}
+
+/* Image hover effects */
+img:not(.logo-dark img, .logo-light img) {
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+img:not(.logo-dark img, .logo-light img):hover {
+  transform: scale(1.02);
+  filter: brightness(1.05);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Input field animations */
+input, textarea, select {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.dark input:focus, 
+.dark textarea:focus, 
+.dark select:focus {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Fixed navbar styles */
+.navbar {
+  background-color: var(--body-color);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  will-change: transform;
+}
+
+.dark .navbar {
+  background-color: var(--body-color);
+}
+
+/* Make sure the placeholder has proper styling */
+.navbar-placeholder {
+  display: none;
+  width: 100%;
+}

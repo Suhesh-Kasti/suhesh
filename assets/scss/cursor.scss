@@ -1,0 +1,83 @@
+/* Custom cursor styles */
+body {
+  cursor: none;
+}
+
+.cursor-dot,
+.cursor-dot-outline {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 9999;
+}
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-color);
+}
+
+.dark .cursor-dot {
+  background-color: #fff;
+}
+
+.cursor-dot-outline {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  border: 2px solid var(--primary-color);
+}
+
+.dark .cursor-dot-outline {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+/* Hide cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-dot,
+  .cursor-dot-outline {
+    display: none;
+  }
+  
+  body {
+    cursor: auto;
+  }
+}
+
+/* Adjust cursor on clickable elements */
+a, 
+button, 
+input, 
+textarea, 
+select, 
+[role="button"], 
+.btn, 
+.swiper-button-prev, 
+.swiper-button-next,
+.swiper-pagination-bullet {
+  cursor: pointer !important;
+  
+  &:hover ~ .cursor-dot {
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+  
+  &:hover ~ .cursor-dot-outline {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* Special effect when cursor is on images */
+img:hover ~ .cursor-dot {
+  background-color: white;
+}
+
+img:hover ~ .cursor-dot-outline {
+  border-color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+} 

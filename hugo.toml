@@ -84,16 +84,63 @@ home = ["HTML", "RSS", "WebAppManifest", "SearchIndex"]
 quality = 90
 resampleFilter = "Lanczos"
 
+############################ Minify ##############################
+[minify]
+  disableCSS = false
+  disableHTML = false
+  disableJS = false
+  disableJSON = false
+  disableSVG = false
+  disableXML = false
+  minifyOutput = true
+  [minify.tdewolff]
+    [minify.tdewolff.css]
+      keepCSS2 = true
+      precision = 0
+    [minify.tdewolff.html]
+      keepComments = false
+      keepConditionalComments = true
+      keepDefaultAttrVals = true
+      keepDocumentTags = true
+      keepEndTags = true
+      keepQuotes = false
+      keepWhitespace = false
+    [minify.tdewolff.js]
+      keepVarNames = false
+      precision = 0
+    [minify.tdewolff.json]
+      precision = 0
+    [minify.tdewolff.svg]
+      precision = 0
+    [minify.tdewolff.xml]
+      keepWhitespace = false
+
 ############################ Caches ##############################
 [caches]
-[caches.images]
-dir = ":resourceDir/_gen"
-maxAge = "720h"
+  [caches.images]
+  dir = ":resourceDir/_gen"
+  maxAge = "720h"
 
-[caches.assets]
-dir = ":resourceDir/_gen"
-maxAge = "720h"
+  [caches.assets]
+  dir = ":resourceDir/_gen"
+  maxAge = "720h"
 
+  # New caches for better performance
+  [caches.getcsv]
+  dir = ":cacheDir/:project"
+  maxAge = "24h"
+  
+  [caches.getjson]
+  dir = ":cacheDir/:project"
+  maxAge = "24h"
+  
+  [caches.getresource]
+  dir = ":cacheDir/:project"
+  maxAge = "24h"
+  
+  [caches.modules]
+  dir = ":cacheDir/modules"
+  maxAge = "720h"
 
 ############################ Markup ##############################
 [markup]
@@ -141,44 +188,79 @@ notAlternative = true
 [[params.plugins.css]]
 link = "plugins/swiper/swiper-bundle.css"
 lazy = true
+attributes = "media='all'"
+
 [[params.plugins.css]]
 link = "plugins/glightbox/glightbox.css"
 lazy = true
+attributes = "media='all'"
+
 [[params.plugins.css]]
 link = "plugins/font-awesome/v6/brands.css"
 lazy = true
+attributes = "media='all'"
+
 [[params.plugins.css]]
 link = "plugins/font-awesome/v6/solid.css"
 lazy = true
+attributes = "media='all'"
+
 [[params.plugins.css]]
 link = "plugins/font-awesome/v6/icons.css"
 lazy = true
+attributes = "media='all'"
 
 # JS Plugins
 [[params.plugins.js]]
 link = "js/search.js"
 lazy = false
+defer = true
+
 [[params.plugins.js]]
 link = "plugins/swiper/swiper-bundle.js"
 lazy = false
+defer = true
+
 [[params.plugins.js]]
 link = "plugins/glightbox/glightbox.js"
 lazy = true
+defer = true
+
 [[params.plugins.js]]
 link = "js/gallery-slider.js"
 lazy = true
+defer = true
+
 [[params.plugins.js]]
 link = "js/accordion.js"
 lazy = true
+defer = true
+
 [[params.plugins.js]]
 link = "js/tab.js"
 lazy = true
+defer = true
+
 [[params.plugins.js]]
 link = "js/modal.js"
 lazy = true
+defer = true
+
 [[params.plugins.js]]
 link = "plugins/cookie.js"
 lazy = true
+defer = true
+
 [[params.plugins.js]]
 link = "plugins/youtube-lite.js"
 lazy = true
+defer = true
+
+########################## Optimization Settings ###################
+[params.optimization]
+  lazyLoading = true
+  preconnectFonts = true
+  deferJS = true
+  asyncCSS = true
+  minifyJSON = true
+  instantPage = true

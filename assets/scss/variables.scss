@@ -1,0 +1,19 @@
+:root {
+  --primary-color: theme('colors.primary');
+  --primary-color-rgb: theme('colors.primary-rgb');
+  --body-color: theme('colors.body');
+  --text-color: theme('colors.text');
+  --border-color: theme('colors.border');
+  --theme-light: theme('colors.theme-light');
+  --theme-dark: theme('colors.theme-dark');
+}
+
+.dark {
+  --primary-color: theme('colors.darkmode.primary');
+  --primary-color-rgb: theme('colors.darkmode.primary-rgb');
+  --body-color: theme('colors.darkmode.body');
+  --text-color: theme('colors.darkmode.text');
+  --border-color: theme('colors.darkmode.border');
+  --theme-light: theme('colors.darkmode.theme-light');
+  --theme-dark: theme('colors.darkmode.theme-dark');
+} 

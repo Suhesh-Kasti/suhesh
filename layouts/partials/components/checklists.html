@@ -1,35 +1,48 @@
-<div class="bg-theme-light dark:bg-darkmode-theme-light rounded p-8 text-center">
-  <h4 class="mb-3">
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-  </h4>
-  <p class="mb-4">{{ .Params.description }}</p>
+<div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-8 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-transparent hover:border-primary dark:hover:border-darkmode-primary group h-full">
+  <div class="flex items-center mb-4">
+    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary bg-opacity-10 dark:bg-opacity-20 mr-3">
+      <i class="fas fa-clipboard-check text-lg text-primary dark:text-darkmode-primary"></i>
+    </div>
+    <h4 class="text-xl font-bold group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors duration-300">
+      <a href="{{ .RelPermalink }}" class="block">{{ .Title }}</a>
+    </h4>
+  </div>
+  <p class="mb-6 text-text dark:text-darkmode-text">{{ .Params.description }}</p>
 
-  <!-- Categories -->
-  {{ with .Params.checklist_categories }}
-  <div class="mb-3 text-left">
-    <span class="inline-flex items-center text-text dark:text-darkmode-text">
-      <i class="fas fa-folder-open mr-2"></i>
+  <div class="mt-auto">
+    <!-- Categories -->
+    {{ with .Params.checklist_categories }}
+    <div class="mb-3">
+      <div class="flex items-center text-text dark:text-darkmode-text text-sm">
+        <i class="fas fa-folder-open mr-2 text-primary dark:text-darkmode-primary opacity-70"></i>
+        <span class="mr-2">Category:</span>
+        {{ range . }}
+        <a href="{{ "checklist_categories/" | relLangURL }}{{ . | urlize }}" class="text-primary dark:text-darkmode-primary hover:underline">
+          {{ . }}
+        </a>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    <!-- Tags -->
+    {{ with .Params.checklist_tags }}
+    <div class="flex flex-wrap items-center gap-2">
+      <i class="fas fa-tags text-xs text-primary dark:text-darkmode-primary opacity-70"></i>
       {{ range . }}
-      <a href="{{ "checklist_categories/" | relLangURL }}{{ . | urlize }}" class="ml-2 text-primary dark:text-darkmode-primary hover:underline">
+      <a href="{{ "checklist_tags/" | relLangURL }}{{ . | urlize }}" class="bg-primary bg-opacity-10 dark:bg-opacity-20 text-primary dark:text-darkmode-primary px-2 py-1 rounded-full text-xs hover:bg-opacity-20 dark:hover:bg-opacity-30 transition-colors duration-200">
         {{ . }}
       </a>
       {{ end }}
-    </span>
-  </div>
-  {{ end }}
+    </div>
+    {{ end }}
 
-  <!-- Tags -->
-  {{ with .Params.checklist_tags }}
-  <div class="text-left">
-    <span class="inline-flex items-center flex-wrap text-text dark:text-darkmode-text">
-      <i class="fas fa-tags mr-2"></i>
-      Tags:
-      {{ range . }}
-      <a href="{{ "checklist_tags/" | relLangURL }}{{ . | urlize }}" class="ml-2 bg-theme dark:bg-darkmode-theme px-2 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors duration-200 mb-2">
-        {{ . }}
+    <!-- View button -->
+    <div class="mt-4 text-right">
+      <a href="{{ .RelPermalink }}" class="inline-flex items-center text-primary dark:text-darkmode-primary hover:underline text-sm">
+        <span>View Checklist</span>
+        <i class="fas fa-arrow-right ml-2 text-xs"></i>
       </a>
-      {{ end }}
-    </span>
+    </div>
   </div>
-  {{ end }}
 </div>

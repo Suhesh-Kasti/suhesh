@@ -1,0 +1,79 @@
+{{ define "main" }}
+{{ partial "page-header" . }}
+
+<section class="section">
+  <div class="container">
+    <!-- Breadcrumb Navigation -->
+    <div class="mb-6">
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+          <li class="inline-flex items-center">
+            <a href="/" class="inline-flex items-center text-sm font-medium text-primary dark:text-darkmode-primary hover:underline">
+              <i class="fas fa-home mr-2"></i>
+              Home
+            </a>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+              <a href="/cheatsheets/" class="text-sm font-medium text-primary dark:text-darkmode-primary hover:underline">Cheatsheets</a>
+            </div>
+          </li>
+          <li aria-current="page">
+            <div class="flex items-center">
+              <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ .Title }}</span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- Folder Header -->
+    <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-8 mb-12 shadow-lg">
+      <div class="flex items-center mb-6">
+        <div class="w-16 h-16 flex items-center justify-center rounded-full bg-primary bg-opacity-10 dark:bg-opacity-20 mr-6">
+          <i class="fas fa-folder-open text-3xl text-primary dark:text-darkmode-primary"></i>
+        </div>
+        <div>
+          <h1 class="h2 mb-2">{{ .Title }}</h1>
+          <p class="text-text dark:text-darkmode-text">{{ .Params.description }}</p>
+        </div>
+      </div>
+      <div class="prose dark:prose-dark max-w-none">
+        {{ .Content }}
+      </div>
+    </div>
+
+    <!-- Folder Contents -->
+    <div class="mb-8">
+      <div class="flex items-center mb-10">
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+        <h2 class="text-2xl font-bold px-6">Reference Guides</h2>
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      {{ $currentFolder := .Params.folder }}
+      {{ $pages := where .Site.RegularPages "Params.folder" $currentFolder }}
+
+      {{ if $pages }}
+        {{ range $pages }}
+        <div class="md:col-6 lg:col-4 mb-14">
+          {{ partial "components/cheatsheets" . }}
+        </div>
+        {{ end }}
+      {{ else }}
+        <div class="col-12 text-center py-16">
+          <div class="mb-6">
+            <i class="fas fa-folder-open text-6xl text-primary dark:text-darkmode-primary opacity-50"></i>
+          </div>
+          <h3 class="h4 mb-4">No content yet</h3>
+          <p class="text-lg mb-8">This folder doesn't have any cheatsheets yet. Check back later!</p>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}

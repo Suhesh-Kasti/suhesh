@@ -3,12 +3,41 @@
 
 <section class="section">
   <div class="container">
+    <!-- Introduction Section -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h1 class="h2 mb-6">{{ .Title }} Checklists</h1>
+      <p class="text-lg mb-8">Browse our collection of checklists in the "{{ .Title }}" category. These resources will help you master various techniques and workflows.</p>
+      <div class="flex justify-center space-x-4">
+        <a href="/checklist_categories/" class="btn btn-outline-primary">All Categories</a>
+        <a href="/checklists/" class="btn btn-primary">Back to Checklists</a>
+      </div>
+    </div>
+
+    <!-- Category Contents -->
+    <div class="mb-8">
+      <div class="flex items-center mb-10">
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+        <h2 class="text-2xl font-bold px-6">{{ .Title }} Resources</h2>
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+      </div>
+    </div>
+
     <div class="row">
       {{ $paginator := .Paginate .Data.Pages 9 }}
-      {{ range $paginator.Pages }}
-      <div class="lg:col-4 md:col-6 mb-14">
-        {{ partial "components/checklists" . }}
-      </div>
+      {{ if $paginator.Pages }}
+        {{ range $paginator.Pages }}
+        <div class="lg:col-4 md:col-6 mb-14">
+          {{ partial "components/checklists" . }}
+        </div>
+        {{ end }}
+      {{ else }}
+        <div class="col-12 text-center py-16">
+          <div class="mb-6">
+            <i class="fas fa-folder-open text-6xl text-primary dark:text-darkmode-primary opacity-50"></i>
+          </div>
+          <h3 class="h4 mb-4">No content yet</h3>
+          <p class="text-lg mb-8">This category doesn't have any content yet. Check back later!</p>
+        </div>
       {{ end }}
     </div>
     {{ partial "components/pagination" . }}

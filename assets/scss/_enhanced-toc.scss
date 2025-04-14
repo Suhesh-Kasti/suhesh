@@ -1,0 +1,183 @@
+/* Enhanced Table of Contents Styling */
+
+/* TOC Container */
+.toc-container {
+  @apply relative overflow-hidden transition-all duration-300 ease-in-out;
+
+  /* Subtle background pattern */
+  background-image:
+    linear-gradient(to right, rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* TOC Header */
+.toc-header {
+  @apply flex items-center justify-between mb-4 pb-2 border-b border-border dark:border-darkmode-border;
+
+  h4 {
+    @apply flex items-center text-lg font-bold text-text dark:text-darkmode-text;
+
+    i {
+      @apply mr-2 text-primary dark:text-darkmode-primary;
+    }
+  }
+
+  .toc-toggle {
+    @apply p-1 rounded-full text-sm text-primary dark:text-darkmode-primary hover:bg-primary hover:bg-opacity-10 dark:hover:bg-darkmode-primary dark:hover:bg-opacity-10 transition-all duration-200 cursor-pointer;
+  }
+}
+
+/* TOC Navigation */
+.toc-nav {
+  @apply transition-all duration-500 ease-in-out;
+  max-height: 70vh;
+  overflow-y: auto;
+
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-primary bg-opacity-30 dark:bg-darkmode-primary dark:bg-opacity-30 rounded-full;
+  }
+
+  /* Hover state for scrollbar */
+  &:hover::-webkit-scrollbar-thumb {
+    @apply bg-opacity-60 dark:bg-opacity-60;
+  }
+
+  /* List styling */
+  ul {
+    @apply list-none p-0 m-0 space-y-1;
+
+    /* Nested lists */
+    ul {
+      @apply mt-1 ml-3 space-y-0.5 border-l-2 border-border dark:border-darkmode-border;
+
+      /* Animation for nested lists */
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      opacity: 0;
+    }
+
+    /* Show nested list when parent is active or hovered */
+    li.active > ul,
+    li:hover > ul {
+      max-height: 1000px;
+      opacity: 1;
+    }
+  }
+
+  /* List items */
+  li {
+    @apply relative my-1;
+
+    /* Indicator for items with children */
+    &.has-children > a::after {
+      content: "›";
+      @apply absolute right-2 text-primary dark:text-darkmode-primary transition-transform duration-300 ease-in-out;
+      transform: rotate(0deg);
+    }
+
+    &.has-children:hover > a::after,
+    &.has-children.active > a::after {
+      transform: rotate(90deg);
+    }
+  }
+
+  /* Links */
+  a {
+    @apply block py-1.5 px-3 rounded-md text-text dark:text-darkmode-text text-sm no-underline transition-all duration-200 relative overflow-hidden;
+
+    /* Hover and active states */
+    &:hover, &.active {
+      @apply text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light;
+    }
+
+    /* Active indicator */
+    &.active::before {
+      content: "";
+      @apply absolute left-0 top-0 h-full w-1 bg-primary dark:bg-darkmode-primary;
+      animation: slideIn 0.3s ease-out forwards;
+    }
+
+    /* Hover animation */
+    &:hover::after {
+      content: "";
+      @apply absolute inset-0 bg-primary dark:bg-darkmode-primary opacity-5;
+      animation: ripple 0.6s ease-out;
+    }
+  }
+}
+
+/* Collapsed state */
+.toc-collapsed {
+  .toc-nav {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .toc-toggle i {
+    transform: rotate(180deg);
+  }
+}
+
+/* Animations */
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Active section highlight animation */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(var(--color-primary-rgb), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0); }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Intersection Observer highlight */
+.toc-highlight {
+  position: relative;
+  animation: pulse 2s ease-in-out;
+}
+
+.toc-highlight::after {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 0;
+  height: 100%;
+  width: 5px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-10px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

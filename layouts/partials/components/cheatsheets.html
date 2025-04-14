@@ -1,43 +1,57 @@
-<div class="bg-theme-light dark:bg-darkmode-theme-light rounded p-8 text-center">
-    <!-- Categories -->
+<div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-8 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-transparent hover:border-primary dark:hover:border-darkmode-primary group h-full">
+  <div class="flex items-center mb-4">
+    <!-- Display image if available, otherwise show icon -->
+    {{ $image:= .Params.image }}
+    {{ if $image }}
+    <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary bg-opacity-10 dark:bg-opacity-20 mr-3 overflow-hidden">
+      {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-10 h-10 object-cover" "Size" "40x40") }}
+    </div>
+    {{ else }}
+    <div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary bg-opacity-10 dark:bg-opacity-20 mr-3">
+      <i class="fas fa-file-code text-lg text-primary dark:text-darkmode-primary"></i>
+    </div>
+    {{ end }}
+    <h4 class="text-xl font-bold group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors duration-300">
+      <a href="{{ .RelPermalink }}" class="block">{{ .Title }}</a>
+    </h4>
+  </div>
+
+  <!-- Categories -->
   {{ with .Params.cheatsheet_categories }}
-  <div class="mb-3 text-left">
-    <span class="inline-flex items-center text-text dark:text-darkmode-text">
-      <i class="fas fa-folder-open mr-2"></i>
+  <div class="mb-3">
+    <div class="flex items-center text-text dark:text-darkmode-text text-sm">
+      <i class="fas fa-folder-open mr-2 text-primary dark:text-darkmode-primary opacity-70"></i>
+      <span class="mr-2">Category:</span>
       {{ range . }}
-      <a href="{{ "cheatsheet_categories/" | relLangURL }}{{ . | urlize }}" class="ml-2 text-primary dark:text-darkmode-primary hover:underline">
+      <a href="{{ "cheatsheet_categories/" | relLangURL }}{{ . | urlize }}" class="text-primary dark:text-darkmode-primary hover:underline">
         {{ . }}
       </a>
       {{ end }}
-    </span>
+    </div>
   </div>
   {{ end }}
 
-  {{ $image:= .Params.image }}
-  {{ if $image }}
-  {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "mx-auto mb-6 rounded" "size" "120x120") }}
-  {{ else if .Params.Email }}
-  <img class="mx-auto mb-6 rounded" alt="{{ .Title }}" height="120" width="120"
-    src="https://www.gravatar.com/avatar/{{ md5 .Params.email }}?s=128&pg&d=identicon" />
-  {{ end }}
- 
-  <h4 class="mb-3">
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-  </h4>
-  <p class="mb-4">{{ .Params.description }}</p>
+  <p class="mb-6 text-text dark:text-darkmode-text">{{ .Params.description }}</p>
 
-  <!-- Tags -->
-  {{ with .Params.cheatsheet_tags }}
-  <div class="text-left">
-    <span class="inline-flex items-center flex-wrap text-text dark:text-darkmode-text">
-      <i class="fas fa-tags mr-2"></i>
-      Tags:
+  <div class="mt-auto">
+    <!-- Tags -->
+    {{ with .Params.cheatsheet_tags }}
+    <div class="flex flex-wrap items-center gap-2">
+      <i class="fas fa-tags text-xs text-primary dark:text-darkmode-primary opacity-70"></i>
       {{ range . }}
-      <a href="{{ "cheatsheet_tags/" | relLangURL }}{{ . | urlize }}" class="ml-2 bg-theme dark:bg-darkmode-theme px-2 py-1 rounded-full text-sm hover:bg-primary hover:text-white transition-colors duration-200 mb-2">
+      <a href="{{ "cheatsheet_tags/" | relLangURL }}{{ . | urlize }}" class="bg-primary bg-opacity-10 dark:bg-opacity-20 text-primary dark:text-darkmode-primary px-2 py-1 rounded-full text-xs hover:bg-opacity-20 dark:hover:bg-opacity-30 transition-colors duration-200">
         {{ . }}
       </a>
       {{ end }}
-    </span>
+    </div>
+    {{ end }}
+
+    <!-- View button -->
+    <div class="mt-4 text-right">
+      <a href="{{ .RelPermalink }}" class="inline-flex items-center text-primary dark:text-darkmode-primary hover:underline text-sm">
+        <span>View Cheatsheet</span>
+        <i class="fas fa-arrow-right ml-2 text-xs"></i>
+      </a>
+    </div>
   </div>
-  {{ end }}
 </div>

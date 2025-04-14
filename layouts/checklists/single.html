@@ -1,19 +1,154 @@
 {{ define "main" }}
 <section class="container mx-auto px-4 py-8">
+  <!-- Breadcrumb Navigation -->
+  <div class="mb-6">
+    <nav class="flex" aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+          <a href="/" class="inline-flex items-center text-sm font-medium text-primary dark:text-darkmode-primary hover:underline">
+            <i class="fas fa-home mr-2"></i>
+            Home
+          </a>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+            <a href="/checklists/" class="text-sm font-medium text-primary dark:text-darkmode-primary hover:underline">Checklists</a>
+          </div>
+        </li>
+        {{ with .Params.folder }}
+        <li>
+          <div class="flex items-center">
+            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+            <a href="/checklists/{{ . | urlize }}/" class="text-sm font-medium text-primary dark:text-darkmode-primary hover:underline">{{ . }}</a>
+          </div>
+        </li>
+        {{ end }}
+        <li aria-current="page">
+          <div class="flex items-center">
+            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ .Title }}</span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+  </div>
+
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
     <!-- Left Section: Table of Contents -->
     <aside class="lg:col-span-1">
-      <div class="sticky top-24 p-6 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg">
-        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text font-primary">
-          Table of Contents
-        </h4>
+      <div class="sticky top-24 p-6 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg border-0 toc-container" id="toc-container">
+        <div class="toc-header">
+          <h4>
+            <i class="fas fa-list-ul"></i>
+            Table of Contents
+          </h4>
+          <button class="toc-toggle" id="toc-toggle" aria-label="Toggle table of contents">
+            <i class="fas fa-chevron-up"></i>
+          </button>
+        </div>
         <nav id="TableOfContents" class="toc-nav">{{ .TableOfContents }}</nav>
       </div>
     </aside>
 
+    <!-- TOC Toggle Script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Get TOC elements
+        const tocContainer = document.getElementById('toc-container');
+        const tocToggle = document.getElementById('toc-toggle');
+        const tocNav = document.getElementById('TableOfContents');
+
+        // Add toggle functionality
+        tocToggle.addEventListener('click', function() {
+          tocContainer.classList.toggle('toc-collapsed');
+        });
+
+        // Add active class to current section
+        const addActiveClass = function() {
+          // Get all headings in the content
+          const headings = document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main h6');
+
+          // Get all links in the TOC
+          const tocLinks = document.querySelectorAll('#TableOfContents a');
+
+          // Remove all active classes first
+          tocLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.parentElement.classList.contains('active')) {
+              link.parentElement.classList.remove('active');
+            }
+          });
+
+          // Find the current section in view
+          let currentSection = '';
+          headings.forEach(heading => {
+            const rect = heading.getBoundingClientRect();
+            if (rect.top <= 100 && rect.bottom >= 100) {
+              currentSection = '#' + heading.id;
+            }
+          });
+
+          // Add active class to the current section in TOC
+          if (currentSection) {
+            const activeLink = document.querySelector(`#TableOfContents a[href="${currentSection}"]`);
+            if (activeLink) {
+              activeLink.classList.add('active');
+              let parent = activeLink.parentElement;
+              while (parent && parent.id !== 'TableOfContents') {
+                if (parent.tagName === 'LI') {
+                  parent.classList.add('active');
+                }
+                parent = parent.parentElement;
+              }
+            }
+          }
+        };
+
+        // Add has-children class to list items with nested lists
+        const listItems = document.querySelectorAll('#TableOfContents li');
+        listItems.forEach(item => {
+          if (item.querySelector('ul')) {
+            item.classList.add('has-children');
+          }
+        });
+
+        // Add smooth scrolling to TOC links
+        const tocLinks = document.querySelectorAll('#TableOfContents a');
+        tocLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+              // Highlight the target element briefly
+              targetElement.classList.add('toc-highlight');
+              setTimeout(() => {
+                targetElement.classList.remove('toc-highlight');
+              }, 2000);
+
+              // Smooth scroll to the target
+              window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: 'smooth'
+              });
+
+              // Update URL without scrolling
+              history.pushState(null, null, targetId);
+            }
+          });
+        });
+
+        // Call on scroll and on load
+        window.addEventListener('scroll', addActiveClass);
+        addActiveClass();
+      });
+    </script>
+
     <!-- Right Section: Checklist Content -->
     <main class="lg:col-span-3">
-      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6 border-0">
         <article>
           <!-- Categories Section -->
           {{ with .Params.checklist_categories }}
@@ -68,7 +203,7 @@
     {{ else }}
     <div class="flex-1 mr-4"></div>
     {{ end }}
-    
+
     {{ with .NextInSection }}
     <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right">
       <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>

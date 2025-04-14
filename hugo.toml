@@ -28,6 +28,9 @@ project_category = "project_categories"
 project_tag = "project_tags"
 cheatsheet_category = "cheatsheet_categories"
 cheatsheet_tag = "cheatsheet_tags"
+checklist_category = "checklist_categories"
+checklist_tag = "checklist_tags"
+folder = "folders"
 
 ########################## Permalinks ############################
 [permalinks.page]
@@ -129,15 +132,15 @@ resampleFilter = "Lanczos"
   [caches.getcsv]
   dir = ":cacheDir/:project"
   maxAge = "24h"
-  
+
   [caches.getjson]
   dir = ":cacheDir/:project"
   maxAge = "24h"
-  
+
   [caches.getresource]
   dir = ":cacheDir/:project"
   maxAge = "24h"
-  
+
   [caches.modules]
   dir = ":cacheDir/modules"
   maxAge = "720h"

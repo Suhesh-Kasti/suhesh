@@ -100,6 +100,20 @@
         color: #1c1c1c !important;
       }
 
+      /* Fix for grey borders in dark mode */
+      body.dark .shadow-lg,
+      body.dark .rounded-lg,
+      body.dark .bg-theme-light {
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      /* Fix for checklist and cheatsheet pages */
+      body.dark .toc-nav,
+      body.dark article {
+        border: none !important;
+      }
+
       /* Fix for social icons in dark mode */
       body.dark .social-icons li a {
         background-color: #333333 !important;

@@ -14,6 +14,180 @@
     resources.Fingerprint }}
     <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
 
+    <!-- Ensure cursor styles and dark mode are applied directly -->
+    <style>
+      /* Dark mode styles - more consistent */
+      html.dark,
+      body.dark {
+        background-color: #121212 !important;
+        color: #e0e0e0 !important;
+      }
+
+      body.dark h1, body.dark h2, body.dark h3, body.dark h4, body.dark h5, body.dark h6,
+      body.dark .h1, body.dark .h2, body.dark .h3, body.dark .h4, body.dark .h5, body.dark .h6 {
+        color: #fff !important;
+      }
+
+      body.dark .bg-body {
+        background-color: #121212 !important;
+      }
+
+      body.dark .bg-theme-light {
+        background-color: #1e1e1e !important;
+      }
+
+      body.dark .border {
+        border-color: #333333 !important;
+      }
+
+      /* Dark mode for content elements - more consistent */
+      body.dark main,
+      body.dark section,
+      body.dark article,
+      body.dark .container,
+      body.dark .content,
+      body.dark .card,
+      body.dark .section {
+        background-color: #121212 !important;
+        color: #e0e0e0 !important;
+      }
+
+      body.dark .card,
+      body.dark .content-card,
+      body.dark .skill-card {
+        background-color: #1e1e1e !important;
+        border-color: #333333 !important;
+      }
+
+      body.dark a:not(.btn) {
+        color: #fff !important;
+      }
+
+      body.dark .text-dark {
+        color: #fff !important;
+      }
+
+      body.dark .text-text {
+        color: #e0e0e0 !important;
+      }
+
+      /* Force dark mode on specific elements that might be problematic */
+      body.dark .navbar,
+      body.dark header,
+      body.dark footer,
+      body.dark .footer,
+      body.dark .banner,
+      body.dark .skills-section,
+      body.dark .about-section,
+      body.dark .contact-section {
+        background-color: #121212 !important;
+      }
+
+      /* Fix for buttons in dark mode */
+      body.dark .btn-primary {
+        background-color: #fff !important;
+        color: #1c1c1c !important;
+        border-color: #fff !important;
+      }
+
+      body.dark .btn-outline-primary {
+        border-color: #fff !important;
+        color: #fff !important;
+      }
+
+      body.dark .btn-outline-primary:hover {
+        background-color: #fff !important;
+        color: #1c1c1c !important;
+      }
+
+      /* Fix for social icons in dark mode */
+      body.dark .social-icons li a {
+        background-color: #333333 !important;
+        color: #ffffff !important;
+      }
+
+      body.dark .social-icons li a i {
+        color: #ffffff !important;
+      }
+
+      /* Custom cursor styles */
+      body,
+      a,
+      button,
+      input,
+      textarea,
+      select,
+      [role="button"],
+      .btn,
+      .swiper-button-prev,
+      .swiper-button-next,
+      .swiper-pagination-bullet,
+      .social-icons a,
+      .nav-link,
+      .nav-dropdown-link,
+      img,
+      svg,
+      i,
+      .fa,
+      .fas,
+      .fab,
+      .far {
+        cursor: none !important;
+      }
+
+      .cursor-dot,
+      .cursor-dot-outline {
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out;
+        z-index: 9999;
+      }
+
+      .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #121212; /* Fallback */
+        background-color: var(--primary-color, #121212);
+      }
+
+      .dark .cursor-dot {
+        background-color: #fff;
+      }
+
+      .cursor-dot-outline {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(18, 18, 18, 0.1); /* Fallback */
+        background-color: rgba(var(--primary-color-rgb, 18, 18, 18), 0.1);
+        border: 2px solid var(--primary-color, #121212);
+      }
+
+      .dark .cursor-dot-outline {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: #fff;
+      }
+
+      /* Hide cursor on touch devices */
+      @media (hover: none) and (pointer: coarse) {
+        .cursor-dot,
+        .cursor-dot-outline {
+          display: none;
+        }
+
+        body {
+          cursor: auto;
+        }
+      }
+
+      /* Adjust cursor on clickable elements - removed default cursor */
+      /* All elements now use cursor: none */
+    </style>
+
     <script type="text/javascript">
       window.$crisp = [];
       window.CRISP_WEBSITE_ID = "57cb6550-eb46-40fb-bb19-0f9903f99fcb";
@@ -25,9 +199,52 @@
         d.getElementsByTagName("head")[0].appendChild(s);
       })();
     </script>
+
+    <!-- Fix for dark mode -->
+    <script>
+      // Apply dark mode immediately
+      (function() {
+        // Check if dark mode is active from localStorage or default setting
+        const savedTheme = localStorage.getItem('theme');
+        const isDarkMode = savedTheme === 'dark' || (savedTheme !== 'light' && '{{site.Params.theme_default}}' === 'dark');
+
+        if (isDarkMode) {
+          document.documentElement.classList.add('dark');
+          document.body.classList.add('dark');
+          document.body.style.backgroundColor = '#121212';
+        }
+      })();
+
+      // Ensure dark mode is properly applied after DOM is loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        // Check if dark mode is active
+        const isDarkMode = document.documentElement.classList.contains('dark');
+
+        if (isDarkMode) {
+          // Make sure body has dark class
+          document.body.classList.add('dark');
+
+          // Apply dark mode background color directly
+          document.body.style.backgroundColor = '#121212';
+        }
+
+        // Listen for theme changes
+        document.addEventListener('theme-change', function() {
+          const isDark = document.documentElement.classList.contains('dark');
+
+          if (isDark) {
+            document.body.classList.add('dark');
+            document.body.style.backgroundColor = '#121212';
+          } else {
+            document.body.classList.remove('dark');
+            document.body.style.backgroundColor = '#fff';
+          }
+        });
+      });
+    </script>
   </head>
 
-  <body>
+  <body class="{{ if eq site.Params.theme_default "dark" }}dark{{ end }}">
     <!-- cache partial only in production -->
     {{ if hugo.IsProduction }} {{ partialCached "preloader.html" . }} {{
     partialCached "gtm-noscript.html" . }} {{ else }} {{ partial
@@ -47,5 +264,165 @@
     partialCached "essentials/script.html" . }} {{ else }} {{ partial
     "essentials/footer.html" . }} {{ partial "essentials/script.html" . }} {{
     end }}
+
+    <!-- Fix for header animation -->
+    <script>
+      // Ensure header animation works correctly
+      document.addEventListener('DOMContentLoaded', function() {
+        // Get the header element
+        const header = document.querySelector('.header');
+        if (header) {
+          // Make sure it has the correct styles
+          header.style.width = '100%';
+          header.style.zIndex = '1000';
+        }
+      });
+    </script>
+
+    <!-- Direct inclusion of cursor.js to ensure it loads after GSAP -->
+    <script>
+      // Wait for page to fully load including all resources
+      window.addEventListener('load', function() {
+        // Check if GSAP is loaded
+        if (typeof gsap !== 'undefined') {
+          // Create cursor elements
+          const cursorDot = document.createElement('div');
+          const cursorDotOutline = document.createElement('div');
+
+          cursorDot.classList.add('cursor-dot');
+          cursorDotOutline.classList.add('cursor-dot-outline');
+
+          document.body.appendChild(cursorDot);
+          document.body.appendChild(cursorDotOutline);
+
+          console.log('Custom cursor elements added to the DOM');
+
+          // Only run on non-touch devices
+          if (window.matchMedia("(hover: hover)").matches) {
+            // Initialize cursor position
+            let cursorVisible = true;
+            let cursorEnlarged = false;
+
+            // Mouse movement position
+            let endX = 0;
+            let endY = 0;
+
+            // Initial cursor position
+            gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
+            gsap.set(cursorDotOutline, { xPercent: -50, yPercent: -50 });
+
+            // Smooth cursor animation with GSAP
+            const moveCursor = gsap.quickTo([cursorDot, cursorDotOutline], "x", {
+              duration: 0.5,
+              ease: "power3.out"
+            });
+
+            const moveCursorY = gsap.quickTo([cursorDot, cursorDotOutline], "y", {
+              duration: 0.5,
+              ease: "power3.out"
+            });
+
+            // Track mouse movement
+            document.addEventListener('mousemove', (e) => {
+              endX = e.clientX;
+              endY = e.clientY;
+
+              moveCursor(endX);
+              moveCursorY(endY);
+
+              // Show cursor when it moves
+              if (!cursorVisible) {
+                toggleCursorVisibility();
+              }
+            });
+
+            // Toggle cursor visibility
+            function toggleCursorVisibility(visible = true) {
+              if (visible) {
+                gsap.to([cursorDot, cursorDotOutline], {
+                  opacity: 1,
+                  duration: 0.3,
+                  ease: "power2.out"
+                });
+                cursorVisible = true;
+              } else {
+                gsap.to([cursorDot, cursorDotOutline], {
+                  opacity: 0,
+                  duration: 0.3,
+                  ease: "power2.out"
+                });
+                cursorVisible = false;
+              }
+            }
+
+            // Hide cursor when it leaves the screen
+            document.addEventListener('mouseout', () => {
+              toggleCursorVisibility(false);
+            });
+
+            document.addEventListener('mouseenter', () => {
+              toggleCursorVisibility(true);
+            });
+
+            // Modify cursor on clickable elements
+            const clickables = document.querySelectorAll('a, button, input, textarea, select, [role="button"], .btn, .swiper-button-prev, .swiper-button-next, .swiper-pagination-bullet');
+
+            clickables.forEach((element) => {
+              element.addEventListener('mouseover', () => {
+                if (!cursorEnlarged) {
+                  cursorEnlarged = true;
+                  gsap.to(cursorDot, {
+                    scale: 1.5,
+                    duration: 0.3,
+                    ease: "power2.out"
+                  });
+                  gsap.to(cursorDotOutline, {
+                    scale: 1.2,
+                    duration: 0.3,
+                    ease: "power2.out"
+                  });
+                }
+              });
+
+              element.addEventListener('mouseout', () => {
+                if (cursorEnlarged) {
+                  cursorEnlarged = false;
+                  gsap.to([cursorDot, cursorDotOutline], {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power2.out"
+                  });
+                }
+              });
+            });
+
+            // Add effect on mouse down
+            document.addEventListener('mousedown', () => {
+              gsap.to(cursorDot, {
+                scale: 0.8,
+                duration: 0.2
+              });
+              gsap.to(cursorDotOutline, {
+                scale: 0.8,
+                duration: 0.2
+              });
+            });
+
+            document.addEventListener('mouseup', () => {
+              gsap.to(cursorDot, {
+                scale: cursorEnlarged ? 1.5 : 1,
+                duration: 0.2
+              });
+              gsap.to(cursorDotOutline, {
+                scale: cursorEnlarged ? 1.2 : 1,
+                duration: 0.2
+              });
+            });
+          }
+        } else {
+          console.error('GSAP library not loaded. Custom cursor requires GSAP.');
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,66 +1,82 @@
 // Custom animated cursor implementation
 document.addEventListener('DOMContentLoaded', function() {
+  // Make sure GSAP is loaded
+  if (typeof gsap === 'undefined') {
+    console.error('GSAP library not loaded. Custom cursor requires GSAP.');
+    return;
+  }
+
+  // Force cursor: none on all elements to prevent default cursor from showing
+  const styleElement = document.createElement('style');
+  styleElement.textContent = `
+    *, *::before, *::after {
+      cursor: none !important;
+    }
+  `;
+  document.head.appendChild(styleElement);
   // Only run on non-touch devices
   if (window.matchMedia("(hover: hover)").matches) {
     // Create cursor elements
     const cursorDot = document.createElement('div');
     const cursorDotOutline = document.createElement('div');
-    
+
     cursorDot.classList.add('cursor-dot');
     cursorDotOutline.classList.add('cursor-dot-outline');
-    
+
     document.body.appendChild(cursorDot);
     document.body.appendChild(cursorDotOutline);
-    
+
+    console.log('Custom cursor elements added to the DOM');
+
     // Initialize cursor position
     let cursorVisible = true;
     let cursorEnlarged = false;
-    
+
     // Mouse movement position
     let endX = 0;
     let endY = 0;
-    
+
     // Initial cursor position - needed for transition when cursor appears
     gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
     gsap.set(cursorDotOutline, { xPercent: -50, yPercent: -50 });
-    
+
     // Smooth cursor animation with GSAP
-    const moveCursor = gsap.quickTo([cursorDot, cursorDotOutline], "x", { 
-      duration: 0.5, 
-      ease: "power3.out" 
+    const moveCursor = gsap.quickTo([cursorDot, cursorDotOutline], "x", {
+      duration: 0.5,
+      ease: "power3.out"
     });
-    
-    const moveCursorY = gsap.quickTo([cursorDot, cursorDotOutline], "y", { 
-      duration: 0.5, 
-      ease: "power3.out" 
+
+    const moveCursorY = gsap.quickTo([cursorDot, cursorDotOutline], "y", {
+      duration: 0.5,
+      ease: "power3.out"
     });
-    
+
     // Track mouse movement
     document.addEventListener('mousemove', (e) => {
       endX = e.clientX;
       endY = e.clientY;
-      
+
       moveCursor(endX);
       moveCursorY(endY);
-      
+
       // Show cursor when it moves
       if (!cursorVisible) {
         toggleCursorVisibility();
       }
     });
-    
+
     // Hide cursor when it leaves the screen
     document.addEventListener('mouseout', () => {
       toggleCursorVisibility(false);
     });
-    
+
     document.addEventListener('mouseenter', () => {
       toggleCursorVisibility(true);
     });
-    
+
     // Modify cursor on clickable elements
     const clickables = document.querySelectorAll('a, button, input, textarea, select, [role="button"], .btn, .swiper-button-prev, .swiper-button-next, .swiper-pagination-bullet');
-    
+
     clickables.forEach((element) => {
       element.addEventListener('mouseover', () => {
         if (!cursorEnlarged) {
@@ -77,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
           });
         }
       });
-      
+
       element.addEventListener('mouseout', () => {
         if (cursorEnlarged) {
           cursorEnlarged = false;
@@ -89,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
-    
+
     // Special effect when hovering over images
     const images = document.querySelectorAll('img');
     images.forEach(img => {
@@ -104,14 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
           duration: 0.3
         });
       });
-      
+
       img.addEventListener('mouseout', () => {
         const isDarkMode = document.documentElement.classList.contains('dark');
         // Fixed colors for both modes
         const dotColor = isDarkMode ? '#ffffff' : '#121212';
         const outlineColor = isDarkMode ? '#ffffff' : '#121212';
         const bgColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(18, 18, 18, 0.1)';
-        
+
         gsap.to(cursorDot, {
           backgroundColor: dotColor,
           duration: 0.3
@@ -123,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       });
     });
-    
+
     // Add effect on mouse down
     document.addEventListener('mousedown', () => {
       gsap.to(cursorDot, {
@@ -135,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         duration: 0.2
       });
     });
-    
+
     document.addEventListener('mouseup', () => {
       gsap.to(cursorDot, {
         scale: cursorEnlarged ? 1.5 : 1,
@@ -146,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
         duration: 0.2
       });
     });
-    
+
     // Toggle cursor visibility
     function toggleCursorVisibility(visible = true) {
       if (visible) {
@@ -165,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         cursorVisible = false;
       }
     }
-    
+
     // Update cursor colors on theme change
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
@@ -175,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const dotColor = isDarkMode ? '#ffffff' : '#121212';
           const outlineColor = isDarkMode ? '#ffffff' : '#121212';
           const bgColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(18, 18, 18, 0.1)';
-          
+
           gsap.to(cursorDot, {
             backgroundColor: dotColor,
             duration: 0.3
@@ -188,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
-    
+
     observer.observe(document.documentElement, { attributes: true });
   }
-}); 
+});

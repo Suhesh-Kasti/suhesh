@@ -4,7 +4,7 @@
 
 html {
   scroll-behavior: smooth;
-  cursor: default;
+  /* Removed cursor: default to allow custom cursor to work */
 }
 
 /* Base link styles */
@@ -399,8 +399,8 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
 
 /* Fix for container overflow */
 /* Modify these rules to fix the dropdown issue */
-.section, 
-.container:not(.navbar-container), 
+.section,
+.container:not(.navbar-container),
 .row:not(.navbar-row),
 .col-12:not(.navbar-col) {
   overflow-x: hidden;
@@ -456,10 +456,10 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
 
 /* Smooth animations for all elements */
 * {
-  transition: background-color 0.3s ease, 
+  transition: background-color 0.3s ease,
               color 0.3s ease,
               transform 0.3s ease,
-              box-shadow 0.3s ease, 
+              box-shadow 0.3s ease,
               border-color 0.3s ease,
               opacity 0.3s ease;
 }
@@ -538,30 +538,13 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Improve navigation animation */
+/* Simplified navigation hover effect */
 .nav-item {
   position: relative;
+  transition: color 0.3s ease;
 }
 
-.nav-item::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background-color: var(--primary-color);
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
-}
-
-.dark .nav-item::after {
-  background-color: var(--darkmode-primary-color);
-}
-
-.nav-item:hover::after {
-  width: 80%;
-}
+/* Removed the underline animation */
 
 /* Image hover effects */
 img:not(.logo-dark img, .logo-light img) {
@@ -588,8 +571,8 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
-.dark input:focus, 
-.dark textarea:focus, 
+.dark input:focus,
+.dark textarea:focus,
 .dark select:focus {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -605,8 +588,7 @@ input:focus, textarea:focus, select:focus {
   background-color: var(--body-color);
 }
 
-/* Make sure the placeholder has proper styling */
-.navbar-placeholder {
-  display: none;
-  width: 100%;
+/* Navbar transition */
+.navbar {
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }

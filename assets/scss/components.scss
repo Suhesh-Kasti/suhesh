@@ -30,12 +30,18 @@ main {
   li {
     @apply inline-block;
     a {
-      @apply bg-primary dark:bg-darkmode-primary dark:text-dark flex h-9 w-9 items-center justify-center rounded text-center leading-9 text-white;
+      @apply bg-primary flex h-9 w-9 items-center justify-center rounded text-center leading-9 text-white;
       svg {
         @apply h-5 w-5;
       }
     }
   }
+}
+
+// Fix for social icons in dark mode
+body.dark .social-icons li a {
+  background-color: #333333 !important;
+  color: #ffffff !important;
 }
 
 // swiper pagination

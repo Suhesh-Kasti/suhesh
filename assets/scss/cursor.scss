@@ -19,7 +19,8 @@ body {
 .cursor-dot {
   width: 8px;
   height: 8px;
-  background-color: var(--primary-color);
+  background-color: #121212; /* Fallback */
+  background-color: var(--primary-color, #121212);
 }
 
 .dark .cursor-dot {
@@ -29,8 +30,9 @@ body {
 .cursor-dot-outline {
   width: 40px;
   height: 40px;
-  background-color: rgba(var(--primary-color-rgb), 0.1);
-  border: 2px solid var(--primary-color);
+  background-color: rgba(18, 18, 18, 0.1); /* Fallback */
+  background-color: rgba(var(--primary-color-rgb, 18, 18, 18), 0.1);
+  border: 2px solid var(--primary-color, #121212);
 }
 
 .dark .cursor-dot-outline {
@@ -44,29 +46,29 @@ body {
   .cursor-dot-outline {
     display: none;
   }
-  
+
   body {
     cursor: auto;
   }
 }
 
 /* Adjust cursor on clickable elements */
-a, 
-button, 
-input, 
-textarea, 
-select, 
-[role="button"], 
-.btn, 
-.swiper-button-prev, 
+a,
+button,
+input,
+textarea,
+select,
+[role="button"],
+.btn,
+.swiper-button-prev,
 .swiper-button-next,
 .swiper-pagination-bullet {
   cursor: pointer !important;
-  
+
   &:hover ~ .cursor-dot {
     transform: translate(-50%, -50%) scale(1.5);
   }
-  
+
   &:hover ~ .cursor-dot-outline {
     transform: translate(-50%, -50%) scale(1.2);
   }
@@ -80,4 +82,4 @@ img:hover ~ .cursor-dot {
 img:hover ~ .cursor-dot-outline {
   border-color: white;
   background-color: rgba(255, 255, 255, 0.1);
-} 
+}

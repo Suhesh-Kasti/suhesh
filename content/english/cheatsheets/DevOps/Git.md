@@ -4,7 +4,7 @@ description: "A comprehensive cheatsheet for Git commands and workflows"
 date: 2024-10-05T12:00:00+05:45
 cheatsheet_categories: ["DevOps"]
 cheatsheet_tags: ["git", "version control"]
-folder: "DevOps"
+folder: "devops"
 draft: false
 weight: 1
 ---

@@ -1,27 +1,126 @@
 {{ define "main" }}
-  <section class="section-sm text-center">
-    <div class="container">
-      <div class="row justify-center">
-        <div class="sm:col-10 md:col-8 lg:col-6">
-          <span
-            class="text-[8rem] block font-bold text-dark dark:text-darkmode-dark">
-            404
-          </span>
-          <h1 class="h2 mb-4">Page not found</h1>
-          <img src="{{ "images/404.webp" | relURL }}" alt="ERROR" class="w-full h-auto mx-auto mb-6">
-          <div class="content">
-            <p>
-              The page you are looking for might have been removed, had its name
-              changed, or is temporarily unavailable.
+<section class="min-h-screen flex items-center justify-center py-20 px-4">
+  <div class="container">
+    <div class="max-w-4xl mx-auto bg-theme-light dark:bg-darkmode-theme-light rounded-2xl shadow-2xl overflow-hidden">
+      <div class="grid md:grid-cols-2 gap-0">
+        <!-- Left side: Animation and 404 text -->
+        <div class="p-8 flex flex-col items-center justify-center relative overflow-hidden">
+          <!-- Animated 404 text -->
+          <div class="relative z-10">
+            <div class="text-[10rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500 dark:from-darkmode-primary dark:to-blue-400 animate-pulse">
+              404
+            </div>
+
+            <!-- Animated elements -->
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10">
+              <div class="absolute w-20 h-20 bg-primary dark:bg-darkmode-primary rounded-full opacity-20 animate-float1"></div>
+              <div class="absolute w-12 h-12 bg-blue-500 dark:bg-blue-400 rounded-full opacity-20 animate-float2" style="left: 20%; top: 20%"></div>
+              <div class="absolute w-16 h-16 bg-green-500 dark:bg-green-400 rounded-full opacity-20 animate-float3" style="right: 20%; bottom: 20%"></div>
+            </div>
+          </div>
+
+          <!-- Animated character -->
+          <div class="mt-4 relative">
+            <div class="w-32 h-32 relative">
+              <div class="absolute inset-0 bg-primary dark:bg-darkmode-primary rounded-full opacity-20 animate-ping"></div>
+              <div class="absolute inset-4 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center">
+                <div class="text-4xl">🕵️</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right side: Content -->
+        <div class="p-8 flex flex-col items-center md:items-start justify-center bg-white dark:bg-gray-800">
+          <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center md:text-left text-text dark:text-darkmode-text">
+            Oops! Page Not Found
+          </h1>
+
+          <div class="space-y-4 mb-8 text-center md:text-left">
+            <p class="text-lg text-text dark:text-darkmode-text">
+              Looks like you've ventured into uncharted territory!
+            </p>
+            <p class="text-text dark:text-darkmode-text">
+              The page you're looking for has either been moved, deleted, or never existed in the first place. Maybe it's hiding in another dimension? 🌌
+            </p>
+            <p class="text-text dark:text-darkmode-text italic">
+              "Not all those who wander are lost, but you definitely are." - J.R.R. Tolkien (probably)
             </p>
           </div>
-          <a
-            href="{{ site.BaseURL | relLangURL }}"
-            class="btn btn-primary mt-8">
-            Back to home
-          </a>
+
+          <div class="flex flex-col sm:flex-row gap-4 w-full">
+            <a href="{{ site.BaseURL | relLangURL }}" class="btn btn-primary">
+              <i class="fas fa-home mr-2"></i> Back to Home
+            </a>
+            <button onclick="window.history.back()" class="btn btn-outline-primary">
+              <i class="fas fa-arrow-left mr-2"></i> Go Back
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+
+    <!-- Random suggestions -->
+    <div class="mt-12 max-w-2xl mx-auto text-center">
+      <h3 class="text-xl font-bold mb-4 text-text dark:text-darkmode-text">While you're here, maybe check out:</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="/checklists/" class="p-4 bg-theme-light dark:bg-darkmode-theme-light rounded-lg hover:shadow-md transition-shadow">
+          <i class="fas fa-clipboard-check text-2xl text-primary dark:text-darkmode-primary mb-2"></i>
+          <h4 class="font-bold">Checklists</h4>
+          <p class="text-sm">Explore our organized checklists</p>
+        </a>
+        <a href="/cheatsheets/" class="p-4 bg-theme-light dark:bg-darkmode-theme-light rounded-lg hover:shadow-md transition-shadow">
+          <i class="fas fa-file-code text-2xl text-primary dark:text-darkmode-primary mb-2"></i>
+          <h4 class="font-bold">Cheatsheets</h4>
+          <p class="text-sm">Browse helpful reference guides</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Add animations -->
+<style>
+  @keyframes float1 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(20px, 10px) rotate(5deg); }
+    50% { transform: translate(10px, 20px) rotate(10deg); }
+    75% { transform: translate(-10px, 10px) rotate(5deg); }
+  }
+
+  @keyframes float2 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-15px, -10px) rotate(-5deg); }
+    50% { transform: translate(-5px, -15px) rotate(-10deg); }
+    75% { transform: translate(10px, -5px) rotate(-5deg); }
+  }
+
+  @keyframes float3 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, -15px) rotate(5deg); }
+    50% { transform: translate(15px, -5px) rotate(10deg); }
+    75% { transform: translate(5px, -10px) rotate(5deg); }
+  }
+
+  .animate-float1 {
+    animation: float1 8s ease-in-out infinite;
+  }
+
+  .animate-float2 {
+    animation: float2 9s ease-in-out infinite;
+  }
+
+  .animate-float3 {
+    animation: float3 10s ease-in-out infinite;
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+</style>
 {{ end }}

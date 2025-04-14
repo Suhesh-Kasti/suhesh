@@ -4,7 +4,7 @@ description: "A detailed walkthrough of Machine 1 from HackTheBox"
 date: 2024-10-05T12:00:00+05:45
 checklist_categories: ["HackTheBox"]
 checklist_tags: ["walkthrough", "htb", "machine1"]
-folder: "HackTheBox"
+folder: "hackthebox"
 draft: false
 weight: 1
 ---

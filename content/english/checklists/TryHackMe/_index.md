@@ -3,7 +3,7 @@ title: "TryHackMe"
 description: "Walkthroughs and guides for TryHackMe machines"
 layout: "folder"
 type: "folder"
-folder: "TryHackMe"
+folder: "tryhackme"
 weight: 2
 draft: false
 ---

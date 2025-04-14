@@ -4,7 +4,7 @@ description: "A detailed walkthrough of Machine 1 from TryHackMe"
 date: 2024-10-07T12:00:00+05:45
 checklist_categories: ["TryHackMe"]
 checklist_tags: ["walkthrough", "thm", "machine1"]
-folder: "TryHackMe"
+folder: "tryhackme"
 draft: false
 weight: 1
 ---

@@ -3,7 +3,7 @@ title: "HackTheBox"
 description: "Walkthroughs and guides for HackTheBox machines"
 layout: "folder"
 type: "folder"
-folder: "HackTheBox"
+folder: "hackthebox"
 weight: 1
 draft: false
 ---

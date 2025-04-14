@@ -4,7 +4,7 @@ description: "A comprehensive guide to using SQLMap for SQL injection testing"
 date: 2024-10-07T12:00:00+05:45
 cheatsheet_categories: ["SQLInjection"]
 cheatsheet_tags: ["sqlmap", "sql injection", "pentesting"]
-folder: "SQLInjection"
+folder: "sqlinjection"
 draft: false
 weight: 1
 ---

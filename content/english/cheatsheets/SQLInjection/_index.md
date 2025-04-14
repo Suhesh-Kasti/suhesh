@@ -3,7 +3,7 @@ title: "SQL Injection"
 description: "Cheatsheets for SQL Injection techniques"
 layout: "folder"
 type: "folder"
-folder: "SQLInjection"
+folder: "sqlinjection"
 weight: 2
 draft: false
 ---

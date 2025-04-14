@@ -3,7 +3,7 @@ title: "DevOps"
 description: "Cheatsheets for DevOps tools and technologies"
 layout: "folder"
 type: "folder"
-folder: "DevOps"
+folder: "devops"
 weight: 1
 draft: false
 ---

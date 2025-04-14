@@ -4,7 +4,7 @@ description: "Essential Linux commands for system administration and DevOps"
 date: 2024-10-06T12:00:00+05:45
 cheatsheet_categories: ["DevOps"]
 cheatsheet_tags: ["linux", "bash", "commands"]
-folder: "DevOps"
+folder: "devops"
 draft: false
 weight: 2
 ---

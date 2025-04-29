@@ -2,35 +2,151 @@
 
 <section class="section">
   <div class="container">
-    <ul class="text-center">
-      {{/* categories */}} {{ if eq .Permalink (`categories/` | absLangURL) }}
+    <!-- Categories Display -->
+    {{ if eq .Permalink (`categories/` | absLangURL) }}
+    <div class="mb-16">
+      <h2 class="text-center text-2xl font-bold mb-8 text-dark dark:text-darkmode-dark">Browse Categories</h2>
+
+      <!-- Calculate max and min counts for scaling -->
+      {{ $maxCount := 1 }}
+      {{ $minCount := 1000 }}
       {{ range site.Taxonomies.categories.ByCount }}
-      <li class="m-3 inline-block">
-        <a
-          href="{{ .Page.Permalink }}"
-          class="bg-theme-light text-dark dark:bg-darkmode-theme-light dark:text-darkmode-dark block rounded px-4 py-2 text-xl"
-        >
-          {{ .Page.Title }}
-          <span class="bg-body dark:bg-darkmode-body ml-2 rounded px-2">
-            {{ .Count }}
-          </span>
-        </a>
-      </li>
-      {{ end }} {{ end }} {{/* tags */}} {{ if eq .Permalink (`tags/` |
-      absLangURL) }} {{ range site.Taxonomies.tags.ByCount }}
-      <li class="m-3 inline-block">
-        <a
-          href="{{ .Page.Permalink }}"
-          class="bg-theme-light text-dark dark:bg-darkmode-theme-light dark:text-darkmode-dark block rounded px-4 py-2 text-xl"
-        >
-          {{ .Page.Title }}
-          <span class="bg-body dark:bg-darkmode-body ml-2 rounded px-2">
-            {{ .Count }}
-          </span>
-        </a>
-      </li>
-      {{ end }} {{ end }}
-    </ul>
+        {{ if gt .Count $maxCount }}
+          {{ $maxCount = .Count }}
+        {{ end }}
+        {{ if lt .Count $minCount }}
+          {{ $minCount = .Count }}
+        {{ end }}
+      {{ end }}
+
+      <!-- Interactive Category Grid -->
+      <div class="category-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {{ range $index, $category := site.Taxonomies.categories.ByCount }}
+          {{ $weight := div (math.Log .Count) (math.Log $maxCount) }}
+          {{ $size := add 0.9 (mul $weight 0.3) }}
+
+          <a
+            href="{{ .Page.Permalink }}"
+            class="category-card block relative overflow-hidden rounded-lg border border-border dark:border-darkmode-border transition-all duration-300 hover:shadow-md hover:border-primary dark:hover:border-darkmode-primary"
+            data-count="{{ .Count }}"
+          >
+            <div class="p-4 flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="category-icon w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 dark:bg-darkmode-primary/10 mr-3">
+                  <i class="fas fa-folder text-primary dark:text-darkmode-primary"></i>
+                </div>
+                <h3 class="text-base md:text-lg font-medium text-dark dark:text-darkmode-dark">{{ .Page.Title }}</h3>
+              </div>
+              <span class="category-count flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary text-sm font-bold">
+                {{ .Count }}
+              </span>
+            </div>
+
+            <!-- Progress bar indicating relative size -->
+            <div class="absolute bottom-0 left-0 h-1 bg-primary dark:bg-darkmode-primary" style="width: {{ mul $weight 100 }}%;"></div>
+          </a>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    <!-- Tags Display -->
+    {{ if eq .Permalink (`tags/` | absLangURL) }}
+    <div>
+      <h2 class="text-center text-2xl font-bold mb-8 text-dark dark:text-darkmode-dark">Explore Tags</h2>
+
+      <!-- Calculate max and min counts for scaling -->
+      {{ $maxCount := 1 }}
+      {{ $minCount := 1000 }}
+      {{ range site.Taxonomies.tags.ByCount }}
+        {{ if gt .Count $maxCount }}
+          {{ $maxCount = .Count }}
+        {{ end }}
+        {{ if lt .Count $minCount }}
+          {{ $minCount = .Count }}
+        {{ end }}
+      {{ end }}
+
+      <!-- Interactive Tag Cloud -->
+      <div id="tag-cloud" class="tag-cloud flex flex-wrap justify-center gap-2 md:gap-3 p-4">
+        {{ range $index, $tag := site.Taxonomies.tags.ByCount }}
+          {{ $weight := div (math.Log .Count) (math.Log $maxCount) }}
+          {{ $size := add 0.8 (mul $weight 0.4) }}
+          {{ $fontSize := add 0.8 (mul $weight 0.3) }}
+
+          <a
+            href="{{ .Page.Permalink }}"
+            class="tag-item inline-flex items-center px-3 py-1 m-1 rounded-full border border-border dark:border-darkmode-border bg-theme-light dark:bg-darkmode-theme-light transition-all duration-300 hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white"
+            style="font-size: {{ $fontSize }}rem;"
+            data-count="{{ .Count }}"
+          >
+            <span class="tag-name">{{ .Page.Title }}</span>
+            <span class="tag-count ml-2 bg-white dark:bg-darkmode-body text-primary dark:text-darkmode-primary rounded-full px-1.5 py-0.5 text-xs">
+              {{ .Count }}
+            </span>
+          </a>
+        {{ end }}
+      </div>
+
+      <!-- Interactive Controls -->
+      <div class="tag-controls flex justify-center mt-8 space-x-4">
+        <button id="sort-alpha" class="px-3 py-1 rounded bg-theme-light dark:bg-darkmode-theme-light text-text dark:text-darkmode-text hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition-colors duration-300">
+          <i class="fas fa-sort-alpha-down mr-1"></i> Sort A-Z
+        </button>
+        <button id="sort-count" class="px-3 py-1 rounded bg-theme-light dark:bg-darkmode-theme-light text-text dark:text-darkmode-text hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition-colors duration-300">
+          <i class="fas fa-sort-numeric-down mr-1"></i> Sort by Count
+        </button>
+      </div>
+    </div>
+    {{ end }}
   </div>
 </section>
+
+<!-- Interactive Tag Cloud Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Tag cloud interactivity
+    const tagCloud = document.getElementById('tag-cloud');
+    if (tagCloud) {
+      const sortAlpha = document.getElementById('sort-alpha');
+      const sortCount = document.getElementById('sort-count');
+
+      // Sort alphabetically
+      sortAlpha.addEventListener('click', function() {
+        const tags = Array.from(tagCloud.children);
+        tags.sort((a, b) => {
+          return a.querySelector('.tag-name').textContent.localeCompare(b.querySelector('.tag-name').textContent);
+        });
+
+        tags.forEach(tag => tagCloud.appendChild(tag));
+
+        // Visual feedback
+        sortAlpha.classList.add('bg-primary', 'text-white', 'dark:bg-darkmode-primary', 'dark:text-white');
+        sortCount.classList.remove('bg-primary', 'text-white', 'dark:bg-darkmode-primary', 'dark:text-white');
+
+        setTimeout(() => {
+          sortAlpha.classList.remove('bg-primary', 'text-white', 'dark:bg-darkmode-primary', 'dark:text-white');
+        }, 500);
+      });
+
+      // Sort by count
+      sortCount.addEventListener('click', function() {
+        const tags = Array.from(tagCloud.children);
+        tags.sort((a, b) => {
+          return parseInt(b.dataset.count) - parseInt(a.dataset.count);
+        });
+
+        tags.forEach(tag => tagCloud.appendChild(tag));
+
+        // Visual feedback
+        sortCount.classList.add('bg-primary', 'text-white', 'dark:bg-darkmode-primary', 'dark:text-white');
+        sortAlpha.classList.remove('bg-primary', 'text-white', 'dark:bg-darkmode-primary', 'dark:text-white');
+
+        setTimeout(() => {
+          sortCount.classList.remove('bg-primary', 'text-white', 'dark:bg-darkmode-primary', 'dark:text-white');
+        }, 500);
+      });
+    }
+  });
+</script>
 {{ end }}

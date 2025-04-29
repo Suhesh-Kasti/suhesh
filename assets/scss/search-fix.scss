@@ -1,0 +1,67 @@
+/* Search results box fixes */
+.search-wrapper {
+  .search-wrapper-body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .search-result-item {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  .search-title {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .search-content {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+/* Horizontal scrollbar height fix */
+::-webkit-scrollbar {
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+}
+
+/* Dark mode border color fixes */
+.dark {
+  .card,
+  .content-card,
+  .project-card,
+  .skill-card,
+  .search-result-item,
+  .pagination .page-item .page-link,
+  .form-input,
+  .form-select,
+  .form-textarea,
+  table td,
+  table th,
+  hr,
+  .border,
+  .border-border,
+  [class*="border-"] {
+    border-color: var(--border-color) !important;
+  }
+
+  /* Fix for grey borders */
+  .border-gray-200,
+  .border-gray-300,
+  .border-gray-400,
+  .border-gray-500 {
+    border-color: var(--border-color) !important;
+  }
+}

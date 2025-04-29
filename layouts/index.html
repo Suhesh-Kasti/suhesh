@@ -71,88 +71,149 @@
 {{ end }}
 <!-- /Banner -->
 
-<!-- Features -->
+<!-- Features with Modern Interactive Design -->
 {{ range $i, $e:= .Params.features }}
-<section class="section-sm {{ if (modBool $i 2) }}bg-gradient{{ end }}">
+<section class="section-sm py-14 {{ if (modBool $i 2) }}bg-theme-light dark:bg-darkmode-theme-light{{ end }}" id="feature-{{ $i }}">
   <div class="container">
     <div class="row items-center justify-between">
-      <div
-        class="mb:md-0 {{ if not (modBool $i 2) }}
-              md:order-2
-            {{ end }} md:col-5 mb-6"
-      >
-        {{ partial "image" (dict "Src" .image "Alt" "feature image") }}
+      <!-- Feature Image - Improved but keeping original style -->
+      <div class="mb:md-0 {{ if not (modBool $i 2) }}md:order-2{{ end }} md:col-5 mb-8 md:mb-0">
+        <div class="feature-image-wrapper relative">
+          <!-- Clean image display without shadows -->
+          <div class="feature-image-container overflow-hidden rounded-lg">
+            {{ partial "image" (dict "Src" .image "Alt" "feature image" "Class" "w-full") }}
+          </div>
+
+          <!-- Section indicator - no shadow -->
+          <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full bg-white dark:bg-darkmode-body border border-border dark:border-darkmode-border">
+            <span class="text-sm font-medium text-primary dark:text-darkmode-primary">
+              {{ if eq $i 0 }}
+                Cybersecurity
+              {{ else if eq $i 1 }}
+                DevOps
+              {{ else }}
+                Projects
+              {{ end }}
+            </span>
+          </div>
+        </div>
       </div>
-      <div
-        class="{{ if not (modBool $i 2) }}
-              md:order-1
-            {{ end }} md:col-7 lg:col-6"
-      >
-        <h2 class="mb-4">{{ .title | markdownify }}</h2>
-        <p class="mb-8 text-lg">{{ .content | markdownify }}</p>
-        <ul>
-          {{ range .bulletpoints }}
-          <li class="relative mb-4 pl-6">
-            <i class="fas fa-stroopwafel fa-spin absolute left-0 top-1.5"></i>
-            {{ . | markdownify }}
-          </li>
+
+      <!-- Feature Content - Improved but keeping original style -->
+      <div class="{{ if not (modBool $i 2) }}md:order-1{{ end }} md:col-7 lg:col-6">
+        <!-- Clean title with subtle accent -->
+        <div class="relative mb-4">
+          <h2 class="text-2xl md:text-3xl font-bold mb-2 text-dark dark:text-darkmode-dark">{{ .title | markdownify }}</h2>
+          <div class="h-1 w-16 bg-primary dark:bg-darkmode-primary rounded-full"></div>
+        </div>
+
+        <!-- Content with clean typography -->
+        <div class="mb-6">
+          <p class="text-lg text-text dark:text-darkmode-text">{{ .content | markdownify }}</p>
+        </div>
+
+        <!-- Clean bulletpoints with subtle hover effect - no fixed height -->
+        <div class="space-y-3 mb-8">
+          {{ range $index, $point := .bulletpoints }}
+          <div class="feature-point flex items-start p-3 rounded-md transition-all duration-200 hover:bg-white dark:hover:bg-darkmode-body">
+            <div class="flex-shrink-0 mr-3 mt-1">
+              <i class="fas fa-stroopwafel fa-spin text-primary dark:text-darkmode-primary"></i>
+            </div>
+            <div class="feature-point-content text-text dark:text-darkmode-text">{{ . | markdownify }}</div>
+          </div>
           {{ end }}
-        </ul>
+        </div>
+
+        <!-- Clean button -->
         {{ with .button }} {{ if .enable }}
-        <a class="btn btn-primary mt-6" href="{{ .link | absURL }}">
-          {{ .label }}
-          <i class="fa fa-arrow-right pl-2"></i>
-        </a>
+        <div class="mt-6">
+          <a
+            class="btn btn-primary inline-flex items-center"
+            href="{{ .link | absURL }}"
+          >
+            <span>{{ .label }}</span>
+            <i class="fa fa-arrow-right ml-2 transition-transform duration-300 group-hover:translate-x-1"></i>
+          </a>
+        </div>
         {{ end }} {{ end }}
       </div>
     </div>
   </div>
 </section>
+
 {{ end }}
+
+<!-- Initialize AOS animations -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if AOS is available
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        offset: 100,
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+    } else {
+      // Fallback if AOS is not available
+      document.querySelectorAll('[data-aos]').forEach(function(item) {
+        item.style.opacity = 1;
+        item.style.transform = 'translateY(0)';
+      });
+    }
+  });
+</script>
 <!-- /Features -->
 
 <!-- Skills Section -->
 {{ with site.GetPage "sections/skills" }} {{ if .Params.enable }}
-<section class="section">
+<section class="section py-16">
   <div class="container">
+    <!-- Simple Section Header -->
     <div class="row">
       <div class="md:col-10 lg:col-8 xl:col-6 mx-auto mb-12 text-center">
-        <h2 class="mb-4">{{ .Title | markdownify }}</h2>
-        <p>{{ .Params.description | markdownify }}</p>
+        <h2 class="mb-4 text-dark dark:text-darkmode-dark">{{ .Title | markdownify }}</h2>
+        <p class="text-lg text-text dark:text-darkmode-text">{{ .Params.description | markdownify }}</p>
       </div>
     </div>
-    
-    <!-- Skills Categories -->
-    {{ range .Params.skill_categories }}
+
+    <!-- Skills Categories with Clean Styling -->
+    {{ range $categoryIndex, $category := .Params.skill_categories }}
     <div class="mb-16">
-      <h3 class="mb-6 text-center">{{ .name }}</h3>
-      
+      <!-- Simple Category Header -->
+      <h3 class="text-xl font-bold mb-8 text-center text-dark dark:text-darkmode-dark">{{ .name }}</h3>
+
+      <!-- Skills Slider with Clean Cards -->
       <div class="col-12 position-relative skills-slider-container">
         <div class="swiper skills-slider">
           <div class="swiper-wrapper">
             {{ range .skills }}
-            <div class="swiper-slide">
-              <div class="skill-card bg-theme-light dark:bg-darkmode-theme-light rounded-lg px-6 py-6 h-full shadow-lg">
+            <div class="swiper-slide p-2">
+              <div class="skill-card bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-6 h-full border border-border dark:border-darkmode-border">
+                <!-- Card Header -->
                 <div class="flex items-center mb-4">
                   {{ if .icon }}
                   <div class="w-10 h-10 mr-4 flex items-center justify-center text-primary dark:text-darkmode-primary">
                     <i class="{{ .icon }} text-2xl"></i>
                   </div>
                   {{ else if .avatar }}
-                  <div class="text-dark dark:text-white mr-4">
+                  <div class="mr-4">
                     {{ partial "image" (dict "Src" .avatar "Size" "40x40" "Class" "rounded" "Alt" .name) }}
                   </div>
                   {{ end }}
                   <h4 class="h5 font-primary font-semibold text-dark dark:text-darkmode-text">{{ .name }}</h4>
                 </div>
+
+                <!-- Card Content -->
                 <p class="text-sm mb-4 text-text dark:text-darkmode-text">{{ .description | markdownify }}</p>
-                
+
+                <!-- Related Topics with Clean Styling -->
                 {{ if .subtopics }}
                 <div class="mt-4">
                   <h5 class="font-medium mb-2 text-sm text-primary dark:text-darkmode-primary">Related Topics:</h5>
                   <ul class="flex flex-wrap gap-2">
                     {{ range .subtopics }}
-                    <li class="bg-primary bg-opacity-10 dark:bg-opacity-20 text-primary dark:text-darkmode-primary px-2 py-1 rounded text-xs skill-topic">{{ . }}</li>
+                    <li class="bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-2 py-1 rounded text-xs">{{ . }}</li>
                     {{ end }}
                   </ul>
                 </div>
@@ -161,8 +222,8 @@
             </div>
             {{ end }}
           </div>
-          
-          <!-- Navigation Elements -->
+
+          <!-- Simple Navigation Elements -->
           <div class="skills-slider-pagination mt-6 flex items-center justify-center text-center"></div>
           <div class="swiper-button-prev !-left-1 md:!-left-2 lg:!-left-4"></div>
           <div class="swiper-button-next !-right-1 md:!-right-2 lg:!-right-4"></div>

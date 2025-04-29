@@ -1,10 +1,30 @@
 {{ define "main" }}
+<!-- Floating Reading Progress Indicator - Clickable to scroll to top -->
+<div id="floating-progress" class="fixed bottom-4 right-4 z-50 bg-white dark:bg-darkmode-body shadow-lg rounded-full p-1 flex items-center justify-center opacity-0 transition-opacity duration-300 border border-border dark:border-darkmode-border cursor-pointer hover:shadow-xl" style="width: 60px; height: 60px;" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+  <div class="relative w-full h-full">
+    <svg class="w-full h-full" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="16" fill="none" stroke-width="2" stroke="rgba(var(--color-primary-rgb), 0.1)" class="dark:stroke-darkmode-primary/10"></circle>
+      <circle id="progress-circle" cx="18" cy="18" r="16" fill="none" stroke-width="2" stroke="var(--color-primary)" class="dark:stroke-darkmode-primary" stroke-dasharray="100" stroke-dashoffset="100" transform="rotate(-90 18 18)"></circle>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <span id="floating-progress-text" class="text-sm font-bold text-primary dark:text-darkmode-primary">0%</span>
+    </div>
+  </div>
+</div>
+
 <section class="section pt-7">
   <div class="container">
     <div class="row justify-center">
+      <!-- Left Section: Table of Contents -->
+      <aside class="lg:col-3">
+        <div class="sticky top-24">
+          {{ partial "components/innovative-toc.html" . }}
+        </div>
+      </aside>
+
       <!-- Main Content -->
       <article
-        class="lg:col-10 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
+        class="lg:col-9 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
       >
         {{ $image:= .Params.image }} {{ if $image }}
         <div class="mb-10">
@@ -18,21 +38,23 @@
         </h1>
 
         <!-- Project Categories -->
-        <ul class="flex flex-wrap mb-4">
-          <li class="mr-4 inline-block flex items-center">
-            <i class="fa-regular fa-folder mr-2"></i>
-            {{ $categories:= .Params.project_categories }} {{ range $i, $p :=
-            $categories }}
-            <a
-              href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/"
-              class="text-primary dark:text-darkmode-primary"
-            >
-              {{ . | humanize }} {{ if ne $i (sub (len $categories) 1) }}, {{
-              end }}
-            </a>
+        <div class="mb-4">
+          <span class="inline-flex items-center text-text dark:text-darkmode-text">
+            <i class="fas fa-folder-open mr-2"></i>
+            {{ $categories:= .Params.project_categories }}
+            {{ range $i, $category := $categories }}
+              {{ if ne $i 0 }}
+              <span class="mx-2 text-border dark:text-darkmode-border">•</span>
+              {{ end }}
+              <a
+                href="{{ `categories/` | relLangURL }}{{ $category | urlize | lower }}/"
+                class="text-primary dark:text-darkmode-primary hover:underline"
+              >
+                {{ $category | humanize }}
+              </a>
             {{ end }}
-          </li>
-        </ul>
+          </span>
+        </div>
 
         <!-- Project Content -->
         <div class="prose dark:prose-invert max-w-none mb-10">
@@ -104,4 +126,49 @@
     {{ end }}
   </div>
 </section>
+
+<!-- Reading Progress Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Reading progress with floating indicator
+    function updateReadingProgress() {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight - windowHeight;
+      const scrollTop = window.scrollY;
+      const progress = (scrollTop / documentHeight) * 100;
+      const roundedProgress = Math.round(progress);
+
+      // Update floating progress indicator
+      const floatingProgress = document.getElementById('floating-progress');
+      const progressCircle = document.getElementById('progress-circle');
+      const floatingProgressText = document.getElementById('floating-progress-text');
+
+      if (floatingProgress && progressCircle && floatingProgressText) {
+        // Show floating progress when scrolled down
+        if (scrollTop > 300) {
+          floatingProgress.style.opacity = '1';
+        } else {
+          floatingProgress.style.opacity = '0';
+        }
+
+        // Update circle progress
+        const circumference = 2 * Math.PI * 16; // 2πr where r=16
+        const dashoffset = circumference - (progress / 100) * circumference;
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = dashoffset;
+
+        // Update text
+        floatingProgressText.textContent = `${roundedProgress}%`;
+      }
+    }
+
+    // Event listeners
+    window.addEventListener('scroll', function() {
+      updateReadingProgress();
+    });
+
+    // Initialize
+    updateReadingProgress();
+  });
+</script>
 {{ end }}

@@ -1,29 +1,69 @@
-<div
-  class="bg-theme-light dark:bg-darkmode-theme-light rounded p-8 text-center"
->
-  {{ $image:= .Params.image }} {{ if $image }} {{ partial "image" (dict "Src"
-  $image "Alt" .Title "Class" "mx-auto mb-6 rounded" "size" "120x120") }} {{
-  else if .Params.Email }}
-  <img
-    class="mx-auto mb-6 rounded"
-    alt="{{ .Title }}"
-    height="120"
-    width="120"
-    src="https://www.gravatar.com/avatar/{{ md5 .Params.email }}?s=128&pg&d=identicon"
-  />
-  {{ end }}
-  <h4 class="mb-3">
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-  </h4>
-  <p class="mb-4">{{ .Summary }}</p>
-  <ul class="social-icons">
-    {{ range .Params.social }}
-    <li>
-      <a href="{{ .link | safeURL }}" target="_blank" rel="noopener nofollow">
-        <span class="sr-only">{{ .title }}</span>
-        <i class="{{ .icon }}"></i>
-      </a>
-    </li>
-    {{ end }}
-  </ul>
+<div class="author-card relative overflow-hidden rounded-lg border border-border dark:border-darkmode-border transition-all duration-300 hover:border-primary dark:hover:border-darkmode-primary group">
+  <!-- Author content with clean design -->
+  <div class="p-6">
+    <div class="flex flex-col md:flex-row items-center md:items-start">
+      <!-- Author image - clean and simple -->
+      <div class="relative flex-shrink-0 mb-4 md:mb-0 md:mr-5">
+        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 dark:border-darkmode-primary/20">
+          {{ $image:= .Params.image }}
+          {{ if $image }}
+            {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-full h-full object-cover" "size" "96x96") }}
+          {{ else if .Params.Email }}
+            <img
+              class="w-full h-full object-cover"
+              alt="{{ .Title }}"
+              src="https://www.gravatar.com/avatar/{{ md5 .Params.email }}?s=96&pg&d=identicon"
+            />
+          {{ end }}
+        </div>
+
+        <!-- No accent line, just a subtle glow effect -->
+        <div class="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-primary/10 dark:bg-darkmode-primary/10"></div>
+      </div>
+
+      <!-- Author info -->
+      <div class="flex-grow text-center md:text-left">
+        <!-- Author name - simple hover without underline -->
+        <h3 class="text-xl font-bold mb-2">
+          <a href="{{ .RelPermalink }}" class="text-dark dark:text-darkmode-dark hover:text-primary dark:hover:text-darkmode-primary transition-colors duration-300 no-after">
+            {{ .Title }}
+          </a>
+        </h3>
+
+        <!-- Author description - limited to 100 characters with HTML stripped -->
+        <p class="text-sm text-text dark:text-darkmode-text mb-4 line-clamp-2">
+          {{ $plainSummary := .Summary | plainify }}
+          {{ if gt (len $plainSummary) 100 }}
+            {{ slicestr $plainSummary 0 100 }}...
+          {{ else }}
+            {{ $plainSummary }}
+          {{ end }}
+        </p>
+
+        <!-- Social icons with clean hover -->
+        <ul class="flex justify-center md:justify-start space-x-3">
+          {{ range .Params.social }}
+          <li>
+            <a
+              href="{{ .link | safeURL }}"
+              target="_blank"
+              rel="noopener nofollow"
+              class="flex items-center justify-center w-8 h-8 rounded-full bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary transition-all duration-300 hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-dark"
+              aria-label="{{ .title }}"
+            >
+              <i class="{{ .icon }} text-sm"></i>
+            </a>
+          </li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- View profile link -->
+  <div class="bg-theme-light dark:bg-darkmode-theme-light p-3 text-center border-t border-border dark:border-darkmode-border">
+    <a href="{{ .RelPermalink }}" class="text-sm text-primary dark:text-darkmode-primary no-after group-hover:font-bold transition-all duration-300">
+      View Profile <i class="fas fa-arrow-right ml-1 transition-transform duration-300 group-hover:translate-x-1"></i>
+    </a>
+  </div>
 </div>

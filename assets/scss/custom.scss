@@ -14,7 +14,6 @@ a {
   position: relative;
   display: inline-block;
   font-weight: 600;
-  padding-bottom: 4px;
 }
 
 /* Remove decoration for all link states */
@@ -26,8 +25,8 @@ a:active {
   font-weight: 600;
 }
 
-/* Exclude buttons and logos */
-a:not(.btn, .logo-dark a, .logo-light a)::after {
+/* Exclude buttons, logos, and elements with no-after class */
+a:not(.btn, .logo-dark a, .logo-light a, .no-after)::after {
   content: "";
   position: absolute;
   left: 0;
@@ -43,7 +42,7 @@ a:not(.btn, .logo-dark a, .logo-light a)::after {
 }
 
 /* Show and fade in the line */
-a:not(.btn, .logo-dark a, .logo-light a):hover::after {
+a:not(.btn, .logo-dark a, .logo-light a, .no-after):hover::after {
   opacity: 1; /* Fade in the wavy line */
   animation: moveWave 2s linear infinite;
   animation-delay: 0.1s;
@@ -454,31 +453,173 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
   background-image: none !important;
 }
 
-/* Smooth animations for all elements */
-* {
-  transition: background-color 0.3s ease,
-              color 0.3s ease,
-              transform 0.3s ease,
-              box-shadow 0.3s ease,
-              border-color 0.3s ease,
-              opacity 0.3s ease;
+/* Performance optimizations */
+/* Only apply transitions to interactive elements */
+a, button, .btn, .nav-item, .theme-switcher {
+  transition: background-color 0.2s ease,
+              color 0.2s ease,
+              transform 0.2s ease,
+              opacity 0.2s ease;
 }
 
-/* Page transition effect */
-.page-transition {
+/* Minimal transitions for larger elements */
+.card, .skill-card, .content-card, .project-card {
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+/* Optimize transitions for theme changes */
+body, html, .dark, [class*="bg-"] {
+  transition: background-color 0.2s ease,
+              color 0.2s ease;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Slide-in page transition effect */
+.page-transition-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: var(--primary-color);
   z-index: 9999;
-  transform: translateY(100%);
   pointer-events: none;
+  visibility: hidden;
+  will-change: transform, opacity;
 }
 
-.dark .page-transition {
-  background-color: var(--darkmode-primary-color);
+/* Inline code styling - enhanced for better visibility */
+:not(pre) > code {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9em;
+  white-space: nowrap;
+  display: inline-block;
+  margin: 0 0.2em;
+  border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.dark :not(pre) > code {
+  background-color: rgba(var(--darkmode-primary-rgb), 0.15);
+  color: var(--darkmode-primary);
+  border-color: rgba(var(--darkmode-primary-rgb), 0.3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Remove shadows from images in dark mode */
+.dark img {
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Fix for feature images in both light and dark mode */
+.feature-image-container {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.feature-image-container img {
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.dark .feature-image-container {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.dark .feature-image-container img {
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Remove all borders and outlines from images in dark mode */
+.dark * img {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Remove borders from all image containers in dark mode */
+.dark .rounded-lg img,
+.dark .rounded img,
+.dark figure img,
+.dark .content img,
+.dark .card img,
+.dark .post-content img {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Fix for inline code in paragraphs */
+p code, li code, td code, h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Ensure code is visible in all contexts */
+.prose code {
+  background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid rgba(var(--color-primary-rgb), 0.2) !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 3px !important;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
+  font-size: 0.9em !important;
+  white-space: nowrap !important;
+  font-weight: normal !important;
+}
+
+.dark .prose code {
+  background-color: rgba(var(--darkmode-primary-rgb), 0.15) !important;
+  color: var(--darkmode-primary) !important;
+  border-color: rgba(var(--darkmode-primary-rgb), 0.3) !important;
+}
+
+/* Slide-up transition */
+.page-transition-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+  transform: translateY(100%);
+  will-change: transform;
+}
+
+.dark .page-transition-slide {
+  background-color: #000000;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-container,
+  .page-transition-fade {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* Hover effects for cards */
@@ -538,6 +679,24 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Feature CTA Button */
+.btn-feature-cta {
+  transition: all 0.5s ease;
+}
+
+.btn-feature-cta span.absolute {
+  opacity: 0.2;
+}
+
+.btn-feature-cta:hover span.relative {
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.dark .btn-feature-cta span.absolute {
+  opacity: 0.15;
+}
+
 /* Simplified navigation hover effect */
 .nav-item {
   position: relative;
@@ -546,14 +705,27 @@ a:not(.btn, .logo-dark a, .logo-light a):hover::after {
 
 /* Removed the underline animation */
 
-/* Image hover effects */
-img:not(.logo-dark img, .logo-light img) {
+/* Image hover effects - removed for feature sections */
+img:not(.logo-dark img, .logo-light img, .feature-image-container img) {
   transition: transform 0.5s ease, filter 0.5s ease;
 }
 
-img:not(.logo-dark img, .logo-light img):hover {
+img:not(.logo-dark img, .logo-light img, .feature-image-container img):hover {
   transform: scale(1.02);
   filter: brightness(1.05);
+}
+
+/* Feature section images - no effects */
+.feature-image-container img {
+  transition: none;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.feature-image-container img:hover {
+  transform: none;
+  filter: none !important;
+  box-shadow: none !important;
 }
 
 /* Smooth scrolling */

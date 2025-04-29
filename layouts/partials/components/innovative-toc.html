@@ -1,0 +1,393 @@
+<!-- Floating Reading Progress Indicator - Clickable to scroll to top -->
+<div id="floating-progress" class="fixed bottom-4 right-4 z-50 bg-white dark:bg-darkmode-body shadow-lg rounded-full p-1 flex items-center justify-center opacity-0 transition-opacity duration-300 border border-border dark:border-darkmode-border cursor-pointer hover:shadow-xl" style="width: 60px; height: 60px;" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+  <div class="relative w-full h-full">
+    <svg class="w-full h-full" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="16" fill="none" stroke-width="2" stroke="rgba(var(--color-primary-rgb), 0.1)" class="dark:stroke-darkmode-primary/10"></circle>
+      <circle id="progress-circle" cx="18" cy="18" r="16" fill="none" stroke-width="3" stroke="var(--color-primary)" class="dark:stroke-darkmode-primary" stroke-dasharray="100" stroke-dashoffset="100" transform="rotate(-90 18 18)"></circle>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <span id="floating-progress-text" class="text-sm font-bold text-primary dark:text-darkmode-primary">0%</span>
+    </div>
+  </div>
+</div>
+
+<!-- Innovative Table of Contents Component -->
+<div class="innovative-toc mb-8">
+  <!-- TOC Header with Interactive Elements -->
+  <div class="toc-header flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-transparent dark:from-darkmode-primary/10 rounded-t-lg border border-border dark:border-darkmode-border cursor-pointer" id="toc-header" onclick="toggleTOC()">
+    <div class="flex items-center">
+      <div class="toc-icon w-8 h-8 rounded-full bg-primary/10 dark:bg-darkmode-primary/10 flex items-center justify-center mr-3">
+        <i class="fas fa-list-ul text-primary dark:text-darkmode-primary"></i>
+      </div>
+      <h4 class="text-lg font-bold text-dark dark:text-white m-0">Navigate Content</h4>
+    </div>
+    <div class="toc-controls flex items-center">
+      <button id="toc-toggle" class="p-1.5 rounded-full text-sm text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200" aria-label="Toggle table of contents">
+        <i class="fas fa-chevron-down"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- TOC Content with Visual Indicators -->
+  <div id="toc-content" class="toc-content hidden">
+    <div class="toc-wrapper bg-white dark:bg-darkmode-body border-x border-b border-border dark:border-darkmode-border rounded-b-lg p-4">
+      <!-- We'll create a floating progress indicator instead -->
+
+      <!-- Control Buttons -->
+      <div class="flex justify-between mb-4">
+        <div class="flex space-x-2">
+          <button id="toc-expand-all" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Expand all sections">
+            <i class="fas fa-expand-alt mr-1"></i> Expand All
+          </button>
+          <button id="toc-collapse-all" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Collapse all sections">
+            <i class="fas fa-compress-alt mr-1"></i> Collapse All
+          </button>
+        </div>
+        <button id="scroll-to-top" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Scroll to top">
+          <i class="fas fa-arrow-up mr-1"></i> Top
+        </button>
+      </div>
+
+      <!-- Search Box -->
+      <div class="toc-search mb-4">
+        <div class="relative">
+          <input type="text" id="toc-search-input" placeholder="Search in this article..." class="w-full px-4 py-2 rounded-lg border border-border dark:border-darkmode-border bg-theme-light dark:bg-darkmode-theme-light text-text dark:text-darkmode-text focus:outline-none focus:ring-1 focus:ring-primary dark:focus:ring-darkmode-primary">
+          <i class="fas fa-search absolute right-3 top-3 text-text/50 dark:text-darkmode-text/50"></i>
+        </div>
+      </div>
+
+      <!-- TOC Navigation with Visual Hierarchy -->
+      <div class="toc-content-wrapper">
+        <nav id="TableOfContents" class="toc-nav max-h-[50vh] overflow-y-auto pr-2">
+          {{ if eq (len .TableOfContents) 0 }}
+            <div class="text-center py-4 text-text/70 dark:text-darkmode-text/70 italic">
+              <p>No headings found in this content.</p>
+              <p class="text-sm mt-2">The table of contents is automatically generated from headings in the article.</p>
+            </div>
+          {{ else }}
+            {{ .TableOfContents }}
+          {{ end }}
+        </nav>
+      </div>
+
+      <!-- Reading Time Indicator -->
+      <div class="toc-footer mt-4 pt-3 border-t border-border dark:border-darkmode-border flex justify-between items-center text-sm text-text/70 dark:text-darkmode-text/70">
+        <div class="flex items-center">
+          <i class="far fa-clock mr-2"></i>
+          <span id="reading-time">Est. reading time: {{ div .WordCount 200 }} min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC Interactive Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const tocHeader = document.getElementById('toc-header');
+    const tocContent = document.getElementById('toc-content');
+    const tocToggle = document.getElementById('toc-toggle');
+    const tocExpandAll = document.getElementById('toc-expand-all');
+    const tocCollapseAll = document.getElementById('toc-collapse-all');
+    const tocSearchInput = document.getElementById('toc-search-input');
+    const readingProgress = document.getElementById('reading-progress');
+    const progressPercentage = document.getElementById('progress-percentage');
+
+    // Toggle TOC visibility
+    window.toggleTOC = function() {
+      tocContent.classList.toggle('hidden');
+      const icon = tocToggle.querySelector('i');
+      icon.classList.toggle('fa-chevron-down');
+      icon.classList.toggle('fa-chevron-up');
+    };
+
+    // Toggle button click handler
+    tocToggle.addEventListener('click', function(e) {
+      e.stopPropagation(); // Prevent event from bubbling to header
+      toggleTOC();
+    });
+
+    // Expand all sections - fixed to work properly
+    tocExpandAll.addEventListener('click', function(e) {
+      e.stopPropagation(); // Prevent event from bubbling to header
+
+      // First, make sure all nested lists are visible
+      document.querySelectorAll('#TableOfContents ul').forEach(list => {
+        list.style.display = 'block';
+        list.style.maxHeight = 'none';
+        list.style.opacity = '1';
+      });
+
+      // Then expand all items with children
+      document.querySelectorAll('#TableOfContents li.has-children').forEach(item => {
+        item.classList.add('expanded');
+
+        // Update toggle button icons
+        const toggleBtn = item.querySelector('.toc-item-toggle i');
+        if (toggleBtn) {
+          toggleBtn.classList.remove('fa-chevron-right');
+          toggleBtn.classList.add('fa-chevron-down');
+        }
+      });
+    });
+
+    // Collapse all sections - fixed to work properly
+    tocCollapseAll.addEventListener('click', function(e) {
+      e.stopPropagation(); // Prevent event from bubbling to header
+
+      // Update all items with children
+      document.querySelectorAll('#TableOfContents li.has-children').forEach(item => {
+        item.classList.remove('expanded');
+
+        // Update toggle button icons
+        const toggleBtn = item.querySelector('.toc-item-toggle i');
+        if (toggleBtn) {
+          toggleBtn.classList.remove('fa-chevron-down');
+          toggleBtn.classList.add('fa-chevron-right');
+        }
+
+        // Hide nested lists
+        const nestedList = item.querySelector('ul');
+        if (nestedList) {
+          nestedList.style.maxHeight = '0';
+          nestedList.style.opacity = '0';
+          nestedList.style.display = 'block'; // Keep display but hide with opacity and height
+        }
+      });
+    });
+
+    // Search functionality
+    tocSearchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const tocItems = document.querySelectorAll('#TableOfContents a');
+
+      if (searchTerm === '') {
+        // Reset all items
+        tocItems.forEach(item => {
+          item.style.display = '';
+          item.innerHTML = item.textContent;
+
+          // Show parent list items
+          let parent = item.parentElement;
+          while (parent && parent.id !== 'TableOfContents') {
+            if (parent.tagName === 'LI') {
+              parent.style.display = '';
+            }
+            if (parent.tagName === 'UL') {
+              parent.style.display = '';
+              parent.style.maxHeight = '';
+              parent.style.opacity = '';
+            }
+            parent = parent.parentElement;
+          }
+        });
+        return;
+      }
+
+      // Hide all items initially
+      tocItems.forEach(item => {
+        item.style.display = 'none';
+
+        // Hide parent list items
+        let parent = item.parentElement;
+        while (parent && parent.id !== 'TableOfContents') {
+          if (parent.tagName === 'LI') {
+            parent.style.display = 'none';
+          }
+          parent = parent.parentElement;
+        }
+      });
+
+      // Show matching items and their parents
+      tocItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          // Highlight matching text
+          const regex = new RegExp(`(${searchTerm})`, 'gi');
+          item.innerHTML = item.textContent.replace(regex, '<span class="bg-primary/20 dark:bg-darkmode-primary/20">$1</span>');
+
+          item.style.display = 'block';
+
+          // Show parent list items
+          let parent = item.parentElement;
+          while (parent && parent.id !== 'TableOfContents') {
+            if (parent.tagName === 'LI') {
+              parent.style.display = 'block';
+              parent.classList.add('expanded');
+            }
+            if (parent.tagName === 'UL') {
+              parent.style.display = 'block';
+              parent.style.maxHeight = '1000px';
+              parent.style.opacity = '1';
+            }
+            parent = parent.parentElement;
+          }
+        }
+      });
+    });
+
+    // Reading progress with floating indicator
+    function updateReadingProgress() {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight - windowHeight;
+      const scrollTop = window.scrollY;
+      const progress = (scrollTop / documentHeight) * 100;
+      const roundedProgress = Math.round(progress);
+
+      // Update floating progress indicator
+      const floatingProgress = document.getElementById('floating-progress');
+      const progressCircle = document.getElementById('progress-circle');
+      const floatingProgressText = document.getElementById('floating-progress-text');
+
+      if (floatingProgress && progressCircle && floatingProgressText) {
+        // Show floating progress when scrolled down
+        if (scrollTop > 300) {
+          floatingProgress.style.opacity = '1';
+        } else {
+          floatingProgress.style.opacity = '0';
+        }
+
+        // Update circle progress
+        const circumference = 2 * Math.PI * 16; // 2πr where r=16
+        const dashoffset = circumference - (progress / 100) * circumference;
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = dashoffset;
+
+        // Update text
+        floatingProgressText.textContent = `${roundedProgress}%`;
+      }
+    }
+
+    // No scroll to top button anymore - using floating progress indicator instead
+
+    // Add has-children class to list items with nested lists
+    document.querySelectorAll('#TableOfContents li').forEach(item => {
+      if (item.querySelector('ul')) {
+        item.classList.add('has-children');
+
+        // Add toggle functionality to list items with children
+        const link = item.querySelector('a');
+        const nestedList = item.querySelector('ul');
+
+        // Add toggle button
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'toc-item-toggle ml-1 text-xs text-primary dark:text-darkmode-primary';
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        link.appendChild(toggleBtn);
+
+        // Toggle nested list on click
+        toggleBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          item.classList.toggle('expanded');
+          this.querySelector('i').classList.toggle('fa-chevron-right');
+          this.querySelector('i').classList.toggle('fa-chevron-down');
+
+          if (item.classList.contains('expanded')) {
+            nestedList.style.maxHeight = nestedList.scrollHeight + 'px';
+            nestedList.style.opacity = '1';
+          } else {
+            nestedList.style.maxHeight = '0';
+            nestedList.style.opacity = '0';
+          }
+        });
+      }
+    });
+
+    // Add active class to current section
+    function updateActiveSection() {
+      // Get all headings in the content
+      const headings = document.querySelectorAll('.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6');
+
+      // Get all links in the TOC
+      const tocLinks = document.querySelectorAll('#TableOfContents a');
+
+      // Remove all active classes first
+      tocLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.parentElement.classList.contains('active')) {
+          link.parentElement.classList.remove('active');
+        }
+      });
+
+      // Find the current section in view
+      let currentSection = '';
+      headings.forEach(heading => {
+        const rect = heading.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          currentSection = '#' + heading.id;
+        }
+      });
+
+      // Add active class to the current section in TOC
+      if (currentSection) {
+        const activeLink = document.querySelector(`#TableOfContents a[href="${currentSection}"]`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+
+          // Expand parent lists
+          let parent = activeLink.parentElement;
+          while (parent && parent.id !== 'TableOfContents') {
+            if (parent.tagName === 'LI') {
+              parent.classList.add('active');
+              parent.classList.add('expanded');
+
+              // Expand nested list
+              const nestedList = parent.querySelector('ul');
+              if (nestedList) {
+                nestedList.style.maxHeight = nestedList.scrollHeight + 'px';
+                nestedList.style.opacity = '1';
+
+                // Update toggle button
+                const toggleBtn = parent.querySelector('.toc-item-toggle i');
+                if (toggleBtn) {
+                  toggleBtn.classList.remove('fa-chevron-right');
+                  toggleBtn.classList.add('fa-chevron-down');
+                }
+              }
+            }
+            parent = parent.parentElement;
+          }
+        }
+      }
+    }
+
+    // Add smooth scrolling to TOC links
+    document.querySelectorAll('#TableOfContents a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+          // Highlight the target element briefly
+          targetElement.classList.add('toc-highlight');
+          setTimeout(() => {
+            targetElement.classList.remove('toc-highlight');
+          }, 2000);
+
+          // Smooth scroll to the target
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+
+          // Update URL without scrolling
+          history.pushState(null, null, targetId);
+        }
+      });
+    });
+
+    // Event listeners
+    window.addEventListener('scroll', function() {
+      updateReadingProgress();
+      updateActiveSection();
+    });
+
+    // Initialize
+    updateReadingProgress();
+    updateActiveSection();
+  });
+</script>

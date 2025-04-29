@@ -20,7 +20,7 @@
         "primary": "#fff",
         "primary_rgb": "255, 255, 255",
         "body": "#1c1c1c",
-        "border": "#3E3E3E",
+        "border": "#333333",
         "theme_light": "#222222",
         "theme_dark": ""
       },

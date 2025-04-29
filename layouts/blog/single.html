@@ -37,15 +37,8 @@
           </div>
         </div>
 
-        <!-- Collapsible Table of Contents -->
-        <div class="mb-6">
-          <button id="toc-toggle" class="btn btn-primary mb-4">Table of Contents</button>
-          <div id="toc-content" class="hidden">
-            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-              {{ .TableOfContents }}
-            </div>
-          </div>
-        </div>
+        <!-- Innovative Table of Contents -->
+        {{ partial "components/innovative-toc.html" . }}
 
         <!-- Blog Title -->
         <h1 class="text-h1-sm md:text-h1 font-bold text-text dark:text-darkmode-text mb-4">
@@ -78,7 +71,7 @@
           <ul class="flex flex-wrap gap-2">
             {{ range .Params.tags }}
               <li>
-                <a href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/" 
+                <a href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/"
                    class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-dark rounded px-3 py-1 text-sm">
                   {{ . | humanize }}
                 </a>
@@ -117,7 +110,7 @@
         <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
           {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
         </div>
-     
+
      <!-- Comments -->
       {{ if .Site.Config.Services.Disqus.Shortname }}
         <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
@@ -155,7 +148,7 @@
     {{ else }}
       <div class="flex-1 mr-4"></div>
     {{ end }}
-    
+
     {{ with .NextInSection }}
       <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right">
         <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>
@@ -179,17 +172,7 @@
   <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
 {{ end }}
 
-<script>
-  // Toggle Table of Contents visibility
-  document.getElementById('toc-toggle').addEventListener('click', function() {
-    var tocContent = document.getElementById('toc-content');
-    if (tocContent.classList.contains('hidden')) {
-      tocContent.classList.remove('hidden');
-    } else {
-      tocContent.classList.add('hidden');
-    }
-  });
-</script>
+
 
 {{ end }}
 

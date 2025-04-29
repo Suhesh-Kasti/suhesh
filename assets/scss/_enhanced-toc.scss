@@ -2,54 +2,76 @@
 
 /* TOC Container */
 .toc-container {
-  @apply relative overflow-hidden transition-all duration-300 ease-in-out;
+  @apply relative overflow-hidden transition-all duration-300 ease-in-out rounded-lg shadow-sm;
+  background-color: rgba(var(--color-light-rgb), 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.1);
+}
 
-  /* Subtle background pattern */
-  background-image:
-    linear-gradient(to right, rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px);
-  background-size: 20px 20px;
+.dark .toc-container {
+  background-color: rgba(var(--color-dark-rgb), 0.5);
+  border-color: rgba(var(--color-primary-rgb), 0.15);
 }
 
 /* TOC Header */
 .toc-header {
-  @apply flex items-center justify-between mb-4 pb-2 border-b border-border dark:border-darkmode-border;
+  @apply flex items-center justify-between mb-3 p-3 border-b;
+  border-color: rgba(var(--color-primary-rgb), 0.1);
 
   h4 {
-    @apply flex items-center text-lg font-bold text-text dark:text-darkmode-text;
+    @apply flex items-center text-lg font-bold m-0;
+    color: var(--color-dark);
 
     i {
-      @apply mr-2 text-primary dark:text-darkmode-primary;
+      @apply mr-2;
+      color: var(--color-primary);
     }
   }
 
+  .dark & h4 {
+    color: var(--color-light);
+  }
+
   .toc-toggle {
-    @apply p-1 rounded-full text-sm text-primary dark:text-darkmode-primary hover:bg-primary hover:bg-opacity-10 dark:hover:bg-darkmode-primary dark:hover:bg-opacity-10 transition-all duration-200 cursor-pointer;
+    @apply p-1.5 rounded-full text-sm transition-all duration-200 cursor-pointer;
+    color: var(--color-primary);
+    background-color: rgba(var(--color-primary-rgb), 0.05);
+
+    &:hover {
+      background-color: rgba(var(--color-primary-rgb), 0.1);
+    }
   }
 }
 
 /* TOC Navigation */
 .toc-nav {
-  @apply transition-all duration-500 ease-in-out;
-  max-height: 70vh;
+  @apply transition-all duration-300 ease-in-out;
+  max-height: 60vh;
   overflow-y: auto;
 
   /* Scrollbar styling */
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
   }
 
   &::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background-color: rgba(var(--color-dark-rgb), 0.05);
+    border-radius: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-primary bg-opacity-30 dark:bg-darkmode-primary dark:bg-opacity-30 rounded-full;
+    background-color: rgba(var(--color-primary-rgb), 0.2);
+    border-radius: 10px;
   }
 
   /* Hover state for scrollbar */
   &:hover::-webkit-scrollbar-thumb {
-    @apply bg-opacity-60 dark:bg-opacity-60;
+    background-color: rgba(var(--color-primary-rgb), 0.4);
+  }
+
+  /* Fix for TOC visibility */
+  &.hidden {
+    display: none;
   }
 
   /* List styling */
@@ -58,7 +80,8 @@
 
     /* Nested lists */
     ul {
-      @apply mt-1 ml-3 space-y-0.5 border-l-2 border-border dark:border-darkmode-border;
+      @apply mt-1 ml-3 space-y-0.5 pl-2;
+      border-left: 2px solid rgba(var(--color-primary-rgb), 0.1);
 
       /* Animation for nested lists */
       max-height: 0;
@@ -82,7 +105,8 @@
     /* Indicator for items with children */
     &.has-children > a::after {
       content: "›";
-      @apply absolute right-2 text-primary dark:text-darkmode-primary transition-transform duration-300 ease-in-out;
+      @apply absolute right-2 transition-transform duration-300 ease-in-out;
+      color: var(--color-primary);
       transform: rotate(0deg);
     }
 
@@ -94,25 +118,29 @@
 
   /* Links */
   a {
-    @apply block py-1.5 px-3 rounded-md text-text dark:text-darkmode-text text-sm no-underline transition-all duration-200 relative overflow-hidden;
+    @apply block py-2 px-3 rounded-md text-sm no-underline transition-all duration-200 relative overflow-hidden;
+    color: var(--color-text);
 
     /* Hover and active states */
     &:hover, &.active {
-      @apply text-primary dark:text-darkmode-primary bg-theme-light dark:bg-darkmode-theme-light;
+      color: var(--color-primary);
+      background-color: rgba(var(--color-primary-rgb), 0.05);
     }
 
     /* Active indicator */
     &.active::before {
       content: "";
-      @apply absolute left-0 top-0 h-full w-1 bg-primary dark:bg-darkmode-primary;
+      @apply absolute left-0 top-0 h-full w-1;
+      background-color: var(--color-primary);
       animation: slideIn 0.3s ease-out forwards;
     }
 
-    /* Hover animation */
+    /* Hover animation - subtle and performant */
     &:hover::after {
       content: "";
-      @apply absolute inset-0 bg-primary dark:bg-darkmode-primary opacity-5;
-      animation: ripple 0.6s ease-out;
+      @apply absolute inset-0 opacity-5;
+      background-color: var(--color-primary);
+      animation: fadeIn 0.3s ease-out;
     }
   }
 }
@@ -130,54 +158,65 @@
   }
 }
 
-/* Animations */
+/* Animations - optimized for performance */
 @keyframes slideIn {
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
 
-@keyframes ripple {
-  0% {
-    transform: scale(0);
-    opacity: 0.1;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 0.05; }
+}
+
+/* Subtle pulse animation */
+@keyframes subtlePulse {
+  0% { background-color: rgba(var(--color-primary-rgb), 0.05); }
+  50% { background-color: rgba(var(--color-primary-rgb), 0.1); }
+  100% { background-color: rgba(var(--color-primary-rgb), 0.05); }
+}
+
+/* Smooth scroll behavior with reduced motion preference */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
-  }
 }
 
-/* Active section highlight animation */
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(var(--color-primary-rgb), 0); }
-  100% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0); }
-}
-
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Intersection Observer highlight */
+/* Intersection Observer highlight - more subtle and performant */
 .toc-highlight {
   position: relative;
-  animation: pulse 2s ease-in-out;
+  animation: subtlePulse 2s ease-in-out;
+  border-left: 3px solid var(--color-primary);
+  padding-left: 1rem;
+  margin-left: -1rem;
 }
 
-.toc-highlight::after {
+.toc-highlight::before {
   content: '';
   position: absolute;
-  left: -20px;
+  left: -3px;
   top: 0;
   height: 100%;
-  width: 5px;
-  background-color: var(--primary-color);
-  border-radius: 3px;
-  animation: slideInLeft 0.5s ease-out forwards;
+  width: 3px;
+  background-color: var(--color-primary);
+  border-radius: 0;
+  opacity: 1;
 }
 
-@keyframes slideInLeft {
-  from { transform: translateX(-10px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+/* Optimize TOC for mobile */
+@media (max-width: 768px) {
+  .toc-container {
+    position: relative;
+    max-height: 300px;
+    overflow: hidden;
+  }
+
+  .toc-collapsed .toc-nav {
+    max-height: 0;
+  }
+
+  .toc-nav {
+    max-height: 250px;
+  }
 }

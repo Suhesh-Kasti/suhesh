@@ -1,126 +1,298 @@
 {{ define "main" }}
-<section class="min-h-screen flex items-center justify-center py-20 px-4">
-  <div class="container">
-    <div class="max-w-4xl mx-auto bg-theme-light dark:bg-darkmode-theme-light rounded-2xl shadow-2xl overflow-hidden">
-      <div class="grid md:grid-cols-2 gap-0">
-        <!-- Left side: Animation and 404 text -->
-        <div class="p-8 flex flex-col items-center justify-center relative overflow-hidden">
-          <!-- Animated 404 text -->
-          <div class="relative z-10">
-            <div class="text-[10rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500 dark:from-darkmode-primary dark:to-blue-400 animate-pulse">
-              404
-            </div>
+<section class="min-h-screen flex items-center justify-center py-10 px-4 bg-black dark:bg-black relative overflow-hidden" id="cyber-404">
+  <!-- Matrix-like background -->
+  <canvas id="matrix-canvas" class="absolute inset-0 opacity-20"></canvas>
 
-            <!-- Animated elements -->
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10">
-              <div class="absolute w-20 h-20 bg-primary dark:bg-darkmode-primary rounded-full opacity-20 animate-float1"></div>
-              <div class="absolute w-12 h-12 bg-blue-500 dark:bg-blue-400 rounded-full opacity-20 animate-float2" style="left: 20%; top: 20%"></div>
-              <div class="absolute w-16 h-16 bg-green-500 dark:bg-green-400 rounded-full opacity-20 animate-float3" style="right: 20%; bottom: 20%"></div>
-            </div>
+  <!-- Glitch overlay -->
+  <div class="glitch-overlay absolute inset-0 pointer-events-none"></div>
+
+  <div class="container relative z-10">
+    <div class="max-w-4xl mx-auto backdrop-blur-md bg-black/70 dark:bg-black/70 rounded-xl border border-green-500/30 dark:border-green-500/30 overflow-hidden shadow-[0_0_15px_rgba(0,255,0,0.3)] dark:shadow-[0_0_15px_rgba(0,255,0,0.3)]">
+      <!-- Terminal header -->
+      <div class="bg-gray-900 dark:bg-gray-900 p-3 border-b border-green-500/30 dark:border-green-500/30 flex items-center">
+        <div class="flex space-x-2">
+          <div class="w-3 h-3 rounded-full bg-red-500"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div class="w-3 h-3 rounded-full bg-green-500"></div>
+        </div>
+        <div class="flex-grow text-center text-green-500 dark:text-green-500 font-mono text-sm">
+          system-error.sh - Terminal
+        </div>
+      </div>
+
+      <!-- Terminal content -->
+      <div class="p-6 font-mono text-green-500 dark:text-green-500">
+        <!-- Animated typing effect -->
+        <div class="mb-6">
+          <div class="flex items-start mb-2">
+            <span class="mr-2">$</span>
+            <div id="typed-output" class="inline"></div>
           </div>
-
-          <!-- Animated character -->
-          <div class="mt-4 relative">
-            <div class="w-32 h-32 relative">
-              <div class="absolute inset-0 bg-primary dark:bg-darkmode-primary rounded-full opacity-20 animate-ping"></div>
-              <div class="absolute inset-4 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center">
-                <div class="text-4xl">🕵️</div>
-              </div>
-            </div>
+          <div class="hidden" id="typed-strings">
+            <p>ERROR 404: ACCESS_DENIED</p>
+            <p>SECURITY BREACH DETECTED</p>
+            <p>UNAUTHORIZED ACCESS ATTEMPT LOGGED</p>
+            <p>INITIATING COUNTERMEASURES...</p>
           </div>
         </div>
 
-        <!-- Right side: Content -->
-        <div class="p-8 flex flex-col items-center md:items-start justify-center bg-white dark:bg-gray-800">
-          <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center md:text-left text-text dark:text-darkmode-text">
-            Oops! Page Not Found
-          </h1>
+        <!-- ASCII art -->
+        <pre class="text-red-500 dark:text-red-500 text-center mb-6 text-xs sm:text-sm overflow-x-auto cyberpunk-glow">
+  _  _    ___  _  _    ___  ____  ____  ___  ____    _  _  _  _  _  _
+ / )( \  / __)/ )( \  / __)(  _ \(  _ \/ __)(  _ \  / )( \/ )( \/ )( \
+ ) __ ( ( (__ ) __ ( ( (__  )   / )   /\__ \ )   /  \ \/ /\ \/ /\ \/ /
+ \_)(_/  \___)\_)(_/  \___)(__\_)(__\_)(___/(__\_)   \__/  \__/  \__/
+        </pre>
 
-          <div class="space-y-4 mb-8 text-center md:text-left">
-            <p class="text-lg text-text dark:text-darkmode-text">
-              Looks like you've ventured into uncharted territory!
-            </p>
-            <p class="text-text dark:text-darkmode-text">
-              The page you're looking for has either been moved, deleted, or never existed in the first place. Maybe it's hiding in another dimension? 🌌
-            </p>
-            <p class="text-text dark:text-darkmode-text italic">
-              "Not all those who wander are lost, but you definitely are." - J.R.R. Tolkien (probably)
-            </p>
+        <!-- Error details -->
+        <div class="mb-6 space-y-2">
+          <div class="flex">
+            <span class="text-white dark:text-white mr-2">[ERROR]:</span>
+            <span class="typing-effect">The requested resource could not be found on this server.</span>
           </div>
+          <div class="flex">
+            <span class="text-white dark:text-white mr-2">[TRACE]:</span>
+            <span class="typing-effect-2">Possible security breach detected. IP logged: <span id="user-ip">127.0.0.1</span></span>
+          </div>
+          <div class="flex">
+            <span class="text-white dark:text-white mr-2">[STATUS]:</span>
+            <span class="typing-effect-3">Initiating defensive protocols...</span>
+          </div>
+        </div>
 
-          <div class="flex flex-col sm:flex-row gap-4 w-full">
-            <a href="{{ site.BaseURL | relLangURL }}" class="btn btn-primary">
-              <i class="fas fa-home mr-2"></i> Back to Home
-            </a>
-            <button onclick="window.history.back()" class="btn btn-outline-primary">
-              <i class="fas fa-arrow-left mr-2"></i> Go Back
+        <!-- Interactive terminal -->
+        <div class="mb-6 p-4 bg-black/50 dark:bg-black/50 border border-green-500/30 dark:border-green-500/30 rounded">
+          <div class="mb-2">
+            <span class="text-yellow-500 dark:text-yellow-500">SYSTEM:</span> To continue, please select an option:
+          </div>
+          <div class="space-y-2 mt-4">
+            <button id="decrypt-btn" class="w-full text-left p-2 bg-green-500/10 dark:bg-green-500/10 hover:bg-green-500/20 dark:hover:bg-green-500/20 border border-green-500/30 dark:border-green-500/30 rounded transition-all duration-300">
+              <span class="text-yellow-500 dark:text-yellow-500">[1]</span> DECRYPT_LOCATION
             </button>
+            <button id="override-btn" class="w-full text-left p-2 bg-green-500/10 dark:bg-green-500/10 hover:bg-green-500/20 dark:hover:bg-green-500/20 border border-green-500/30 dark:border-green-500/30 rounded transition-all duration-300">
+              <span class="text-yellow-500 dark:text-yellow-500">[2]</span> OVERRIDE_SECURITY
+            </button>
+            <button id="return-btn" class="w-full text-left p-2 bg-green-500/10 dark:bg-green-500/10 hover:bg-green-500/20 dark:hover:bg-green-500/20 border border-green-500/30 dark:border-green-500/30 rounded transition-all duration-300">
+              <span class="text-yellow-500 dark:text-yellow-500">[3]</span> RETURN_TO_SAFETY
+            </button>
+          </div>
+        </div>
+
+        <!-- Response area -->
+        <div id="response-area" class="hidden mb-6 p-4 bg-black/50 dark:bg-black/50 border border-green-500/30 dark:border-green-500/30 rounded">
+          <div id="decrypt-response" class="hidden">
+            <div class="text-yellow-500 dark:text-yellow-500 mb-2">DECRYPTION SUCCESSFUL:</div>
+            <div class="text-white dark:text-white">You are currently trying to access a non-existent page. The system cannot find what you're looking for.</div>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <a href="{{ site.BaseURL | relLangURL }}" class="text-center p-2 bg-green-500/20 dark:bg-green-500/20 hover:bg-green-500/30 dark:hover:bg-green-500/30 border border-green-500/30 dark:border-green-500/30 rounded transition-all duration-300">
+                <i class="fas fa-home mr-2"></i> Return Home
+              </a>
+              <button onclick="window.history.back()" class="text-center p-2 bg-green-500/20 dark:bg-green-500/20 hover:bg-green-500/30 dark:hover:bg-green-500/30 border border-green-500/30 dark:border-green-500/30 rounded transition-all duration-300">
+                <i class="fas fa-arrow-left mr-2"></i> Go Back
+              </button>
+            </div>
+          </div>
+          <div id="override-response" class="hidden">
+            <div class="text-red-500 dark:text-red-500 mb-2">ACCESS DENIED:</div>
+            <div class="text-white dark:text-white">Security override attempt detected. This incident has been reported.</div>
+            <div class="mt-4 flex justify-center">
+              <a href="{{ site.BaseURL | relLangURL }}" class="text-center p-2 bg-red-500/20 dark:bg-red-500/20 hover:bg-red-500/30 dark:hover:bg-red-500/30 border border-red-500/30 dark:border-red-500/30 rounded transition-all duration-300">
+                <i class="fas fa-exclamation-triangle mr-2"></i> Emergency Exit
+              </a>
+            </div>
+          </div>
+          <div id="return-response" class="hidden">
+            <div class="text-green-500 dark:text-green-500 mb-2">SAFE ROUTE ESTABLISHED:</div>
+            <div class="text-white dark:text-white">Redirecting to secure location...</div>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <a href="/cheatsheets/" class="text-center p-2 bg-green-500/20 dark:bg-green-500/20 hover:bg-green-500/30 dark:hover:bg-green-500/30 border border-green-500/30 dark:border-green-500/30 rounded transition-all duration-300">
+                <i class="fas fa-file-code mr-2"></i> Cheatsheets
+              </a>
+              <a href="/checklists/" class="text-center p-2 bg-green-500/20 dark:bg-green-500/20 hover:bg-green-500/30 dark:hover:bg-green-500/30 border border-green-500/30 dark:border-green-500/30 rounded transition-all duration-300">
+                <i class="fas fa-clipboard-check mr-2"></i> Checklists
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Random suggestions -->
-    <div class="mt-12 max-w-2xl mx-auto text-center">
-      <h3 class="text-xl font-bold mb-4 text-text dark:text-darkmode-text">While you're here, maybe check out:</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <a href="/checklists/" class="p-4 bg-theme-light dark:bg-darkmode-theme-light rounded-lg hover:shadow-md transition-shadow">
-          <i class="fas fa-clipboard-check text-2xl text-primary dark:text-darkmode-primary mb-2"></i>
-          <h4 class="font-bold">Checklists</h4>
-          <p class="text-sm">Explore our organized checklists</p>
-        </a>
-        <a href="/cheatsheets/" class="p-4 bg-theme-light dark:bg-darkmode-theme-light rounded-lg hover:shadow-md transition-shadow">
-          <i class="fas fa-file-code text-2xl text-primary dark:text-darkmode-primary mb-2"></i>
-          <h4 class="font-bold">Cheatsheets</h4>
-          <p class="text-sm">Browse helpful reference guides</p>
-        </a>
-      </div>
+    <!-- Security warning -->
+    <div class="mt-8 text-center text-green-500/70 dark:text-green-500/70 font-mono text-sm max-w-2xl mx-auto">
+      <p class="mb-2">WARNING: This is a secure system. Unauthorized access is prohibited and may result in legal action.</p>
+      <p>All activities on this system are logged and monitored.</p>
     </div>
   </div>
 </section>
 
-<!-- Add animations -->
+<!-- Add cybersecurity 404 styles and scripts -->
 <style>
-  @keyframes float1 {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(20px, 10px) rotate(5deg); }
-    50% { transform: translate(10px, 20px) rotate(10deg); }
-    75% { transform: translate(-10px, 10px) rotate(5deg); }
+  /* Cyberpunk glow effect */
+  .cyberpunk-glow {
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
   }
 
-  @keyframes float2 {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(-15px, -10px) rotate(-5deg); }
-    50% { transform: translate(-5px, -15px) rotate(-10deg); }
-    75% { transform: translate(10px, -5px) rotate(-5deg); }
+  /* Glitch overlay */
+  .glitch-overlay {
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
   }
 
-  @keyframes float3 {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(10px, -15px) rotate(5deg); }
-    50% { transform: translate(15px, -5px) rotate(10deg); }
-    75% { transform: translate(5px, -10px) rotate(5deg); }
+  /* Typing effect animations */
+  .typing-effect, .typing-effect-2, .typing-effect-3 {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #4ade80;
+    width: 0;
   }
 
-  .animate-float1 {
-    animation: float1 8s ease-in-out infinite;
+  .typing-effect {
+    animation: typing 2s steps(40, end) forwards;
+    animation-delay: 1s;
   }
 
-  .animate-float2 {
-    animation: float2 9s ease-in-out infinite;
+  .typing-effect-2 {
+    animation: typing 2s steps(40, end) forwards;
+    animation-delay: 3s;
   }
 
-  .animate-float3 {
-    animation: float3 10s ease-in-out infinite;
+  .typing-effect-3 {
+    animation: typing 2s steps(40, end) forwards;
+    animation-delay: 5s;
   }
 
-  .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+  /* Button hover effects */
+  #cyber-404 button:hover, #cyber-404 a:hover {
+    text-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Matrix background effect
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Characters for matrix effect
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const charArray = chars.split('');
+
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+
+    // Array to track y position of each column
+    const drops = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = 1;
+    }
+
+    // Draw the matrix effect
+    function drawMatrix() {
+      // Semi-transparent black to create trail effect
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Green text
+      ctx.fillStyle = '#0f0';
+      ctx.font = fontSize + 'px monospace';
+
+      // Draw characters
+      for (let i = 0; i < drops.length; i++) {
+        // Random character
+        const char = charArray[Math.floor(Math.random() * charArray.length)];
+
+        // Draw character
+        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+        // Move to next position or reset to top
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    // Animation loop
+    setInterval(drawMatrix, 50);
+
+    // Typed.js effect
+    if (typeof Typed !== 'undefined') {
+      new Typed('#typed-output', {
+        stringsElement: '#typed-strings',
+        typeSpeed: 50,
+        backSpeed: 30,
+        backDelay: 1000,
+        loop: false,
+        showCursor: true,
+        cursorChar: '█'
+      });
+    } else {
+      // Fallback if Typed.js is not available
+      document.getElementById('typed-output').textContent = 'ERROR 404: ACCESS_DENIED';
+    }
+
+    // Show user's IP (or a fake one for privacy)
+    document.getElementById('user-ip').textContent = '192.168.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
+
+    // Button interactions
+    document.getElementById('decrypt-btn').addEventListener('click', function() {
+      document.getElementById('response-area').classList.remove('hidden');
+      document.getElementById('decrypt-response').classList.remove('hidden');
+      document.getElementById('override-response').classList.add('hidden');
+      document.getElementById('return-response').classList.add('hidden');
+    });
+
+    document.getElementById('override-btn').addEventListener('click', function() {
+      document.getElementById('response-area').classList.remove('hidden');
+      document.getElementById('decrypt-response').classList.add('hidden');
+      document.getElementById('override-response').classList.remove('hidden');
+      document.getElementById('return-response').classList.add('hidden');
+
+      // Add glitch effect on override attempt
+      document.body.classList.add('glitch');
+      setTimeout(() => {
+        document.body.classList.remove('glitch');
+      }, 1000);
+    });
+
+    document.getElementById('return-btn').addEventListener('click', function() {
+      document.getElementById('response-area').classList.remove('hidden');
+      document.getElementById('decrypt-response').classList.add('hidden');
+      document.getElementById('override-response').classList.add('hidden');
+      document.getElementById('return-response').classList.remove('hidden');
+    });
+
+    // Resize canvas on window resize
+    window.addEventListener('resize', function() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  });
+</script>
+
+<!-- Include Typed.js for terminal typing effect -->
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+<!-- Force the 404 page to be generated correctly -->
+<script>
+  // This script ensures the 404 page is properly generated
+  console.log("404 page loaded");
+</script>
 {{ end }}

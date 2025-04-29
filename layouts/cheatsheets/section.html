@@ -1,0 +1,72 @@
+{{ define "main" }} {{ partial "page-header" . }}
+<section class="section">
+  <div class="container">
+    <!-- Introduction Section -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h1 class="h2 mb-6">{{ .Title }} Cheatsheets</h1>
+      {{ with .Description }}
+      <p class="text-lg mb-8">{{ . }}</p>
+      {{ else }}
+      <p class="text-lg mb-8">Access our comprehensive collection of {{ .Title }} cheatsheets. These quick reference guides will help you master various aspects of {{ .Title }}.</p>
+      {{ end }}
+      <div class="flex justify-center space-x-4">
+        <a href="/cheatsheets/" class="btn btn-outline-primary">Back to All Cheatsheets</a>
+      </div>
+    </div>
+
+    <!-- Display subfolders if any -->
+    {{ $subfolders := where .Pages "Kind" "section" }}
+    {{ if $subfolders }}
+    <div id="subcategories" class="mb-20">
+      <div class="flex items-center mb-10">
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+        <h2 class="text-2xl font-bold px-6">Subcategories</h2>
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+      </div>
+      <div class="row mb-16">
+        {{ range $subfolders }}
+        <div class="md:col-6 lg:col-4 mb-8">
+          <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-primary dark:border-darkmode-primary group">
+            <div class="flex items-center justify-center mb-6">
+              <div class="w-20 h-20 flex items-center justify-center rounded-full bg-primary bg-opacity-10 dark:bg-opacity-20 group-hover:bg-opacity-20 dark:group-hover:bg-opacity-30 transition-all duration-300">
+                <i class="fas fa-folder-open text-4xl text-primary dark:text-darkmode-primary"></i>
+              </div>
+            </div>
+            <h4 class="mb-3 text-xl font-bold group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors duration-300">
+              <a href="{{ .RelPermalink }}" class="block">{{ .Title }}</a>
+            </h4>
+            <p class="mb-4 text-text dark:text-darkmode-text">{{ .Description }}</p>
+            <div class="mt-6">
+              <a href="{{ .RelPermalink }}" class="inline-flex items-center text-primary dark:text-darkmode-primary hover:underline">
+                <span>Browse Contents</span>
+                <i class="fas fa-arrow-right ml-2 text-sm"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    <!-- Display regular pages -->
+    {{ $regularPages := where .Pages "Kind" "page" }}
+    {{ if $regularPages }}
+    <div id="cheatsheets">
+      <div class="flex items-center mb-10">
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+        <h2 class="text-2xl font-bold px-6">{{ .Title }} Cheatsheets</h2>
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+      </div>
+      <div class="row">
+        {{ range $regularPages }}
+        <div class="md:col-6 lg:col-4 mb-14">
+          {{ partial "components/cheatsheets" . }}
+        </div>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

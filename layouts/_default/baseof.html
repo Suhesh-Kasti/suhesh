@@ -149,57 +149,34 @@
         cursor: none !important;
       }
 
-      .cursor-dot,
-      .cursor-dot-outline {
-        pointer-events: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        opacity: 1;
-        transition: opacity 0.3s ease-in-out;
-        z-index: 9999;
+      /* Custom cursor variables */
+      :root {
+        --circleMultiplier: 3;
+        --circleSize: calc(calc(var(--circleMultiplier) * 1rem));
+        --cursor-color: #121212;
       }
 
-      .cursor-dot {
-        width: 8px;
-        height: 8px;
-        background-color: #121212; /* Fallback */
-        background-color: var(--primary-color, #121212);
-      }
-
-      .dark .cursor-dot {
-        background-color: #fff;
-      }
-
-      .cursor-dot-outline {
-        width: 40px;
-        height: 40px;
-        background-color: rgba(18, 18, 18, 0.1); /* Fallback */
-        background-color: rgba(var(--primary-color-rgb, 18, 18, 18), 0.1);
-        border: 2px solid var(--primary-color, #121212);
-      }
-
-      .dark .cursor-dot-outline {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-color: #fff;
+      .dark {
+        --cursor-color: #ffffff;
       }
 
       /* Hide cursor on touch devices */
       @media (hover: none) and (pointer: coarse) {
-        .cursor-dot,
-        .cursor-dot-outline {
-          display: none;
+        #circle {
+          display: none !important;
         }
 
-        body {
-          cursor: auto;
+        body,
+        a,
+        button,
+        input,
+        textarea,
+        select,
+        [role="button"],
+        .btn {
+          cursor: auto !important;
         }
       }
-
-      /* Adjust cursor on clickable elements - removed default cursor */
-      /* All elements now use cursor: none */
     </style>
 
     <script type="text/javascript">
@@ -293,149 +270,15 @@
       });
     </script>
 
-    <!-- Direct inclusion of cursor.js to ensure it loads after GSAP -->
+    <!-- Note: Custom cursor is now fully handled by cursor.js -->
     <script>
-      // Wait for page to fully load including all resources
-      window.addEventListener('load', function() {
-        // Check if GSAP is loaded
-        if (typeof gsap !== 'undefined') {
-          // Create cursor elements
-          const cursorDot = document.createElement('div');
-          const cursorDotOutline = document.createElement('div');
-
-          cursorDot.classList.add('cursor-dot');
-          cursorDotOutline.classList.add('cursor-dot-outline');
-
-          document.body.appendChild(cursorDot);
-          document.body.appendChild(cursorDotOutline);
-
-          console.log('Custom cursor elements added to the DOM');
-
-          // Only run on non-touch devices
-          if (window.matchMedia("(hover: hover)").matches) {
-            // Initialize cursor position
-            let cursorVisible = true;
-            let cursorEnlarged = false;
-
-            // Mouse movement position
-            let endX = 0;
-            let endY = 0;
-
-            // Initial cursor position
-            gsap.set(cursorDot, { xPercent: -50, yPercent: -50 });
-            gsap.set(cursorDotOutline, { xPercent: -50, yPercent: -50 });
-
-            // Smooth cursor animation with GSAP
-            const moveCursor = gsap.quickTo([cursorDot, cursorDotOutline], "x", {
-              duration: 0.5,
-              ease: "power3.out"
-            });
-
-            const moveCursorY = gsap.quickTo([cursorDot, cursorDotOutline], "y", {
-              duration: 0.5,
-              ease: "power3.out"
-            });
-
-            // Track mouse movement
-            document.addEventListener('mousemove', (e) => {
-              endX = e.clientX;
-              endY = e.clientY;
-
-              moveCursor(endX);
-              moveCursorY(endY);
-
-              // Show cursor when it moves
-              if (!cursorVisible) {
-                toggleCursorVisibility();
-              }
-            });
-
-            // Toggle cursor visibility
-            function toggleCursorVisibility(visible = true) {
-              if (visible) {
-                gsap.to([cursorDot, cursorDotOutline], {
-                  opacity: 1,
-                  duration: 0.3,
-                  ease: "power2.out"
-                });
-                cursorVisible = true;
-              } else {
-                gsap.to([cursorDot, cursorDotOutline], {
-                  opacity: 0,
-                  duration: 0.3,
-                  ease: "power2.out"
-                });
-                cursorVisible = false;
-              }
-            }
-
-            // Hide cursor when it leaves the screen
-            document.addEventListener('mouseout', () => {
-              toggleCursorVisibility(false);
-            });
-
-            document.addEventListener('mouseenter', () => {
-              toggleCursorVisibility(true);
-            });
-
-            // Modify cursor on clickable elements
-            const clickables = document.querySelectorAll('a, button, input, textarea, select, [role="button"], .btn, .swiper-button-prev, .swiper-button-next, .swiper-pagination-bullet');
-
-            clickables.forEach((element) => {
-              element.addEventListener('mouseover', () => {
-                if (!cursorEnlarged) {
-                  cursorEnlarged = true;
-                  gsap.to(cursorDot, {
-                    scale: 1.5,
-                    duration: 0.3,
-                    ease: "power2.out"
-                  });
-                  gsap.to(cursorDotOutline, {
-                    scale: 1.2,
-                    duration: 0.3,
-                    ease: "power2.out"
-                  });
-                }
-              });
-
-              element.addEventListener('mouseout', () => {
-                if (cursorEnlarged) {
-                  cursorEnlarged = false;
-                  gsap.to([cursorDot, cursorDotOutline], {
-                    scale: 1,
-                    duration: 0.3,
-                    ease: "power2.out"
-                  });
-                }
-              });
-            });
-
-            // Add effect on mouse down
-            document.addEventListener('mousedown', () => {
-              gsap.to(cursorDot, {
-                scale: 0.8,
-                duration: 0.2
-              });
-              gsap.to(cursorDotOutline, {
-                scale: 0.8,
-                duration: 0.2
-              });
-            });
-
-            document.addEventListener('mouseup', () => {
-              gsap.to(cursorDot, {
-                scale: cursorEnlarged ? 1.5 : 1,
-                duration: 0.2
-              });
-              gsap.to(cursorDotOutline, {
-                scale: cursorEnlarged ? 1.2 : 1,
-                duration: 0.2
-              });
-            });
-          }
-        } else {
-          console.error('GSAP library not loaded. Custom cursor requires GSAP.');
-        }
+      // This script ensures no duplicate cursors are created
+      document.addEventListener('DOMContentLoaded', function() {
+        // Remove any existing cursor elements except our main one
+        setTimeout(() => {
+          const cursors = document.querySelectorAll('.cursor-dot, .cursor-dot-outline');
+          cursors.forEach(cursor => cursor.remove());
+        }, 100);
       });
     </script>
   </body>

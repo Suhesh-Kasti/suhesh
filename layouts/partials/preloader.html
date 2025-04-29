@@ -1,16 +1,3 @@
 {{ $scratch := newScratch }}
 
-{{ if site.Params.preloader.enable }}
-  <div class="preloader">
-    <div class="loader"></div>
-  </div>
-
-  <script>
-    (function () {
-      "use strict";
-      window.addEventListener("load", function () {
-        document.querySelector(".preloader").style.display = "none";
-      });
-    })();
-  </script>
-{{ end }}
+<!-- Preloader has been removed -->

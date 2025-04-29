@@ -9,9 +9,9 @@
       {{ range $name, $items := site.Taxonomies.tags }}
       <li class="inline-block">
         <a
-          class="hover:bg-primary dark:bg-darkmode-body dark:hover:bg-darkmode-primary dark:hover:text-dark {{ if (and (eq $.Page.Kind `term`) (eq $.Page.Type `tags`) (eq $.Page.Title .Page.Title)) }}
+          class="m-1 block rounded bg-white dark:bg-darkmode-body px-3 py-1 text-text dark:text-darkmode-text hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white {{ if (and (eq $.Page.Kind `term`) (eq $.Page.Type `tags`) (eq $.Page.Title .Page.Title)) }}
                   active
-                {{ end }} m-1 block rounded bg-white px-3 py-1 hover:text-white"
+                {{ end }}"
           href="{{ .Page.RelPermalink }}"
         >
           {{ .Page.Title }}

@@ -1,50 +1,120 @@
 {{ define "main" }}
 <section class="section-sm pb-0">
   <div class="container">
-    <div
-      class="row border-border dark:border-darkmode-border justify-center border-b pb-14"
-    >
-      <div class="lg:col-4 text-center">
-        {{ $image:= .Params.image }} {{ if $image }} {{ partial "image" (dict
-        "Src" $image "Alt" .Title "Class" "mx-auto" "Size" "200x200") }} {{ else
-        if .Params.Email }}
-        <img
-          class="mx-auto"
-          alt="{{ .Title }}"
-          height="200"
-          width="200"
-          src="https://www.gravatar.com/avatar/{{ md5 .Params.Email }}?s=128&pg&d=identicon"
-        />
-        {{ end }}
-        <a href="{{ .Params.link | safeURL }}">
-          <h1 class="h3 mt-10">{{ .Title }}</h1>
-        </a>
-        <div class="content mt-6">{{ .Content }}</div>
-        <ul class="social-icons ml-4 mt-10 text-center">
-          {{ range .Params.social }}
-          <li>
-            <a
-              href="{{ .link | safeURL }}"
-              target="_blank"
-              rel="noopener nofollow"
-            >
-              <span class="sr-only">{{ .title }}</span>
-              <i class="{{ .icon }}"></i>
-            </a>
-          </li>
+    <!-- Author profile section -->
+    <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg overflow-hidden mb-16">
+      <div class="md:flex">
+        <!-- Left column: Author image and social links -->
+        <div class="md:w-1/3 bg-gradient-to-br from-primary/10 to-primary/5 dark:from-darkmode-primary/10 dark:to-darkmode-primary/5 p-8 flex flex-col items-center justify-center relative">
+          <!-- Decorative elements -->
+          <div class="absolute top-0 left-0 w-20 h-20 bg-primary/10 dark:bg-darkmode-primary/10 rounded-br-full"></div>
+          <div class="absolute bottom-0 right-0 w-20 h-20 bg-primary/10 dark:bg-darkmode-primary/10 rounded-tl-full"></div>
+
+          <!-- Author image with frame -->
+          <div class="relative z-10 mb-6 rounded-full p-1 bg-gradient-to-r from-primary to-primary/70 dark:from-darkmode-primary dark:to-darkmode-primary/70 shadow-xl">
+            {{ $image:= .Params.image }}
+            {{ if $image }}
+              {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "rounded-full w-48 h-48 object-cover border-4 border-white dark:border-darkmode-body" "Size" "200x200") }}
+            {{ else if .Params.Email }}
+              <img
+                class="rounded-full w-48 h-48 object-cover border-4 border-white dark:border-darkmode-body"
+                alt="{{ .Title }}"
+                src="https://www.gravatar.com/avatar/{{ md5 .Params.Email }}?s=128&pg&d=identicon"
+              />
+            {{ end }}
+          </div>
+
+          <!-- Social links -->
+          <ul class="flex flex-wrap justify-center gap-4 mt-6 mb-4">
+            {{ range .Params.social }}
+            <li>
+              <a
+                href="{{ .link | safeURL }}"
+                target="_blank"
+                rel="noopener nofollow"
+                class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-darkmode-body shadow-sm transition-all duration-300 hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-dark"
+              >
+                <span class="sr-only">{{ .title }}</span>
+                <i class="{{ .icon }}"></i>
+              </a>
+            </li>
+            {{ end }}
+          </ul>
+
+          <!-- Contact link -->
+          {{ if .Params.link }}
+          <a href="{{ .Params.link | safeURL }}" class="btn btn-sm btn-primary mt-4">
+            <i class="fas fa-paper-plane mr-2"></i>Contact
+          </a>
           {{ end }}
-        </ul>
+        </div>
+
+        <!-- Right column: Author info and bio -->
+        <div class="md:w-2/3 p-8">
+          <h1 class="text-3xl font-bold mb-4 text-text dark:text-darkmode-text">{{ .Title }}</h1>
+
+          {{ if .Params.description }}
+          <p class="text-lg text-text/80 dark:text-darkmode-text/80 mb-6 font-light italic">
+            "{{ .Params.description }}"
+          </p>
+          {{ end }}
+
+          <div class="prose dark:prose-invert max-w-none">
+            {{ .Content }}
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="row pb-16 pt-14">
-      {{ $filterByAuthor := where site.RegularPages "Params.author" "==" .Title
-      }} {{ range $filterByAuthor }}
-      <div class="md:col-6 lg:col-4 mb-12">
-        {{ partial "components/blog-card" . }}
+    <!-- Author's posts section -->
+    <div class="mb-16">
+      <div class="flex items-center mb-10">
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+        <h2 class="text-2xl font-bold px-6">Articles by {{ .Title }}</h2>
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
       </div>
-      {{ end }}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {{ $filterByAuthor := where site.RegularPages "Params.author" "==" .Title }}
+        {{ if $filterByAuthor }}
+          {{ range $index, $post := $filterByAuthor }}
+            <div class="post-item" data-aos="fade-up" data-aos-delay="{{ mul $index 100 }}" data-aos-duration="600">
+              {{ partial "components/blog-card" . }}
+            </div>
+          {{ end }}
+        {{ else }}
+          <div class="col-span-3 text-center py-16">
+            <p class="text-lg text-text/70 dark:text-darkmode-text/70">No articles found by this author yet.</p>
+          </div>
+        {{ end }}
+      </div>
+    </div>
+
+    <!-- Back to authors link -->
+    <div class="text-center mb-10">
+      <a href="{{ "authors" | relLangURL }}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left mr-2"></i>Back to All Authors
+      </a>
     </div>
   </div>
 </section>
+
+<!-- Initialize AOS animations -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if AOS is available
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        once: true,
+        offset: 50
+      });
+    } else {
+      // Fallback if AOS is not available
+      document.querySelectorAll('.post-item').forEach(function(item) {
+        item.style.opacity = 1;
+        item.style.transform = 'translateY(0)';
+      });
+    }
+  });
+</script>
 {{ end }}

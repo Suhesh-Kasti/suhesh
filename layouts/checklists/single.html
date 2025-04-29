@@ -1,4 +1,17 @@
 {{ define "main" }}
+<!-- Floating Reading Progress Indicator - Clickable to scroll to top -->
+<div id="floating-progress" class="fixed bottom-4 right-4 z-50 bg-white dark:bg-darkmode-body shadow-lg rounded-full p-1 flex items-center justify-center opacity-0 transition-opacity duration-300 border border-border dark:border-darkmode-border cursor-pointer hover:shadow-xl" style="width: 60px; height: 60px;" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+  <div class="relative w-full h-full">
+    <svg class="w-full h-full" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="16" fill="none" stroke-width="2" stroke="rgba(var(--color-primary-rgb), 0.1)" class="dark:stroke-darkmode-primary/10"></circle>
+      <circle id="progress-circle" cx="18" cy="18" r="16" fill="none" stroke-width="2" stroke="var(--color-primary)" class="dark:stroke-darkmode-primary" stroke-dasharray="100" stroke-dashoffset="100" transform="rotate(-90 18 18)"></circle>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <span id="floating-progress-text" class="text-sm font-bold text-primary dark:text-darkmode-primary">0%</span>
+    </div>
+  </div>
+</div>
+
 <section class="container mx-auto px-4 py-8">
   <!-- Breadcrumb Navigation -->
   <div class="mb-6">
@@ -37,114 +50,12 @@
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
     <!-- Left Section: Table of Contents -->
     <aside class="lg:col-span-1">
-      <div class="sticky top-24 p-6 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg border-0 toc-container" id="toc-container">
-        <div class="toc-header">
-          <h4>
-            <i class="fas fa-list-ul"></i>
-            Table of Contents
-          </h4>
-          <button class="toc-toggle" id="toc-toggle" aria-label="Toggle table of contents">
-            <i class="fas fa-chevron-up"></i>
-          </button>
-        </div>
-        <nav id="TableOfContents" class="toc-nav">{{ .TableOfContents }}</nav>
+      <div class="sticky top-24">
+        {{ partial "components/innovative-toc.html" . }}
       </div>
     </aside>
 
-    <!-- TOC Toggle Script -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Get TOC elements
-        const tocContainer = document.getElementById('toc-container');
-        const tocToggle = document.getElementById('toc-toggle');
-        const tocNav = document.getElementById('TableOfContents');
 
-        // Add toggle functionality
-        tocToggle.addEventListener('click', function() {
-          tocContainer.classList.toggle('toc-collapsed');
-        });
-
-        // Add active class to current section
-        const addActiveClass = function() {
-          // Get all headings in the content
-          const headings = document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main h6');
-
-          // Get all links in the TOC
-          const tocLinks = document.querySelectorAll('#TableOfContents a');
-
-          // Remove all active classes first
-          tocLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.parentElement.classList.contains('active')) {
-              link.parentElement.classList.remove('active');
-            }
-          });
-
-          // Find the current section in view
-          let currentSection = '';
-          headings.forEach(heading => {
-            const rect = heading.getBoundingClientRect();
-            if (rect.top <= 100 && rect.bottom >= 100) {
-              currentSection = '#' + heading.id;
-            }
-          });
-
-          // Add active class to the current section in TOC
-          if (currentSection) {
-            const activeLink = document.querySelector(`#TableOfContents a[href="${currentSection}"]`);
-            if (activeLink) {
-              activeLink.classList.add('active');
-              let parent = activeLink.parentElement;
-              while (parent && parent.id !== 'TableOfContents') {
-                if (parent.tagName === 'LI') {
-                  parent.classList.add('active');
-                }
-                parent = parent.parentElement;
-              }
-            }
-          }
-        };
-
-        // Add has-children class to list items with nested lists
-        const listItems = document.querySelectorAll('#TableOfContents li');
-        listItems.forEach(item => {
-          if (item.querySelector('ul')) {
-            item.classList.add('has-children');
-          }
-        });
-
-        // Add smooth scrolling to TOC links
-        const tocLinks = document.querySelectorAll('#TableOfContents a');
-        tocLinks.forEach(link => {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-
-            if (targetElement) {
-              // Highlight the target element briefly
-              targetElement.classList.add('toc-highlight');
-              setTimeout(() => {
-                targetElement.classList.remove('toc-highlight');
-              }, 2000);
-
-              // Smooth scroll to the target
-              window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: 'smooth'
-              });
-
-              // Update URL without scrolling
-              history.pushState(null, null, targetId);
-            }
-          });
-        });
-
-        // Call on scroll and on load
-        window.addEventListener('scroll', addActiveClass);
-        addActiveClass();
-      });
-    </script>
 
     <!-- Right Section: Checklist Content -->
     <main class="lg:col-span-3">
@@ -155,10 +66,13 @@
           <div class="mb-4">
             <span class="inline-flex items-center text-text dark:text-darkmode-text">
               <i class="fas fa-folder-open mr-2"></i>
-              {{ range . }}
-              <a href="{{ "checklist_categories/" | relLangURL }}{{ . | urlize }}" class="ml-2 text-primary dark:text-darkmode-primary hover:underline">
-                {{ . }}
-              </a>
+              {{ range $index, $category := . }}
+                {{ if ne $index 0 }}
+                <span class="mx-2 text-border dark:text-darkmode-border">•</span>
+                {{ end }}
+                <a href="{{ "checklist_categories/" | relLangURL }}{{ $category | urlize }}" class="text-primary dark:text-darkmode-primary hover:underline">
+                  {{ $category }}
+                </a>
               {{ end }}
             </span>
           </div>
@@ -214,4 +128,49 @@
     {{ end }}
   </div>
 </section>
+
+<!-- Reading Progress Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Reading progress with floating indicator
+    function updateReadingProgress() {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight - windowHeight;
+      const scrollTop = window.scrollY;
+      const progress = (scrollTop / documentHeight) * 100;
+      const roundedProgress = Math.round(progress);
+
+      // Update floating progress indicator
+      const floatingProgress = document.getElementById('floating-progress');
+      const progressCircle = document.getElementById('progress-circle');
+      const floatingProgressText = document.getElementById('floating-progress-text');
+
+      if (floatingProgress && progressCircle && floatingProgressText) {
+        // Show floating progress when scrolled down
+        if (scrollTop > 300) {
+          floatingProgress.style.opacity = '1';
+        } else {
+          floatingProgress.style.opacity = '0';
+        }
+
+        // Update circle progress
+        const circumference = 2 * Math.PI * 16; // 2πr where r=16
+        const dashoffset = circumference - (progress / 100) * circumference;
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = dashoffset;
+
+        // Update text
+        floatingProgressText.textContent = `${roundedProgress}%`;
+      }
+    }
+
+    // Event listeners
+    window.addEventListener('scroll', function() {
+      updateReadingProgress();
+    });
+
+    // Initialize
+    updateReadingProgress();
+  });
+</script>
 {{ end }}

@@ -53,9 +53,27 @@
   }
 }
 
+#preloader.fade-out {
+  opacity: 0.3;
+  transition: opacity 0.4s ease;
+}
+
 #preloader.preloader.loaded {
   opacity: 0;
   visibility: hidden;
   transition: all 0.5s ease;
+}
+
+/* Optimize animations for better performance */
+.preloader, .loader {
+  will-change: opacity, visibility;
+}
+
+/* Respect user preferences for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .preloader, .loader {
+    transition: opacity 0.1s linear !important;
+    animation: none !important;
+  }
 }
 

@@ -1,0 +1,213 @@
+/* Innovative Table of Contents Styling */
+
+/* TOC Container */
+.innovative-toc {
+  @apply relative;
+  
+  /* TOC Header */
+  .toc-header {
+    @apply flex items-center justify-between rounded-lg transition-all duration-300;
+    
+    &:hover {
+      @apply shadow-sm;
+      transform: translateY(-2px);
+    }
+    
+    .toc-icon {
+      @apply transition-all duration-300;
+    }
+    
+    &:hover .toc-icon {
+      @apply scale-110;
+    }
+    
+    h4 {
+      @apply transition-all duration-300;
+    }
+    
+    .toc-controls button {
+      @apply transition-all duration-200;
+      
+      &:hover {
+        @apply scale-110;
+      }
+    }
+  }
+  
+  /* TOC Content */
+  .toc-content {
+    @apply transition-all duration-300 ease-in-out;
+    
+    .toc-wrapper {
+      @apply transition-all duration-300;
+    }
+    
+    /* Progress Bar */
+    .toc-progress {
+      @apply transition-all duration-300;
+      
+      #reading-progress {
+        @apply transition-all duration-300;
+      }
+    }
+    
+    /* Search Box */
+    .toc-search input {
+      @apply transition-all duration-200;
+      
+      &:focus {
+        @apply shadow-sm;
+        transform: translateY(-1px);
+      }
+    }
+  }
+  
+  /* TOC Navigation */
+  .toc-nav {
+    @apply transition-all duration-300 ease-in-out;
+    max-height: 60vh;
+    overflow-y: auto;
+
+    /* Scrollbar styling */
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: rgba(var(--color-dark-rgb), 0.05);
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(var(--color-primary-rgb), 0.2);
+      border-radius: 10px;
+    }
+
+    /* Hover state for scrollbar */
+    &:hover::-webkit-scrollbar-thumb {
+      background-color: rgba(var(--color-primary-rgb), 0.4);
+    }
+    
+    /* List styling */
+    ul {
+      @apply list-none p-0 m-0 space-y-1;
+
+      /* Nested lists */
+      ul {
+        @apply mt-1 ml-3 space-y-0.5 pl-2;
+        border-left: 2px solid rgba(var(--color-primary-rgb), 0.1);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        opacity: 0;
+      }
+    }
+
+    /* List items */
+    li {
+      @apply relative my-1;
+      
+      &.expanded > ul {
+        max-height: 1000px;
+        opacity: 1;
+      }
+      
+      &.has-children {
+        > a {
+          @apply pr-8;
+        }
+        
+        .toc-item-toggle {
+          @apply absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full;
+          
+          i {
+            @apply transition-transform duration-200;
+          }
+        }
+        
+        &.expanded .toc-item-toggle i {
+          transform: rotate(90deg);
+        }
+      }
+    }
+
+    /* Links */
+    a {
+      @apply block py-2 px-3 rounded-md text-sm no-underline transition-all duration-200 relative overflow-hidden;
+      color: var(--color-text);
+      
+      /* Hover and active states */
+      &:hover, &.active {
+        color: var(--color-primary);
+        background-color: rgba(var(--color-primary-rgb), 0.05);
+      }
+
+      /* Active indicator */
+      &.active {
+        @apply font-medium;
+        
+        &::before {
+          content: "";
+          @apply absolute left-0 top-0 h-full w-1;
+          background-color: var(--color-primary);
+          animation: slideIn 0.3s ease-out forwards;
+        }
+      }
+    }
+  }
+  
+  /* TOC Footer */
+  .toc-footer {
+    @apply transition-all duration-300;
+    
+    #scroll-to-top {
+      @apply transition-all duration-200;
+      
+      &:hover {
+        @apply scale-110;
+      }
+    }
+  }
+}
+
+/* Dark mode adjustments */
+.dark {
+  .innovative-toc {
+    .toc-nav {
+      ul ul {
+        border-left-color: rgba(var(--darkmode-primary-rgb), 0.2);
+      }
+      
+      a {
+        color: var(--darkmode-text);
+        
+        &:hover, &.active {
+          color: var(--darkmode-primary);
+          background-color: rgba(var(--darkmode-primary-rgb), 0.1);
+        }
+        
+        &.active::before {
+          background-color: var(--darkmode-primary);
+        }
+      }
+    }
+  }
+}
+
+/* Animations */
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Highlight animation */
+.toc-highlight {
+  position: relative;
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0% { background-color: rgba(var(--color-primary-rgb), 0.05); }
+  50% { background-color: rgba(var(--color-primary-rgb), 0.1); }
+  100% { background-color: rgba(var(--color-primary-rgb), 0.05); }
+}

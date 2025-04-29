@@ -1,85 +1,69 @@
-/* Custom cursor styles */
+/* Custom cursor styles - simple implementation */
+html {
+  --bg: hsl(132, 83%, 5%);
+  --accent: hsl(84, 96%, 80%);
+  --fsize: 16px;
+  --circleMultiplier: 3;
+  --circleSize: calc(calc(var(--circleMultiplier) * 1rem));
+}
+
+/* Light mode */
+:root {
+  --cursor-color: #121212;
+}
+
+/* Dark mode */
+.dark {
+  --cursor-color: #ffffff;
+}
+
+/* Hide default cursor */
 body {
   cursor: none;
 }
 
-.cursor-dot,
-.cursor-dot-outline {
+/* Main cursor element */
+#circle {
   pointer-events: none;
+  width: var(--circleSize);
+  height: var(--circleSize);
+  background-color: var(--cursor-color);
+  border-radius: 50%;
   position: fixed;
   top: 0;
   left: 0;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-  z-index: 9999;
-}
-
-.cursor-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #121212; /* Fallback */
-  background-color: var(--primary-color, #121212);
-}
-
-.dark .cursor-dot {
-  background-color: #fff;
-}
-
-.cursor-dot-outline {
-  width: 40px;
-  height: 40px;
-  background-color: rgba(18, 18, 18, 0.1); /* Fallback */
-  background-color: rgba(var(--primary-color-rgb, 18, 18, 18), 0.1);
-  border: 2px solid var(--primary-color, #121212);
-}
-
-.dark .cursor-dot-outline {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: #fff;
+  z-index: 99999;
+  translate: var(--xpos) var(--ypos);
+  transform-origin: center center;
+  transition:
+    width .2s ease-in-out,
+    height .2s ease-in-out,
+    border-radius .4s ease-in-out,
+    opacity .2s ease-in-out;
 }
 
 /* Hide cursor on touch devices */
 @media (hover: none) and (pointer: coarse) {
-  .cursor-dot,
-  .cursor-dot-outline {
+  #circle {
     display: none;
   }
 
   body {
-    cursor: auto;
+    cursor: auto !important;
+  }
+
+  *, *::before, *::after {
+    cursor: auto !important;
   }
 }
 
-/* Adjust cursor on clickable elements */
-a,
-button,
-input,
-textarea,
-select,
-[role="button"],
-.btn,
-.swiper-button-prev,
-.swiper-button-next,
-.swiper-pagination-bullet {
-  cursor: pointer !important;
-
-  &:hover ~ .cursor-dot {
-    transform: translate(-50%, -50%) scale(1.5);
-  }
-
-  &:hover ~ .cursor-dot-outline {
-    transform: translate(-50%, -50%) scale(1.2);
-  }
+/* Link hover effect */
+body:has(a:hover) #circle {
+  --circleSize: calc(calc(var(--circleMultiplier) * 1.5rem));
+  opacity: 0.2;
 }
 
-/* Special effect when cursor is on images */
-img:hover ~ .cursor-dot {
-  background-color: white;
-}
-
-img:hover ~ .cursor-dot-outline {
-  border-color: white;
-  background-color: rgba(255, 255, 255, 0.1);
+/* Image hover effect */
+body:has(.gallery img:hover) #circle {
+  opacity: 0.2;
 }

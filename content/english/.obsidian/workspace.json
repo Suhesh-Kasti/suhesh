@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/dns103.md",
+                "file": "cheatsheets/nginx/nginx-configuration.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "dns103"
+              "title": "nginx-configuration"
             }
           }
         ]
@@ -40,7 +40,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -95,6 +96,16 @@
           },
           {
             "id": "fcff918bb019c6b1",
+            "type": "leaf",
+            "state": {
+              "type": "tagfolder-view",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
+            }
+          },
+          {
+            "id": "e04d93f1e22762c7",
             "type": "leaf",
             "state": {
               "type": "tagfolder-view",
@@ -213,8 +224,8 @@
             "state": {
               "type": "timer-view",
               "state": {},
-              "icon": "timer",
-              "title": "Timer"
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
             }
           }
         ]
@@ -230,8 +241,8 @@
             "state": {
               "type": "tagfolder-view",
               "state": {},
-              "icon": "stacked-levels",
-              "title": "Tag Folder"
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
             }
           },
           {
@@ -271,8 +282,17 @@
   },
   "active": "a46e8132feec0bb1",
   "lastOpenFiles": [
-    "Untitled.md",
+    "cheatsheets/nginx/nginx-performance-caching.md",
+    "cheatsheets/nginx/nginx-high-availability.md",
+    "cheatsheets/nginx/nginx-logging-monitoring.md",
+    "cheatsheets/nginx/nginx-security.md",
+    "cheatsheets/nginx/nginx-load-balancer.md",
+    "cheatsheets/nginx/nginx-api-gateway.md",
+    "cheatsheets/nginx/nginx-reverse-proxy.md",
+    "cheatsheets/nginx/nginx-configuration.md",
+    "cheatsheets/Docker.md",
     "blog/dns103.md",
+    "Untitled.md",
     "blog/dns102.md",
     "blog/bigip-features.md",
     "images.md",
@@ -294,28 +314,19 @@
     "3. Resource/Study_Notes_F5_101_Application_Delivery.pdf",
     "1. Project/WAN Architechture.md",
     "**asymmetric routing problem**.md",
-    "Half Proxy.md",
     "images/trunk_port_passage.png",
     "images/Pasted image 20240930104616.png",
     "images/Pasted image 20240930104611.png",
     "images/arp_request_flow.png",
     "obsidian.zip",
-    "Dividing a broadcast domain.md",
     "3. Resource/f5.networks.selftestengine.101.simulations.2022-feb-24.by.jonathan.176q.vce.pdf",
     "4. Archives",
     "2. Area",
     "3. Resource/F5_101_Notes.docx",
     "3. Resource/F5-101dumps 1.pdf",
-    "1. Project/DEX and ODEX Android.md",
-    "templates/FitCheck Checklist.md",
-    "1. Project/Classes.dex.md",
-    "1. Project/BigIP fundamentals.md",
-    "Classes.dex.md",
     "images/android_dex_odex.png",
     "images/wireshark_tcp_syn_set.png",
     "images/wireshark_tcp_syn1.png",
-    "1. Project/Machine - Hackers.md",
-    "1. Project/Basic Pentesting.md",
     "images/wireshark_knowcommand.png"
   ]
 }

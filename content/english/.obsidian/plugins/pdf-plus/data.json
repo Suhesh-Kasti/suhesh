@@ -171,9 +171,20 @@
       "visible": true
     }
   ],
-  "selectionProductMenuConfig": ["color", "copy-format", "display"],
-  "writeFileProductMenuConfig": ["color", "copy-format", "display"],
-  "annotationProductMenuConfig": ["copy-format", "display"],
+  "selectionProductMenuConfig": [
+    "color",
+    "copy-format",
+    "display"
+  ],
+  "writeFileProductMenuConfig": [
+    "color",
+    "copy-format",
+    "display"
+  ],
+  "annotationProductMenuConfig": [
+    "copy-format",
+    "display"
+  ],
   "updateColorPaletteStateFromContextMenu": true,
   "mobileCopyAction": "pdf-plus",
   "showContextMenuOnTablet": false,

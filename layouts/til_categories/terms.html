@@ -1,0 +1,47 @@
+{{ define "main" }}
+{{ partial "page-header" . }}
+
+<section class="section">
+  <div class="container">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h1 class="h2 mb-6">TIL Categories</h1>
+      <p class="text-lg mb-8">Browse our Today I Learned entries by category. These are quick notes about things learned during daily work and exploration.</p>
+      <div class="flex justify-center space-x-4">
+        <a href="/til/" class="btn btn-primary">Back to TIL</a>
+      </div>
+    </div>
+
+    <!-- Calculate max and min counts for scaling -->
+    {{ $maxCount := 1 }}
+    {{ $minCount := 1 }}
+    {{ range site.Taxonomies.til_categories.ByCount }}
+      {{ if gt .Count $maxCount }}
+        {{ $maxCount = .Count }}
+      {{ end }}
+      {{ if lt .Count $minCount }}
+        {{ $minCount = .Count }}
+      {{ end }}
+    {{ end }}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {{ range site.Taxonomies.til_categories.ByCount }}
+        {{ $fontSize := 1.0 }}
+        {{ if ne $maxCount $minCount }}
+          {{ $fontSize = add 1 (mul 0.5 (div (sub .Count $minCount) (sub $maxCount $minCount))) }}
+        {{ end }}
+        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-6 hover:shadow-lg transition-all duration-300 border border-transparent hover:border-primary dark:hover:border-darkmode-primary">
+          <a href="{{ .Page.RelPermalink }}" class="block">
+            <h3 class="text-xl font-bold mb-3 hover:text-primary dark:hover:text-darkmode-primary transition-colors">{{ .Page.Title }}</h3>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-light dark:text-darkmode-light">{{ .Count }} entries</span>
+              <span class="inline-block bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-3 py-1 rounded-full text-sm">
+                <i class="fa-solid fa-lightbulb mr-1"></i>Category
+              </span>
+            </div>
+          </a>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}

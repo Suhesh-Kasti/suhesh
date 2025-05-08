@@ -1,0 +1,136 @@
+{{ define "main" }}
+{{ partial "page-header" . }}
+
+<section class="section">
+  <div class="container">
+    <!-- TIL Categories Filter -->
+    <div class="mb-10">
+      <div class="flex items-center mb-6">
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+        <h2 class="text-2xl font-bold px-6">TIL Categories</h2>
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="{{ .RelPermalink }}" class="inline-block px-4 py-2 rounded-full {{ if not $.Data.Term }}bg-primary text-white dark:bg-darkmode-primary dark:text-darkmode-body{{ else }}bg-theme-light dark:bg-darkmode-theme-light text-text dark:text-darkmode-text hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-body{{ end }} transition-colors">
+          All
+        </a>
+
+        {{ range $name, $items := site.Taxonomies.til_categories }}
+          <a href="{{ .Page.RelPermalink }}" class="inline-block px-4 py-2 rounded-full {{ if eq $.Data.Term .Page.Title }}bg-primary text-white dark:bg-darkmode-primary dark:text-darkmode-body{{ else }}bg-theme-light dark:bg-darkmode-theme-light text-text dark:text-darkmode-text hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-body{{ end }} transition-colors">
+            {{ .Page.Title }}
+          </a>
+        {{ end }}
+      </div>
+    </div>
+
+    <div class="row gx-5">
+      <!-- TIL posts -->
+      <div class="lg:col-8">
+        <div class="row">
+          {{ $paginator := .Paginate .RegularPages.ByDate.Reverse }}
+          {{ if $paginator.Pages }}
+            {{ range $paginator.Pages }}
+              <div class="md:col-6 mb-8">
+                {{ partial "components/til-card" . }}
+              </div>
+            {{ end }}
+          {{ else }}
+            <div class="col-12 text-center py-16">
+              <div class="mb-6">
+                <i class="fas fa-lightbulb text-6xl text-primary dark:text-darkmode-primary opacity-50"></i>
+              </div>
+              <h3 class="h4 mb-4">No TIL entries yet</h3>
+              <p class="text-lg mb-8">Start documenting your daily learnings by creating markdown files in the TIL section.</p>
+            </div>
+          {{ end }}
+        </div>
+        {{ partial "components/pagination.html" . }}
+      </div>
+
+      <!-- sidebar -->
+      <div class="lg:col-4">
+        <!-- Search Box -->
+        <div class="mb-8">
+          <h5 class="mb-4">Search TIL</h5>
+          {{ partial "components/section-search" (dict "section" "til" "placeholder" "Search TIL entries...") }}
+        </div>
+
+        <!-- TIL Tags -->
+        <div class="mb-8">
+          <h5 class="mb-4">TIL Tags</h5>
+          <div class="bg-theme-light dark:bg-darkmode-theme-light rounded p-6">
+            <ul class="flex flex-wrap gap-2">
+              {{ range $name, $items := site.Taxonomies.til_tags }}
+                <li class="inline-block">
+                  <a href="{{ .Page.RelPermalink }}"
+                     class="inline-block bg-white dark:bg-darkmode-body px-3 py-1 rounded border border-border dark:border-darkmode-border hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-body transition-colors">
+                    #{{ .Page.Title }} <span class="text-xs">({{ len $items }})</span>
+                  </a>
+                </li>
+              {{ end }}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Explore Other Content -->
+        <div class="mb-8">
+          <h5 class="mb-4">Explore Other Content</h5>
+          <div class="bg-theme-light dark:bg-darkmode-theme-light rounded p-6">
+            <div class="space-y-6">
+              <!-- Recent Blog -->
+              <div>
+                <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From the Blog</h6>
+                {{ range first 2 (where site.RegularPages "Section" "blog").ByDate.Reverse }}
+                  <div class="mb-3">
+                    <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
+                      <span class="text-sm font-medium">{{ .Title }}</span>
+                      <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
+                        <i class="far fa-calendar-alt mr-1"></i>
+                        {{ time.Format "Jan 02, 2006" .Date }}
+                      </div>
+                    </a>
+                  </div>
+                {{ end }}
+              </div>
+
+              <!-- Recent Cheatsheets -->
+              <div>
+                <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From Cheatsheets</h6>
+                {{ range first 2 (where site.RegularPages "Section" "cheatsheets").ByDate.Reverse }}
+                  <div class="mb-3">
+                    <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
+                      <span class="text-sm font-medium">{{ .Title }}</span>
+                      <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
+                        <i class="fas fa-file-code mr-1"></i>
+                        {{ with .Params.cheatsheet_categories }}{{ index . 0 }}{{ end }}
+                      </div>
+                    </a>
+                  </div>
+                {{ end }}
+              </div>
+
+              <!-- Recent Checklists -->
+              <div>
+                <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From Checklists</h6>
+                {{ range first 2 (where site.RegularPages "Section" "checklists").ByDate.Reverse }}
+                  <div class="mb-3">
+                    <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
+                      <span class="text-sm font-medium">{{ .Title }}</span>
+                      <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
+                        <i class="fas fa-clipboard-check mr-1"></i>
+                        {{ with .Params.checklist_categories }}{{ index . 0 }}{{ end }}
+                      </div>
+                    </a>
+                  </div>
+                {{ end }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{ end }}

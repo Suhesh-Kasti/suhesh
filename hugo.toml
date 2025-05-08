@@ -30,6 +30,8 @@ cheatsheet_category = "cheatsheet_categories"
 cheatsheet_tag = "cheatsheet_tags"
 checklist_category = "checklist_categories"
 checklist_tag = "checklist_tags"
+til_category = "til_categories"
+til_tag = "til_tags"
 folder = "folders"
 
 ########################## Permalinks ############################

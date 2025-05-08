@@ -55,8 +55,8 @@ url = "tags/"
 
 # footer menu
 [[footer]]
-name = "My Setup"
-url = "projects/setup"
+name = "Today I Learned"
+url = "til/"
 weight = 1
 
 [[footer]]

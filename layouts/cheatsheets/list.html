@@ -9,6 +9,12 @@
         <a href="/cheatsheet_categories/" class="btn btn-primary">Browse Categories</a>
         <a href="#cheatsheets" class="btn btn-outline-primary">View All Cheatsheets</a>
       </div>
+
+      <!-- Search Box -->
+      <div class="mt-8 max-w-md mx-auto">
+        <h5 class="mb-4">Search Cheatsheets</h5>
+        {{ partial "components/section-search" (dict "section" "cheatsheets" "placeholder" "Search cheatsheets...") }}
+      </div>
     </div>
 
     <!-- Display folders first -->

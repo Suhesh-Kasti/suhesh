@@ -29,22 +29,25 @@
   </div>
 
   <!-- TOC Content with Visual Indicators -->
-  <div id="toc-content" class="toc-content hidden">
+  <div id="toc-content" class="toc-content">
     <div class="toc-wrapper bg-white dark:bg-darkmode-body border-x border-b border-border dark:border-darkmode-border rounded-b-lg p-4">
       <!-- We'll create a floating progress indicator instead -->
 
-      <!-- Control Buttons -->
+      <!-- Useful Controls -->
       <div class="flex justify-between mb-4">
         <div class="flex space-x-2">
-          <button id="toc-expand-all" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Expand all sections">
-            <i class="fas fa-expand-alt mr-1"></i> Expand All
+          <button id="copy-link-btn" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Copy link to this article">
+            <i class="fas fa-link mr-1"></i> Copy Link
           </button>
-          <button id="toc-collapse-all" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Collapse all sections">
-            <i class="fas fa-compress-alt mr-1"></i> Collapse All
+          <button id="print-article-btn" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Print this article">
+            <i class="fas fa-print mr-1"></i> Print
           </button>
         </div>
-        <button id="scroll-to-top" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Scroll to top">
-          <i class="fas fa-arrow-up mr-1"></i> Top
+        <button id="toggle-dark-mode-btn" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Toggle dark mode">
+          <i class="fas fa-moon mr-1 dark:hidden"></i>
+          <i class="fas fa-sun mr-1 hidden dark:inline"></i>
+          <span class="dark:hidden">Dark</span>
+          <span class="hidden dark:inline">Light</span>
         </button>
       </div>
 
@@ -70,6 +73,47 @@
         </nav>
       </div>
 
+      <!-- Add custom styles to fix TOC display issues -->
+      <style>
+        /* Make TOC headings visible by default */
+        #TableOfContents ul {
+          display: block !important;
+          max-height: none !important;
+          opacity: 1 !important;
+        }
+
+        /* Style TOC links */
+        #TableOfContents a {
+          display: block;
+          padding: 0.25rem 0;
+          color: var(--color-text);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .dark #TableOfContents a {
+          color: var(--color-darkmode-text);
+        }
+
+        #TableOfContents a:hover {
+          color: var(--color-primary);
+        }
+
+        .dark #TableOfContents a:hover {
+          color: var(--color-darkmode-primary);
+        }
+
+        /* Active link styling */
+        #TableOfContents a.active {
+          color: var(--color-primary);
+          font-weight: bold;
+        }
+
+        .dark #TableOfContents a.active {
+          color: var(--color-darkmode-primary);
+        }
+      </style>
+
       <!-- Reading Time Indicator -->
       <div class="toc-footer mt-4 pt-3 border-t border-border dark:border-darkmode-border flex justify-between items-center text-sm text-text/70 dark:text-darkmode-text/70">
         <div class="flex items-center">
@@ -88,11 +132,15 @@
     const tocHeader = document.getElementById('toc-header');
     const tocContent = document.getElementById('toc-content');
     const tocToggle = document.getElementById('toc-toggle');
-    const tocExpandAll = document.getElementById('toc-expand-all');
-    const tocCollapseAll = document.getElementById('toc-collapse-all');
     const tocSearchInput = document.getElementById('toc-search-input');
-    const readingProgress = document.getElementById('reading-progress');
-    const progressPercentage = document.getElementById('progress-percentage');
+    const copyLinkBtn = document.getElementById('copy-link-btn');
+    const printArticleBtn = document.getElementById('print-article-btn');
+    const toggleDarkModeBtn = document.getElementById('toggle-dark-mode-btn');
+
+    // Set initial state - TOC is open by default
+    const icon = tocToggle.querySelector('i');
+    icon.classList.remove('fa-chevron-down');
+    icon.classList.add('fa-chevron-up');
 
     // Toggle TOC visibility
     window.toggleTOC = function() {
@@ -108,53 +156,39 @@
       toggleTOC();
     });
 
-    // Expand all sections - fixed to work properly
-    tocExpandAll.addEventListener('click', function(e) {
-      e.stopPropagation(); // Prevent event from bubbling to header
-
-      // First, make sure all nested lists are visible
-      document.querySelectorAll('#TableOfContents ul').forEach(list => {
-        list.style.display = 'block';
-        list.style.maxHeight = 'none';
-        list.style.opacity = '1';
-      });
-
-      // Then expand all items with children
-      document.querySelectorAll('#TableOfContents li.has-children').forEach(item => {
-        item.classList.add('expanded');
-
-        // Update toggle button icons
-        const toggleBtn = item.querySelector('.toc-item-toggle i');
-        if (toggleBtn) {
-          toggleBtn.classList.remove('fa-chevron-right');
-          toggleBtn.classList.add('fa-chevron-down');
-        }
+    // Copy Link button
+    copyLinkBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        // Show success feedback
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+        setTimeout(() => {
+          this.innerHTML = originalText;
+        }, 2000);
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
       });
     });
 
-    // Collapse all sections - fixed to work properly
-    tocCollapseAll.addEventListener('click', function(e) {
-      e.stopPropagation(); // Prevent event from bubbling to header
+    // Print Article button
+    printArticleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      window.print();
+    });
 
-      // Update all items with children
-      document.querySelectorAll('#TableOfContents li.has-children').forEach(item => {
-        item.classList.remove('expanded');
+    // Toggle Dark Mode button
+    toggleDarkModeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.documentElement.classList.toggle('dark');
 
-        // Update toggle button icons
-        const toggleBtn = item.querySelector('.toc-item-toggle i');
-        if (toggleBtn) {
-          toggleBtn.classList.remove('fa-chevron-down');
-          toggleBtn.classList.add('fa-chevron-right');
-        }
-
-        // Hide nested lists
-        const nestedList = item.querySelector('ul');
-        if (nestedList) {
-          nestedList.style.maxHeight = '0';
-          nestedList.style.opacity = '0';
-          nestedList.style.display = 'block'; // Keep display but hide with opacity and height
-        }
-      });
+      // Save preference to localStorage
+      if (document.documentElement.classList.contains('dark')) {
+        localStorage.theme = 'dark';
+      } else {
+        localStorage.theme = 'light';
+      }
     });
 
     // Search functionality

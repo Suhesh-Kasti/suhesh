@@ -9,6 +9,12 @@
         <a href="/checklist_categories/" class="btn btn-primary">Browse Categories</a>
         <a href="#checklists" class="btn btn-outline-primary">View All Checklists</a>
       </div>
+
+      <!-- Search Box -->
+      <div class="mt-8 max-w-md mx-auto">
+        <h5 class="mb-4">Search Checklists</h5>
+        {{ partial "components/section-search" (dict "section" "checklists" "placeholder" "Search checklists...") }}
+      </div>
     </div>
 
     <!-- Display folders first -->

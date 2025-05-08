@@ -1,0 +1,224 @@
+<!-- You May Also Like Component -->
+<!--
+  Parameters:
+  - currentPage: The current page being viewed
+  - currentSection: The section of the current page (e.g., "blog", "til", "cheatsheets", "checklists")
+  - currentTags: Tags of the current page
+  - currentCategories: Categories of the current page
+-->
+
+{{ $currentPage := .currentPage }}
+{{ $currentSection := .currentSection }}
+{{ $currentTags := .currentTags }}
+{{ $currentCategories := .currentCategories }}
+
+<!-- Get related content from different sections -->
+{{ $relatedContent := slice }}
+
+<!-- Find related content based on tags -->
+{{ $tagMatches := slice }}
+{{ range $currentTags }}
+  {{ $tag := . | urlize }}
+
+  <!-- Look for TIL entries with matching tags -->
+  {{ if ne $currentSection "til" }}
+    {{ range where site.RegularPages "Section" "til" }}
+      {{ $tilTags := slice }}
+      {{ range .Params.til_tags }}
+        {{ $tilTags = $tilTags | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $tilTags $tag) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $tagMatches = $tagMatches | append (dict "page" . "section" "til" "weight" 1) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  <!-- Look for blog entries with matching tags -->
+  {{ if ne $currentSection "blog" }}
+    {{ range where site.RegularPages "Section" "blog" }}
+      {{ $blogTags := slice }}
+      {{ range .Params.tags }}
+        {{ $blogTags = $blogTags | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $blogTags $tag) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $tagMatches = $tagMatches | append (dict "page" . "section" "blog" "weight" 1) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  <!-- Look for cheatsheet entries with matching tags -->
+  {{ if ne $currentSection "cheatsheets" }}
+    {{ range where site.RegularPages "Section" "cheatsheets" }}
+      {{ $cheatsheetTags := slice }}
+      {{ range .Params.cheatsheet_tags }}
+        {{ $cheatsheetTags = $cheatsheetTags | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $cheatsheetTags $tag) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $tagMatches = $tagMatches | append (dict "page" . "section" "cheatsheets" "weight" 1) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  <!-- Look for checklist entries with matching tags -->
+  {{ if ne $currentSection "checklists" }}
+    {{ range where site.RegularPages "Section" "checklists" }}
+      {{ $checklistTags := slice }}
+      {{ range .Params.checklist_tags }}
+        {{ $checklistTags = $checklistTags | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $checklistTags $tag) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $tagMatches = $tagMatches | append (dict "page" . "section" "checklists" "weight" 1) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  <!-- Look for project entries with matching tags -->
+  {{ if ne $currentSection "projects" }}
+    {{ range where site.RegularPages "Section" "projects" }}
+      {{ $projectTags := slice }}
+      {{ range .Params.project_tags }}
+        {{ $projectTags = $projectTags | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $projectTags $tag) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $tagMatches = $tagMatches | append (dict "page" . "section" "projects" "weight" 1) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+<!-- Find related content based on categories -->
+{{ $categoryMatches := slice }}
+{{ range $currentCategories }}
+  {{ $category := . | urlize }}
+
+  <!-- Look for entries with matching categories in different sections -->
+  {{ if ne $currentSection "blog" }}
+    {{ range where site.RegularPages "Section" "blog" }}
+      {{ $blogCategories := slice }}
+      {{ range .Params.categories | default slice }}
+        {{ $blogCategories = $blogCategories | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $blogCategories $category) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $categoryMatches = $categoryMatches | append (dict "page" . "section" "blog" "weight" 2) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ if ne $currentSection "cheatsheets" }}
+    {{ range where site.RegularPages "Section" "cheatsheets" }}
+      {{ $cheatsheetCategories := slice }}
+      {{ range .Params.cheatsheet_categories | default slice }}
+        {{ $cheatsheetCategories = $cheatsheetCategories | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $cheatsheetCategories $category) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $categoryMatches = $categoryMatches | append (dict "page" . "section" "cheatsheets" "weight" 2) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ if ne $currentSection "checklists" }}
+    {{ range where site.RegularPages "Section" "checklists" }}
+      {{ $checklistCategories := slice }}
+      {{ range .Params.checklist_categories | default slice }}
+        {{ $checklistCategories = $checklistCategories | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $checklistCategories $category) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $categoryMatches = $categoryMatches | append (dict "page" . "section" "checklists" "weight" 2) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ if ne $currentSection "til" }}
+    {{ range where site.RegularPages "Section" "til" }}
+      {{ $tilCategories := slice }}
+      {{ range .Params.til_categories | default slice }}
+        {{ $tilCategories = $tilCategories | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $tilCategories $category) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $categoryMatches = $categoryMatches | append (dict "page" . "section" "til" "weight" 2) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ if ne $currentSection "projects" }}
+    {{ range where site.RegularPages "Section" "projects" }}
+      {{ $projectCategories := slice }}
+      {{ range .Params.project_categories | default slice }}
+        {{ $projectCategories = $projectCategories | append (. | urlize) }}
+      {{ end }}
+      {{ if and (in $projectCategories $category) (ne $currentPage.RelPermalink .RelPermalink) }}
+        {{ $categoryMatches = $categoryMatches | append (dict "page" . "section" "projects" "weight" 2) }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+<!-- Combine all matches and remove duplicates -->
+{{ $allMatches := $tagMatches | append $categoryMatches }}
+{{ $uniqueMatches := slice }}
+{{ $seen := slice }}
+
+{{ range $allMatches }}
+  {{ $url := .page.RelPermalink }}
+  {{ if not (in $seen $url) }}
+    {{ $uniqueMatches = $uniqueMatches | append . }}
+    {{ $seen = $seen | append $url }}
+  {{ end }}
+{{ end }}
+
+<!-- Sort by weight (higher is better) and take top 3 -->
+{{ $sortedMatches := sort $uniqueMatches "weight" "desc" }}
+{{ $relatedContent = first 3 $sortedMatches }}
+
+<!-- If we don't have enough related content, add some recent content from other sections -->
+{{ if lt (len $relatedContent) 3 }}
+  {{ $neededMore := sub 3 (len $relatedContent) }}
+  {{ $recentContent := slice }}
+
+  {{ $sections := slice "blog" "til" "cheatsheets" "checklists" "projects" }}
+  {{ range $sections }}
+    {{ if ne . $currentSection }}
+      {{ $recentFromSection := first 2 (where site.RegularPages "Section" .) }}
+      {{ range $recentFromSection }}
+        {{ if ne $currentPage.RelPermalink .RelPermalink }}
+          {{ $recentContent = $recentContent | append (dict "page" . "section" . "weight" 0) }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  <!-- Shuffle recent content and take what we need -->
+  {{ $shuffledRecent := shuffle $recentContent }}
+  {{ $additionalContent := first $neededMore $shuffledRecent }}
+
+  <!-- Add to our related content -->
+  {{ $relatedContent = $relatedContent | append $additionalContent }}
+{{ end }}
+
+<!-- Display the related content if we have any -->
+{{ if $relatedContent }}
+<div class="mt-16">
+  <h2 class="h3 mb-8">You May Also Like</h2>
+  <div class="row">
+    {{ range $relatedContent }}
+      <div class="lg:col-4 md:col-6 mb-8">
+        {{ $page := .page }}
+        {{ $section := .section }}
+
+        <!-- Display appropriate card based on section -->
+        {{ if eq $section "blog" }}
+          {{ partial "components/blog-card" $page }}
+        {{ else if eq $section "til" }}
+          {{ partial "components/til-card" $page }}
+        {{ else if eq $section "cheatsheets" }}
+          {{ partial "components/cheatsheets" $page }}
+        {{ else if eq $section "checklists" }}
+          {{ partial "components/checklists" $page }}
+        {{ else if eq $section "projects" }}
+          {{ partial "components/project-card" $page }}
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,8 @@
+This directory contains images for TIL entries.
+
+You should replace this file with actual images for your TIL entries.
+
+For example:
+- hugo-shortcodes.jpg
+- dark-mode.jpg
+- git-rebase.jpg

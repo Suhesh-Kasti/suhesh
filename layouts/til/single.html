@@ -1,0 +1,108 @@
+{{ define "main" }}
+<section class="container">
+  <div class="row justify-center">
+    <!-- TIL Content with TOC on left -->
+    <main class="lg:col-10 mx-auto">
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+        <div class="flex flex-col lg:flex-row">
+          <!-- Left Side: TOC -->
+          <div class="lg:w-1/4 lg:pr-6 mb-6 lg:mb-0">
+            <!-- Innovative Table of Contents -->
+            {{ partial "components/innovative-toc.html" . }}
+          </div>
+
+          <!-- Right Side: Content -->
+          <div class="lg:w-3/4">
+            <!-- Categories and Date -->
+            <div class="flex flex-wrap items-center justify-between mb-4">
+              <div class="flex items-center mb-2 lg:mb-0">
+                <i class="fa-regular fa-folder mr-2 text-primary dark:text-darkmode-primary"></i>
+                {{ with .Params.til_categories }}
+                  <div class="flex flex-wrap gap-2">
+                    {{ range . }}
+                      <a href="{{ `til_categories/` | relLangURL }}{{ . | urlize | lower }}/"
+                         class="inline-block bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-dark transition-colors">
+                        {{ . | humanize }}
+                      </a>
+                    {{ end }}
+                  </div>
+                {{ end }}
+              </div>
+
+              <div class="flex items-center">
+                <i class="fa-regular fa-calendar-days mr-2 text-primary dark:text-darkmode-primary"></i>
+                {{ time.Format ":date_long" .Date }}
+              </div>
+            </div>
+
+            <!-- TIL Title -->
+            <h1 class="text-h1-sm md:text-h1 font-bold text-text dark:text-darkmode-text mb-4">
+              {{ .Title }}
+            </h1>
+
+            <!-- Description -->
+            {{ with .Description }}
+              <p class="text-light dark:text-darkmode-light mb-6 text-lg italic">{{ . }}</p>
+            {{ end }}
+
+            <!-- Content -->
+            <div class="prose dark:prose-invert max-w-none">
+              {{ .Content }}
+            </div>
+
+            <!-- Tags -->
+            {{ with .Params.til_tags }}
+              <div class="mt-8 pt-4 border-t border-border dark:border-darkmode-border">
+                <span class="inline-flex items-center flex-wrap text-text dark:text-darkmode-text">
+                  <i class="fas fa-tags mr-2"></i>
+                  Tags:
+                  {{ range . }}
+                    <a href="{{ "til_tags/" | relLangURL }}{{ . | urlize }}"
+                       class="ml-2 bg-white dark:bg-darkmode-body px-3 py-1 rounded border border-border dark:border-darkmode-border hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-dark transition-colors mb-2">
+                      {{ . }}
+                    </a>
+                  {{ end }}
+                </span>
+              </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Next/Previous Navigation -->
+      <div class="flex mt-8 space-x-4">
+        {{ with .PrevInSection }}
+          <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 mr-4">
+            <span class="block text-sm text-light dark:text-darkmode-light mb-1">Previous</span>
+            <span class="text-primary dark:text-darkmode-primary group-hover:underline">← {{ .Title }}</span>
+          </a>
+        {{ else }}
+          <div class="flex-1 mr-4"></div>
+        {{ end }}
+
+        {{ with .NextInSection }}
+          <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right">
+            <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>
+            <span class="text-primary dark:text-darkmode-primary group-hover:underline">{{ .Title }} →</span>
+          </a>
+        {{ else }}
+          <div class="flex-1 ml-4"></div>
+        {{ end }}
+      </div>
+
+      <!-- You May Also Like -->
+      {{ $currentTags := slice }}
+      {{ range .Params.til_tags }}
+        {{ $currentTags = $currentTags | append . }}
+      {{ end }}
+
+      {{ $currentCategories := slice }}
+      {{ range .Params.til_categories }}
+        {{ $currentCategories = $currentCategories | append . }}
+      {{ end }}
+
+      {{ partial "components/you-may-also-like.html" (dict "currentPage" . "currentSection" "til" "currentTags" $currentTags "currentCategories" $currentCategories) }}
+    </main>
+  </div>
+</section>
+{{ end }}

@@ -180,45 +180,67 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Navbar scroll animation - fixed version
+  // Fixed navbar scroll animation
   const header = document.querySelector('.header');
   if (header) {
     const headerHeight = header.offsetHeight;
     let lastScrollTop = 0;
+    let ticking = false;
 
-    // We don't need a placeholder since the header is already sticky
-    // Just make sure the header has the right styles
+    // Make sure the header has the right styles
     header.style.width = '100%';
     header.style.zIndex = '1000';
 
-    window.addEventListener('scroll', function() {
+    // Function to handle scroll events
+    function handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-      if (scrollTop > headerHeight) {
-        if (scrollTop > lastScrollTop + 10) {
-          // Scrolling down - hide header (faster animation)
-          gsap.to(header, {
-            y: -headerHeight,
-            duration: 0.15,
-            ease: "power2.inOut"
-          });
-        } else if (scrollTop < lastScrollTop - 10) {
-          // Scrolling up - show header (faster animation)
-          gsap.to(header, {
-            y: 0,
-            duration: 0.15,
-            ease: "power2.inOut"
-          });
-        }
-      } else {
-        // At the top - reset header
+      // Show header when scrolling up from anywhere on the page
+      if (scrollTop < lastScrollTop) {
+        // Scrolling up - always show header
+        gsap.to(header, {
+          y: 0,
+          duration: 0.2,
+          ease: "power2.out"
+        });
+      } else if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+        // Scrolling down and not at the top - hide header
+        gsap.to(header, {
+          y: -headerHeight,
+          duration: 0.2,
+          ease: "power2.in"
+        });
+      }
+
+      // Always show header at the top of the page
+      if (scrollTop <= 10) {
         gsap.to(header, {
           y: 0,
           duration: 0.1
         });
       }
 
+      // Update last scroll position
       lastScrollTop = scrollTop;
-    }, { passive: true });
+      ticking = false;
+    }
+
+    // Scroll event handler with requestAnimationFrame
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    // Add scroll event listener with passive flag for better performance
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Also handle touch events for mobile
+    window.addEventListener('touchmove', onScroll, { passive: true });
+    window.addEventListener('touchend', onScroll, { passive: true });
   }
 });

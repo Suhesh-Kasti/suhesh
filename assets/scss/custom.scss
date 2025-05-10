@@ -275,10 +275,11 @@ a:not(.btn, .logo-dark a, .logo-light a, .no-after):hover::after {
 
 /* Skills Slider styles */
 .skills-slider {
-  overflow: hidden;
+  overflow: visible !important;
   padding-bottom: 40px;
   max-width: 100%;
   margin: 0 auto;
+  max-height: none !important;
 }
 
 .skills-slider .swiper-wrapper {
@@ -391,9 +392,10 @@ a:not(.btn, .logo-dark a, .logo-light a, .no-after):hover::after {
 /* Skills slider container */
 .skills-slider-container {
   position: relative;
-  overflow: hidden;
+  overflow: hidden !important;
   width: 100%;
   margin: 0 auto;
+  max-height: none !important;
 }
 
 /* Fix for container overflow */
@@ -519,7 +521,14 @@ body, html, .dark, [class*="bg-"] {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Remove shadows from images in dark mode */
+/* Remove shadows from all images */
+img {
+  box-shadow: none !important;
+  filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
 .dark img {
   box-shadow: none !important;
   filter: none !important;

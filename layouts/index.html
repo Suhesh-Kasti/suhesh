@@ -1,158 +1,379 @@
 {{ define "main" }}
-<!-- Banner -->
+<!-- Modern Theme-Based Hero Section -->
 {{ with .Params.banner }}
-<section class="section landing pt-14">
-  <div class="container">
-    <div class="row items-center justify-between">
-      <!-- Gallery Section - Left Side -->
-      <div class="md:col-5 lg:col-4 mb-8 md:mb-0">
-        <div class="gallery-wrapper relative max-w-[450px] mx-auto">
-          <div class="swiper banner-slider">
-            <div class="swiper-wrapper">
-              {{ $files := readDir "static/images/admin" }} {{ range $files }}
-              {{ if and (not .IsDir) (findRE "\\.(jpe?g|png|gif|webp)$" .Name)}}
-              <div class="swiper-slide aspect-square">
-                {{ partial "image" (dict "Src" (print "/images/admin/" .Name)
-                "Alt" "Profile image" "Loading" "lazy" "Class" "rounded-lg w-full h-full object-cover shadow-lg" "Size" "450x450" ) }}
-              </div>
-              {{ end }} {{ end }}
-            </div>
-            <!-- Navigation buttons -->
-            <div class="swiper-button-prev !-left-2"></div>
-            <div class="swiper-button-next !-right-2"></div>
-          </div>
-        </div>
-      </div>
+<section class="hero-section min-h-screen flex items-center relative overflow-hidden py-16">
+  <!-- Improved Background -->
+  <div class="absolute inset-0 z-0">
+    <!-- Clean Background -->
+    <div class="absolute inset-0 bg-body dark:bg-black"></div>
 
-      <!-- Content Section - Right Side -->
-      <div class="md:col-7 lg:col-7 text-center md:text-left md:pl-8 lg:pl-12">
-        <div class="max-w-[600px] content-wrapper">
-          <h1 class="banner-title mb-2 leading-tight">
+    <!-- Subtle SVG Patterns -->
+    <div class="absolute inset-0 z-10 opacity-[0.03] dark:opacity-[0.05]" style="background-image: url('data:image/svg+xml,%3Csvg width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22%23000000%22 fill-opacity=%220.1%22 fill-rule=%22evenodd%22%3E%3Ccircle cx=%223%22 cy=%223%22 r=%221%22/%3E%3Ccircle cx=%2213%22 cy=%2213%22 r=%221%22/%3E%3C/g%3E%3C/svg%3E'); background-size: 20px 20px;"></div>
+
+    <!-- Abstract Shapes -->
+    <div class="absolute top-20 left-10 w-32 h-32 border border-border dark:border-gray-800 rounded-full opacity-20 dark:opacity-10 z-10"></div>
+    <div class="absolute bottom-40 right-20 w-48 h-48 border border-border dark:border-gray-800 rounded-full opacity-20 dark:opacity-10 z-10"></div>
+    <div class="absolute top-1/3 right-1/4 w-24 h-24 border border-border dark:border-gray-800 rounded-full opacity-20 dark:opacity-10 z-10"></div>
+
+    <!-- Additional SVG Elements -->
+    <div class="absolute top-1/4 left-1/4 w-16 h-16 opacity-10 dark:opacity-40 z-30" style="pointer-events: none; mix-blend-mode: normal;">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" class="dark:text-white" d="M45.3,-51.2C56.9,-42.9,63.3,-26.5,65.3,-9.8C67.2,6.9,64.7,24,55.8,36.1C46.9,48.3,31.5,55.5,15.4,60.3C-0.7,65.1,-17.5,67.4,-32.4,62.3C-47.3,57.2,-60.3,44.7,-67.1,28.9C-73.9,13.1,-74.5,-6,-68.2,-21.8C-61.9,-37.5,-48.7,-49.9,-34.3,-57C-19.9,-64.1,-4.3,-65.9,9.8,-62.8C23.9,-59.7,33.7,-59.5,45.3,-51.2Z" transform="translate(100 100)" />
+      </svg>
+    </div>
+    <div class="absolute bottom-1/4 right-1/3 w-20 h-20 opacity-10 dark:opacity-40 z-30 rotate-45" style="pointer-events: none; mix-blend-mode: normal;">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" class="dark:text-white" d="M47.7,-57.2C59.5,-45.9,65.8,-28.4,68.2,-10.8C70.6,6.8,69.2,24.5,60.8,38.3C52.3,52.2,36.9,62.2,20.1,67.2C3.3,72.2,-14.9,72.1,-30.8,65.5C-46.7,58.9,-60.3,45.7,-67.6,29.5C-74.9,13.2,-75.9,-6.1,-69.7,-22.4C-63.5,-38.7,-50.1,-51.9,-35.4,-62.1C-20.7,-72.2,-4.7,-79.2,9.7,-76.8C24.1,-74.4,35.9,-68.5,47.7,-57.2Z" transform="translate(100 100)" />
+      </svg>
+    </div>
+    <div class="absolute top-2/3 left-1/3 w-24 h-24 opacity-10 dark:opacity-40 z-30 -rotate-12" style="pointer-events: none; mix-blend-mode: normal;">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" class="dark:text-white" d="M39.9,-46.1C52.6,-34.5,64.5,-23.1,68.2,-8.7C71.9,5.7,67.4,23.2,57.4,36.1C47.4,49.1,31.8,57.5,15.4,62.1C-1,66.7,-18.2,67.5,-33.9,61.2C-49.6,54.9,-63.8,41.5,-70.1,24.9C-76.4,8.3,-74.8,-11.5,-66.4,-27.8C-58,-44.1,-42.8,-56.9,-27.1,-67.1C-11.4,-77.3,4.8,-84.9,17.3,-79.7C29.8,-74.5,27.2,-57.6,39.9,-46.1Z" transform="translate(100 100)" />
+      </svg>
+    </div>
+
+    <!-- Removed unnecessary gradient overlays for better performance -->
+  </div>
+
+  <div class="container relative z-10">
+    <div class="flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-12 lg:gap-16">
+      <!-- Content Section -->
+      <div class="lg:w-1/2 order-2 lg:order-1 text-center lg:text-left" data-aos="fade-up" data-aos-once="true">
+        <div class="max-w-2xl mx-auto lg:mx-0">
+          <!-- Theme-Based Badge -->
+          <div class="inline-flex items-center px-4 py-2 rounded-full bg-primary/5 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary text-sm font-medium mb-6 shadow-sm">
+            <span class="flex h-2 w-2 relative mr-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary dark:bg-darkmode-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary dark:bg-darkmode-primary"></span>
+            </span>
+            Welcome to my digital space
+          </div>
+
+          <!-- Theme-Based Title -->
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-dark dark:text-darkmode-dark">
             {{ .title | markdownify }}
           </h1>
-          <h4 class="banner-subtitle mb-4 font-normal">
+
+          <!-- Theme-Based Subtitle -->
+          <h4 class="text-xl md:text-2xl font-normal mb-6 text-text dark:text-darkmode-text">
             {{ .subtitle | markdownify }}
           </h4>
-          <p class="banner-content mb-8">{{ .content | markdownify }}</p>
 
-          <!-- Bullet Points -->
+          <!-- Theme-Based Content -->
+          <p class="text-lg text-text dark:text-darkmode-text mb-8 leading-relaxed">
+            {{ .content | markdownify }}
+          </p>
+
+          <!-- Modern Bullet Points -->
           {{ if .bulletpoints }}
-          <ul class="banner-bullets mb-10 space-y-6">
-            {{ range .bulletpoints }}
-            <li class="relative pl-8 text-left flex items-start">
-              <i class="fas fa-stroopwafel fa-spin absolute left-0 top-1"></i>
-              <span class="block">{{ . | markdownify }}</span>
+          <ul class="space-y-5 mb-10">
+            {{ range $index, $point := .bulletpoints }}
+            <li class="flex items-start bg-body dark:bg-darkmode-body rounded-xl p-4 shadow-sm transition-all duration-300 hover:shadow-md" data-aos="fade-up" data-aos-delay="{{ mul $index 100 }}" data-aos-once="true">
+              <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 dark:bg-darkmode-primary/20 text-primary dark:text-darkmode-primary mr-4">
+                <i class="fas fa-check text-sm"></i>
+              </span>
+              <span class="text-text dark:text-darkmode-text">{{ . | markdownify }}</span>
             </li>
             {{ end }}
           </ul>
           {{ end }}
 
-          <!-- Buttons -->
-          <div
-            class="banner-buttons flex flex-wrap gap-4 justify-center md:justify-start"
-          >
+          <!-- Modern Buttons -->
+          <div class="flex flex-wrap gap-4 justify-center lg:justify-start mt-8" data-aos="fade-up" data-aos-delay="200" data-aos-once="true">
             {{ with .buttonCS }} {{ if .enable }}
-            <a class="btn btn-primary" href="{{ .link | absURL }}">
-              {{ .label }}
-              <i class="fa fa-arrow-right pl-2"></i>
+            <a href="{{ .link | absURL }}" class="btn btn-primary group">
+              <span>{{ .label }}</span>
+              <i class="fa fa-arrow-right ml-2 transition-transform duration-300 group-hover:translate-x-1"></i>
             </a>
-            {{ end }} {{ end }} {{ with .buttonDV }} {{ if .enable }}
-            <a class="btn btn-outline-primary" href="{{ .link | absURL }}">
-              {{ .label }}
-              <i class="fa fa-arrow-right pl-2"></i>
+            {{ end }} {{ end }}
+
+            {{ with .buttonDV }} {{ if .enable }}
+            <a href="{{ .link | absURL }}" class="btn btn-outline-primary group">
+              <span>{{ .label }}</span>
+              <i class="fa fa-arrow-right ml-2 transition-transform duration-300 group-hover:translate-x-1"></i>
             </a>
             {{ end }} {{ end }}
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-{{ end }}
-<!-- /Banner -->
 
-<!-- Features with Modern Interactive Design -->
-{{ range $i, $e:= .Params.features }}
-<section class="section-sm py-14 {{ if (modBool $i 2) }}bg-theme-light dark:bg-darkmode-theme-light{{ end }}" id="feature-{{ $i }}">
-  <div class="container">
-    <div class="row items-center justify-between">
-      <!-- Feature Image - Improved but keeping original style -->
-      <div class="mb:md-0 {{ if not (modBool $i 2) }}md:order-2{{ end }} md:col-5 mb-8 md:mb-0">
-        <div class="feature-image-wrapper relative">
-          <!-- Clean image display without shadows -->
-          <div class="feature-image-container overflow-hidden rounded-lg">
-            {{ partial "image" (dict "Src" .image "Alt" "feature image" "Class" "w-full") }}
-          </div>
+      <!-- Simplified Image Gallery Section -->
+      <div class="lg:w-1/2 order-1 lg:order-2" data-aos="fade-left" data-aos-once="true">
+        <div class="relative mx-auto max-w-md lg:max-w-lg">
+          <!-- Simple Image Display -->
+          <div class="bg-white dark:bg-black rounded-xl shadow-lg p-4 overflow-hidden">
+            {{ $files := readDir "static/images/admin" }}
+            {{ $firstImage := index (where $files "IsDir" false) 0 }}
+            {{ if $firstImage }}
+            <div class="relative">
+              <img
+                src="{{ print "/images/admin/" $firstImage.Name | absURL }}"
+                alt="Profile image"
+                class="w-full h-auto rounded-lg"
+                style="max-height: 500px; object-fit: contain;"
+              />
 
-          <!-- Section indicator - no shadow -->
-          <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full bg-white dark:bg-darkmode-body border border-border dark:border-darkmode-border">
-            <span class="text-sm font-medium text-primary dark:text-darkmode-primary">
-              {{ if eq $i 0 }}
-                Cybersecurity
-              {{ else if eq $i 1 }}
-                DevOps
-              {{ else }}
-                Projects
-              {{ end }}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Feature Content - Improved but keeping original style -->
-      <div class="{{ if not (modBool $i 2) }}md:order-1{{ end }} md:col-7 lg:col-6">
-        <!-- Clean title with subtle accent -->
-        <div class="relative mb-4">
-          <h2 class="text-2xl md:text-3xl font-bold mb-2 text-dark dark:text-darkmode-dark">{{ .title | markdownify }}</h2>
-          <div class="h-1 w-16 bg-primary dark:bg-darkmode-primary rounded-full"></div>
-        </div>
-
-        <!-- Content with clean typography -->
-        <div class="mb-6">
-          <p class="text-lg text-text dark:text-darkmode-text">{{ .content | markdownify }}</p>
-        </div>
-
-        <!-- Clean bulletpoints with subtle hover effect - no fixed height -->
-        <div class="space-y-3 mb-8">
-          {{ range $index, $point := .bulletpoints }}
-          <div class="feature-point flex items-start p-3 rounded-md transition-all duration-200 hover:bg-white dark:hover:bg-darkmode-body">
-            <div class="flex-shrink-0 mr-3 mt-1">
-              <i class="fas fa-stroopwafel fa-spin text-primary dark:text-darkmode-primary"></i>
+              <!-- Image Navigation -->
+              <div class="mt-4 flex justify-center gap-2">
+                {{ range $index, $file := $files }}
+                {{ if and (not .IsDir) (findRE "\\.(jpe?g|png|gif|webp)$" .Name)}}
+                <button
+                  class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-primary dark:hover:bg-primary transition-colors {{ if eq $index 0 }}bg-primary dark:bg-primary{{ end }}"
+                  data-image="{{ print "/images/admin/" .Name | absURL }}"
+                  onclick="changeHeroImage(this)"
+                ></button>
+                {{ end }}
+                {{ end }}
+              </div>
             </div>
-            <div class="feature-point-content text-text dark:text-darkmode-text">{{ . | markdownify }}</div>
+            {{ end }}
           </div>
-          {{ end }}
         </div>
+      </div>
 
-        <!-- Clean button -->
-        {{ with .button }} {{ if .enable }}
-        <div class="mt-6">
-          <a
-            class="btn btn-primary inline-flex items-center"
-            href="{{ .link | absURL }}"
-          >
-            <span>{{ .label }}</span>
-            <i class="fa fa-arrow-right ml-2 transition-transform duration-300 group-hover:translate-x-1"></i>
-          </a>
+    </div>
+  </div>
+
+  <!-- Theme-Based Scroll Indicator - Hidden on Mobile -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:flex flex-col items-center animate-bounce-slow z-20">
+    <span class="text-sm text-dark dark:text-darkmode-light mb-2">Scroll Down</span>
+    <i class="fas fa-chevron-down text-primary dark:text-darkmode-primary"></i>
+  </div>
+</section>
+{{ end }}
+<!-- /Hero Section -->
+
+<!-- Improved Feature Sections -->
+{{ range $i, $e:= .Params.features }}
+<section class="feature-section py-16 md:py-20 lg:py-24 relative {{ if (modBool $i 2) }}bg-theme-light dark:bg-black{{ else }}bg-body dark:bg-black{{ end }}" id="feature-{{ $i }}">
+  <!-- Improved Background Elements -->
+  <div class="absolute inset-0 z-0 overflow-hidden">
+    <!-- Removed unnecessary SVG patterns and dividers for better performance -->
+
+    <!-- Abstract Shapes -->
+    {{ if (modBool $i 2) }}
+    <div class="absolute top-20 right-10 w-32 h-32 border border-border dark:border-gray-800 rounded-full opacity-20 dark:opacity-10 z-10"></div>
+    <!-- Additional SVG for even sections -->
+    <div class="absolute bottom-1/4 left-1/5 w-20 h-20 opacity-10 dark:opacity-40 z-30 rotate-12" style="pointer-events: none; mix-blend-mode: normal;">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" d="M48.2,-46.1C58.6,-39.2,60.9,-19.6,60.7,-0.2C60.5,19.2,57.8,38.4,47.4,45.9C37,53.4,18.5,49.1,1.7,47.4C-15.2,45.7,-30.3,46.6,-40.8,39.1C-51.2,31.7,-56.9,15.8,-57.7,-0.8C-58.5,-17.5,-54.3,-35,-43.7,-41.9C-33.1,-48.8,-16.6,-45.2,1.3,-46.5C19.1,-47.8,38.3,-53,48.2,-46.1Z" transform="translate(100 100)" />
+      </svg>
+    </div>
+    {{ else }}
+    <div class="absolute bottom-20 left-10 w-48 h-48 border border-border dark:border-gray-800 rounded-full opacity-20 dark:opacity-10 z-10"></div>
+    <!-- Additional SVG for odd sections -->
+    <div class="absolute top-1/4 right-1/5 w-24 h-24 opacity-10 dark:opacity-40 z-30 -rotate-12" style="pointer-events: none; mix-blend-mode: normal;">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" d="M54.6,-46.3C68.8,-35.3,77.5,-12.9,74.3,7.2C71.1,27.3,56,45.1,37.5,55.3C19,65.5,-2.9,68.1,-22.2,61.5C-41.5,54.9,-58.2,39.1,-65.2,19.5C-72.2,-0.1,-69.5,-23.5,-57.9,-34.9C-46.3,-46.3,-25.7,-45.7,-3.9,-42.5C17.9,-39.3,40.4,-57.3,54.6,-46.3Z" transform="translate(100 100)" />
+      </svg>
+    </div>
+    {{ end }}
+  </div>
+
+  <div class="container relative z-10">
+    <!-- Section Header -->
+    <div class="text-center mb-12 md:mb-16" data-aos="fade-up" data-aos-once="true">
+      <div class="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 dark:bg-darkmode-primary/20 text-primary dark:text-darkmode-primary text-sm font-medium mb-4 shadow-sm">
+        {{ if eq $i 0 }}
+          <i class="fas fa-shield-alt mr-2"></i> Cybersecurity
+        {{ else if eq $i 1 }}
+          <i class="fas fa-server mr-2"></i> DevOps
+        {{ else }}
+          <i class="fas fa-project-diagram mr-2"></i> Projects
+        {{ end }}
+      </div>
+      <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-dark dark:text-darkmode-dark">{{ .title | markdownify }}</h2>
+      <div class="h-1 w-16 md:w-20 bg-primary dark:bg-darkmode-primary rounded-full mx-auto"></div>
+    </div>
+
+    <!-- Feature Content -->
+    <div class="flex flex-col {{ if not (modBool $i 2) }}lg:flex-row{{ else }}lg:flex-row-reverse{{ end }} items-center gap-8 md:gap-12 lg:gap-16">
+      <!-- Feature Image -->
+      <div class="w-full lg:w-1/2 px-4" data-aos="{{ if not (modBool $i 2) }}fade-right{{ else }}fade-left{{ end }}" data-aos-delay="100" data-aos-once="true">
+        <div class="relative mx-auto max-w-lg">
+          <!-- Modern Image Container -->
+          <div class="relative z-10 overflow-hidden transform transition-transform duration-500 hover:scale-[1.02]">
+            <div class="overflow-hidden flex items-center justify-center py-4">
+              {{ partial "image" (dict "Src" .image "Alt" "feature image" "Class" "w-auto max-w-full h-auto max-h-[400px] object-contain" "Style" "box-shadow: none !important; filter: none !important; border: none !important; outline: none !important;") }}
+            </div>
+          </div>
         </div>
-        {{ end }} {{ end }}
+      </div>
+
+      <!-- Feature Text Content -->
+      <div class="w-full lg:w-1/2 px-4" data-aos="{{ if not (modBool $i 2) }}fade-left{{ else }}fade-right{{ end }}" data-aos-delay="200" data-aos-once="true">
+        <div class="max-w-lg mx-auto lg:mx-0">
+          <!-- Feature Description -->
+          <div class="mb-8">
+            <p class="text-base md:text-lg text-text dark:text-darkmode-text leading-relaxed">
+              {{ .content | markdownify }}
+            </p>
+          </div>
+
+          <!-- Modern Bullet Points -->
+          <div class="space-y-4 mb-8">
+            {{ range $index, $point := .bulletpoints }}
+            <div class="bg-body dark:bg-darkmode-body rounded-xl p-4 shadow-sm transition-all duration-300 hover:shadow-md" data-aos="fade-up" data-aos-delay="{{ mul $index 50 }}" data-aos-once="true">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 dark:bg-darkmode-primary/20 flex items-center justify-center text-primary dark:text-darkmode-primary mr-4 bullet-icon">
+                  <i class="fas text-sm"></i>
+                </div>
+                <div class="text-text dark:text-darkmode-text">{{ . | markdownify }}</div>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+
+          <!-- Fixed Button with Guaranteed Visible Text -->
+          {{ with .button }} {{ if .enable }}
+          <div class="mt-6 md:mt-8" data-aos="fade-up" data-aos-delay="300" data-aos-once="true">
+            <a href="{{ .link | absURL }}" class="btn btn-primary group">
+              <span>{{ .label }}</span>
+              <i class="fa fa-arrow-right ml-2 transition-transform duration-300 group-hover:translate-x-1"></i>
+            </a>
+          </div>
+          {{ end }} {{ end }}
+        </div>
       </div>
     </div>
   </div>
 </section>
-
 {{ end }}
 
-<!-- Initialize AOS animations -->
+<!-- Modern Subtle Animations -->
 <script>
+  // Variables for slider
+  let currentSlide = 0;
+  let isAnimating = false;
+  let autoSlideInterval;
+
+  // Function to move to a specific slide with enhanced animation
+  function moveToSlide(index) {
+    if (isAnimating || index === currentSlide) return;
+
+    const track = document.getElementById('slider-track');
+    const slides = document.querySelectorAll('.slide-item');
+    if (!track || !slides.length) return;
+
+    isAnimating = true;
+
+    // Update navigation dots with smooth animation
+    document.querySelectorAll('#image-slider + div button').forEach((btn, i) => {
+      if (i === index) {
+        btn.classList.add('bg-primary', 'dark:bg-primary', 'scale-125');
+        btn.classList.remove('bg-gray-300', 'dark:bg-gray-700');
+      } else {
+        btn.classList.remove('bg-primary', 'dark:bg-primary', 'scale-125');
+        btn.classList.add('bg-gray-300', 'dark:bg-gray-700');
+      }
+    });
+
+    // Remove active class from all slides
+    slides.forEach(slide => {
+      slide.classList.remove('active');
+    });
+
+    // Add entering class to the target slide image
+    const targetSlide = slides[index];
+    const targetImage = targetSlide.querySelector('img');
+
+    if (targetImage) {
+      // Remove any existing animation classes
+      targetImage.classList.remove('entering');
+
+      // Force a reflow to restart animation
+      void targetImage.offsetWidth;
+
+      // Add animation class
+      targetImage.classList.add('entering');
+    }
+
+    // Add active class to the target slide for shine effect
+    setTimeout(() => {
+      targetSlide.classList.add('active');
+    }, 100);
+
+    // Slide to the new position
+    track.style.transform = `translateX(-${index * 100}%)`;
+
+    // Update current slide
+    currentSlide = index;
+
+    // Clear animation flag after transition completes
+    setTimeout(() => {
+      isAnimating = false;
+    }, 800); // Match the transition duration
+  }
+
+  // Legacy function for backward compatibility
+  function changeHeroImage(button) {
+    // Get the image URL from the button's data attribute
+    const imageUrl = button.getAttribute('data-image');
+    const index = parseInt(button.getAttribute('data-index') || '0');
+
+    // Use the new moveToSlide function if available
+    if (typeof moveToSlide === 'function' && document.getElementById('slider-track')) {
+      moveToSlide(index);
+      return;
+    }
+
+    // Legacy code for backward compatibility
+    const heroImage = document.querySelector('.lg\\:w-1\\/2.order-1.lg\\:order-2 img');
+    if (heroImage) {
+      // Add fade-out effect
+      heroImage.style.opacity = '0';
+      heroImage.style.transition = 'opacity 0.3s ease';
+
+      // Change image after fade out
+      setTimeout(() => {
+        heroImage.src = imageUrl;
+
+        // Add fade-in effect when image is loaded
+        heroImage.onload = function() {
+          heroImage.style.opacity = '1';
+        };
+      }, 300);
+    }
+
+    // Update active button
+    document.querySelectorAll('.lg\\:w-1\\/2.order-1.lg\\:order-2 button').forEach(btn => {
+      btn.classList.remove('bg-primary', 'dark:bg-primary');
+      btn.classList.add('bg-gray-300', 'dark:bg-gray-700');
+    });
+
+    // Set this button as active
+    button.classList.remove('bg-gray-300', 'dark:bg-gray-700');
+    button.classList.add('bg-primary', 'dark:bg-primary');
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     // Check if AOS is available
     if (typeof AOS !== 'undefined') {
+      // Initialize with elegant settings
       AOS.init({
         offset: 100,
-        duration: 800,
-        easing: 'ease-in-out',
-        once: true
+        delay: 50,
+        duration: 1000,
+        easing: 'ease-out',
+        once: true, // Elements animate only once
+        mirror: false,
+        anchorPlacement: 'top-bottom',
+        disable: false
+      });
+
+      // Refresh AOS when window is resized
+      window.addEventListener('resize', function() {
+        AOS.refresh();
+      }, { passive: true });
+
+      // Refresh AOS when page is fully loaded (including images)
+      window.addEventListener('load', function() {
+        AOS.refresh();
+      }, { passive: true });
+
+      // Refresh AOS when fonts are loaded
+      document.fonts.ready.then(function() {
+        AOS.refresh();
       });
     } else {
       // Fallback if AOS is not available
@@ -161,14 +382,113 @@
         item.style.transform = 'translateY(0)';
       });
     }
+
+    // Add smooth scrolling to all links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          // Smooth scroll to target with offset for fixed header
+          const headerOffset = 80;
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+
+          // Update URL hash without jumping
+          history.pushState(null, null, targetId);
+        }
+      });
+    });
+
+    // Optimize scroll performance
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+      if (!scrollTimeout) {
+        scrollTimeout = setTimeout(function() {
+          scrollTimeout = null;
+        }, 200);
+      }
+    }, { passive: true });
+
+    // Initialize image slider
+    const slider = document.getElementById('image-slider');
+    const track = document.getElementById('slider-track');
+    const slides = document.querySelectorAll('.slide-item');
+
+    if (slider && track && slides.length) {
+      // Add entering class to the first slide
+      const firstSlide = slides[0];
+      const firstImage = firstSlide.querySelector('img');
+
+      if (firstImage) {
+        firstImage.classList.add('entering');
+      }
+
+      // Add active class to the first slide for shine effect
+      setTimeout(() => {
+        firstSlide.classList.add('active');
+      }, 100);
+
+      // Function to start auto sliding
+      function startAutoSlide() {
+        // Clear any existing interval
+        if (autoSlideInterval) {
+          clearInterval(autoSlideInterval);
+        }
+
+        // Set new interval
+        autoSlideInterval = setInterval(() => {
+          if (!isAnimating) {
+            const nextSlide = (currentSlide + 1) % slides.length;
+            moveToSlide(nextSlide);
+          }
+        }, 5000); // Change slide every 5 seconds
+      }
+
+      // Pause sliding on hover
+      slider.addEventListener('mouseenter', () => {
+        if (autoSlideInterval) {
+          clearInterval(autoSlideInterval);
+        }
+      });
+
+      // Resume sliding when mouse leaves
+      slider.addEventListener('mouseleave', () => {
+        startAutoSlide();
+      });
+
+      // Start automatic sliding
+      startAutoSlide();
+    }
+
+    // Legacy code for backward compatibility
+    const heroImage = document.querySelector('.lg\\:w-1\\/2.order-1.lg\\:order-2 img');
+    if (heroImage) {
+      heroImage.style.opacity = '1';
+      heroImage.style.transition = 'opacity 0.3s ease';
+    }
   });
 </script>
 <!-- /Features -->
 
 <!-- Skills Section -->
 {{ with site.GetPage "sections/skills" }} {{ if .Params.enable }}
-<section class="section py-16">
-  <div class="container">
+<section class="section py-16 relative">
+    <!-- Subtle background for skills section -->
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent"></div>
+      <div class="absolute inset-0" style="background-image: linear-gradient(rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px); background-size: 50px 50px;"></div>
+    </div>
+  <div class="container relative z-10">
     <!-- Simple Section Header -->
     <div class="row">
       <div class="md:col-10 lg:col-8 xl:col-6 mx-auto mb-12 text-center">
@@ -184,9 +504,9 @@
       <h3 class="text-xl font-bold mb-8 text-center text-dark dark:text-darkmode-dark">{{ .name }}</h3>
 
       <!-- Skills Slider with Clean Cards -->
-      <div class="col-12 position-relative skills-slider-container">
-        <div class="swiper skills-slider">
-          <div class="swiper-wrapper">
+      <div class="col-12 position-relative skills-slider-container" style="overflow: hidden !important; max-height: none !important;">
+        <div class="swiper skills-slider" style="overflow: visible !important; max-height: none !important;">
+          <div class="swiper-wrapper" style="overflow: visible !important;">
             {{ range .skills }}
             <div class="swiper-slide p-2">
               <div class="skill-card bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-6 h-full border border-border dark:border-darkmode-border">

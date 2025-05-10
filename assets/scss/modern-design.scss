@@ -1,0 +1,283 @@
+/* Modern Black & White Design Elements */
+
+/* ===== Hero Section ===== */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Background Patterns */
+.bg-pattern-dots {
+  background-image: radial-gradient(circle at 20px 20px, rgba(0, 0, 0, 0.1) 2px, transparent 0);
+  background-size: 40px 40px;
+}
+
+.bg-pattern-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.dark .bg-pattern-dots {
+  background-image: radial-gradient(circle at 20px 20px, rgba(255, 255, 255, 0.1) 2px, transparent 0);
+}
+
+.dark .bg-pattern-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+/* Elegant Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Floating Animation - Subtle Version */
+@keyframes float-slow {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-10px) translateX(5px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-slow-reverse {
+  animation: float-slow 8s ease-in-out infinite reverse;
+}
+
+/* Subtle Pulse Animation */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+/* Slow Bounce Animation */
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* Theme-based Buttons - Using standard button classes */
+
+/* Hero Slider */
+.hero-slider {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.hero-slider .swiper-slide {
+  overflow: hidden;
+}
+
+.hero-slider-progress {
+  transition: width 0.3s linear;
+}
+
+/* ===== Feature Section ===== */
+.feature-section {
+  position: relative;
+  padding: 6rem 0;
+  overflow: hidden;
+}
+
+.feature-card {
+  @apply bg-white dark:bg-gray-800 rounded-xl p-6 transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl border border-gray-100 dark:border-gray-700 h-full;
+  transform: translateY(0);
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  @apply w-14 h-14 rounded-lg flex items-center justify-center text-white mb-6;
+  background: linear-gradient(135deg, #333 0%, #000 100%);
+}
+
+.dark .feature-icon {
+  background: linear-gradient(135deg, #eee 0%, #fff 100%);
+  @apply text-gray-900;
+}
+
+.feature-image-container {
+  @apply relative rounded-xl overflow-hidden shadow-lg dark:shadow-xl;
+  height: 0;
+  padding-bottom: 75%;
+}
+
+.feature-image-container img {
+  @apply absolute inset-0 w-full h-full object-cover;
+}
+
+.feature-badge {
+  @apply absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.dark .feature-badge {
+  background: rgba(30, 30, 30, 0.9);
+  color: #fff;
+}
+
+.feature-bullet {
+  @apply flex items-start p-3 rounded-lg transition-all duration-200;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.dark .feature-bullet {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.feature-bullet:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.dark .feature-bullet:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.feature-bullet-icon {
+  @apply flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4;
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.dark .feature-bullet-icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 6rem 0 3rem;
+  }
+
+  .feature-section {
+    padding: 4rem 0;
+  }
+}
+
+/* Dark mode specific styles */
+.dark {
+  /* Custom variables for dark mode */
+}
+
+/* Text highlight effect */
+.text-highlight {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+.text-highlight::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: -1;
+  transform: rotate(-2deg);
+}
+
+.dark .text-highlight::after {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Modern Image Slider */
+.modern-slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+
+  .swiper-slide {
+    transition: all 0.5s ease;
+    transform: scale(0.85);
+    opacity: 0.5;
+
+    &-active {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .swiper-pagination-bullet {
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0.7;
+
+    &-active {
+      background: #000;
+      opacity: 1;
+    }
+  }
+
+  .dark & .swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.3);
+
+    &-active {
+      background: #fff;
+    }
+  }
+}
+
+/* Image Frame */
+.image-frame {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: 10px;
+    bottom: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+    z-index: -1;
+  }
+
+  .dark &::before {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}

@@ -21,7 +21,7 @@
                   <div class="flex flex-wrap gap-2">
                     {{ range . }}
                       <a href="{{ `til_categories/` | relLangURL }}{{ . | urlize | lower }}/"
-                         class="inline-block bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-dark transition-colors">
+                         class="inline-block bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-3 py-1 rounded-full text-sm hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition-colors">
                         {{ . | humanize }}
                       </a>
                     {{ end }}
@@ -58,7 +58,7 @@
                   Tags:
                   {{ range . }}
                     <a href="{{ "til_tags/" | relLangURL }}{{ . | urlize }}"
-                       class="ml-2 bg-white dark:bg-darkmode-body px-3 py-1 rounded border border-border dark:border-darkmode-border hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-dark transition-colors mb-2">
+                       class="ml-2 bg-white dark:bg-darkmode-body px-3 py-1 rounded border border-border dark:border-darkmode-border hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-white transition-colors mb-2">
                       {{ . }}
                     </a>
                   {{ end }}

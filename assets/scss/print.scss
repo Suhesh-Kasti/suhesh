@@ -1,0 +1,176 @@
+/* Print styles for better desktop printing */
+
+@media print {
+  /* General print styles */
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+  }
+
+  /* Hide unnecessary elements */
+  header, 
+  footer, 
+  nav, 
+  .header, 
+  .footer, 
+  .navbar, 
+  .sidebar, 
+  .theme-switcher, 
+  .search-modal, 
+  .floating-progress, 
+  .toc-controls,
+  .toc-search,
+  .toc-footer,
+  .pagination,
+  .share-icons,
+  .comments-section,
+  .related-posts,
+  #floating-progress,
+  button[id="copy-link-btn"],
+  button[id="print-article-btn"] {
+    display: none !important;
+  }
+
+  /* Show only essential content */
+  main, 
+  article, 
+  .content, 
+  .prose, 
+  .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    float: none !important;
+    position: static !important;
+  }
+
+  /* Adjust layout for content */
+  .row, 
+  .col, 
+  .col-12, 
+  .lg\:col-8, 
+  .lg\:col-4 {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  /* Ensure TOC is visible and properly formatted */
+  .innovative-toc {
+    page-break-inside: avoid;
+    margin-bottom: 2cm;
+    border: 1px solid #ddd;
+    padding: 1cm;
+    background-color: #f9f9f9 !important;
+  }
+
+  .toc-header {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0.5cm;
+    padding-bottom: 0.5cm;
+  }
+
+  .toc-content {
+    display: block !important;
+  }
+
+  .toc-wrapper {
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .toc-nav {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Improve link display */
+  a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 90%;
+    font-style: italic;
+  }
+
+  /* Improve code blocks */
+  pre, code {
+    background-color: #f5f5f5 !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+  }
+
+  /* Improve image display */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Improve table display */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid;
+  }
+
+  table, th, td {
+    border: 1px solid #ddd !important;
+  }
+
+  th, td {
+    padding: 0.5cm !important;
+  }
+
+  /* Ensure proper page breaks */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1 {
+    font-size: 24pt;
+    margin-top: 2cm;
+  }
+
+  h2 {
+    font-size: 20pt;
+    margin-top: 1.5cm;
+  }
+
+  h3 {
+    font-size: 16pt;
+    margin-top: 1cm;
+  }
+
+  p, blockquote, ul, ol, dl, pre {
+    page-break-inside: avoid;
+  }
+
+  /* Add page numbers */
+  body::after {
+    content: counter(page);
+    position: fixed;
+    bottom: 0.5cm;
+    right: 0.5cm;
+    font-size: 10pt;
+  }
+}

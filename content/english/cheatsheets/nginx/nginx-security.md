@@ -3,7 +3,7 @@ title: "NGINX Security Hardening Cheatsheet"
 description: "Comprehensive guide to securing NGINX web server against common vulnerabilities and attacks"
 date: 2023-07-17T10:00:00+05:45
 image: "/images/cheatsheets/nginx.png"
-cheatsheet_categories: ["Web Servers", "NGINX", "Security"]
+cheatsheet_categories: ["NGINX"]
 cheatsheet_tags: ["nginx", "security", "hardening", "web server", "ssl"]
 ---
 ## 🔐 NGINX Cheatsheet: SSL/TLS & Security (Full Reference)

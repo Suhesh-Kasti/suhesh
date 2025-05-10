@@ -96,8 +96,8 @@
       }
 
       body.dark .btn-outline-primary:hover {
-        background-color: #fff !important;
-        color: #1c1c1c !important;
+        background-color: var(--darkmode-primary) !important;
+        color: #fff !important;
       }
 
       /* Fix for grey borders in dark mode */
@@ -256,19 +256,9 @@
     "essentials/footer.html" . }} {{ partial "essentials/script.html" . }} {{
     end }}
 
-    <!-- Fix for header animation -->
-    <script>
-      // Ensure header animation works correctly
-      document.addEventListener('DOMContentLoaded', function() {
-        // Get the header element
-        const header = document.querySelector('.header');
-        if (header) {
-          // Make sure it has the correct styles
-          header.style.width = '100%';
-          header.style.zIndex = '1000';
-        }
-      });
-    </script>
+    <!-- Header scroll fix script -->
+    {{ $headerFix := resources.Get "js/header-fix.js" | resources.Minify }}
+    <script src="{{ $headerFix.RelPermalink }}"></script>
 
     <!-- Note: Custom cursor is now fully handled by cursor.js -->
     <script>

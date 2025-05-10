@@ -10,11 +10,7 @@
         <a href="#cheatsheets" class="btn btn-outline-primary">View All Cheatsheets</a>
       </div>
 
-      <!-- Search Box -->
-      <div class="mt-8 max-w-md mx-auto">
-        <h5 class="mb-4">Search Cheatsheets</h5>
-        {{ partial "components/section-search" (dict "section" "cheatsheets" "placeholder" "Search cheatsheets...") }}
-      </div>
+
     </div>
 
     <!-- Display folders first -->
@@ -87,6 +83,20 @@
       </div>
     </div>
     {{ end }}
+
+    <!-- Explore Other Content Section -->
+    <div class="mt-16">
+      <div class="flex items-center mb-10">
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+        <h2 class="text-2xl font-bold px-6">Explore Other Content</h2>
+        <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          {{ partial "components/explore-other-content-horizontal.html" (dict "currentSection" "cheatsheets") }}
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 {{ end }}

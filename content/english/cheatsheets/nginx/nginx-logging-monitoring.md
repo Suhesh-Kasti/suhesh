@@ -3,7 +3,7 @@ title: "NGINX as a Load Balancer Cheatsheet"
 description: "Comprehensive guide to configuring NGINX as a high-performance load balancer"
 date: 2023-07-18T10:00:00+05:45
 image: "/images/cheatsheets/nginx.png"
-cheatsheet_categories: ["Web Servers", "NGINX", "Load Balancing"]
+cheatsheet_categories: ["NGINX"]
 cheatsheet_tags: ["nginx", "load balancer", "high availability", "scaling"]
 ---
 ## 📊 NGINX Cheatsheet: Logging & Monitoring (Full Reference)

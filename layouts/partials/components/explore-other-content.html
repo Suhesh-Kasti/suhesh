@@ -1,0 +1,85 @@
+<!-- Explore Other Content Component -->
+<!-- Parameters:
+  - currentSection: The current section to exclude from the list (e.g., "blog", "til", "cheatsheets", "checklists")
+-->
+
+{{ $currentSection := .currentSection | default "" }}
+
+<div class="mb-8">
+  <h5 class="mb-4">Explore Other Content</h5>
+  <div class="bg-theme-light dark:bg-darkmode-theme-light rounded p-6">
+    <div class="space-y-6">
+      <!-- Blog Section -->
+      {{ if ne $currentSection "blog" }}
+      <div>
+        <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From the Blog</h6>
+        {{ range first 2 (where site.RegularPages "Section" "blog").ByDate.Reverse }}
+          <div class="mb-3">
+            <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
+              <span class="text-sm font-medium">{{ .Title }}</span>
+              <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
+                <i class="far fa-calendar-alt mr-1"></i>
+                {{ time.Format "Jan 02, 2006" .Date }}
+              </div>
+            </a>
+          </div>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <!-- TIL Section -->
+      {{ if ne $currentSection "til" }}
+      <div>
+        <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From Today I Learned</h6>
+        {{ range first 2 (where site.RegularPages "Section" "til").ByDate.Reverse }}
+          <div class="mb-3">
+            <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
+              <span class="text-sm font-medium">{{ .Title }}</span>
+              <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
+                <i class="fas fa-lightbulb mr-1"></i>
+                {{ with .Params.til_categories }}{{ index . 0 }}{{ end }}
+              </div>
+            </a>
+          </div>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <!-- Cheatsheets Section -->
+      {{ if ne $currentSection "cheatsheets" }}
+      <div>
+        <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From Cheatsheets</h6>
+        {{ range first 2 (where site.RegularPages "Section" "cheatsheets").ByDate.Reverse }}
+          <div class="mb-3">
+            <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
+              <span class="text-sm font-medium">{{ .Title }}</span>
+              <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
+                <i class="fas fa-file-code mr-1"></i>
+                {{ with .Params.cheatsheet_categories }}{{ index . 0 }}{{ end }}
+              </div>
+            </a>
+          </div>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <!-- Checklists Section -->
+      {{ if ne $currentSection "checklists" }}
+      <div>
+        <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From Checklists</h6>
+        {{ range first 2 (where site.RegularPages "Section" "checklists").ByDate.Reverse }}
+          <div class="mb-3">
+            <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
+              <span class="text-sm font-medium">{{ .Title }}</span>
+              <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
+                <i class="fas fa-clipboard-check mr-1"></i>
+                {{ with .Params.checklist_categories }}{{ index . 0 }}{{ end }}
+              </div>
+            </a>
+          </div>
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>

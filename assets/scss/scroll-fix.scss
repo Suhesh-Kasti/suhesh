@@ -1,0 +1,137 @@
+/* Fix for unwanted scrolling issues */
+
+/* Global fix for overflow */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Fix for section scrolling */
+section {
+  overflow: hidden !important;
+  max-height: none !important;
+}
+
+/* Fix for container elements */
+.container {
+  overflow: visible !important;
+}
+
+/* Specific fix for the first four sections */
+.hero-section,
+#feature-0,
+#feature-1,
+#feature-2 {
+  overflow: hidden !important;
+}
+
+/* Fix for row and column elements */
+.row,
+.col,
+.col-12,
+.md\:col-6,
+.lg\:col-4,
+.lg\:col-8,
+.md\:col-5,
+.md\:col-7 {
+  overflow: visible !important;
+}
+
+/* Fix for swiper containers */
+.swiper-container,
+.swiper,
+.swiper-wrapper {
+  overflow: hidden !important;
+  max-height: none !important;
+}
+
+.swiper-slide {
+  overflow: visible !important;
+}
+
+/* Fix for skills slider */
+.skills-slider-container {
+  overflow: hidden !important;
+  max-height: none !important;
+}
+
+.skills-slider {
+  overflow: hidden !important;
+  max-height: none !important;
+}
+
+/* Fix for feature sections */
+.feature-section {
+  overflow: hidden !important;
+  max-height: none !important;
+}
+
+/* Fix for hero section */
+.hero-section {
+  overflow: hidden !important; /* Keep overflow hidden for background effects */
+  max-height: none !important;
+}
+
+/* Fix for specific elements that need overflow hidden */
+.hero-slider {
+  overflow: hidden !important;
+}
+
+/* Fix for decorative elements */
+.decorative-element {
+  overflow: visible !important;
+}
+
+/* Fix for content wrappers */
+.content-wrapper {
+  overflow: visible !important;
+}
+
+/* Fix for image containers */
+.image-container {
+  overflow: hidden !important; /* Keep overflow hidden for images */
+}
+
+/* Fix for AOS animations */
+[data-aos] {
+  overflow: visible !important;
+}
+
+/* Fix for specific components */
+.feature-bullet,
+.feature-card,
+.skill-card {
+  overflow: visible !important;
+}
+
+/* Fix for mobile devices */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+
+  .container,
+  .row,
+  .col,
+  section {
+    overflow: hidden !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Prevent individual section scrolling */
+  section {
+    overflow: hidden !important;
+    max-height: none !important;
+    height: auto !important;
+    position: relative;
+  }
+
+  /* Fix for feature sections */
+  .feature-section {
+    overflow: hidden !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+}

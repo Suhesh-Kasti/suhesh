@@ -1,0 +1,72 @@
+// Header spacing fixes
+body {
+  // Add padding to main content to prevent it from being hidden under the fixed header
+  main {
+    padding-top: var(--header-height, 80px);
+    position: relative;
+    z-index: 1; // Ensure main content is above header when needed
+  }
+
+  // Ensure section padding doesn't overlap with header
+  section:first-of-type {
+    padding-top: 1.5rem;
+  }
+
+  // Fix for hero section
+  .hero-section {
+    margin-top: calc(-1 * var(--header-height, 80px));
+    padding-top: calc(var(--header-height, 80px) + 1rem);
+    position: relative;
+    z-index: 2; // Higher z-index to ensure content is visible
+  }
+
+  // Fix for page headers
+  .page-header {
+    padding-top: calc(var(--header-height, 80px) + 1.5rem);
+    position: relative;
+    z-index: 2;
+  }
+
+  // Hide the placeholder on hero pages
+  .hero-section + #header-placeholder {
+    display: none !important;
+  }
+
+  // Ensure images are visible and not hidden behind header
+  img, svg {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+// Set header height variable
+.header {
+  --header-height: 80px;
+  height: var(--header-height, 80px);
+  will-change: transform; // Optimize for animations
+  background-color: var(--color-body) !important; // Ensure background is solid
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important; // Add subtle shadow
+
+  // Ensure the navbar is properly contained
+  .navbar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  // Dark mode styles
+  &.dark-mode {
+    background-color: var(--color-darkmode-body) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+  }
+}
+
+// Ensure proper z-index for header
+.header {
+  z-index: 100 !important; // Lower z-index to allow content to appear above it when needed
+}
+
+// Fix for anchor links
+:target {
+  scroll-margin-top: var(--header-height, 80px);
+}

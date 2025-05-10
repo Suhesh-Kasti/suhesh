@@ -3,7 +3,7 @@ title: "NGINX Configuration Cheatsheet"
 description: "Essential guide to NGINX configuration syntax, directives, and context hierarchy"
 date: 2023-07-15T10:00:00+05:45
 image: "/images/cheatsheets/nginx.png"
-cheatsheet_categories: ["Web Servers", "NGINX"]
+cheatsheet_categories: ["NGINX"]
 cheatsheet_tags: ["nginx", "configuration", "web server"]
 ---
 ## 📘 NGINX Cheatsheet: Core Configuration Only

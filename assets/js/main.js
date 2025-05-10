@@ -13,32 +13,156 @@
       });
     }
 
-    // Initialize banner slider
-    const bannerSliderElement = document.querySelector(".banner-slider");
-    if (bannerSliderElement) {
-      const bannerSlider = new Swiper(".banner-slider", {
+    // Initialize modern interactive hero slider
+    const heroSliderElement = document.querySelector(".hero-slider");
+    if (heroSliderElement) {
+      // Create custom pagination
+      const paginationContainer = document.querySelector('.hero-slider-pagination');
+      if (paginationContainer) {
+        const slides = heroSliderElement.querySelectorAll('.swiper-slide');
+        slides.forEach((_, index) => {
+          const bullet = document.createElement('span');
+          bullet.classList.add('pagination-bullet');
+          bullet.style.width = '8px';
+          bullet.style.height = '8px';
+          bullet.style.display = 'block';
+          bullet.style.borderRadius = '50%';
+          bullet.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+          bullet.style.margin = '0 4px';
+          bullet.style.cursor = 'pointer';
+          bullet.style.transition = 'all 0.3s ease';
+          paginationContainer.appendChild(bullet);
+        });
+      }
+
+      // Initialize Swiper with creative effects
+      const heroSlider = new Swiper(".hero-slider", {
         slidesPerView: 1,
-        spaceBetween: 30,
+        spaceBetween: 0,
         loop: true,
-        effect: "fade",
-        autoplay: {
-          delay: 5000,
-          disableOnInteraction: false,
-        },
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-          768: {
-            effect: "fade",
+        effect: "creative",
+        creativeEffect: {
+          prev: {
+            shadow: true,
+            translate: ["-20%", 0, -1],
+            opacity: 0
+          },
+          next: {
+            shadow: true,
+            translate: ["100%", 0, 0],
+            opacity: 0
           },
         },
+        speed: 1200,
+        autoplay: {
+          delay: 6000,
+          disableOnInteraction: false,
+        },
+        navigation: {
+          nextEl: ".hero-slider-next",
+          prevEl: ".hero-slider-prev",
+        },
+        pagination: {
+          el: ".hero-slider-pagination",
+          clickable: true,
+          renderBullet: function (index, className) {
+            return `<span class="${className}" style="width: 8px; height: 8px; background-color: rgba(255, 255, 255, 0.5); transition: all 0.3s ease;"></span>`;
+          },
+        },
+        on: {
+          init: function() {
+            updateHeroProgress(this);
+            updateHeroSlides(this);
+          },
+          slideChange: function() {
+            updateHeroProgress(this);
+            updateHeroSlides(this);
+          },
+          autoplayTimeLeft: function(s, time, progress) {
+            const progressBar = document.querySelector('.hero-slider-progress');
+            if (progressBar) {
+              progressBar.style.width = `${(1 - progress) * 100}%`;
+            }
+          },
+          resize: function() {
+            this.update();
+          }
+        }
       });
+
+      // Helper function to update progress bar
+      function updateHeroProgress(swiper) {
+        const progressBar = document.querySelector('.hero-slider-progress');
+        if (progressBar) {
+          progressBar.style.width = '100%';
+          setTimeout(() => {
+            progressBar.style.transition = 'width 6s cubic-bezier(0.4, 0, 0.2, 1)';
+            progressBar.style.width = '0%';
+          }, 50);
+        }
+      }
+
+      // Helper function to enhance slide transitions
+      function updateHeroSlides(swiper) {
+        const slides = swiper.slides;
+        const activeIndex = swiper.activeIndex;
+
+        slides.forEach((slide, index) => {
+          // Reset all slides
+          slide.style.transition = 'all 0.5s ease';
+
+          // Add special effects to active slide
+          if (index === activeIndex) {
+            const caption = slide.querySelector('.text-white');
+            if (caption) {
+              caption.style.opacity = '0';
+              caption.style.transform = 'translateY(20px)';
+
+              // Animate caption with delay
+              setTimeout(() => {
+                caption.style.transition = 'all 0.8s ease 0.3s';
+                caption.style.opacity = '1';
+                caption.style.transform = 'translateY(0)';
+              }, 300);
+            }
+          }
+        });
+      }
+
+      // Interactive hover effects
+      heroSliderElement.addEventListener("mouseenter", function() {
+        heroSlider.autoplay.stop();
+        document.querySelector('.hero-slider-progress').style.transition = 'none';
+
+        // Show navigation controls with fade-in
+        const navButtons = heroSliderElement.querySelectorAll('.hero-slider-prev, .hero-slider-next');
+        navButtons.forEach(btn => {
+          btn.style.opacity = '1';
+          btn.style.transform = 'scale(1.1)';
+        });
+      }, { passive: true });
+
+      heroSliderElement.addEventListener("mouseleave", function() {
+        heroSlider.autoplay.start();
+        updateHeroProgress(heroSlider);
+
+        // Hide navigation controls with fade-out
+        const navButtons = heroSliderElement.querySelectorAll('.hero-slider-prev, .hero-slider-next');
+        navButtons.forEach(btn => {
+          btn.style.opacity = '0.8';
+          btn.style.transform = 'scale(1)';
+        });
+      }, { passive: true });
+
+      // Touch events for mobile
+      heroSliderElement.addEventListener("touchstart", function() {
+        heroSlider.autoplay.stop();
+      }, { passive: true });
+
+      heroSliderElement.addEventListener("touchend", function() {
+        heroSlider.autoplay.start();
+        updateHeroProgress(heroSlider);
+      }, { passive: true });
     }
 
     // Dropdown Menu Toggler For Mobile
@@ -52,19 +176,19 @@
         toggler.addEventListener("click", function(e) {
           e.preventDefault(); // Prevent default action
           e.stopPropagation(); // Stop event bubbling
-          
+
           // Close other open dropdowns
           dropdownMenuToggler.forEach(otherToggler => {
             if (otherToggler !== toggler) {
               otherToggler.parentElement.classList.remove("active");
             }
           });
-          
+
           // Toggle the clicked dropdown
           this.parentElement.classList.toggle("active");
         });
       });
-      
+
       // Close dropdowns when clicking outside
       document.addEventListener("click", function(e) {
         const isDropdown = e.target.closest(".nav-dropdown");
@@ -114,7 +238,7 @@
       // Handle click and keyboard events with debounced functions
       headers.forEach((header) => {
         const content = header.nextElementSibling;
-        
+
         const handleClick = (event) => {
           event.preventDefault();
           toggleAccordion(header, content, items);
@@ -252,13 +376,13 @@
       function updateActiveSlide(swiper) {
         const slides = swiper.slides;
         const activeIndex = swiper.activeIndex;
-        
+
         for (let i = 0; i < slides.length; i++) {
           const slide = slides[i];
           const isActive = i === activeIndex;
           const isPrev = i === getPrevIndex(activeIndex, slides.length);
           const isNext = i === getNextIndex(activeIndex, slides.length);
-          
+
           // Apply different animations based on slide position
           if (isActive) {
             slide.style.transition = "all 0.8s ease";
@@ -267,12 +391,12 @@
           }
         }
       }
-      
+
       // Helper functions to get prev/next indices even in loop mode
       function getPrevIndex(current, total) {
         return (current - 1 + total) % total;
       }
-      
+
       function getNextIndex(current, total) {
         return (current + 1) % total;
       }
@@ -285,7 +409,7 @@
       slider.addEventListener("mouseleave", function() {
         skillsSwiper.autoplay.start();
       }, { passive: true });
-      
+
       // Touch events for mobile
       slider.addEventListener("touchstart", function() {
         skillsSwiper.autoplay.stop();
@@ -294,7 +418,7 @@
       slider.addEventListener("touchend", function() {
         skillsSwiper.autoplay.start();
       }, { passive: true });
-      
+
       // Handle window resize for responsiveness
       window.addEventListener('resize', function() {
         skillsSwiper.update();

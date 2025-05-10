@@ -12,8 +12,8 @@ input#nav-toggle:checked ~ #nav-menu {
 }
 
 .header {
-  @apply bg-body dark:bg-darkmode-body py-6 w-full;
-  transition: transform 0.3s ease;
+  @apply bg-body dark:bg-darkmode-body w-full;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 // navbar items
@@ -23,8 +23,13 @@ input#nav-toggle:checked ~ #nav-menu {
 
 .navbar-brand {
   @apply text-dark dark:text-darkmode-dark text-xl font-semibold;
-  image {
+  img {
     @apply max-h-full max-w-full;
+    transition: all 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
   }
 }
 
@@ -32,12 +37,15 @@ input#nav-toggle:checked ~ #nav-menu {
   @apply text-center lg:text-left;
 }
 
-// .nav-item {
-//   @apply mx-3;
-// }
+.nav-item {
+  @apply relative;
+
+  // Removed underline animation
+}
 
 .nav-link {
-  @apply text-dark hover:text-primary dark:text-darkmode-dark dark:hover:text-white block p-3 font-semibold transition lg:px-2 lg:py-3;
+  @apply text-dark hover:text-primary dark:text-darkmode-dark dark:hover:text-white block p-3 transition lg:px-3 lg:py-3;
+  position: relative;
 }
 
 .nav-dropdown {

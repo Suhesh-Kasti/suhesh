@@ -1,0 +1,194 @@
+{{ $dir := .Get "dir" }}
+{{ $height := .Get "height" | default "400" }}
+{{ $width := .Get "width" | default "600" }}
+{{ $class := .Get "class" | default "" }}
+{{ $command := .Get "command" | default "Fit" }}
+{{ $options := .Get "option" | default "" }}
+{{ $zoomable := .Get "zoomable" | default "true" }}
+{{ $webp := .Get "webp" | default "true" }}
+
+{{ $files := slice }}
+{{ $dirPath := print "static/" $dir }}
+{{ if fileExists $dirPath }}
+  {{ $files = readDir $dirPath }}
+{{ end }}
+
+{{ $sliderId := printf "slider-%s" (delimit (shuffle (seq 1 9)) "") }}
+{{ $galleryId := printf "gallery-%s" $sliderId }}
+<div class="certificate-slider-container {{ $class }}">
+  <div class="swiper certificate-slider" data-slider-id="{{ $sliderId }}">
+    <div class="swiper-wrapper">
+      {{ range $index, $file := $files }}
+        {{ if and (not .IsDir) (findRE "\\.(jpe?g|png|gif|webp)$" .Name) }}
+          <div class="swiper-slide">
+            <div class="certificate-slide">
+              <div class="certificate-image-container" style="height: {{ $height }}px;">
+                {{ $imgPath := print $dir "/" .Name }}
+                {{ if eq $zoomable "true" }}
+                  <a href="{{ $imgPath | absURL }}" class="glightbox" data-gallery="{{ $galleryId }}" data-index="{{ $index }}" onclick="event.preventDefault();">
+                    {{ partial "image" (dict "Src" $imgPath "Alt" .Name "Size" (print $width "x" $height) "Command" $command "Options" $options "Class" "certificate-image" "Webp" $webp "Style" "box-shadow: none !important; filter: none !important; border: none !important; outline: none !important;") }}
+                  </a>
+                {{ else }}
+                  {{ partial "image" (dict "Src" $imgPath "Alt" .Name "Size" (print $width "x" $height) "Command" $command "Options" $options "Class" "certificate-image" "Webp" $webp "Style" "box-shadow: none !important; filter: none !important; border: none !important; outline: none !important;") }}
+                {{ end }}
+              </div>
+            </div>
+          </div>
+        {{ end }}
+      {{ end }}
+    </div>
+
+    <!-- Navigation -->
+    <div class="swiper-button-next certificate-slider-next"></div>
+    <div class="swiper-button-prev certificate-slider-prev"></div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination certificate-slider-pagination"></div>
+  </div>
+</div>
+
+<style>
+  .certificate-slider-container {
+    position: relative;
+    margin: 2rem auto;
+    overflow: hidden;
+  }
+
+  .certificate-slider {
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .certificate-slide {
+    padding: 1rem;
+    background-color: var(--theme-light);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .dark .certificate-slide {
+    background-color: var(--darkmode-theme-light);
+  }
+
+  .certificate-image-container {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+  }
+
+  .certificate-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .certificate-slider .swiper-button-next,
+  .certificate-slider .swiper-button-prev {
+    color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .certificate-slider .swiper-button-next,
+  .dark .certificate-slider .swiper-button-prev {
+    color: var(--darkmode-primary-color);
+    background-color: rgba(30, 30, 30, 0.8);
+  }
+
+  .certificate-slider .swiper-button-next:after,
+  .certificate-slider .swiper-button-prev:after {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .certificate-slider .swiper-pagination-bullet {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .certificate-slider .swiper-pagination-bullet-active {
+    background: var(--primary-color);
+  }
+
+  .dark .certificate-slider .swiper-pagination-bullet {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .certificate-slider .swiper-pagination-bullet-active {
+    background: var(--darkmode-primary-color);
+  }
+
+  @media (max-width: 768px) {
+    .certificate-image-container {
+      height: auto !important;
+      max-height: 300px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize certificate slider with card-like animations
+    const certificateSliders = document.querySelectorAll('.certificate-slider');
+    if (certificateSliders.length > 0) {
+      certificateSliders.forEach(slider => {
+        const swiper = new Swiper(slider, {
+          slidesPerView: 1,
+          spaceBetween: 30,
+          loop: true,
+          effect: "cards",
+          cardsEffect: {
+            slideShadows: false,
+            perSlideRotate: 0,
+            perSlideOffset: 8,
+          },
+          speed: 800,
+          autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+          },
+          pagination: {
+            el: slider.querySelector('.certificate-slider-pagination'),
+            clickable: true,
+          },
+          navigation: {
+            nextEl: slider.querySelector('.certificate-slider-next'),
+            prevEl: slider.querySelector('.certificate-slider-prev'),
+          },
+        });
+
+        // Initialize GLightbox for the slider images with proper gallery support
+        if (typeof GLightbox !== 'undefined') {
+          // Get the gallery ID from the slider
+          const galleryId = slider.querySelector('.glightbox')?.getAttribute('data-gallery');
+
+          if (galleryId) {
+            // Create a single lightbox instance for the entire gallery
+            const lightbox = GLightbox({
+              selector: '[data-gallery="' + galleryId + '"]',
+              touchNavigation: true,
+              loop: true,
+              autoplayVideos: false,
+              preload: false
+            });
+
+            // Add click handler to open lightbox at the correct index
+            slider.querySelectorAll('.glightbox').forEach((item, index) => {
+              item.addEventListener('click', function(e) {
+                e.preventDefault();
+                lightbox.open(index);
+              });
+            });
+          }
+        }
+      });
+    }
+  });
+</script>

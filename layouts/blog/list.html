@@ -17,11 +17,10 @@
       </div>
       <!-- sidebar -->
       <div class="lg:col-4">
-        <!-- Search Box -->
-        <div class="mb-8">
-          <h5 class="mb-4">Search Blog</h5>
-          {{ partial "components/section-search" (dict "section" "blog" "placeholder" "Search blog posts...") }}
-        </div>
+
+
+        <!-- Explore Other Content -->
+        {{ partial "components/explore-other-content.html" (dict "currentSection" "blog") }}
 
         <!-- widget -->
         {{ $widget:= site.Params.widgets.sidebar }} {{ partialCached

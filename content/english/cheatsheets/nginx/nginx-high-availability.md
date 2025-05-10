@@ -4,9 +4,7 @@ description: Comprehensive guide to optimizing NGINX for maximum performance and
 date: 2023-07-16T10:00:00+05:45
 image: /images/cheatsheets/nginx.png
 cheatsheet_categories:
-  - Web Servers
   - NGINX
-  - Performance
 cheatsheet_tags:
   - nginx
   - performance

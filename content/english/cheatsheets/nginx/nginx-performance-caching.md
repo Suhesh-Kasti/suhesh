@@ -3,7 +3,7 @@ title: "NGINX Performance Optimization Cheatsheet"
 description: "Comprehensive guide to optimizing NGINX for maximum performance and throughput"
 date: 2023-07-16T10:00:00+05:45
 image: "/images/cheatsheets/nginx.png"
-cheatsheet_categories: ["Web Servers", "NGINX", "Performance"]
+cheatsheet_categories: ["NGINX"]
 cheatsheet_tags: ["nginx", "performance", "optimization", "caching", "tuning"]
 ---
 ## 🚀 NGINX Cheatsheet: Caching & Performance Optimization (Full Reference)

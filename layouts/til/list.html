@@ -50,11 +50,7 @@
 
       <!-- sidebar -->
       <div class="lg:col-4">
-        <!-- Search Box -->
-        <div class="mb-8">
-          <h5 class="mb-4">Search TIL</h5>
-          {{ partial "components/section-search" (dict "section" "til" "placeholder" "Search TIL entries...") }}
-        </div>
+
 
         <!-- TIL Tags -->
         <div class="mb-8">
@@ -74,60 +70,7 @@
         </div>
 
         <!-- Explore Other Content -->
-        <div class="mb-8">
-          <h5 class="mb-4">Explore Other Content</h5>
-          <div class="bg-theme-light dark:bg-darkmode-theme-light rounded p-6">
-            <div class="space-y-6">
-              <!-- Recent Blog -->
-              <div>
-                <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From the Blog</h6>
-                {{ range first 2 (where site.RegularPages "Section" "blog").ByDate.Reverse }}
-                  <div class="mb-3">
-                    <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
-                      <span class="text-sm font-medium">{{ .Title }}</span>
-                      <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
-                        <i class="far fa-calendar-alt mr-1"></i>
-                        {{ time.Format "Jan 02, 2006" .Date }}
-                      </div>
-                    </a>
-                  </div>
-                {{ end }}
-              </div>
-
-              <!-- Recent Cheatsheets -->
-              <div>
-                <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From Cheatsheets</h6>
-                {{ range first 2 (where site.RegularPages "Section" "cheatsheets").ByDate.Reverse }}
-                  <div class="mb-3">
-                    <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
-                      <span class="text-sm font-medium">{{ .Title }}</span>
-                      <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
-                        <i class="fas fa-file-code mr-1"></i>
-                        {{ with .Params.cheatsheet_categories }}{{ index . 0 }}{{ end }}
-                      </div>
-                    </a>
-                  </div>
-                {{ end }}
-              </div>
-
-              <!-- Recent Checklists -->
-              <div>
-                <h6 class="text-sm font-bold mb-2 text-primary dark:text-darkmode-primary">From Checklists</h6>
-                {{ range first 2 (where site.RegularPages "Section" "checklists").ByDate.Reverse }}
-                  <div class="mb-3">
-                    <a href="{{ .RelPermalink }}" class="hover:text-primary dark:hover:text-darkmode-primary block">
-                      <span class="text-sm font-medium">{{ .Title }}</span>
-                      <div class="flex items-center text-xs text-light dark:text-darkmode-light mt-1">
-                        <i class="fas fa-clipboard-check mr-1"></i>
-                        {{ with .Params.checklist_categories }}{{ index . 0 }}{{ end }}
-                      </div>
-                    </a>
-                  </div>
-                {{ end }}
-              </div>
-            </div>
-          </div>
-        </div>
+        {{ partial "components/explore-other-content.html" (dict "currentSection" "til") }}
       </div>
     </div>
   </div>

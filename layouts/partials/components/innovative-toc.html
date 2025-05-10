@@ -43,12 +43,7 @@
             <i class="fas fa-print mr-1"></i> Print
           </button>
         </div>
-        <button id="toggle-dark-mode-btn" class="px-2 py-1 text-xs rounded bg-theme-light dark:bg-darkmode-theme-light text-primary dark:text-darkmode-primary hover:bg-primary/10 dark:hover:bg-darkmode-primary/10 transition-all duration-200 flex items-center" aria-label="Toggle dark mode">
-          <i class="fas fa-moon mr-1 dark:hidden"></i>
-          <i class="fas fa-sun mr-1 hidden dark:inline"></i>
-          <span class="dark:hidden">Dark</span>
-          <span class="hidden dark:inline">Light</span>
-        </button>
+
       </div>
 
       <!-- Search Box -->
@@ -135,7 +130,7 @@
     const tocSearchInput = document.getElementById('toc-search-input');
     const copyLinkBtn = document.getElementById('copy-link-btn');
     const printArticleBtn = document.getElementById('print-article-btn');
-    const toggleDarkModeBtn = document.getElementById('toggle-dark-mode-btn');
+
 
     // Set initial state - TOC is open by default
     const icon = tocToggle.querySelector('i');
@@ -178,18 +173,7 @@
       window.print();
     });
 
-    // Toggle Dark Mode button
-    toggleDarkModeBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      document.documentElement.classList.toggle('dark');
 
-      // Save preference to localStorage
-      if (document.documentElement.classList.contains('dark')) {
-        localStorage.theme = 'dark';
-      } else {
-        localStorage.theme = 'light';
-      }
-    });
 
     // Search functionality
     tocSearchInput.addEventListener('input', function() {

@@ -1,11 +1,11 @@
 <header
-  class="header {{ if site.Params.navbar_fixed }}sticky top-0{{ end }} z-30 w-full transition-transform duration-300"
+  class="header {{ if site.Params.navbar_fixed }}sticky top-0{{ end }} z-30 w-full transition-all duration-300 ease-in-out bg-body dark:bg-darkmode-body shadow-sm"
 >
-  <nav class="navbar container">
+  <nav class="navbar container py-3">
     <!-- logo -->
     <div class="order-0">
       <!-- navbar brand/logo -->
-      <a class="navbar-brand block" href="{{ site.Home.RelPermalink }}">
+      <a class="navbar-brand block transition-transform duration-300 hover:scale-105" href="{{ site.Home.RelPermalink }}">
         {{ partial "logo" }}
       </a>
     </div>
@@ -32,7 +32,7 @@
     <!-- main navbar -->
     <ul
       id="nav-menu"
-      class="navbar-nav order-3 hidden lg:flex w-full pb-6 lg:order-1 lg:w-auto lg:space-x-2 lg:pb-0 xl:space-x-8"
+      class="navbar-nav order-3 hidden lg:flex w-full pb-6 lg:order-1 lg:w-auto lg:space-x-4 lg:pb-0 xl:space-x-8 font-medium"
     >
       {{ $currentPage := . }} {{ range site.Menus.main }} {{ $menuURL := .URL |
       absLangURL }} {{ $pageURL:= $currentPage.Permalink | absLangURL }} {{

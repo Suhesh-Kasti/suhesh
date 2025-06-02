@@ -3,17 +3,48 @@
 
 <section class="section">
   <div class="container">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <h1 class="h2 mb-6">TIL Tags</h1>
-      <p class="text-lg mb-8">Browse our Today I Learned entries by tags. These are quick notes about things learned during daily work and exploration.</p>
+    <!-- Header Section -->
+    <div class="text-center max-w-4xl mx-auto mb-16">
+      <div class="mb-6">
+        <i class="fas fa-tags text-6xl text-primary dark:text-darkmode-primary opacity-20"></i>
+      </div>
+      <h1 class="h1 mb-6 bg-gradient-to-r from-primary to-primary/70 dark:from-darkmode-primary dark:to-darkmode-primary/70 bg-clip-text text-transparent">TIL Tags</h1>
+      <p class="text-xl mb-8 text-text dark:text-darkmode-text leading-relaxed">Explore our Today I Learned entries organized by tags. Discover insights across different topics and technologies.</p>
       <div class="flex justify-center space-x-4">
-        <a href="/til/" class="btn btn-primary">Back to TIL</a>
+        <a href="/til/" class="btn btn-primary">
+          <i class="fas fa-arrow-left mr-2"></i>Back to TIL
+        </a>
+        <a href="/til_categories/" class="btn btn-outline-primary">
+          <i class="fas fa-folder mr-2"></i>Browse Categories
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    {{ $totalTags := len site.Taxonomies.til_tags }}
+    {{ $totalEntries := 0 }}
+    {{ range site.Taxonomies.til_tags }}
+      {{ $totalEntries = add $totalEntries .Count }}
+    {{ end }}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 text-center border border-border dark:border-darkmode-border">
+        <div class="text-3xl font-bold text-primary dark:text-darkmode-primary mb-2">{{ $totalTags }}</div>
+        <div class="text-text dark:text-darkmode-text font-medium">Total Tags</div>
+      </div>
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 text-center border border-border dark:border-darkmode-border">
+        <div class="text-3xl font-bold text-primary dark:text-darkmode-primary mb-2">{{ $totalEntries }}</div>
+        <div class="text-text dark:text-darkmode-text font-medium">Total Entries</div>
+      </div>
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 text-center border border-border dark:border-darkmode-border">
+        <div class="text-3xl font-bold text-primary dark:text-darkmode-primary mb-2">{{ if gt $totalTags 0 }}{{ div $totalEntries $totalTags }}{{ else }}0{{ end }}</div>
+        <div class="text-text dark:text-darkmode-text font-medium">Avg per Tag</div>
       </div>
     </div>
 
     <!-- Calculate max and min counts for scaling -->
     {{ $maxCount := 1 }}
-    {{ $minCount := 1 }}
+    {{ $minCount := 1000 }}
     {{ range site.Taxonomies.til_tags.ByCount }}
       {{ if gt .Count $maxCount }}
         {{ $maxCount = .Count }}
@@ -23,22 +54,81 @@
       {{ end }}
     {{ end }}
 
-    <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-8">
-      <div class="flex flex-wrap justify-center gap-4">
+    <!-- Tags Cloud Section -->
+    <div class="bg-gradient-to-br from-theme-light to-white dark:from-darkmode-theme-light dark:to-darkmode-body rounded-2xl p-8 shadow-lg border border-border dark:border-darkmode-border">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold mb-4 text-dark dark:text-darkmode-dark">Tag Cloud</h2>
+        <p class="text-text dark:text-darkmode-text">Click on any tag to explore related TIL entries</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3">
         {{ range site.Taxonomies.til_tags.Alphabetical }}
-          {{ $fontSize := 1.0 }}
+          {{ $fontSize := 0.875 }}
+          {{ $padding := "px-4 py-2" }}
+          {{ $opacity := 0.8 }}
+
           {{ if ne $maxCount $minCount }}
-            {{ $fontSize = add 0.8 (mul 0.7 (div (sub .Count $minCount) (sub $maxCount $minCount))) }}
+            {{ $ratio := div (sub .Count $minCount) (sub $maxCount $minCount) }}
+            {{ $fontSize = add 0.75 (mul 0.5 $ratio) }}
+            {{ $opacity = add 0.6 (mul 0.4 $ratio) }}
+            {{ if gt $ratio 0.7 }}
+              {{ $padding = "px-5 py-3" }}
+            {{ else if gt $ratio 0.4 }}
+              {{ $padding = "px-4 py-2" }}
+            {{ else }}
+              {{ $padding = "px-3 py-1" }}
+            {{ end }}
           {{ end }}
-          {{ $fontSize = math.Max 0.8 (math.Min $fontSize 1.5) }}
+
+          {{ $fontSize = math.Max 0.75 (math.Min $fontSize 1.25) }}
+
           <a href="{{ .Page.RelPermalink }}"
-             class="inline-block px-4 py-2 rounded-full bg-white dark:bg-darkmode-body border border-border dark:border-darkmode-border hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-dark transition-colors"
-             style="font-size: {{ $fontSize }}rem;">
-            #{{ .Page.Title }} <span class="text-xs">({{ .Count }})</span>
+             class="inline-flex items-center {{ $padding }} rounded-full bg-white dark:bg-darkmode-body border-2 border-border dark:border-darkmode-border hover:border-primary dark:hover:border-darkmode-primary hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-body transition-all duration-300 transform hover:scale-105 hover:shadow-lg group"
+             style="font-size: {{ $fontSize }}rem; opacity: {{ $opacity }};">
+            <i class="fas fa-hashtag mr-2 text-xs group-hover:animate-pulse"></i>
+            <span class="font-medium">{{ .Page.Title }}</span>
+            <span class="ml-2 text-xs bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-2 py-1 rounded-full group-hover:bg-white/20 group-hover:text-white dark:group-hover:text-darkmode-body transition-colors">
+              {{ .Count }}
+            </span>
           </a>
         {{ end }}
       </div>
     </div>
+
+    <!-- Popular Tags Section -->
+    {{ $popularTags := first 6 site.Taxonomies.til_tags.ByCount }}
+    {{ if gt (len $popularTags) 0 }}
+    <div class="mt-16">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold mb-4 text-dark dark:text-darkmode-dark">Most Popular Tags</h2>
+        <p class="text-text dark:text-darkmode-text">The most frequently used tags in our TIL collection</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{ range $popularTags }}
+        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 border border-border dark:border-darkmode-border hover:border-primary dark:hover:border-darkmode-primary transition-all duration-300 hover:shadow-lg group">
+          <a href="{{ .Page.RelPermalink }}" class="block">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-primary/10 dark:bg-darkmode-primary/10 rounded-full flex items-center justify-center mr-3 group-hover:bg-primary group-hover:text-white dark:group-hover:bg-darkmode-primary dark:group-hover:text-darkmode-body transition-colors">
+                  <i class="fas fa-hashtag"></i>
+                </div>
+                <h3 class="text-lg font-bold text-dark dark:text-darkmode-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors">{{ .Page.Title }}</h3>
+              </div>
+              <span class="text-2xl font-bold text-primary dark:text-darkmode-primary">{{ .Count }}</span>
+            </div>
+            <p class="text-text dark:text-darkmode-text text-sm">
+              {{ if eq .Count 1 }}1 entry{{ else }}{{ .Count }} entries{{ end }} tagged with this topic
+            </p>
+            <div class="mt-4 flex items-center text-primary dark:text-darkmode-primary text-sm font-medium group-hover:translate-x-1 transition-transform">
+              Explore entries <i class="fas fa-arrow-right ml-2"></i>
+            </div>
+          </a>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
   </div>
 </section>
 {{ end }}

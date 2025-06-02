@@ -208,7 +208,39 @@
 
     // Testimonial Slider with performance optimizations
     initializeTestimonialSlider();
+
+    // Clean up any visible backticks that might appear as literal text
+    cleanupBackticks();
   });
+
+  // Function to clean up visible backticks
+  function cleanupBackticks() {
+    // Find all text nodes that contain backticks
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+      if (node.textContent.includes('`')) {
+        textNodes.push(node);
+      }
+    }
+
+    // Clean up backticks from text nodes
+    textNodes.forEach(textNode => {
+      // Only clean up if the backticks are not inside a code element
+      const parent = textNode.parentElement;
+      if (parent && !parent.matches('code, pre')) {
+        // Remove standalone backticks that aren't part of code formatting
+        textNode.textContent = textNode.textContent.replace(/`/g, '');
+      }
+    });
+  }
 
   function initializeAccordions() {
     const accordions = document.querySelectorAll(".accordion");

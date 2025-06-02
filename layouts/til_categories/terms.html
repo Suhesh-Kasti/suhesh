@@ -3,17 +3,48 @@
 
 <section class="section">
   <div class="container">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <h1 class="h2 mb-6">TIL Categories</h1>
-      <p class="text-lg mb-8">Browse our Today I Learned entries by category. These are quick notes about things learned during daily work and exploration.</p>
+    <!-- Header Section -->
+    <div class="text-center max-w-4xl mx-auto mb-16">
+      <div class="mb-6">
+        <i class="fas fa-folder-open text-6xl text-primary dark:text-darkmode-primary opacity-20"></i>
+      </div>
+      <h1 class="h1 mb-6 bg-gradient-to-r from-primary to-primary/70 dark:from-darkmode-primary dark:to-darkmode-primary/70 bg-clip-text text-transparent">TIL Categories</h1>
+      <p class="text-xl mb-8 text-text dark:text-darkmode-text leading-relaxed">Explore our Today I Learned entries organized by categories. Find knowledge across different domains and subjects.</p>
       <div class="flex justify-center space-x-4">
-        <a href="/til/" class="btn btn-primary">Back to TIL</a>
+        <a href="/til/" class="btn btn-primary">
+          <i class="fas fa-arrow-left mr-2"></i>Back to TIL
+        </a>
+        <a href="/til_tags/" class="btn btn-outline-primary">
+          <i class="fas fa-tags mr-2"></i>Browse Tags
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    {{ $totalCategories := len site.Taxonomies.til_categories }}
+    {{ $totalEntries := 0 }}
+    {{ range site.Taxonomies.til_categories }}
+      {{ $totalEntries = add $totalEntries .Count }}
+    {{ end }}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 text-center border border-border dark:border-darkmode-border">
+        <div class="text-3xl font-bold text-primary dark:text-darkmode-primary mb-2">{{ $totalCategories }}</div>
+        <div class="text-text dark:text-darkmode-text font-medium">Categories</div>
+      </div>
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 text-center border border-border dark:border-darkmode-border">
+        <div class="text-3xl font-bold text-primary dark:text-darkmode-primary mb-2">{{ $totalEntries }}</div>
+        <div class="text-text dark:text-darkmode-text font-medium">Total Entries</div>
+      </div>
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 text-center border border-border dark:border-darkmode-border">
+        <div class="text-3xl font-bold text-primary dark:text-darkmode-primary mb-2">{{ if gt $totalCategories 0 }}{{ div $totalEntries $totalCategories }}{{ else }}0{{ end }}</div>
+        <div class="text-text dark:text-darkmode-text font-medium">Avg per Category</div>
       </div>
     </div>
 
     <!-- Calculate max and min counts for scaling -->
     {{ $maxCount := 1 }}
-    {{ $minCount := 1 }}
+    {{ $minCount := 1000 }}
     {{ range site.Taxonomies.til_categories.ByCount }}
       {{ if gt .Count $maxCount }}
         {{ $maxCount = .Count }}
@@ -23,25 +54,71 @@
       {{ end }}
     {{ end }}
 
+    <!-- Categories Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {{ range site.Taxonomies.til_categories.ByCount }}
-        {{ $fontSize := 1.0 }}
+        {{ $ratio := 0.5 }}
         {{ if ne $maxCount $minCount }}
-          {{ $fontSize = add 1 (mul 0.5 (div (sub .Count $minCount) (sub $maxCount $minCount))) }}
+          {{ $ratio = div (sub .Count $minCount) (sub $maxCount $minCount) }}
         {{ end }}
-        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-6 hover:shadow-lg transition-all duration-300 border border-transparent hover:border-primary dark:hover:border-darkmode-primary">
+
+        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-2xl p-8 border border-border dark:border-darkmode-border hover:border-primary dark:hover:border-darkmode-primary hover:shadow-xl transition-all duration-300 transform hover:scale-105 group">
           <a href="{{ .Page.RelPermalink }}" class="block">
-            <h3 class="text-xl font-bold mb-3 hover:text-primary dark:hover:text-darkmode-primary transition-colors">{{ .Page.Title }}</h3>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-light dark:text-darkmode-light">{{ .Count }} entries</span>
-              <span class="inline-block bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-3 py-1 rounded-full text-sm">
-                <i class="fa-solid fa-lightbulb mr-1"></i>Category
-              </span>
+            <!-- Category Icon and Title -->
+            <div class="flex items-center mb-6">
+              <div class="w-14 h-14 bg-primary/10 dark:bg-darkmode-primary/10 rounded-xl flex items-center justify-center mr-4 shadow-sm group-hover:shadow-md group-hover:bg-primary group-hover:text-white dark:group-hover:bg-darkmode-primary dark:group-hover:text-darkmode-body transition-all">
+                <i class="fas fa-lightbulb text-2xl text-primary dark:text-darkmode-primary group-hover:text-white dark:group-hover:text-darkmode-body transition-colors"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-dark dark:text-darkmode-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors mb-1">
+                  {{ .Page.Title }}
+                </h3>
+                <div class="text-sm text-text dark:text-darkmode-text">Category</div>
+              </div>
+            </div>
+
+            <!-- Entry Count -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center">
+                <i class="fas fa-file-alt mr-2 text-primary dark:text-darkmode-primary"></i>
+                <span class="text-lg font-semibold text-text dark:text-darkmode-text">
+                  {{ if eq .Count 1 }}1 entry{{ else }}{{ .Count }} entries{{ end }}
+                </span>
+              </div>
+              <div class="text-3xl font-bold text-primary dark:text-darkmode-primary">{{ .Count }}</div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-border dark:bg-darkmode-border rounded-full h-2 mb-4">
+              <div class="h-2 rounded-full transition-all duration-500 bg-primary dark:bg-darkmode-primary"
+                   style="width: {{ mul $ratio 100 }}%"></div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-text dark:text-darkmode-text font-medium">Explore this category</span>
+              <div class="flex items-center text-primary dark:text-darkmode-primary group-hover:translate-x-1 transition-transform">
+                <i class="fas fa-arrow-right"></i>
+              </div>
             </div>
           </a>
         </div>
       {{ end }}
     </div>
+
+    <!-- Empty State -->
+    {{ if eq (len site.Taxonomies.til_categories) 0 }}
+    <div class="text-center py-16">
+      <div class="mb-6">
+        <i class="fas fa-folder-open text-6xl text-primary dark:text-darkmode-primary opacity-50"></i>
+      </div>
+      <h3 class="text-2xl font-bold mb-4 text-dark dark:text-darkmode-dark">No Categories Yet</h3>
+      <p class="text-lg text-text dark:text-darkmode-text mb-8">Start creating TIL entries to see categories here.</p>
+      <a href="/til/" class="btn btn-primary">
+        <i class="fas fa-plus mr-2"></i>Create Your First TIL
+      </a>
+    </div>
+    {{ end }}
   </div>
 </section>
 {{ end }}

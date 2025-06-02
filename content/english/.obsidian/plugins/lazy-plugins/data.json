@@ -1,0 +1,57 @@
+{
+  "dualConfigs": false,
+  "showConsoleLog": false,
+  "desktop": {
+    "shortDelaySeconds": 5,
+    "longDelaySeconds": 15,
+    "delayBetweenPlugins": 40,
+    "defaultStartupType": null,
+    "showDescriptions": true,
+    "enableDependencies": false,
+    "plugins": {
+      "calendar": {
+        "startupType": "instant"
+      },
+      "dataview": {
+        "startupType": "instant"
+      },
+      "obsidian-excalidraw-plugin": {
+        "startupType": "instant"
+      },
+      "obsidian-git": {
+        "startupType": "instant"
+      },
+      "obsidian-kanban": {
+        "startupType": "instant"
+      },
+      "mathlive": {
+        "startupType": "instant"
+      },
+      "pdf-plus": {
+        "startupType": "instant"
+      },
+      "pomodoro-timer": {
+        "startupType": "instant"
+      },
+      "obsidian-style-settings": {
+        "startupType": "instant"
+      },
+      "obsidian-plugin-toc": {
+        "startupType": "instant"
+      },
+      "tag-wrangler": {
+        "startupType": "instant"
+      },
+      "obsidian-tagfolder": {
+        "startupType": "instant"
+      },
+      "templater-obsidian": {
+        "startupType": "instant"
+      },
+      "obsidian-tracker": {
+        "startupType": "instant"
+      }
+    },
+    "loadOrder": []
+  }
+}

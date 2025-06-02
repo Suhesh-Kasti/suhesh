@@ -1,9 +1,9 @@
 {
   "cssTheme": "Border",
-  "baseFontSize": 15,
+  "baseFontSize": 18,
   "accentColor": "#7aa7ff",
-  "interfaceFontFamily": "",
-  "textFontFamily": "",
+  "interfaceFontFamily": "Fraunces 9pt",
+  "textFontFamily": "Fraunces 9pt",
   "monospaceFontFamily": "Monofur Nerd Font Mono",
   "baseFontSizeAction": true,
   "theme": "obsidian"

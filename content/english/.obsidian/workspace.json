@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "cheatsheets/nginx/nginx-configuration.md",
+                "file": "til/for ppt.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "nginx-configuration"
+              "title": "for ppt"
             }
           }
         ]
@@ -73,46 +73,6 @@
               "icon": "lucide-bookmark",
               "title": "Bookmarks"
             }
-          },
-          {
-            "id": "b0e326c497d3ad5d",
-            "type": "leaf",
-            "state": {
-              "type": "tagfolder-view",
-              "state": {},
-              "icon": "stacked-levels",
-              "title": "Tag Folder"
-            }
-          },
-          {
-            "id": "d98c15c64c9cd003",
-            "type": "leaf",
-            "state": {
-              "type": "tagfolder-view",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "Plugin no longer active"
-            }
-          },
-          {
-            "id": "fcff918bb019c6b1",
-            "type": "leaf",
-            "state": {
-              "type": "tagfolder-view",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "Plugin no longer active"
-            }
-          },
-          {
-            "id": "e04d93f1e22762c7",
-            "type": "leaf",
-            "state": {
-              "type": "tagfolder-view",
-              "state": {},
-              "icon": "stacked-levels",
-              "title": "Tag Folder"
-            }
           }
         ]
       }
@@ -136,7 +96,9 @@
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-tags",
               "title": "Tags"
@@ -224,8 +186,8 @@
             "state": {
               "type": "timer-view",
               "state": {},
-              "icon": "lucide-file",
-              "title": "Plugin no longer active"
+              "icon": "timer",
+              "title": "Timer"
             }
           }
         ]
@@ -241,8 +203,8 @@
             "state": {
               "type": "tagfolder-view",
               "state": {},
-              "icon": "lucide-file",
-              "title": "Plugin no longer active"
+              "icon": "stacked-levels",
+              "title": "Tag Folder"
             }
           },
           {
@@ -259,8 +221,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -282,6 +243,11 @@
   },
   "active": "a46e8132feec0bb1",
   "lastOpenFiles": [
+    "images/Pasted image 20250530172551.png",
+    "images",
+    "til/git-interactive-rebase.md",
+    "til/for ppt.md",
+    "cheatsheets/nginx/nginx-configuration.md",
     "cheatsheets/nginx/nginx-performance-caching.md",
     "cheatsheets/nginx/nginx-high-availability.md",
     "cheatsheets/nginx/nginx-logging-monitoring.md",
@@ -289,7 +255,6 @@
     "cheatsheets/nginx/nginx-load-balancer.md",
     "cheatsheets/nginx/nginx-api-gateway.md",
     "cheatsheets/nginx/nginx-reverse-proxy.md",
-    "cheatsheets/nginx/nginx-configuration.md",
     "cheatsheets/Docker.md",
     "blog/dns103.md",
     "Untitled.md",
@@ -309,11 +274,8 @@
     "3. Resource/F5 101 Networks Application Delivery Fundamentals.pdf",
     "1. Project/Data Link Layer.md",
     "1. Project/Virtual LAN ( VLAN ).md",
-    "1. Project/Dividing a broadcast domain.md",
     "3. Resource/Eric_Mitchell_Channel_SE_East_US_and_Fed.pdf",
     "3. Resource/Study_Notes_F5_101_Application_Delivery.pdf",
-    "1. Project/WAN Architechture.md",
-    "**asymmetric routing problem**.md",
     "images/trunk_port_passage.png",
     "images/Pasted image 20240930104616.png",
     "images/Pasted image 20240930104611.png",
@@ -323,7 +285,6 @@
     "4. Archives",
     "2. Area",
     "3. Resource/F5_101_Notes.docx",
-    "3. Resource/F5-101dumps 1.pdf",
     "images/android_dex_odex.png",
     "images/wireshark_tcp_syn_set.png",
     "images/wireshark_tcp_syn1.png",

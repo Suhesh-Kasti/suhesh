@@ -3,35 +3,107 @@
 
 <section class="section">
   <div class="container">
-    <!-- Introduction Section -->
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <h1 class="h2 mb-6">TIL Entries Tagged: {{ .Title }}</h1>
-      <p class="text-lg mb-8">Browse our collection of Today I Learned entries tagged with "{{ .Title }}". These are quick notes about things learned during daily work and exploration.</p>
+    <!-- Header Section -->
+    <div class="text-center max-w-4xl mx-auto mb-16">
+      <div class="mb-6">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-darkmode-primary/10 rounded-full mb-4">
+          <i class="fas fa-hashtag text-3xl text-primary dark:text-darkmode-primary"></i>
+        </div>
+      </div>
+      <h1 class="h1 mb-6 bg-gradient-to-r from-primary to-primary/70 dark:from-darkmode-primary dark:to-darkmode-primary/70 bg-clip-text text-transparent">
+        #{{ .Title }}
+      </h1>
+      <p class="text-xl mb-8 text-text dark:text-darkmode-text leading-relaxed">
+        Explore {{ len .Data.Pages }} TIL {{ if eq (len .Data.Pages) 1 }}entry{{ else }}entries{{ end }} tagged with "{{ .Title }}".
+        Discover insights and learnings on this topic.
+      </p>
       <div class="flex justify-center space-x-4">
-        <a href="/til_tags/" class="btn btn-outline-primary">All Tags</a>
-        <a href="/til/" class="btn btn-primary">Back to TIL</a>
+        <a href="/til_tags/" class="btn btn-outline-primary">
+          <i class="fas fa-tags mr-2"></i>All Tags
+        </a>
+        <a href="/til/" class="btn btn-primary">
+          <i class="fas fa-arrow-left mr-2"></i>Back to TIL
+        </a>
       </div>
     </div>
 
+    <!-- Stats Bar -->
+    <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 mb-12 border border-border dark:border-darkmode-border">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+        <div>
+          <div class="text-2xl font-bold text-primary dark:text-darkmode-primary mb-1">{{ len .Data.Pages }}</div>
+          <div class="text-text dark:text-darkmode-text text-sm">{{ if eq (len .Data.Pages) 1 }}Entry{{ else }}Entries{{ end }}</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-primary dark:text-darkmode-primary mb-1">{{ .Title }}</div>
+          <div class="text-text dark:text-darkmode-text text-sm">Tag Name</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-primary dark:text-darkmode-primary mb-1">TIL</div>
+          <div class="text-text dark:text-darkmode-text text-sm">Content Type</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
     <div class="row">
       {{ $paginator := .Paginate .Data.Pages 9 }}
       {{ if $paginator.Pages }}
         {{ range $paginator.Pages }}
-        <div class="lg:col-4 md:col-6 mb-14">
+        <div class="lg:col-4 md:col-6 mb-8">
           {{ partial "components/til-card" . }}
         </div>
         {{ end }}
       {{ else }}
         <div class="col-12 text-center py-16">
           <div class="mb-6">
-            <i class="fas fa-tag text-6xl text-primary dark:text-darkmode-primary opacity-50"></i>
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-primary/10 dark:bg-darkmode-primary/10 rounded-full mb-4">
+              <i class="fas fa-hashtag text-4xl text-primary dark:text-darkmode-primary opacity-50"></i>
+            </div>
           </div>
-          <h3 class="h4 mb-4">No content yet</h3>
-          <p class="text-lg mb-8">This tag doesn't have any content yet. Check back later!</p>
+          <h3 class="text-2xl font-bold mb-4 text-dark dark:text-darkmode-dark">No Entries Yet</h3>
+          <p class="text-lg text-text dark:text-darkmode-text mb-8">This tag doesn't have any TIL entries yet. Check back later or explore other tags!</p>
+          <div class="flex justify-center space-x-4">
+            <a href="/til_tags/" class="btn btn-outline-primary">Browse All Tags</a>
+            <a href="/til/" class="btn btn-primary">View All TIL</a>
+          </div>
         </div>
       {{ end }}
     </div>
-    {{ partial "components/pagination" . }}
+
+    <!-- Pagination -->
+    {{ if gt $paginator.TotalPages 1 }}
+    <div class="mt-12">
+      {{ partial "components/pagination" . }}
+    </div>
+    {{ end }}
+
+    <!-- Related Tags -->
+    {{ if gt (len site.Taxonomies.til_tags) 1 }}
+    <div class="mt-16 pt-8 border-t border-border dark:border-darkmode-border">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold mb-4 text-dark dark:text-darkmode-dark">Explore Other Tags</h2>
+        <p class="text-text dark:text-darkmode-text">Discover more topics and insights</p>
+      </div>
+
+      <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-6 border border-border dark:border-darkmode-border">
+        <div class="flex flex-wrap justify-center gap-3">
+          {{ range first 10 (shuffle site.Taxonomies.til_tags.Alphabetical) }}
+            {{ if ne .Page.Title $.Title }}
+            <a href="{{ .Page.RelPermalink }}"
+               class="inline-flex items-center px-4 py-2 rounded-full bg-white dark:bg-darkmode-body border border-border dark:border-darkmode-border hover:border-primary dark:hover:border-darkmode-primary hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-body transition-all duration-300 transform hover:scale-105">
+              <i class="fas fa-hashtag mr-2 text-xs"></i>
+              <span class="font-medium">{{ .Page.Title }}</span>
+              <span class="ml-2 text-xs bg-primary/10 dark:bg-darkmode-primary/10 text-primary dark:text-darkmode-primary px-2 py-1 rounded-full">
+                {{ .Count }}
+              </span>
+            </a>
+            {{ end }}
+          {{ end }}
+        </div>
+      </div>
+    </div>
+    {{ end }}
   </div>
 </section>
 {{ end }}

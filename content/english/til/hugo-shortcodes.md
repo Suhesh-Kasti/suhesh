@@ -1,6 +1,6 @@
 ---
 title: "Using Hugo Shortcodes for Enhanced Content"
-date: 2023-11-15T10:30:00+05:45
+date: 2024-11-15T10:30:00+05:45
 description: "Today I learned how to use Hugo shortcodes to create reusable content snippets and enhance my markdown files."
 image: "/images/til/hugo-shortcodes.jpg"
 til_categories: ["Hugo"]

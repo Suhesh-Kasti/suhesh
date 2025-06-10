@@ -1,0 +1,11 @@
+# Configure Cloudflare Worker
+
+name = 'suhesh'
+compatibility_date = "2025-06-10"
+
+[build]
+command = "npm run build"
+
+[assets]
+directory = "./public"
+not_found_handling = "404.html"

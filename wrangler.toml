@@ -4,7 +4,7 @@ name = 'suhesh'
 compatibility_date = "2025-06-10"
 
 [build]
-command = "npm run build"
+command = "./build.sh"
 
 [assets]
 directory = "./public"

@@ -120,6 +120,6 @@ skill_categories:
           - "Auxiliary Modules"
 
 # don't create a separate page
-_build:
+build:
   render: "never"
 --- 

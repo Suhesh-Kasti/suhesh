@@ -16,10 +16,12 @@ site.Params.plugins.js }} {{ if findRE "^http" .link }}
 <!-- main script -->
 {{ $cursorJs := resources.Get "js/cursor.js" }}
 {{ $animationsJs := resources.Get "js/animations.js" }}
-{{ $scripts = $scripts | append (resources.Get "js/main.js") }} 
+{{ $performanceJs := resources.Get "js/performance.js" }}
+{{ $scripts = $scripts | append $performanceJs }}
+{{ $scripts = $scripts | append (resources.Get "js/main.js") }}
 {{ $scripts = $scripts | append $cursorJs }}
 {{ $scripts = $scripts | append $animationsJs }}
-{{ $scripts = $scripts | resources.Concat "js/script.js" }} 
+{{ $scripts = $scripts | resources.Concat "js/script.js" }}
 {{ $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }} 
 {{ if hugo.IsProduction }} {{ $scripts =
 $scripts | minify | fingerprint }} {{ $scriptsLazy = $scriptsLazy | minify |

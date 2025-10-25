@@ -15,8 +15,8 @@
 <section class="section pt-7">
   <div class="container">
     <div class="row justify-center">
-      <!-- Left Section: Table of Contents -->
-      <aside class="lg:col-3">
+      <!-- Left Section: Table of Contents - Wider for better readability -->
+      <aside class="lg:col-4">
         <div class="sticky top-24">
           {{ partial "components/innovative-toc.html" . }}
         </div>
@@ -24,7 +24,7 @@
 
       <!-- Main Content -->
       <article
-        class="lg:col-9 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6"
+        class="lg:col-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6 min-w-0"
       >
         {{ $image:= .Params.image }} {{ if $image }}
         <div class="mb-10">

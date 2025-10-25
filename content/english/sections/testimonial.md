@@ -71,6 +71,6 @@ testimonials:
     content: " While being a totally technical domain effective communication is a critical soft skill in cybersecurity. Nothing much to say, as social engineering is the most successful hacking technique to ever exist."
 
 # don't create a separate page
-_build:
+build:
   render: "never"
 ---

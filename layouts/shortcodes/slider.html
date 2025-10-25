@@ -135,7 +135,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize certificate slider with card-like animations
+    // Initialize certificate slider with smooth fade animations
     const certificateSliders = document.querySelectorAll('.certificate-slider');
     if (certificateSliders.length > 0) {
       certificateSliders.forEach(slider => {
@@ -143,16 +143,15 @@
           slidesPerView: 1,
           spaceBetween: 30,
           loop: true,
-          effect: "cards",
-          cardsEffect: {
-            slideShadows: false,
-            perSlideRotate: 0,
-            perSlideOffset: 8,
+          effect: "fade",
+          fadeEffect: {
+            crossFade: true
           },
-          speed: 800,
+          speed: 600,
           autoplay: {
-            delay: 5000,
+            delay: 4000,
             disableOnInteraction: false,
+            pauseOnMouseEnter: true,
           },
           pagination: {
             el: slider.querySelector('.certificate-slider-pagination'),
@@ -162,6 +161,9 @@
             nextEl: slider.querySelector('.certificate-slider-next'),
             prevEl: slider.querySelector('.certificate-slider-prev'),
           },
+          // Smooth GPU-accelerated transitions
+          watchSlidesProgress: true,
+          preventInteractionOnTransition: true,
         });
 
         // Initialize GLightbox for the slider images with proper gallery support

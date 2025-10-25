@@ -1,5 +1,14 @@
-// Slide-in page transitions using GSAP
-document.addEventListener('DOMContentLoaded', function() {
+// Modern smooth page transitions using GSAP
+function initPageTransitions() {
+  // Check if GSAP is loaded
+  if (typeof gsap === 'undefined') {
+    console.log('GSAP not loaded yet, waiting...');
+    setTimeout(initPageTransitions, 50);
+    return;
+  }
+
+  console.log('✅ Initializing page transitions with GSAP');
+
   // Create page transition elements - slide-in effect
   const pageTransitionContainer = document.createElement('div');
   pageTransitionContainer.classList.add('page-transition-container');
@@ -11,21 +20,31 @@ document.addEventListener('DOMContentLoaded', function() {
   pageTransitionContainer.appendChild(slideElement);
   document.body.appendChild(pageTransitionContainer);
 
-  // Animation timeline for page load with slide-up effect
-  const pageLoadTimeline = gsap.timeline();
+  console.log('✅ Page transition elements created');
+
+  // Animation timeline for page load with smooth slide-up effect
+  const pageLoadTimeline = gsap.timeline({
+    onStart: () => {
+      console.log('🎬 Page load animation started');
+    },
+    onComplete: () => {
+      console.log('✅ Page load animation completed');
+      // Hide container after animation
+      gsap.set(pageTransitionContainer, { opacity: 0, visibility: 'hidden' });
+    }
+  });
 
   // Initial state - slide element ready to animate
   pageLoadTimeline
-    .set(pageTransitionContainer, { autoAlpha: 1 })
+    .set(pageTransitionContainer, { opacity: 1, visibility: 'visible' })
     .set(slideElement, { y: '0%' })
 
-    // Slide up animation
+    // Smooth slide up animation with modern easing - slower and more visible
     .to(slideElement, {
       y: '-100%',
-      duration: 0.6,
+      duration: 1.5,
       ease: 'power2.inOut',
-    })
-    .set(pageTransitionContainer, { autoAlpha: 0 });
+    }, '+=0.5'); // Add 0.5s delay so you can see it
 
   // Register ScrollTrigger plugin
   gsap.registerPlugin(ScrollTrigger);
@@ -105,14 +124,16 @@ document.addEventListener('DOMContentLoaded', function() {
       duration: 0.5
     });
 
-    // Animate images with improved settings
-    createStaggerAnimation('img:not(.logo-dark img, .logo-light img)', {
+    // Animate images with improved settings - exclude certificate slider images
+    createStaggerAnimation('img:not(.logo-dark img, .logo-light img, .certificate-image, .swiper-slide img)', {
       y: 0,
-      scale: 0.98, // Less extreme scale for smoother animation
+      scale: 0.99, // Minimal scale for smoother animation
       opacity: 0,
       scrollTrigger: {
         start: 'top 85%'
       },
+      duration: 0.6, // Faster animation
+      ease: 'power2.out', // Smoother easing
       onComplete: function() {
         gsap.set(this.targets(), { clearProps: 'all' });
       }
@@ -126,37 +147,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, 50); // Reduced delay for faster initial animations
 
-  // Slide-in link click animation for internal links
-  document.querySelectorAll('a').forEach(link => {
+  // Modern smooth slide-in link click animation for internal links
+  console.log('🔗 Setting up link click handlers');
+  const links = document.querySelectorAll('a');
+  console.log(`Found ${links.length} links`);
+
+  links.forEach(link => {
     // Only handle internal links
     if (link.hostname === window.location.hostname && !link.hasAttribute('target')) {
       link.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
 
-        // Skip anchor links
-        if (href.startsWith('#')) return;
+        // Skip anchor links and empty links
+        if (!href || href.startsWith('#') || href === '') return;
 
+        console.log(`🎬 Triggering page transition to: ${href}`);
         e.preventDefault();
 
-        // Prepare for transition
-        pageTransitionContainer.style.visibility = 'visible';
-
-        // Slide-in transition for page exit
+        // Modern smooth slide-in transition for page exit
         const exitTimeline = gsap.timeline({
+          onStart: () => {
+            console.log('🎬 Page exit animation started');
+          },
           onComplete: () => {
+            console.log(`✅ Page exit animation completed, navigating to: ${href}`);
             window.location.href = href;
           }
         });
 
         exitTimeline
-          .set(pageTransitionContainer, { autoAlpha: 1 })
+          .set(pageTransitionContainer, { opacity: 1, visibility: 'visible' })
           .set(slideElement, { y: '100%' })
 
-          // Slide in from bottom
+          // Smooth slide in from bottom with modern easing - slower and more visible
           .to(slideElement, {
             y: '0%',
-            duration: 0.5,
-            ease: 'power2.in'
+            duration: 1,
+            ease: 'power2.inOut'
           });
       });
     }
@@ -243,4 +270,11 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('touchmove', onScroll, { passive: true });
     window.addEventListener('touchend', onScroll, { passive: true });
   }
-});
+}
+
+// Initialize page transitions when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPageTransitions);
+} else {
+  initPageTransitions();
+}

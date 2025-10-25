@@ -28,12 +28,12 @@ google_adsense = ""     # example: ca-pub-xxxxxxxxxxxxxxxx
 # custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>"
 custom_script = ""
 # copyright
-copyright = "Copyright &copy; 2023 [Suhesh Kasti](https://t.me/suheshkasti)"
+copyright = "Copyright &copy; 2025 [Suhesh Kasti](https://t.me/suheshkasti)"
 
 # Preloader
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader
 [preloader]
-enable = false
+enable = true
 preloader = "images/preloader.gif" # use jpg, png, svg or gif format.
 
 # Navigation button

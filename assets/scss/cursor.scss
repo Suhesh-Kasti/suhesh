@@ -7,14 +7,15 @@ html {
   --circleSize: calc(calc(var(--circleMultiplier) * 1rem));
 }
 
-/* Light mode */
+/* Cursor color - white with difference blend mode for beautiful effect */
 :root {
-  --cursor-color: #121212;
+  --cursor-color: #ffffff;
+  --cursor-opacity: 1;
 }
 
-/* Dark mode */
 .dark {
   --cursor-color: #ffffff;
+  --cursor-opacity: 1;
 }
 
 /* Hide default cursor */
@@ -32,9 +33,11 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 99999;
+  z-index: 9999999;
   translate: var(--xpos) var(--ypos);
   transform-origin: center center;
+  mix-blend-mode: difference;
+  opacity: var(--cursor-opacity);
   transition:
     width .2s ease-in-out,
     height .2s ease-in-out,

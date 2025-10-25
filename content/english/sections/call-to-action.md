@@ -25,6 +25,6 @@ qualifications:
     image: "/images/qualification/model.png"
     description: "The basic education till the 10th grade."
 
-_build:
+build:
   render: "never"
 ---

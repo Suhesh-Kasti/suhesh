@@ -47,9 +47,9 @@
     </nav>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-    <!-- Left Section: Table of Contents -->
-    <aside class="lg:col-span-1">
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Left Section: Table of Contents - Wider for better readability -->
+    <aside class="lg:col-span-2">
       <div class="sticky top-24">
         {{ partial "components/innovative-toc.html" . }}
       </div>
@@ -58,7 +58,7 @@
 
 
     <!-- Right Section: Checklist Content -->
-    <main class="lg:col-span-3">
+    <main class="lg:col-span-3 min-w-0">
       <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6 border-0">
         <article>
           <!-- Categories Section -->

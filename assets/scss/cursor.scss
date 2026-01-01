@@ -9,8 +9,8 @@ html {
 
 /* Cursor color - white with difference blend mode for beautiful effect */
 :root {
-  --cursor-color: #ffffff;
-  --cursor-opacity: 1;
+  --cursor-color: #000000;
+  --cursor-opacity: 0.8;
 }
 
 .dark {
@@ -34,16 +34,19 @@ body {
   top: 0;
   left: 0;
   z-index: 9999999;
+  will-change: transform, width, height, opacity;
   translate: var(--xpos) var(--ypos);
-  transform-origin: center center;
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
   opacity: var(--cursor-opacity);
-  transition:
-    width .2s ease-in-out,
-    height .2s ease-in-out,
-    border-radius .4s ease-in-out,
-    opacity .2s ease-in-out;
+  /* Single fluid transition line */
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, scale 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  scale: 1;
 }
+
+.dark #circle {
+  mix-blend-mode: difference;
+}
+
 
 /* Hide cursor on touch devices */
 @media (hover: none) and (pointer: coarse) {
@@ -55,14 +58,16 @@ body {
     cursor: auto !important;
   }
 
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     cursor: auto !important;
   }
 }
 
 /* Link hover effect */
 body:has(a:hover) #circle {
-  --circleSize: calc(calc(var(--circleMultiplier) * 1.5rem));
+  scale: 1.5;
   opacity: 0.2;
 }
 

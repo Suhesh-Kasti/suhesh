@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let targetY = 0;
     let currentX = 0;
     let currentY = 0;
-    const easing = 0.1;
+    const easing = 0.25;
 
     // Set initial CSS variables
     circle.style.setProperty('--xpos', '0px');

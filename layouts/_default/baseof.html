@@ -9,10 +9,7 @@
     {{ partial "essentials/head.html" . }}
 
     <!-- style (always cache it) -->
-    {{ partialCached "essentials/style.html" . }} {{ $style := resources.Get
-    "scss/main.scss" | css.Sass | css.PostCSS | resources.Minify |
-    resources.Fingerprint }}
-    <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
+    {{ partialCached "essentials/style.html" . }}
 
     <!-- Ensure cursor styles and dark mode are applied directly -->
     <style>

@@ -1,35 +1,32 @@
 <meta charset="utf-8" />
 
 <!-- responsive meta -->
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1, maximum-scale=5"
-/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
 
 <!-- Performance optimizations -->
 {{ if site.Params.optimization }}
-  <!-- DNS prefetch and preconnect for faster resource loading -->
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-  <link rel="dns-prefetch" href="https://unpkg.com">
+<!-- DNS prefetch and preconnect for faster resource loading -->
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://unpkg.com">
 
-  {{ if site.Params.optimization.preconnectFonts }}
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  {{ end }}
+{{ if site.Params.optimization.preconnectFonts }}
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+{{ end }}
 
-  <!-- Preload critical assets -->
-  <link rel="preload" href="{{ (resources.Get "scss/main.scss" | css.Sass (dict "outputStyle" "compressed") | fingerprint).RelPermalink }}" as="style">
 
-  <!-- Preload critical scripts -->
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/gsap.min.js" as="script">
 
-  <!-- Instantpage for faster page navigation -->
-  {{ if site.Params.optimization.instantPage }}
-    <script src="https://instant.page/5.1.1" type="module" integrity="sha384-MWfCL6g1OTGsbSwfuMHc8+8J2u71/LA8dzlIN3ycajckxuZZmF+DNjdm7O6H3PSq"></script>
-  {{ end }}
+<!-- Preload critical scripts -->
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/gsap.min.js" as="script">
+
+<!-- Instantpage for faster page navigation -->
+{{ if site.Params.optimization.instantPage }}
+<script src="https://instant.page/5.1.1" type="module"
+  integrity="sha384-MWfCL6g1OTGsbSwfuMHc8+8J2u71/LA8dzlIN3ycajckxuZZmF+DNjdm7O6H3PSq"></script>
+{{ end }}
 {{ end }}
 
 <!-- asset bundles -->
@@ -41,8 +38,11 @@
 {{ end }}
 
 {{ if $assets.Get "js" }}
-{{ $bundleJS := $assets.Get "js" | resources.Concat "js/main.bundle.js" | resources.Minify | resources.Fingerprint "sha512" }}
-<script defer type="text/javascript" id="script-bundle" src="{{ $bundleJS.RelPermalink }}" integrity="{{ $bundleJS.Data.Integrity }}" data-copy="{{ i18n "code.copy" }}" data-copied="{{ i18n "code.copied" }}"></script>
+{{ $bundleJS := $assets.Get "js" | resources.Concat "js/main.bundle.js" | resources.Minify | resources.Fingerprint
+"sha512" }}
+<script defer type="text/javascript" id="script-bundle" src="{{ $bundleJS.RelPermalink }}"
+  integrity="{{ $bundleJS.Data.Integrity }}" data-copy="{{ i18n " code.copy" }}" data-copied="{{ i18n " code.copied"
+  }}"></script>
 {{ end }}
 
 
@@ -92,8 +92,11 @@ site.Config.Services.GoogleAnalytics.ID "G-MEASUREMENT_ID") }} {{ template
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/ScrollTrigger.min.js"></script>
 
 <!-- AOS (Animate on Scroll) Library - defer for better performance -->
-<link rel="preload" href="https://unpkg.com/aos@next/dist/aos.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"></noscript>
+<link rel="preload" href="https://unpkg.com/aos@next/dist/aos.css" as="style"
+  onload="this.onload=null;this.rel='stylesheet'">
+<noscript>
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+</noscript>
 <script defer src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
   // Initialize AOS with optimized settings
@@ -123,13 +126,13 @@ site.Config.Services.GoogleAnalytics.ID "G-MEASUREMENT_ID") }} {{ template
 
 <!-- Ensure CSS variables are properly defined for cursor -->
 <style>
-:root {
-  --primary-color: #121212;
-  --primary-color-rgb: 18, 18, 18;
-}
+  :root {
+    --primary-color: #121212;
+    --primary-color-rgb: 18, 18, 18;
+  }
 
-.dark {
-  --primary-color: #ffffff;
-  --primary-color-rgb: 255, 255, 255;
-}
+  .dark {
+    --primary-color: #ffffff;
+    --primary-color-rgb: 255, 255, 255;
+  }
 </style>

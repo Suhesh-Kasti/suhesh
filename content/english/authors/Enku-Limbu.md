@@ -2,7 +2,7 @@
 title: Enku Limbu
 email: limbuenks@gmail.com
 image: "/images/authors/enku.png"
-description: Author of Machine Learning Blogs
+description: Author of Japanese Language Blogs
 link: https://indulimbu.com.np/
 social:
   - name: mail

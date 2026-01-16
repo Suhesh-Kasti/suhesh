@@ -1,5 +1,5 @@
 // Simple custom cursor implementation
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Only run on non-touch devices
   if (window.matchMedia("(hover: hover)").matches) {
     // Remove any existing cursor elements
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     circle.id = 'circle';
     document.body.appendChild(circle);
 
-    console.log('Custom cursor element added to the DOM');
+
 
     // Initialize variables
     let targetX = 0;

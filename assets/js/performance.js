@@ -1,5 +1,5 @@
 // Performance optimizations
-(function() {
+(function () {
   'use strict';
 
   // Optimize images with Intersection Observer for lazy loading
@@ -8,18 +8,18 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const img = entry.target;
-          
+
           // Load the image
           if (img.dataset.src) {
             img.src = img.dataset.src;
             img.removeAttribute('data-src');
           }
-          
+
           if (img.dataset.srcset) {
             img.srcset = img.dataset.srcset;
             img.removeAttribute('data-srcset');
           }
-          
+
           // Stop observing this image
           observer.unobserve(img);
         }
@@ -44,7 +44,7 @@
       if (!img.hasAttribute('loading')) {
         img.setAttribute('loading', 'lazy');
       }
-      
+
       // Add decoding attribute for better performance
       if (!img.hasAttribute('decoding')) {
         img.setAttribute('decoding', 'async');
@@ -71,14 +71,14 @@
   // Debounce scroll events for better performance
   let scrollTimeout;
   let lastScrollY = window.scrollY;
-  
+
   function optimizedScroll() {
     const currentScrollY = window.scrollY;
-    
+
     // Only process if scroll position changed significantly
     if (Math.abs(currentScrollY - lastScrollY) > 5) {
       lastScrollY = currentScrollY;
-      
+
       // Dispatch custom event for other scripts to listen to
       window.dispatchEvent(new CustomEvent('optimizedScroll', {
         detail: { scrollY: currentScrollY }
@@ -112,11 +112,11 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const link = entry.target;
-          
+
           // Add hover listener to prefetch
           link.addEventListener('mouseenter', function prefetchLink() {
             const href = this.getAttribute('href');
-            
+
             // Only prefetch internal links
             if (href && href.startsWith('/') && !href.startsWith('//')) {
               const linkElement = document.createElement('link');
@@ -124,11 +124,11 @@
               linkElement.href = href;
               document.head.appendChild(linkElement);
             }
-            
+
             // Remove listener after first hover
             link.removeEventListener('mouseenter', prefetchLink);
           }, { once: true });
-          
+
           linkObserver.unobserve(link);
         }
       });
@@ -143,7 +143,7 @@
   }
 
   // Reduce animation jank by using requestAnimationFrame
-  window.requestIdleCallback = window.requestIdleCallback || function(cb) {
+  window.requestIdleCallback = window.requestIdleCallback || function (cb) {
     const start = Date.now();
     return setTimeout(() => {
       cb({
@@ -167,16 +167,12 @@
   if (window.performance && window.performance.mark) {
     window.addEventListener('load', () => {
       performance.mark('page-fully-loaded');
-      
+
       // Log performance metrics in development
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         const perfData = performance.getEntriesByType('navigation')[0];
         if (perfData) {
-          console.log('Performance Metrics:', {
-            'DOM Content Loaded': Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart) + 'ms',
-            'Page Load Time': Math.round(perfData.loadEventEnd - perfData.loadEventStart) + 'ms',
-            'Total Time': Math.round(perfData.loadEventEnd - perfData.fetchStart) + 'ms'
-          });
+
         }
       }
     });

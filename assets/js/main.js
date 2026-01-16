@@ -38,15 +38,16 @@
     const skillsSliders = document.querySelectorAll(".skills-slider");
     skillsSliders.forEach((slider, index) => {
       new Swiper(slider, {
-        effect: 'coverflow',
+        effect: 'coverflow', // Default effect (Desktop)
         grabCursor: true,
         centeredSlides: true,
         slidesPerView: 'auto',
-        speed: 600, // Smooth transition
+        speed: 600, // Smooth transition (User Request)
         loop: true,
         autoplay: {
           delay: 2500,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true, // Kept as requested previously
         },
         coverflowEffect: {
           rotate: 0,
@@ -64,21 +65,37 @@
           clickable: true,
         },
         breakpoints: {
+          // Fix for Phones: Use "Slide" effect for sharpness
+          0: {
+            effect: 'slide',
+            slidesPerView: 'auto',
+            centeredSlides: true,
+          },
+          // Tablet: Switch to Coverflow
           640: {
+            effect: 'coverflow',
             coverflowEffect: {
+              rotate: 0,
+              stretch: 0,
               depth: 250,
+              modifier: 1,
+              slideShadows: false,
             }
           },
+          // Desktop: Deeper Coverflow
           1024: {
+            effect: 'coverflow',
             coverflowEffect: {
+              rotate: 0,
+              stretch: 0,
               depth: 300,
+              modifier: 1,
+              slideShadows: false,
             }
           }
         }
       });
     });
-
-    console.log(`✅ Initialized ${skillsSliders.length} skills slider(s)`);
 
     // Testimonial Slider
     const testimonialSlider = document.querySelector(".testimonial-slider");
@@ -146,8 +163,6 @@
       });
     });
 
-    if (accordionContainers.length) {
-      console.log(`✅ Initialized ${accordionContainers.length} accordion(s)`);
-    }
+    // Console logs removed
   }
 })();

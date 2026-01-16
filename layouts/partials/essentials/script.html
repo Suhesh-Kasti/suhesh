@@ -1,14 +1,8 @@
 <!-- JS Plugins + Main script -->
 {{ $scripts := slice }} {{ $scriptsLazy := slice }} {{ range
 site.Params.plugins.js }} {{ if findRE "^http" .link }}
-<script
-  src="{{ .link | relURL }}"
-  type="application/javascript"
-  {{- if .defer }} defer {{ end -}}
-  {{- if .async }} async {{ end -}}
-  {{- if .lazy }} loading="lazy" {{ end -}}
-  {{ .attributes | safeHTMLAttr }}
-></script>
+<script src="{{ .link | relURL }}" type="application/javascript" {{- if .defer }} defer {{ end -}} {{- if .async }}
+  async {{ end -}} {{- if .lazy }} loading="lazy" {{ end -}} {{ .attributes | safeHTMLAttr }}></script>
 {{ else }} {{ if not .lazy }} {{ $scripts = $scripts | append (resources.Get
 .link) }} {{ else }} {{ $scriptsLazy = $scriptsLazy | append (resources.Get
 .link) }} {{ end }} {{ end }} {{ end }}
@@ -21,27 +15,20 @@ site.Params.plugins.js }} {{ if findRE "^http" .link }}
 {{ $scripts = $scripts | append (resources.Get "js/main.js") }}
 {{ $scripts = $scripts | append $cursorJs }}
 {{ $scripts = $scripts | append $animationsJs }}
+{{ $scripts = $scripts | append (resources.Get "js/navbar.js") }}
 {{ $scripts = $scripts | resources.Concat "js/script.js" }}
-{{ $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }} 
+{{ $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }}
 {{ if hugo.IsProduction }} {{ $scripts =
 $scripts | minify | fingerprint }} {{ $scriptsLazy = $scriptsLazy | minify |
 fingerprint }} {{ end }} {{/* scripts */}}
 
 {{/* Critical scripts */}}
-<script
-  crossorigin="anonymous"
-  integrity="{{ $scripts.Data.Integrity }}"
-  src="{{ $scripts.RelPermalink }}"
-  {{ if site.Params.optimization.deferJS }}defer{{ end }}
-></script>
+<script crossorigin="anonymous" integrity="{{ $scripts.Data.Integrity }}" src="{{ $scripts.RelPermalink }}" {{ if
+  site.Params.optimization.deferJS }}defer{{ end }}></script>
 
 {{/* Non-critical scripts with defer */}}
-<script
-  crossorigin="anonymous"
-  integrity="{{ $scriptsLazy.Data.Integrity }}"
-  src="{{ $scriptsLazy.RelPermalink }}"
-  defer
-></script>
+<script crossorigin="anonymous" integrity="{{ $scriptsLazy.Data.Integrity }}" src="{{ $scriptsLazy.RelPermalink }}"
+  defer></script>
 
 <!-- progressive web app -->
 {{ partialCached "pwa.html" . }}

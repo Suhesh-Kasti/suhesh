@@ -5,7 +5,7 @@ function initAnimations() {
     return;
   }
 
-  console.log('✅ Initializing Smooth & Clean Animations');
+
   gsap.registerPlugin(ScrollTrigger);
 
   // --------------------------------------------------------------------------

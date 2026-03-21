@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the primary objective of setting up a DNS server in this lab?",
+    "options": [
+      "To install a web server.",
+      "To configure a database.",
+      "To manage domain resolutions for services in a lab network.",
+      "To set up a mail server."
+    ],
+    "correctAnswer": "To manage domain resolutions for services in a lab network."
+  },
+  {
+    "question": "Which software is primarily used for setting up the DNS server in this guide?",
+    "options": [
+      "Apache",
+      "NGINX",
+      "BIND",
+      "MariaDB"
+    ],
+    "correctAnswer": "BIND"
+  },
+  {
+    "question": "What is the IP address designated for the BIND server in the lab environment?",
+    "options": [
+      "192.168.180.31",
+      "192.168.180.226",
+      "192.168.190.133",
+      "192.168.180.112"
+    ],
+    "correctAnswer": "192.168.180.226"
+  },
+  {
+    "question": "What does BIND stand for?",
+    "options": [
+      "Basic Internet Network Domain",
+      "Berkeley Internet Name Domain",
+      "Binary Internet Naming Directory",
+      "Broadband Integrated Network Device"
+    ],
+    "correctAnswer": "Berkeley Internet Name Domain"
+  },
+  {
+    "question": "Which of the following is NOT listed as a reason to use BIND?",
+    "options": [
+      "Offers extensive customization for zone files.",
+      "Suitable for managing internal networks (split-horizon DNS).",
+      "Supports advanced DNS features like delegation and failover.",
+      "It is the only open-source DNS server available."
+    ],
+    "correctAnswer": "It is the only open-source DNS server available."
+  },
+  {
+    "question": "Before installing BIND, which command is recommended to update and upgrade packages on Ubuntu?",
+    "options": [
+      "apt install bind9",
+      "systemctl status bind9",
+      "sudo apt update && sudo apt upgrade -y",
+      "named-checkconf"
+    ],
+    "correctAnswer": "sudo apt update && sudo apt upgrade -y"
+  },
+  {
+    "question": "After installing BIND, how do you verify if the bind9 service is running?",
+    "options": [
+      "sudo systemctl stop bind9",
+      "sudo systemctl enable bind9",
+      "sudo systemctl status bind9",
+      "sudo named-checkzone"
+    ],
+    "correctAnswer": "sudo systemctl status bind9"
+  },
+  {
+    "question": "Which file specifies BIND's global configuration settings?",
+    "options": [
+      "/etc/bind/named.conf.local",
+      "/etc/bind/zones/db.lab.local",
+      "/etc/bind/named.conf.options",
+      "/etc/resolv.conf"
+    ],
+    "correctAnswer": "/etc/bind/named.conf.options"
+  },
+  {
+    "question": "In named.conf.options, what do the forwarders entries (e.g., 8.8.8.8; 1.1.1.1;) specify?",
+    "options": [
+      "Local IP addresses of the DNS server.",
+      "Upstream DNS servers used for resolving queries outside of local zones.",
+      "IP addresses from which queries are allowed.",
+      "The directory for cache files."
+    ],
+    "correctAnswer": "Upstream DNS servers used for resolving queries outside of local zones."
+  },
+  {
+    "question": "What is the purpose of allow-query { any; }; in named.conf.options?",
+    "options": [
+      "To disable all DNS queries.",
+      "To allow DNS queries only from the local machine.",
+      "To permit DNS queries from any IP address.",
+      "To restrict queries to a specific subnet."
+    ],
+    "correctAnswer": "To permit DNS queries from any IP address."
+  },
+  {
+    "question": "Which file is used to define custom DNS zones for domains like lab.local?",
+    "options": [
+      "/etc/bind/named.conf.options",
+      "/etc/bind/named.conf.local",
+      "/etc/resolv.conf",
+      "/var/cache/bind"
+    ],
+    "correctAnswer": "/etc/bind/named.conf.local"
+  },
+  {
+    "question": "What is the primary function of a forward lookup zone?",
+    "options": [
+      "To map IP addresses to hostnames.",
+      "To allow hostname-to-IP resolution.",
+      "To define DNSSEC settings.",
+      "To store BIND's cache files."
+    ],
+    "correctAnswer": "To allow hostname-to-IP resolution."
+  },
+  {
+    "question": "In an SOA record, what is the purpose of the serial number (e.g., 2025011501)?",
+    "options": [
+      "It defines the Time-to-Live for records.",
+      "It specifies the primary nameserver.",
+      "It is incremented for each zone file change to indicate updates.",
+      "It defines the retry interval."
+    ],
+    "correctAnswer": "It is incremented for each zone file change to indicate updates."
+  },
+  {
+    "question": "Which type of DNS record is used in a reverse zone file to map IP addresses back to hostnames?",
+    "options": [
+      "A Record",
+      "NS Record",
+      "SOA Record",
+      "PTR Record"
+    ],
+    "correctAnswer": "PTR Record"
+  },
+  {
+    "question": "What does $TTL 3600 define in a zone file?",
+    "options": [
+      "The total number of records in the file.",
+      "The Time-to-Live in seconds for all records, controlling caching.",
+      "The port number for DNS queries.",
+      "The refresh interval for secondary servers."
+    ],
+    "correctAnswer": "The Time-to-Live in seconds for all records, controlling caching."
+  },
+  {
+    "question": "After modifying BIND configuration, which command should be used to check its syntax for errors?",
+    "options": [
+      "sudo systemctl restart bind9",
+      "sudo named-checkconf",
+      "sudo named-checkzone",
+      "sudo dns-test"
+    ],
+    "correctAnswer": "sudo named-checkconf"
+  },
+  {
+    "question": "In the SOA record example, what indicates the primary nameserver?",
+    "options": [
+      "admin.lab.local.",
+      "ns.lab.local.",
+      "2025011501",
+      "3600 (the first 3600)"
+    ],
+    "correctAnswer": "ns.lab.local."
+  },
+  {
+    "question": "To test the new DNS server from a client machine, what IP address should the client's resolver be set to?",
+    "options": [
+      "8.8.8.8",
+      "1.1.1.1",
+      "127.0.0.1",
+      "192.168.180.226"
+    ],
+    "correctAnswer": "192.168.180.226"
+  },
+  {
+    "question": "What does recursion yes; in named.conf.options enable?",
+    "options": [
+      "Disables all recursive queries.",
+      "Allows the server to resolve non-authoritative domains by querying other DNS servers.",
+      "Ensures DNSSEC validation.",
+      "Prevents false advertising of non-existent domains."
+    ],
+    "correctAnswer": "Allows the server to resolve non-authoritative domains by querying other DNS servers."
+  },
+  {
+    "question": "Where is the forward zone file for lab.local (e.g., db.lab.local) typically stored as per the guide?",
+    "options": [
+      "/etc/bind/",
+      "/var/cache/bind/",
+      "/etc/bind/zones/",
+      "/home/user/"
+    ],
+    "correctAnswer": "/etc/bind/zones/"
+  }
+]

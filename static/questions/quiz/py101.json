@@ -1,0 +1,172 @@
+[
+  {
+    "question": "Python is described as a high-level, interpreted language known for its:",
+    "options": [
+      "Complexity and rigidity",
+      "Simplicity and readability",
+      "Low-level compilation",
+      "Proprietary nature"
+    ],
+    "correctAnswer": "Simplicity and readability"
+  },
+  {
+    "question": "According to the text, Python serves as the backbone for a myriad of applications, including:",
+    "options": [
+      "Game console development only",
+      "Web development and scientific computing",
+      "Hardware engineering and operating systems",
+      "Only embedded systems"
+    ],
+    "correctAnswer": "Web development and scientific computing"
+  },
+  {
+    "question": "To begin your Python journey, the blog post instructs users to download the latest version of Python from:",
+    "options": [
+      "A third-party software repository",
+      "The official Python realm (website)",
+      "An app store",
+      "A specific integrated development environment (IDE)"
+    ],
+    "correctAnswer": "The official Python realm (website)"
+  },
+  {
+    "question": "If you have a Python script file named `hello.py`, what command is used to invoke it?",
+    "options": [
+      "`run hello.py`",
+      "`execute hello.py`",
+      "`python hello.py`",
+      "`start hello.py`"
+    ],
+    "correctAnswer": "`python hello.py`"
+  },
+  {
+    "question": "What is the sacred \"Hello, Python!\" incantation mentioned in the blog post?",
+    "options": [
+      "`print \"Hello, Python!\"`",
+      "`display(\"Hello, Python!\")`",
+      "`console.log(\"Hello, Python!\")`",
+      "`print(\"Hello, Python!\")`"
+    ],
+    "correctAnswer": "`print(\"Hello, Python!\")`"
+  },
+  {
+    "question": "In Python, what do \"Integers\" represent according to the provided table?",
+    "options": [
+      "Decimal numbers",
+      "Textual incantations",
+      "Whole numbers",
+      "Ordered collections of items"
+    ],
+    "correctAnswer": "Whole numbers"
+  },
+  {
+    "question": "Which of the following is an example of a \"Float\" data type given in the text?",
+    "options": [
+      "`42`",
+      "`\"Hello, Python!\"`",
+      "`[1, 2, 3]`",
+      "`3.14`"
+    ],
+    "correctAnswer": "`3.14`"
+  },
+  {
+    "question": "What is the description for \"Strings\" data type in the provided Python data types table?",
+    "options": [
+      "Whole numbers",
+      "Decimal numbers",
+      "Textual incantations",
+      "Key-value scrolls"
+    ],
+    "correctAnswer": "Textual incantations"
+  },
+  {
+    "question": "An example of a \"List\" data type given in the blog post is:",
+    "options": [
+      "`{\"name\": \"John\", \"age\": 30}`",
+      "`\"Hello, Python!\"`",
+      "`[1, 2, 3]`",
+      "`42`"
+    ],
+    "correctAnswer": "`[1, 2, 3]`"
+  },
+  {
+    "question": "\"Dictionaries\" are described as what type of collection in the text?",
+    "options": [
+      "Ordered collections of items",
+      "Whole numbers",
+      "Key-value scrolls",
+      "Textual incantations"
+    ],
+    "correctAnswer": "Key-value scrolls"
+  },
+  {
+    "question": "Which statements serve as the compass guiding your journey in Python's maze of possibilities for control flow?",
+    "options": [
+      "`start`, `stop`, `pause`",
+      "`def`, `return`",
+      "`import`, `from`",
+      "`if`, `elif`, `else`"
+    ],
+    "correctAnswer": "`if`, `elif`, `else`"
+  },
+  {
+    "question": "In Python's magical library, functions are described as the enchanted spells of:",
+    "options": [
+      "Debugging",
+      "Compilation",
+      "Reusability",
+      "Installation"
+    ],
+    "correctAnswer": "Reusability"
+  },
+  {
+    "question": "Based on the example provided, how is a greeting function named `greet` defined to accept a `name`?",
+    "options": [
+      "`function greet(name):`",
+      "`def greet(name):`",
+      "`create function greet name:`",
+      "`greet_function(name):`"
+    ],
+    "correctAnswer": "`def greet(name):`"
+  },
+  {
+    "question": "To invoke the `greet` function crafted in the example with the argument \"Apprentice\", which command would you use?",
+    "options": [
+      "`call greet(\"Apprentice\")`",
+      "`greet(\"Apprentice\")`",
+      "`run greet Apprentice`",
+      "`execute greet(\"Apprentice\")`"
+    ],
+    "correctAnswer": "`greet(\"Apprentice\")`"
+  },
+  {
+    "question": "Which of the following are mentioned as advanced topics for further exploration in Python?",
+    "options": [
+      "Basic arithmetic and string concatenation",
+      "Object-oriented programming and libraries like NumPy",
+      "Installing the Python interpreter",
+      "Writing \"Hello, Python!\" scripts"
+    ],
+    "correctAnswer": "Object-oriented programming and libraries like NumPy"
+  },
+  {
+    "question": "Python is often hailed as the \"Swiss Army knife\" of programming languages due to its:",
+    "options": [
+      "Limited specialized functions",
+      "Fixed and unchangeable structure",
+      "Versatility and wide range of applications",
+      "High cost and complexity"
+    ],
+    "correctAnswer": "Versatility and wide range of applications"
+  },
+  {
+    "question": "What does it mean for Python to be an \"interpreted language\" as stated in the text?",
+    "options": [
+      "It requires manual translation before execution.",
+      "Its code is executed directly without prior compilation into machine code.",
+      "It only runs on specific proprietary hardware.",
+      "It compiles into an executable binary file before running."
+    ],
+    "correctAnswer": "Its code is executed directly without prior compilation into machine code."
+  }
+]

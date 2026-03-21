@@ -1,0 +1,82 @@
+[
+  {
+    "question": "If you are using SQLMap to test a target URL and you need to bypass a WAF using a specific tamper script, which flag do you append?",
+    "correctAnswer": "--tamper"
+  },
+  {
+    "question": "When performing a UNION-based SQL injection, what is the exact SQL clause used to determine the number of columns in the original query by incrementing integers?",
+    "correctAnswer": "ORDER BY"
+  },
+  {
+    "question": "In a blind time-based SQL injection attack against a PostgreSQL database, what function do you inject to force a 10-second delay?",
+    "correctAnswer": "pg_sleep(10)"
+  },
+  {
+    "question": "If you are conducting a blind Boolean-based SQL injection and need to confirm if the first letter of the database name starts with 's', what SQL keyword do you use to compare the substring?",
+    "correctAnswer": "SUBSTRING"
+  },
+  {
+    "question": "To perform an out-of-band SQL injection on an MSSQL server, which stored procedure is commonly used to trigger a DNS lookup to an attacker-controlled domain?",
+    "correctAnswer": "master..xp_dirtree"
+  },
+  {
+    "question": "When analyzing a web request in Burp Suite for potential SQL injection, which specific HTTP header is often modified if you suspect the application logs the user's origin?",
+    "correctAnswer": "X-Forwarded-For"
+  },
+  {
+    "question": "If you need to identify the current database user in MySQL via an injected query, which function do you call?",
+    "correctAnswer": "user()"
+  },
+  {
+    "question": "When using SQLMap, which flag would you use to specify that you want to dump the entire contents of the 'users' table?",
+    "correctAnswer": "-D <database> -T users --dump"
+  },
+  {
+    "question": "In a scenario where you have confirmed a UNION-based vulnerability, what is the command to list all database names in MySQL using the information_schema?",
+    "correctAnswer": "SELECT schema_name FROM information_schema.schemata"
+  },
+  {
+    "question": "If you are testing for SQL injection and the application uses a character filter that blocks spaces, what character can you use as a substitute in MySQL?",
+    "correctAnswer": "/**/"
+  },
+  {
+    "question": "Which specific configuration setting in a PHP application, when enabled, automatically escapes input characters (now deprecated) and historically mitigated basic SQL injection?",
+    "correctAnswer": "magic_quotes_gpc"
+  },
+  {
+    "question": "In the context of database hardening, what is the specific term for the principle of restricting a database user account to only the tables and operations necessary for the application?",
+    "correctAnswer": "Least Privilege"
+  },
+  {
+    "question": "Which SQL command is used to combine the result sets of two or more SELECT statements into a single result set, essential for UNION-based injection?",
+    "correctAnswer": "UNION"
+  },
+  {
+    "question": "When attempting to identify the database version in an Oracle database via injection, which system view is queried?",
+    "correctAnswer": "v$version"
+  },
+  {
+    "question": "What is the primary SQL command used to inject a comment sequence in MySQL to truncate the remainder of an original query?",
+    "correctAnswer": "-- "
+  },
+  {
+    "question": "Which specific HTTP method is most commonly targeted for SQL injection when the payload is sent in the body of the request?",
+    "correctAnswer": "POST"
+  },
+  {
+    "question": "In PostgreSQL, which system catalog is equivalent to MySQL's 'information_schema' for querying database metadata?",
+    "correctAnswer": "pg_catalog"
+  },
+  {
+    "question": "What is the specific name of the attack where an application is vulnerable to SQL injection, but the attacker cannot see the output on the page and must rely on side-channel analysis?",
+    "correctAnswer": "Blind SQL Injection"
+  },
+  {
+    "question": "When using SQLMap, which flag is used to automatically follow redirects during the exploitation process?",
+    "correctAnswer": "--redirect-follow"
+  },
+  {
+    "question": "Which SQL operator is used to test for a pattern match in a WHERE clause, often used in blind SQL injection to brute-force data character by character?",
+    "correctAnswer": "LIKE"
+  }
+]

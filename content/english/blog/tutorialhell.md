@@ -8,6 +8,10 @@ author: "Sajan Luitel"
 tags: ["Tutorial Hell", "Programming", "Coding"]
 date: 2023-09-21T22:18:55+05:45
 draft: false
+quiz:
+  code: tutorialhell
+wordfill:
+  code: tutorialhell
 ---
 
 ## Defining Tutorial Hell

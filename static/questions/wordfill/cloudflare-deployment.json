@@ -1,0 +1,82 @@
+[
+  {
+    "question": "A static site is a website where the content is _______________ and served as-is to the user.",
+    "correctAnswer": "pre-rendered"
+  },
+  {
+    "question": "Static sites are typically faster and more _______________ than dynamic websites.",
+    "correctAnswer": "secure"
+  },
+  {
+    "question": "The entire static site is pre-built and stored as HTML, CSS, and _______________ files.",
+    "correctAnswer": "JavaScript"
+  },
+  {
+    "question": "Cloudflare Pages allows you to host your static sites for _______________.",
+    "correctAnswer": "free"
+  },
+  {
+    "question": "Cloudflare Pages automatically deploys your site whenever you push changes to your _______________ repository.",
+    "correctAnswer": "Git"
+  },
+  {
+    "question": "Cloudflare Pages serves your static site from its global _______________.",
+    "correctAnswer": "CDN"
+  },
+  {
+    "question": "Cloudflare Pages provides free _______________ support, so your site can be served securely.",
+    "correctAnswer": "SSL/HTTPS"
+  },
+  {
+    "question": "The free Cloudflare Pages plan has a monthly _______________ limit of 100GB.",
+    "correctAnswer": "bandwidth"
+  },
+  {
+    "question": "The free Cloudflare Pages plan comes with a monthly _______________ limit of 500 minutes.",
+    "correctAnswer": "build minutes"
+  },
+  {
+    "question": "For the free Cloudflare Pages plan, your static site must be in a _______________ repository on GitHub or GitLab.",
+    "correctAnswer": "public"
+  },
+  {
+    "question": "During project configuration, Cloudflare Pages will try to automatically detect the type of _______________ your site is built with.",
+    "correctAnswer": "framework"
+  },
+  {
+    "question": "If deployment fails due to code issues, you can fix them and then manually _______________ the deployment.",
+    "correctAnswer": "retry"
+  },
+  {
+    "question": "_______________ is a fast and modern static site generator written in Go.",
+    "correctAnswer": "Hugo"
+  },
+  {
+    "question": "_______________ is a popular static site generator written in Ruby, often used for blogs.",
+    "correctAnswer": "Jekyll"
+  },
+  {
+    "question": "Netlify's free plan comes with 300 _______________ per month.",
+    "correctAnswer": "build minutes"
+  },
+  {
+    "question": "GitHub Pages is a free static site hosting service provided by _______________.",
+    "correctAnswer": "GitHub"
+  },
+  {
+    "question": "AWS offers a combination of S3 (Simple Storage Service) and _______________ (Content Delivery Network) for hosting static sites.",
+    "correctAnswer": "CloudFront"
+  },
+  {
+    "question": "_______________ is a technique where the server generates the HTML pages before sending them to the client's browser.",
+    "correctAnswer": "Server-side Rendering (SSR)"
+  },
+  {
+    "question": "A _______________ is a network of servers distributed across multiple locations to deliver content and reduce latency.",
+    "correctAnswer": "Content Delivery Network"
+  },
+  {
+    "question": "Cloudflare Pages is an excellent choice for developers and website owners looking to deploy their projects quickly and _______________.",
+    "correctAnswer": "cost-effectively"
+  }
+]

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "til/for ppt.md",
+                "file": "blog/nmap-for-cpts.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "for ppt"
+              "title": "nmap-for-cpts"
             }
           }
         ]
@@ -110,8 +110,8 @@
             "state": {
               "type": "calendar",
               "state": {},
-              "icon": "lucide-file",
-              "title": "Plugin no longer active"
+              "icon": "lucide-ghost",
+              "title": "calendar"
             }
           },
           {
@@ -221,10 +221,12 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -243,6 +245,26 @@
   },
   "active": "a46e8132feec0bb1",
   "lastOpenFiles": [
+    "checklists/Recon/nmap-network-enum.md",
+    "cheatsheets/Nmap.md",
+    "blog/nmap-for-cpts.md",
+    "checklists/Recon/_index.md",
+    "checklists/HackTheBox/htb-cap.md",
+    "checklists/HackTheBox/_index.md",
+    "checklists/_index.md",
+    "checklists/TryHackMe/machine1.md",
+    "checklists/TryHackMe/_index.md",
+    "checklists/HackTheBox/machine2.md",
+    "blog/Cap-HTB.md",
+    "checklists/f5_software_update.md",
+    "checklists/ctfs.md",
+    "checklists/Recon",
+    "til/automate-nmap-port-copy-to-clipboard.md",
+    "til/password-found-in-breach.md",
+    "cheatsheets/Docker.md",
+    "blog/bigip-logging.md",
+    "blog/_index.md",
+    "blog/bigip-awaf.md",
     "images/Pasted image 20250530172551.png",
     "images",
     "til/git-interactive-rebase.md",
@@ -252,28 +274,10 @@
     "cheatsheets/nginx/nginx-high-availability.md",
     "cheatsheets/nginx/nginx-logging-monitoring.md",
     "cheatsheets/nginx/nginx-security.md",
-    "cheatsheets/nginx/nginx-load-balancer.md",
-    "cheatsheets/nginx/nginx-api-gateway.md",
-    "cheatsheets/nginx/nginx-reverse-proxy.md",
-    "cheatsheets/Docker.md",
-    "blog/dns103.md",
-    "Untitled.md",
-    "blog/dns102.md",
-    "blog/bigip-features.md",
-    "images.md",
-    "blog/dns101.md",
-    "blog/f5101.md",
     "pool_node_vs.png",
-    "blog/half-proxy.md",
     "blog/half-proxy.md~",
     "halfproxy.png",
-    "blog/burpsuite-basics.md",
-    "1. Project/Direct Server Return (DSR).md",
-    "1. Project/Half Proxy.md",
-    "1. Project/Network Layer.md",
     "3. Resource/F5 101 Networks Application Delivery Fundamentals.pdf",
-    "1. Project/Data Link Layer.md",
-    "1. Project/Virtual LAN ( VLAN ).md",
     "3. Resource/Eric_Mitchell_Channel_SE_East_US_and_Fed.pdf",
     "3. Resource/Study_Notes_F5_101_Application_Delivery.pdf",
     "images/trunk_port_passage.png",
@@ -284,10 +288,8 @@
     "3. Resource/f5.networks.selftestengine.101.simulations.2022-feb-24.by.jonathan.176q.vce.pdf",
     "4. Archives",
     "2. Area",
-    "3. Resource/F5_101_Notes.docx",
     "images/android_dex_odex.png",
     "images/wireshark_tcp_syn_set.png",
-    "images/wireshark_tcp_syn1.png",
-    "images/wireshark_knowcommand.png"
+    "images/wireshark_tcp_syn1.png"
   ]
 }

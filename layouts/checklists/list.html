@@ -21,7 +21,7 @@
         <div class="h-px bg-border dark:bg-darkmode-border flex-grow"></div>
       </div>
       <div class="row mb-16">
-        <!-- HackTheBox Folder -->
+        {{ range .Sections }}
         <div class="md:col-6 lg:col-4 mb-8">
           <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-primary dark:border-darkmode-primary group">
             <div class="flex items-center justify-center mb-6">
@@ -30,38 +30,18 @@
               </div>
             </div>
             <h4 class="mb-3 text-xl font-bold group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors duration-300">
-              <a href="/checklists/hackthebox/" class="block">HackTheBox</a>
+              <a href="{{ .RelPermalink }}" class="block">{{ .Title }}</a>
             </h4>
-            <p class="mb-4 text-text dark:text-darkmode-text">Walkthroughs and guides for HackTheBox machines</p>
+            <p class="mb-4 text-text dark:text-darkmode-text">{{ .Params.description | default (printf "Checklists and guides for %s" .Title) }}</p>
             <div class="mt-6">
-              <a href="/checklists/hackthebox/" class="inline-flex items-center text-primary dark:text-darkmode-primary hover:underline">
+              <a href="{{ .RelPermalink }}" class="inline-flex items-center text-primary dark:text-darkmode-primary hover:underline">
                 <span>Browse Contents</span>
                 <i class="fas fa-arrow-right ml-2 text-sm"></i>
               </a>
             </div>
           </div>
         </div>
-
-        <!-- TryHackMe Folder -->
-        <div class="md:col-6 lg:col-4 mb-8">
-          <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-primary dark:border-darkmode-primary group">
-            <div class="flex items-center justify-center mb-6">
-              <div class="w-20 h-20 flex items-center justify-center rounded-full bg-primary bg-opacity-10 dark:bg-opacity-20 group-hover:bg-opacity-20 dark:group-hover:bg-opacity-30 transition-all duration-300">
-                <i class="fas fa-folder-open text-4xl text-primary dark:text-darkmode-primary"></i>
-              </div>
-            </div>
-            <h4 class="mb-3 text-xl font-bold group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors duration-300">
-              <a href="/checklists/tryhackme/" class="block">TryHackMe</a>
-            </h4>
-            <p class="mb-4 text-text dark:text-darkmode-text">Walkthroughs and guides for TryHackMe machines</p>
-            <div class="mt-6">
-              <a href="/checklists/tryhackme/" class="inline-flex items-center text-primary dark:text-darkmode-primary hover:underline">
-                <span>Browse Contents</span>
-                <i class="fas fa-arrow-right ml-2 text-sm"></i>
-              </a>
-            </div>
-          </div>
-        </div>
+        {{ end }}
       </div>
     </div>
 

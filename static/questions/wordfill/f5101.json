@@ -1,0 +1,82 @@
+[
+  {
+    "question": "_________ is a family of products from F5 Networks that deliver security, performance, and availability for enterprise applications.",
+    "correctAnswer": "BIG-IP"
+  },
+  {
+    "question": "The BIG-IP component that helps with load balancing and traffic management is called _________.",
+    "correctAnswer": "Local Traffic Manager (LTM)"
+  },
+  {
+    "question": "_________ is the BIG-IP component that protects applications against Layer 7 attacks.",
+    "correctAnswer": "Application Security Manager (ASM)"
+  },
+  {
+    "question": "User access via policies is managed and secured by the BIG-IP component known as _________.",
+    "correctAnswer": "Access Policy Manager (APM)"
+  },
+  {
+    "question": "To ensure optimal user experience by managing traffic across data centers, BIG-IP uses the _________ component.",
+    "correctAnswer": "Global Traffic Manager (GTM)"
+  },
+  {
+    "question": "BIG-IP operates as a _________ system, meaning it creates separate connections between the client and the server.",
+    "correctAnswer": "full-proxy"
+  },
+  {
+    "question": "_________ is a load balancing technique that sends traffic to the server with the fewest active connections.",
+    "correctAnswer": "Least Connections"
+  },
+  {
+    "question": "When BIG-IP acts as an intermediary between the client and backend servers, handling requests and distributing them, it is performing the role of a _________.",
+    "correctAnswer": "reverse proxy"
+  },
+  {
+    "question": "A _________ acts on behalf of internal users, masking their IP addresses and applying policies to outgoing traffic.",
+    "correctAnswer": "forward proxy"
+  },
+  {
+    "question": "For SSL Offloading, BIG-IP decrypts incoming SSL traffic and forwards it as _________ to the backend servers.",
+    "correctAnswer": "plaintext"
+  },
+  {
+    "question": "The first step in activating a BIG-IP license is to generate a _________ from the system.",
+    "correctAnswer": "dossier"
+  },
+  {
+    "question": "The _________ provisioning level in BIG-IP allocates only what\u2019s needed and dynamically increases resources as required.",
+    "correctAnswer": "Nominal"
+  },
+  {
+    "question": "BIG-IP operates across layers 2 to 7 of the _________ Model.",
+    "correctAnswer": "OSI"
+  },
+  {
+    "question": "To logically segment a physical network and isolate traffic, BIG-IP uses _________.",
+    "correctAnswer": "VLANs (Virtual LANs)"
+  },
+  {
+    "question": "The _________ protocol resolves IP addresses to MAC addresses for Layer 2 communication.",
+    "correctAnswer": "ARP (Address Resolution Protocol)"
+  },
+  {
+    "question": "The technology used to translate private IP addresses to public IP addresses and vice versa is known as _________.",
+    "correctAnswer": "NAT (Network Address Translation)"
+  },
+  {
+    "question": "The component responsible for handling all traffic that passes through the BIG-IP system, bypassing the general-purpose Linux kernel for higher performance, is the _________.",
+    "correctAnswer": "TMM"
+  },
+  {
+    "question": "The operating system that controls how traffic is managed through various modules in BIG-IP is known as _________.",
+    "correctAnswer": "TMOS (Traffic Management Operating System)"
+  },
+  {
+    "question": "A _________ in F5 BIG-IP is an IP address and port combination that acts as an entry point for client requests.",
+    "correctAnswer": "virtual server"
+  },
+  {
+    "question": "To ensure that clients are consistently routed to the same server throughout their session, BIG-IP uses _________.",
+    "correctAnswer": "Persistence"
+  }
+]

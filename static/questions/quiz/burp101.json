@@ -1,0 +1,182 @@
+[
+  {
+    "question": "What is the primary function of BurpSuite?",
+    "options": [
+      "Developing web applications",
+      "Database management",
+      "Web application security testing",
+      "Network infrastructure monitoring"
+    ],
+    "correctAnswer": "Web application security testing"
+  },
+  {
+    "question": "Who developed BurpSuite?",
+    "options": [
+      "Google",
+      "Microsoft",
+      "PortSwigger",
+      "OWASP"
+    ],
+    "correctAnswer": "PortSwigger"
+  },
+  {
+    "question": "BurpSuite acts as a proxy between which two entities?",
+    "options": [
+      "Operating system and hardware",
+      "Web browser and target web application",
+      "Database and web server",
+      "Router and ISP"
+    ],
+    "correctAnswer": "Web browser and target web application"
+  },
+  {
+    "question": "Which BurpSuite tool is used to crawl and map the content and functionality of a website?",
+    "options": [
+      "Intruder",
+      "Scanner",
+      "Spider",
+      "Repeater"
+    ],
+    "correctAnswer": "Spider"
+  },
+  {
+    "question": "The BurpSuite \"Intruder\" tool is designed for what purpose?",
+    "options": [
+      "Manually modifying and resending requests",
+      "Analyzing the randomness of session tokens",
+      "Automating customized attacks to test for vulnerabilities",
+      "Encoding and decoding data"
+    ],
+    "correctAnswer": "Automating customized attacks to test for vulnerabilities"
+  },
+  {
+    "question": "If you want to manually modify and resend a specific HTTP request multiple times in BurpSuite, which tool would you use?",
+    "options": [
+      "Scanner",
+      "Repeater",
+      "Comparer",
+      "Sequencer"
+    ],
+    "correctAnswer": "Repeater"
+  },
+  {
+    "question": "According to the blog post, which of the following is a method for installing BurpSuite on Windows?",
+    "options": [
+      "Using 'apt-get install burpsuite'",
+      "Downloading an installer or using 'winget'",
+      "Compiling from source code",
+      "Running './burpsuite_community' script after extraction"
+    ],
+    "correctAnswer": "Downloading an installer or using 'winget'"
+  },
+  {
+    "question": "For most Linux distributions, if BurpSuite is not in official repositories, what is the general installation method mentioned?",
+    "options": [
+      "Using Homebrew",
+      "Downloading and extracting files, then running a script",
+      "Installing via the Microsoft Store",
+      "Using 'pacman -S burpsuite' directly"
+    ],
+    "correctAnswer": "Downloading and extracting files, then running a script"
+  },
+  {
+    "question": "Is BurpSuite present in the official Debian/Ubuntu repositories according to the blog post?",
+    "options": [
+      "Yes, it can be installed using 'apt-get'",
+      "No, users need to download and extract files",
+      "Only the Pro version is available",
+      "It's available as a snap package"
+    ],
+    "correctAnswer": "No, users need to download and extract files"
+  },
+  {
+    "question": "How can BurpSuite be built and installed on Arch Linux, according to the text?",
+    "options": [
+      "Using 'dnf install burpsuite'",
+      "From the Arch User Repository (AUR)",
+      "Directly from the official Arch repository",
+      "Via the 'winget' command"
+    ],
+    "correctAnswer": "From the Arch User Repository (AUR)"
+  },
+  {
+    "question": "What is the recommended first step after launching Burp Suite to enable interception of web traffic?",
+    "options": [
+      "Exploring different modules",
+      "Consulting the official documentation",
+      "Setting up your browser to use Burp Suite as a proxy",
+      "Customizing settings and target scope"
+    ],
+    "correctAnswer": "Setting up your browser to use Burp Suite as a proxy"
+  },
+  {
+    "question": "Which of the following is NOT listed as a reason to use BurpSuite?",
+    "options": [
+      "Comprehensive Security Testing",
+      "Developing new browser extensions",
+      "Interception and Modification of traffic",
+      "Vulnerability Detection"
+    ],
+    "correctAnswer": "Developing new browser extensions"
+  },
+  {
+    "question": "BurpSuite's powerful scanner can detect which types of vulnerabilities?",
+    "options": [
+      "Network hardware failures",
+      "Operating system kernel exploits",
+      "SQL injection, XSS, insecure deserialization",
+      "Email server misconfigurations"
+    ],
+    "correctAnswer": "SQL injection, XSS, insecure deserialization"
+  },
+  {
+    "question": "What is the open-source alternative to BurpSuite mentioned in the blog post?",
+    "options": [
+      "Nmap",
+      "Wireshark",
+      "OWASP ZAP",
+      "Metasploit"
+    ],
+    "correctAnswer": "OWASP ZAP"
+  },
+  {
+    "question": "Who developed OWASP ZAP?",
+    "options": [
+      "PortSwigger",
+      "The OWASP community",
+      "Microsoft",
+      "Google"
+    ],
+    "correctAnswer": "The OWASP community"
+  },
+  {
+    "question": "The blog post emphasizes that both BurpSuite and OWASP ZAP should be used responsibly and with what?",
+    "options": [
+      "A high-speed internet connection",
+      "Advanced coding knowledge",
+      "Proper authorization",
+      "A paid subscription"
+    ],
+    "correctAnswer": "Proper authorization"
+  },
+  {
+    "question": "Which BurpSuite tool is used to analyze the randomness of session tokens?",
+    "options": [
+      "Decoder/Encoder",
+      "Comparer",
+      "Sequencer",
+      "Proxy"
+    ],
+    "correctAnswer": "Sequencer"
+  },
+  {
+    "question": "What is a key capability provided by BurpSuite's Proxy tool?",
+    "options": [
+      "Automating customized attacks",
+      "Crawling and mapping a website",
+      "Intercepting and modifying HTTP/HTTPS requests and responses",
+      "Scanning for various vulnerabilities"
+    ],
+    "correctAnswer": "Intercepting and modifying HTTP/HTTPS requests and responses"
+  }
+]

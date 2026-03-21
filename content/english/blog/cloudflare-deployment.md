@@ -12,6 +12,10 @@ buttons:
     url: "https://dash.cloudflare.com/"
   - label: "View Cloudflare Pages Documentation"
     url: "https://developers.cloudflare.com/pages/"
+quiz:
+  code: cloudflare-deployment
+wordfill:
+  code: cloudflare-deployment
 ---
 
 # Deploying a Static Site to Cloudflare Pages

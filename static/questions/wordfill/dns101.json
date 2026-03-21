@@ -1,0 +1,62 @@
+[
+  {
+    "question": "If you need to perform a DNS lookup for the 'A' record of 'suhesh.com.np' using the 'dig' utility and specify the Google Public DNS (8.8.8.8) as the resolver, what is the exact command?",
+    "correctAnswer": "dig @8.8.8.8 suhesh.com.np A"
+  },
+  {
+    "question": "When debugging DNS issues, what 'dig' flag would you append to the command to retrieve only the short form (just the IP address) of the response?",
+    "correctAnswer": "+short"
+  },
+  {
+    "question": "If you want to perform a zone transfer from a primary nameserver (ns1.example.com) for the domain 'example.com' using 'dig', what is the command?",
+    "correctAnswer": "dig axfr @ns1.example.com example.com"
+  },
+  {
+    "question": "You are troubleshooting a DNS issue and need to see the full header section and the TTL of the response in your 'dig' output. What flag do you use?",
+    "correctAnswer": "+noall +answer"
+  },
+  {
+    "question": "If you want to trace the entire delegation path from the root servers down to the authoritative server for 'suhesh.com.np', what 'dig' command do you use?",
+    "correctAnswer": "dig +trace suhesh.com.np"
+  },
+  {
+    "question": "To perform a reverse DNS lookup on the IP address '104.21.25.25' using the 'dig' tool, what is the required command syntax?",
+    "correctAnswer": "dig -x 104.21.25.25"
+  },
+  {
+    "question": "If you are using 'nslookup' in interactive mode and want to change the query type to search specifically for Mail Exchange (MX) records, what command do you type?",
+    "correctAnswer": "set type=mx"
+  },
+  {
+    "question": "When using 'dig' to query a specific DNS server, which option allows you to specify a non-standard port (e.g., 5353) for the query?",
+    "correctAnswer": "-p 5353"
+  },
+  {
+    "question": "Which DNS record type would you query if you wanted to find the canonical name alias for a given domain instead of its IP address?",
+    "correctAnswer": "CNAME"
+  },
+  {
+    "question": "If you suspect your DNS query is being truncated and you want to force the use of TCP instead of UDP in 'dig', what flag do you add?",
+    "correctAnswer": "+tcp"
+  },
+  {
+    "question": "What is the specific DNS record type used to store IPv6 addresses?",
+    "correctAnswer": "AAAA"
+  },
+  {
+    "question": "In the context of DNSSEC, which record type is used to store the hash of a DNSKEY record to establish a chain of trust?",
+    "correctAnswer": "DS"
+  },
+  {
+    "question": "Which protocol and port number does standard DNS traffic use for zone transfers between primary and secondary servers?",
+    "correctAnswer": "TCP/53"
+  },
+  {
+    "question": "What is the specific name of the file in a BIND DNS server configuration that contains the resource records for a specific zone?",
+    "correctAnswer": "zone file"
+  },
+  {
+    "question": "In the context of DNS load balancing, what is the term for the technique of returning multiple IP addresses for a single domain name in a round-robin fashion?",
+    "correctAnswer": "Round Robin DNS"
+  }
+]

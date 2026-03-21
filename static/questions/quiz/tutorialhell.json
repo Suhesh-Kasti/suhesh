@@ -1,0 +1,152 @@
+[
+  {
+    "question": "Which cognitive phenomenon describes the illusion of competence gained from following a tutorial without internalizing the underlying logic?",
+    "options": [
+      "The Dunning-Kruger effect",
+      "The Illusion of Competence",
+      "Confirmation bias",
+      "The Zeigarnik effect"
+    ],
+    "correctAnswer": "The Illusion of Competence"
+  },
+  {
+    "question": "When transitioning from passive tutorial consumption to active project-based learning, which methodology emphasizes building minimal viable features to solve specific problems?",
+    "options": [
+      "Waterfall model",
+      "Agile development",
+      "Lean Startup methodology",
+      "Test-Driven Development"
+    ],
+    "correctAnswer": "Lean Startup methodology"
+  },
+  {
+    "question": "Which pedagogical technique, often cited as a solution for 'tutorial hell', involves explaining technical concepts in simple terms to identify gaps in one's own understanding?",
+    "options": [
+      "The Feynman Technique",
+      "Active Recall",
+      "Spaced Repetition",
+      "Pair Programming"
+    ],
+    "correctAnswer": "The Feynman Technique"
+  },
+  {
+    "question": "In the context of software engineering, what is the primary technical disadvantage of relying solely on 'copy-paste' coding from tutorials?",
+    "options": [
+      "Increased compilation speed",
+      "Lack of mental model development regarding code architecture",
+      "Improved syntax memorization",
+      "Automatic refactoring of legacy code"
+    ],
+    "correctAnswer": "Lack of mental model development regarding code architecture"
+  },
+  {
+    "question": "Which learning strategy involves reviewing material at increasing intervals to combat the Ebbinghaus forgetting curve?",
+    "options": [
+      "Cramming",
+      "Spaced Repetition",
+      "Tutorial looping",
+      "Context switching"
+    ],
+    "correctAnswer": "Spaced Repetition"
+  },
+  {
+    "question": "What is the primary architectural benefit of utilizing a 'project-based' approach over a 'guided tutorial' approach in software development?",
+    "options": [
+      "Elimination of technical debt",
+      "Forced engagement with dependency management and debugging",
+      "Automatic documentation generation",
+      "Reduction in code complexity"
+    ],
+    "correctAnswer": "Forced engagement with dependency management and debugging"
+  },
+  {
+    "question": "When applying the 'Build a Learning Routine' principle, which neuroscientific process is being leveraged to solidify long-term memory?",
+    "options": [
+      "Synaptic pruning",
+      "Neuroplasticity",
+      "Myelination",
+      "Long-term potentiation"
+    ],
+    "correctAnswer": "Long-term potentiation"
+  },
+  {
+    "question": "What is the technical term for the state where a developer can follow instructions but fails to independently reproduce the solution when the environment changes?",
+    "options": [
+      "Syntax dependency",
+      "Procedural knowledge deficit",
+      "Environment abstraction failure",
+      "Semantic memory fragmentation"
+    ],
+    "correctAnswer": "Procedural knowledge deficit"
+  },
+  {
+    "question": "Which metric is most effective for measuring progress when escaping 'tutorial hell'?",
+    "options": [
+      "Number of tutorials watched",
+      "Hours spent reading documentation",
+      "Successfully implemented features in a custom codebase",
+      "Number of YouTube subscriptions to dev channels"
+    ],
+    "correctAnswer": "Successfully implemented features in a custom codebase"
+  },
+  {
+    "question": "How does 'teaching what you learn' technically enhance cognitive retention?",
+    "options": [
+      "By increasing sensory input",
+      "By requiring active retrieval and structural organization of knowledge",
+      "By reducing the complexity of the subject matter",
+      "By bypassing the prefrontal cortex"
+    ],
+    "correctAnswer": "By requiring active retrieval and structural organization of knowledge"
+  },
+  {
+    "question": "In the context of the 'Dijkstra-Parsons' model of programming comprehension, what is the most significant hurdle for learners in tutorial hell?",
+    "options": [
+      "Lacking syntax knowledge",
+      "Failing to link code semantics with mental models of program execution",
+      "Inability to use an IDE",
+      "Poor typing speed"
+    ],
+    "correctAnswer": "Failing to link code semantics with mental models of program execution"
+  },
+  {
+    "question": "Which version control practice is most recommended for learners breaking out of tutorial hell to track their independent progress?",
+    "options": [
+      "Committing only final code",
+      "Atomic commits with descriptive messages",
+      "Deleting the .git folder to start over",
+      "Using only main branch without branching"
+    ],
+    "correctAnswer": "Atomic commits with descriptive messages"
+  },
+  {
+    "question": "What is the technical risk of 'tutorial-driven development' regarding API usage?",
+    "options": [
+      "Over-reliance on deprecated library versions",
+      "Faster adoption of new features",
+      "Better security posture",
+      "Lower memory usage"
+    ],
+    "correctAnswer": "Over-reliance on deprecated library versions"
+  },
+  {
+    "question": "Which cognitive load theory aspect is most negatively impacted by 'tutorial hell'?",
+    "options": [
+      "Intrinsic load reduction",
+      "Germane load optimization",
+      "Extraneous load accumulation",
+      "Working memory expansion"
+    ],
+    "correctAnswer": "Extraneous load accumulation"
+  },
+  {
+    "question": "When moving from tutorials to real projects, which debugging strategy is most effective for building deep technical proficiency?",
+    "options": [
+      "Copying error messages into search engines",
+      "Systematic step-through debugging and stack trace analysis",
+      "Asking AI to rewrite the entire block",
+      "Deleting the code and finding a new tutorial"
+    ],
+    "correctAnswer": "Systematic step-through debugging and stack trace analysis"
+  }
+]

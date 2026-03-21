@@ -1,0 +1,152 @@
+[
+  {
+    "question": "In the TCP/IP model, which layer is primarily responsible for Medium Access Control (MAC) and framing?",
+    "options": [
+      "Application Layer",
+      "Transport Layer",
+      "Internet Layer",
+      "Link Layer"
+    ],
+    "correctAnswer": "Link Layer"
+  },
+  {
+    "question": "Which OSI layer is responsible for data encryption, decryption, and compression?",
+    "options": [
+      "Session Layer",
+      "Presentation Layer",
+      "Application Layer",
+      "Transport Layer"
+    ],
+    "correctAnswer": "Presentation Layer"
+  },
+  {
+    "question": "What is the primary difference between TCP and UDP at the Transport Layer?",
+    "options": [
+      "TCP is connectionless while UDP is connection-oriented",
+      "TCP provides reliable delivery while UDP prioritizes speed",
+      "UDP performs flow control while TCP does not",
+      "TCP operates at Layer 7 while UDP operates at Layer 3"
+    ],
+    "correctAnswer": "TCP provides reliable delivery while UDP prioritizes speed"
+  },
+  {
+    "question": "In the OSI model, which layer manages the establishment, maintenance, and termination of communication sessions?",
+    "options": [
+      "Transport Layer",
+      "Session Layer",
+      "Presentation Layer",
+      "Network Layer"
+    ],
+    "correctAnswer": "Session Layer"
+  },
+  {
+    "question": "Which protocol is explicitly mentioned as operating at the Application Layer for file transfers?",
+    "options": [
+      "SMTP",
+      "FTP",
+      "HTTP",
+      "SIP"
+    ],
+    "correctAnswer": "FTP"
+  },
+  {
+    "question": "Which layer of the OSI model is responsible for logical addressing and routing?",
+    "options": [
+      "Physical Layer",
+      "Data Link Layer",
+      "Network Layer",
+      "Transport Layer"
+    ],
+    "correctAnswer": "Network Layer"
+  },
+  {
+    "question": "Which of the following is a function performed at the TCP/IP Link Layer?",
+    "options": [
+      "Routing",
+      "Error detection",
+      "Session synchronization",
+      "End-to-end flow control"
+    ],
+    "correctAnswer": "Error detection"
+  },
+  {
+    "question": "What is the function of the Presentation Layer in the context of SSL/TLS?",
+    "options": [
+      "Routing packets",
+      "Providing encryption and decryption services",
+      "Managing connection sessions",
+      "Framing data for physical transmission"
+    ],
+    "correctAnswer": "Providing encryption and decryption services"
+  },
+  {
+    "question": "How does the TCP/IP model differ from the OSI model in terms of layer count?",
+    "options": [
+      "TCP/IP has 7, OSI has 4",
+      "TCP/IP has 4, OSI has 7",
+      "Both have 5",
+      "TCP/IP has 6, OSI has 7"
+    ],
+    "correctAnswer": "TCP/IP has 4, OSI has 7"
+  },
+  {
+    "question": "What is the purpose of MAC addresses in the Data Link Layer?",
+    "options": [
+      "Logical network identification",
+      "Physical hardware identification",
+      "Session synchronization",
+      "Application process identification"
+    ],
+    "correctAnswer": "Physical hardware identification"
+  },
+  {
+    "question": "Which field in an Ethernet frame is used for error detection?",
+    "options": [
+      "Source MAC address",
+      "Destination MAC address",
+      "Frame Check Sequence (FCS)",
+      "Payload"
+    ],
+    "correctAnswer": "Frame Check Sequence (FCS)"
+  },
+  {
+    "question": "What is the primary purpose of the 'Sliding Window' mechanism in the Transport Layer?",
+    "options": [
+      "Routing packets",
+      "Flow control",
+      "Data encryption",
+      "Physical signal modulation"
+    ],
+    "correctAnswer": "Flow control"
+  },
+  {
+    "question": "Which ICMP message type is used to report that a destination network is unreachable?",
+    "options": [
+      "Type 3",
+      "Type 8",
+      "Type 0",
+      "Type 11"
+    ],
+    "correctAnswer": "Type 3"
+  },
+  {
+    "question": "In BGP (Border Gateway Protocol), what is the function of the 'Keepalive' message?",
+    "options": [
+      "To update routing tables",
+      "To maintain the peering session",
+      "To encrypt data packets",
+      "To encapsulate frames"
+    ],
+    "correctAnswer": "To maintain the peering session"
+  },
+  {
+    "question": "What mechanism does ARP (Address Resolution Protocol) use to map IP addresses to MAC addresses?",
+    "options": [
+      "Broadcast requests",
+      "Unicast routing updates",
+      "Checksum validation",
+      "Session tokens"
+    ],
+    "correctAnswer": "Broadcast requests"
+  }
+]

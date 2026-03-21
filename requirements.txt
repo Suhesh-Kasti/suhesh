@@ -1,0 +1,4 @@
+python-frontmatter
+google-genai
+python-dotenv
+pydantic

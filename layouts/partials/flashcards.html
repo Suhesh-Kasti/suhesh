@@ -1,0 +1,20 @@
+<!-- Flashcards Game HTML -->
+<div id="flashcard-area" class="text-center my-4" style="text-align: center;">
+  <div id="flashcard-container" class="mx-auto rounded-lg shadow-lg bg-body dark:bg-darkmode-body border border-border dark:border-darkmode-border" style="max-width: 600px; min-height: 250px; cursor: pointer; transition: transform 0.6s; transform-style: preserve-3d; position: relative; margin-left: auto; margin-right: auto;" onclick="flipCard()">
+    
+    <!-- Front: Question -->
+    <div id="flashcard-front" class="p-6" style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; font-size: 1.2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem;">
+      <p id="flashcard-question-text" class="text-primary dark:text-darkmode-primary font-bold my-auto" style="margin-top: auto; margin-bottom: auto; font-weight: bold;">Click to start Flashcards!</p>
+      <span class="text-light dark:text-darkmode-light text-sm mt-auto" style="margin-top: auto; font-size: 0.875rem;">Click to reveal answer</span>
+    </div>
+
+    <!-- Back: Answer -->
+    <div id="flashcard-back" class="p-6 bg-theme-light dark:bg-darkmode-theme-light rounded-lg" style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; transform: rotateY(180deg); font-size: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem;">
+      <h3 class="text-h4 font-bold text-text dark:text-darkmode-text mb-2" style="margin-bottom: 0.5rem; font-weight: bold;">Answer:</h3>
+      <p id="flashcard-answer-text" class="text-primary dark:text-darkmode-primary font-bold my-auto" style="margin-top: auto; margin-bottom: auto; font-weight: bold;"></p>
+      <button class="btn btn-primary btn-sm mt-auto" style="margin-top: auto;" onclick="nextFlashcard(event)">Next Question &rarr;</button>
+    </div>
+
+  </div>
+  <p class="mt-3 text-light dark:text-darkmode-light text-sm" style="margin-top: 1rem; font-size: 0.875rem;">Card <span id="flashcard-current">0</span> of <span id="flashcard-total">0</span></p>
+</div>

@@ -119,10 +119,10 @@ def check_password_breach(password):
     # Check if our suffix is in the list
     for h, count in hashes:
         if h == suffix:
-            print(f"⚠️  Password found in breaches {count} times!")
+            print(f"Password found in breaches {count} times!")
             return
 
-    print("✅ Password not found in any known breaches.")
+    print("Password not found in any known breaches.")
 
 # Example usage
 if __name__ == "__main__":
@@ -139,7 +139,7 @@ Enter your password: password123
 Password hash: 482C811DA5D5B4BC6D497FFA98491E38F4F5F9F
 Sending prefix: 482C8
 Received 527 hashes starting with 482C8
-⚠️  Password found in breaches 140,000+ times!
+Password found in breaches 140,000+ times!
 ```
 
 ## Key Takeaway

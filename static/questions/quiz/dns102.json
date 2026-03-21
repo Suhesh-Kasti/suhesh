@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the primary function of a stub resolver in the DNS process?",
+    "options": [
+      "Locating the requested IP address by querying multiple DNS servers.",
+      "Storing definitive information about a domain.",
+      "Sending a query to an LDNS server and caching the result temporarily.",
+      "Managing root DNS servers."
+    ],
+    "correctAnswer": "Sending a query to an LDNS server and caching the result temporarily."
+  },
+  {
+    "question": "Which of the following describes the role of a recursive resolver?",
+    "options": [
+      "Directly holding the definitive DNS records for a domain.",
+      "Acting on behalf of a stub resolver to find an IP address, querying multiple DNS servers.",
+      "Being built into the operating system and sending queries to an LDNS server.",
+      "Storing the local `hosts` file and local DNS cache."
+    ],
+    "correctAnswer": "Acting on behalf of a stub resolver to find an IP address, querying multiple DNS servers."
+  },
+  {
+    "question": "An authoritative server is primarily responsible for what?",
+    "options": [
+      "Caching responses to speed up subsequent lookups for end-users.",
+      "Handling the initial DNS query from a user's device.",
+      "Storing the definitive DNS records for domains it manages and responding with the appropriate IP.",
+      "Managing the `hosts` file on a user's local machine."
+    ],
+    "correctAnswer": "Storing the definitive DNS records for domains it manages and responding with the appropriate IP."
+  },
+  {
+    "question": "Where is the `hosts` file typically located on a Windows operating system?",
+    "options": [
+      "'/etc/hosts'",
+      "'C:\\Program Files\\System32\\drivers\\etc\\hosts'",
+      "'C:\\Windows\\System32\\drivers\\etc\\hosts'",
+      "'C:\\Users\\Public\\hosts'"
+    ],
+    "correctAnswer": "'C:\\Windows\\System32\\drivers\\etc\\hosts'"
+  },
+  {
+    "question": "Before querying an LDNS server, a user's PC first checks its local `hosts` file. What is the *next* place it checks if the domain is not found there?",
+    "options": [
+      "The router's DNS cache.",
+      "The root DNS servers.",
+      "The TLD nameservers.",
+      "The operating system's local DNS cache."
+    ],
+    "correctAnswer": "The operating system's local DNS cache."
+  },
+  {
+    "question": "A potential drawback of using your Internet Service Provider's (ISP) DNS server is:",
+    "options": [
+      "It requires additional setup.",
+      "It may lack privacy protections.",
+      "It is typically slower than public options.",
+      "It cannot cache responses."
+    ],
+    "correctAnswer": "It may lack privacy protections."
+  },
+  {
+    "question": "Which of the following is a key advantage of using public DNS servers like Cloudflare's 1.1.1.1?",
+    "options": [
+      "Full control over DNS records for corporate use.",
+      "Guaranteed logging of all DNS queries for security purposes.",
+      "Speed, reliability, and advanced features like privacy-focus or ad blocking.",
+      "No dependency on external entities."
+    ],
+    "correctAnswer": "Speed, reliability, and advanced features like privacy-focus or ad blocking."
+  },
+  {
+    "question": "For what primary reason might a business host its own on-premise DNS servers?",
+    "options": [
+      "To reduce the need for technical expertise and maintenance.",
+      "To avoid caching any DNS records.",
+      "To ensure faster name resolution within the company's network and control/monitor employee requests.",
+      "To outsource all DNS management to external entities."
+    ],
+    "correctAnswer": "To ensure faster name resolution within the company's network and control/monitor employee requests."
+  },
+  {
+    "question": "In the recursive resolution process, what information do root DNS servers *typically* provide to the recursive resolver?",
+    "options": [
+      "The final IP address for the domain.",
+      "The IP address of the authoritative nameservers for the domain.",
+      "The nameservers managing the Top-Level Domain (TLD) server.",
+      "The contents of the `hosts` file."
+    ],
+    "correctAnswer": "The nameservers managing the Top-Level Domain (TLD) server."
+  },
+  {
+    "question": "Which type of TLD is `.com.np` an example of?",
+    "options": [
+      "Generic TLD (gTLD)",
+      "Sponsored TLD (sTLD)",
+      "Infrastructure TLD",
+      "Country Code TLD (ccTLD)"
+    ],
+    "correctAnswer": "Country Code TLD (ccTLD)"
+  },
+  {
+    "question": "What does the `admin.suhesh.com.np.` field in an SOA record represent?",
+    "options": [
+      "The primary name server for the domain.",
+      "The administrative contact email address for the domain.",
+      "The serial number for tracking zone file changes.",
+      "The default Time to Live (TTL) for records."
+    ],
+    "correctAnswer": "The administrative contact email address for the domain."
+  },
+  {
+    "question": "What is the purpose of an A record in a DNS zone file?",
+    "options": [
+      "To map a domain name to an IPv6 address.",
+      "To create an alias for a domain name.",
+      "To map a domain name to an IPv4 address.",
+      "To specify mail servers for a domain."
+    ],
+    "correctAnswer": "To map a domain name to an IPv4 address."
+  },
+  {
+    "question": "A CNAME record is used for what purpose?",
+    "options": [
+      "To map an IP address back to a domain name.",
+      "To direct email for a domain to a mail server.",
+      "To create an alias, redirecting one domain name to another without directly associating with an IP address.",
+      "To specify a service's location, including protocol and port."
+    ],
+    "correctAnswer": "To create an alias, redirecting one domain name to another without directly associating with an IP address."
+  },
+  {
+    "question": "When multiple MX records exist for a domain, how is the preferred mail server determined?",
+    "options": [
+      "By the mail server with the highest priority number.",
+      "By the mail server that was configured first.",
+      "By the mail server with the lowest priority number.",
+      "By the mail server with the most characters in its hostname."
+    ],
+    "correctAnswer": "By the mail server with the lowest priority number."
+  },
+  {
+    "question": "What is the primary function of a PTR record, often used in reverse DNS?",
+    "options": [
+      "To store text data for verification purposes like SPF.",
+      "To map an IP address to a domain name for validation.",
+      "To map a domain name to an IPv6 address.",
+      "To define authoritative information about the domain."
+    ],
+    "correctAnswer": "To map an IP address to a domain name for validation."
+  },
+  {
+    "question": "What is the effect of setting a short TTL (Time to Live) for a DNS record?",
+    "options": [
+      "It reduces the load on DNS servers by increasing cache duration.",
+      "It makes changes to dynamic content propagate slower.",
+      "It allows changes to propagate faster but increases DNS server load.",
+      "It is only suitable for static services."
+    ],
+    "correctAnswer": "It allows changes to propagate faster but increases DNS server load."
+  },
+  {
+    "question": "Which of the following best describes DNS delegation?",
+    "options": [
+      "The process of mapping an IP address to a domain name.",
+      "The process of assigning responsibility for a subdomain to another DNS server.",
+      "The process of caching DNS records locally on a user's machine.",
+      "The process of resolving a domain name to its final IP address by querying root servers."
+    ],
+    "correctAnswer": "The process of assigning responsibility for a subdomain to another DNS server."
+  },
+  {
+    "question": "How is DNS failover primarily configured, according to the text?",
+    "options": [
+      "By exclusively using a single A record with a very short TTL.",
+      "By configuring multiple MX records for redundancy.",
+      "By using multiple A or CNAME records combined with health checks.",
+      "By setting up a Split-Horizon DNS configuration."
+    ],
+    "correctAnswer": "By using multiple A or CNAME records combined with health checks."
+  },
+  {
+    "question": "What are \"root hints\" primarily used for in DNS servers?",
+    "options": [
+      "To provide definitive IP addresses for all domains.",
+      "To store the local DNS cache for faster lookups.",
+      "To guide resolvers to TLD nameservers by listing IP addresses of root DNS servers.",
+      "To implement Split-Horizon DNS for internal and external users."
+    ],
+    "correctAnswer": "To guide resolvers to TLD nameservers by listing IP addresses of root DNS servers."
+  },
+  {
+    "question": "What is the main characteristic of Split-Horizon DNS?",
+    "options": [
+      "It ensures all DNS queries follow an identical path.",
+      "It serves different DNS results based on the source of the query (e.g., internal vs. external users).",
+      "It exclusively uses IPv6 addresses for name resolution.",
+      "It focuses on blocking ads and trackers for all devices on a network."
+    ],
+    "correctAnswer": "It serves different DNS results based on the source of the query (e.g., internal vs. external users)."
+  }
+]

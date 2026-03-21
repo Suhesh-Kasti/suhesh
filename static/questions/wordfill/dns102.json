@@ -1,0 +1,82 @@
+[
+  {
+    "question": "If you are troubleshooting a domain's DNS records and need to query a specific authoritative nameserver (e.g., ns1.suhesh.com.np) directly for the A record of suhesh.com.np, what dig command would you use?",
+    "correctAnswer": "dig @ns1.suhesh.com.np suhesh.com.np A"
+  },
+  {
+    "question": "If you need to perform a reverse DNS lookup to identify the domain associated with the IP address 192.0.2.1, what command-line utility and flag would you use?",
+    "correctAnswer": "dig -x 192.0.2.1"
+  },
+  {
+    "question": "You are managing a zone file and need to verify the SOA record details for suhesh.com.np. Which dig query type should you specify to retrieve this exact record?",
+    "correctAnswer": "dig suhesh.com.np SOA"
+  },
+  {
+    "question": "If you want to bypass your local cache and perform a recursive trace of the entire DNS resolution path for suhesh.com.np, which dig flag do you append?",
+    "correctAnswer": "dig +trace suhesh.com.np"
+  },
+  {
+    "question": "When configuring a bind9 server, what is the specific keyword used in the zone file to define the start of a new zone and its associated domain name?",
+    "correctAnswer": "$ORIGIN"
+  },
+  {
+    "question": "If you need to view only the answer section of a DNS query response for suhesh.com.np to keep your terminal output clean, which dig flag do you use?",
+    "correctAnswer": "dig +noall +answer suhesh.com.np"
+  },
+  {
+    "question": "If you are diagnosing a mail delivery issue and need to find the MX records for a domain, what command would you run to specifically query those records?",
+    "correctAnswer": "dig suhesh.com.np MX"
+  },
+  {
+    "question": "You suspect your local DNS cache is stale. On a Linux system using systemd-resolved, what command do you execute to flush the local DNS cache?",
+    "correctAnswer": "resolvectl flush-caches"
+  },
+  {
+    "question": "If you need to verify the TXT record containing the SPF policy for suhesh.com.np, what dig command would you use?",
+    "correctAnswer": "dig suhesh.com.np TXT"
+  },
+  {
+    "question": "To test if a specific DNS server (e.g., 8.8.8.8) supports EDNS (Extension Mechanisms for DNS), which flag can you add to your dig query?",
+    "correctAnswer": "dig +edns=0"
+  },
+  {
+    "question": "Which specific DNS record type is used to delegate a subdomain (e.g., sales.suhesh.com.np) to a different authoritative nameserver?",
+    "correctAnswer": "NS"
+  },
+  {
+    "question": "In a Linux environment, if you want to perform a DNS lookup using the host utility instead of dig, what is the command to retrieve the AAAA record for google.com?",
+    "correctAnswer": "host -t AAAA google.com"
+  },
+  {
+    "question": "What is the specific numeric value in a zone file's SOA record that represents the 'Refresh' time, indicating how often a secondary server should check for updates?",
+    "correctAnswer": "refresh"
+  },
+  {
+    "question": "To perform a zone transfer from an authoritative server (assuming it is allowed), which dig flag is used?",
+    "correctAnswer": "dig axfr"
+  },
+  {
+    "question": "When setting up Split-Horizon DNS in BIND, which configuration block is used to restrict queries based on the client's IP address?",
+    "correctAnswer": "acl"
+  },
+  {
+    "question": "What is the standard name of the DNS protocol extension that adds cryptographic signatures to DNS records to prevent spoofing?",
+    "correctAnswer": "DNSSEC"
+  },
+  {
+    "question": "Which specific port is defined by the IANA to be used for both UDP and TCP DNS queries?",
+    "correctAnswer": "53"
+  },
+  {
+    "question": "What is the name of the IETF standard protocol that provides DNS queries over an encrypted HTTPS connection to enhance privacy?",
+    "correctAnswer": "DoH"
+  },
+  {
+    "question": "If you are configuring a DNS server, what is the term for the file that contains the initial list of root DNS server IP addresses?",
+    "correctAnswer": "root.hints"
+  },
+  {
+    "question": "In the context of DNS security, what specific record type is used to store the hash of a public key for DNSSEC validation?",
+    "correctAnswer": "DNSKEY"
+  }
+]

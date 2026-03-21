@@ -1,0 +1,62 @@
+[
+  {
+    "question": "You need to scan a target network 192.168.1.0/24 specifically for ports 80, 99, and 443 while ensuring the scan is throttled to a very low speed to avoid detection. What Nmap command do you use?",
+    "correctAnswer": "nmap -p 80,99,443 -T1 192.168.1.0/24"
+  },
+  {
+    "question": "A developer is stuck in tutorial hell and needs to break out by versioning their project locally. Which Git command initializes a new repository in the current directory?",
+    "correctAnswer": "git init"
+  },
+  {
+    "question": "You are debugging a web application and need to find all established TCP connections on your Linux server. Which command identifies these sockets?",
+    "correctAnswer": "ss -t -a"
+  },
+  {
+    "question": "To practice active learning, you want to view the contents of a configuration file named 'config.yaml' directly in your terminal. Which command displays the file content?",
+    "correctAnswer": "cat config.yaml"
+  },
+  {
+    "question": "You need to measure the round-trip time to a remote server 'example.com' to verify connectivity for your project. Which command do you run?",
+    "correctAnswer": "ping example.com"
+  },
+  {
+    "question": "To manage project dependencies effectively, you need to install a package named 'requests' using Python's package manager. What is the command?",
+    "correctAnswer": "pip install requests"
+  },
+  {
+    "question": "You want to monitor the resource usage of your local environment while running a script to ensure it doesn't crash. Which command-line tool provides a real-time system monitor?",
+    "correctAnswer": "top"
+  },
+  {
+    "question": "You are learning shell scripting and need to find the absolute path of the current directory. Which command returns this information?",
+    "correctAnswer": "pwd"
+  },
+  {
+    "question": "To clean up your local workspace, you need to remove a directory named 'temp_build' and all its contents. Which command performs this recursive deletion?",
+    "correctAnswer": "rm -rf temp_build"
+  },
+  {
+    "question": "You need to change the permissions of a script 'deploy.sh' to make it executable by the current user. Which command do you use?",
+    "correctAnswer": "chmod +x deploy.sh"
+  },
+  {
+    "question": "Which Linux command is used to display the routing table of the network stack, showing how packets are directed?",
+    "correctAnswer": "ip route"
+  },
+  {
+    "question": "What is the specific command in the Linux kernel interface used to inspect and modify the ARP cache table?",
+    "correctAnswer": "arp -a"
+  },
+  {
+    "question": "Which command-line utility is used to perform a DNS lookup to find the IP address associated with a domain name?",
+    "correctAnswer": "dig"
+  },
+  {
+    "question": "In the context of kernel-level networking, what is the standard command-line tool used to configure, add, or remove IP addresses on network interfaces?",
+    "correctAnswer": "ip addr"
+  },
+  {
+    "question": "Which command is used to display information about the current system's kernel version and hardware architecture?",
+    "correctAnswer": "uname -a"
+  }
+]

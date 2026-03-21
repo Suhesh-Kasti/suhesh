@@ -1,0 +1,82 @@
+[
+  {
+    "question": "If you need to scan ports 80, 99, and 443 on the network 192.168.1.0/24 at a low speed to avoid detection or network congestion, what command will you use?",
+    "correctAnswer": "nmap -p80,99,443 -T1 192.168.1.0/24"
+  },
+  {
+    "question": "You are performing a scan in a lab environment where you know all hosts are up but ICMP is blocked. Which flag must you use to ensure Nmap does not skip the targets?",
+    "correctAnswer": "-Pn"
+  },
+  {
+    "question": "You want to perform a stealthy 'Half-Open' scan that does not complete the TCP three-way handshake. Which flag do you use?",
+    "correctAnswer": "-sS"
+  },
+  {
+    "question": "You suspect a firewall is silently dropping packets on a UDP port, resulting in an 'open|filtered' state. Which flag allows you to send specific service probes to force a response?",
+    "correctAnswer": "-sV"
+  },
+  {
+    "question": "To avoid DNS resolution delays during a large network scan, which flag should you append to your Nmap command?",
+    "correctAnswer": "-n"
+  },
+  {
+    "question": "You need to see the exact reason Nmap marked a port as 'closed'. Which diagnostic flag provides this output?",
+    "correctAnswer": "--reason"
+  },
+  {
+    "question": "To perform a vulnerability scan specifically on port 445 using the Nmap Scripting Engine, what is the correct syntax?",
+    "correctAnswer": "nmap -p445 --script vuln <target>"
+  },
+  {
+    "question": "You want to ensure your scan maintains a minimum packet rate of 1000 packets per second to improve efficiency. Which flag do you add?",
+    "correctAnswer": "--min-rate 1000"
+  },
+  {
+    "question": "If you need to debug your scan and view every packet sent and received in real-time, which flag do you use?",
+    "correctAnswer": "--packet-trace"
+  },
+  {
+    "question": "To bypass simple packet filters by splitting the TCP header into smaller, fragmented packets, which flag is used?",
+    "correctAnswer": "-f"
+  },
+  {
+    "question": "You need to connect to an HTTPS service using Ncat to verify its SSL certificate. What is the command-line flag for SSL support?",
+    "correctAnswer": "--ssl"
+  },
+  {
+    "question": "Which specific Nmap flag is used to spoof your IP address by mixing your traffic with other decoy IP addresses to confuse the target's logs?",
+    "correctAnswer": "-D"
+  },
+  {
+    "question": "What is the specific Nmap flag used to force Nmap to use a specific source port (e.g., 53) for all outgoing packets to bypass firewall rules?",
+    "correctAnswer": "--source-port 53"
+  },
+  {
+    "question": "When scanning for UDP services, what is the specific ICMP error type and code that Nmap looks for to confirm a port is 'closed'?",
+    "correctAnswer": "Type 3, Code 3"
+  },
+  {
+    "question": "What is the command to list all available Nmap scripts related to the 'http' service on a Linux system?",
+    "correctAnswer": "ls /usr/share/nmap/scripts/ | grep http"
+  },
+  {
+    "question": "What is the primary difference between a TCP SYN scan and a TCP Connect scan regarding the Three-Way Handshake?",
+    "correctAnswer": "SYN scan does not complete the handshake; Connect scan does."
+  },
+  {
+    "question": "What Nmap flag is used to specify the intensity of version detection probes, ranging from 0 to 9?",
+    "correctAnswer": "--version-intensity"
+  },
+  {
+    "question": "In the context of Nmap timing templates, which template is the most aggressive and can potentially cause service crashes?",
+    "correctAnswer": "-T5"
+  },
+  {
+    "question": "What is the technical term for the Nmap state where the port is reachable but the scanner cannot distinguish between 'open' and 'closed'?",
+    "correctAnswer": "unfiltered"
+  },
+  {
+    "question": "When performing an IP ID Idle scan, what is the required prerequisite for the 'zombie' host?",
+    "correctAnswer": "The host must have predictable IP ID sequences."
+  }
+]

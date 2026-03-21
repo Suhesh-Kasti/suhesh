@@ -7,16 +7,17 @@
         <!-- Image -->
         {{ $image := .Params.image }}
         {{ if $image }}
-          <div class="mb-6">
-            {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-full rounded") }}
-          </div>
+        <div class="mb-6">
+          {{ partial "image" (dict "Src" $image "Alt" .Title "Class" "w-full rounded") }}
+        </div>
         {{ end }}
 
         <!-- Author Information -->
         <div class="flex justify-evenly items-center flex-wrap mb-6">
           <div class="flex items-center space-x-4">
             <i class="fa-regular fa-circle-user mr-2"></i>
-            <a href="{{ `authors/` | relLangURL }}{{ .Params.Author | urlize }}/" class="text-primary dark:text-darkmode-primary">
+            <a href="{{ `authors/` | relLangURL }}{{ .Params.Author | urlize }}/"
+              class="text-primary dark:text-darkmode-primary">
               {{ .Params.author }}
             </a>
           </div>
@@ -24,9 +25,10 @@
             <i class="fa-regular fa-folder mr-2"></i>
             {{ $categories := .Params.categories }}
             {{ range $i, $p := $categories }}
-              <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="text-primary dark:text-darkmode-primary">
-                {{ . | humanize }}{{ if ne $i (sub (len $categories) 1) }}, {{ end }}
-              </a>
+            <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/"
+              class="text-primary dark:text-darkmode-primary">
+              {{ . | humanize }}{{ if ne $i (sub (len $categories) 1) }}, {{ end }}
+            </a>
             {{ end }}
           </div>
           <div class="flex items-center space-x-4">
@@ -45,7 +47,7 @@
 
         <!-- Description -->
         {{ with .Description }}
-          <p class="text-light dark:text-darkmode-light mb-6">{{ . }}</p>
+        <p class="text-light dark:text-darkmode-light mb-6">{{ . }}</p>
         {{ end }}
 
         <!-- Content -->
@@ -55,11 +57,11 @@
 
         <!-- Buttons -->
         {{ if .Params.buttons }}
-          <div class="mt-8">
-            {{ range .Params.buttons }}
-              <a href="{{ absURL .url }}" class="btn btn-primary btn-sm mb-2 mr-2">{{ .label }}</a>
-            {{ end }}
-          </div>
+        <div class="mt-8">
+          {{ range .Params.buttons }}
+          <a href="{{ absURL .url }}" class="btn btn-primary btn-sm mb-2 mr-2">{{ .label }}</a>
+          {{ end }}
+        </div>
         {{ end }}
       </div>
 
@@ -68,98 +70,115 @@
         <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Tags</h4>
         <ul class="flex flex-wrap gap-2">
           {{ range .Params.tags }}
-            <li>
-              <a href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/"
-                 class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-darkmode-body rounded px-3 py-1 text-sm">
-                {{ . | humanize }}
-              </a>
-            </li>
+          <li>
+            <a href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/"
+              class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-darkmode-body rounded px-3 py-1 text-sm">
+              {{ . | humanize }}
+            </a>
+          </li>
           {{ end }}
         </ul>
       </div>
 
       <!-- Word Games -->
       {{ if or .Params.quiz .Params.wordfill }}
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {{ if .Params.quiz }}
-            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-              <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Word Quiz</h4>
-              {{ partial "wordguess.html" . }}
-              <script>
-                var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
-              </script>
-              <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
-            </div>
-          {{ end }}
-          {{ if .Params.wordfill }}
-            <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-              <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Fill the Answer</h4>
-              {{ partial "wordfill.html" . }}
-              <script>
-                var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
-              </script>
-              <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
-            </div>
-          {{ end }}
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {{ if .Params.quiz }}
+        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+          <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Word Quiz</h4>
+          {{ partial "wordguess.html" . }}
+          <script>
+            var quizCode = "{{ with .Params.quiz }}{{ .code }}{{ end }}";
+          </script>
+          <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
         </div>
+        {{ end }}
+        {{ if .Params.wordfill }}
+        <div class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+          <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Fill the Answer</h4>
+          {{ partial "wordfill.html" . }}
+          <script>
+            var wordCode = "{{ with .Params.wordfill }}{{ .code }}{{ end }}";
+          </script>
+          <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+        </div>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <!-- Flashcards -->
+      {{ if .Params.flashcard }}
+      <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Flashcards</h4>
+        {{ partial "flashcards.html" . }}
+      </div>
       {{ end }}
 
       <!-- Share Options -->
       <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-        {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false "Telegram" false) }}
+        {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (i18n "share") "Whatsapp" false
+        "Telegram" false) }}
       </div>
 
       <!-- Comments -->
       {{ if .Site.Config.Services.Disqus.Shortname }}
-        <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
-          <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Comments</h4>
-          {{ template "_internal/disqus.html" . }}
-        </div>
+      <div class="mt-8 bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-6">
+        <h4 class="text-h4 font-bold mb-4 text-text dark:text-darkmode-text">Comments</h4>
+        {{ template "_internal/disqus.html" . }}
+      </div>
       {{ end }}
 
       <!-- Previous/Next Navigation -->
       <div class="mt-8 flex justify-between">
         {{ with .PrevInSection }}
-          <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 mr-4">
-            <span class="block text-sm text-light dark:text-darkmode-light mb-1">Previous</span>
-            <span class="text-primary dark:text-darkmode-primary group-hover:underline">← {{ .Title }}</span>
-          </a>
+        <a href="{{ .Permalink }}"
+          class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 mr-4">
+          <span class="block text-sm text-light dark:text-darkmode-light mb-1">Previous</span>
+          <span class="text-primary dark:text-darkmode-primary group-hover:underline">← {{ .Title }}</span>
+        </a>
         {{ else }}
-          <div class="flex-1 mr-4"></div>
+        <div class="flex-1 mr-4"></div>
         {{ end }}
 
         {{ with .NextInSection }}
-          <a href="{{ .Permalink }}" class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right">
-            <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>
-            <span class="text-primary dark:text-darkmode-primary group-hover:underline">{{ .Title }} →</span>
-          </a>
+        <a href="{{ .Permalink }}"
+          class="bg-theme-light dark:bg-darkmode-theme-light rounded-lg shadow-lg p-4 group flex-1 ml-4 text-right">
+          <span class="block text-sm text-light dark:text-darkmode-light mb-1">Next</span>
+          <span class="text-primary dark:text-darkmode-primary group-hover:underline">{{ .Title }} →</span>
+        </a>
         {{ else }}
-          <div class="flex-1 ml-4"></div>
+        <div class="flex-1 ml-4"></div>
         {{ end }}
       </div>
 
       <!-- You May Also Like -->
       {{ $currentTags := slice }}
       {{ range .Params.tags }}
-        {{ $currentTags = $currentTags | append . }}
+      {{ $currentTags = $currentTags | append . }}
       {{ end }}
 
       {{ $currentCategories := slice }}
       {{ range .Params.categories }}
-        {{ $currentCategories = $currentCategories | append . }}
+      {{ $currentCategories = $currentCategories | append . }}
       {{ end }}
 
-      {{ partial "components/you-may-also-like.html" (dict "currentPage" . "currentSection" "blog" "currentTags" $currentTags "currentCategories" $currentCategories) }}
+      {{ partial "components/you-may-also-like.html" (dict "currentPage" . "currentSection" "blog" "currentTags"
+      $currentTags "currentCategories" $currentCategories) }}
     </main>
   </div>
 </section>
 
 <!-- Load Word Game Scripts -->
 {{ if .Params.quiz }}
-  <script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
+<script src="{{ "js/wordguess.js" | relURL }}?code={{ .Params.quiz.code }}"></script>
 {{ end }}
 {{ if .Params.wordfill }}
-  <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+<script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
+{{ end }}
+{{ if .Params.flashcard }}
+<script>
+  var flashcardCode = "{{ with .Params.wordfill }}{{ .code }}{{ else }}{{ with .Params.quiz }}{{ .code }}{{ end }}{{ end }}";
+</script>
+<script src="{{ "js/flashcards.js" | relURL }}?code={{ with .Params.wordfill }}{{ .code }}{{ else }}{{ with .Params.quiz }}{{ .code }}{{ end }}{{ end }}"></script>
 {{ end }}
 {{ end }}
-

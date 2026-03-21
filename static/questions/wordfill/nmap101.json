@@ -1,0 +1,82 @@
+[
+  {
+    "question": "You need to scan ports 80, 99, and 443 on the network 192.168.1.0/24 while ensuring a very slow, stealthy scan timing to avoid IDS detection. What command do you use?",
+    "correctAnswer": "nmap -p 80,99,443 -T1 192.168.1.0/24"
+  },
+  {
+    "question": "You want to perform a ping scan on the subnet 10.0.0.0/24 to identify live hosts without triggering any port scans. What flag do you use?",
+    "correctAnswer": "nmap -sn 10.0.0.0/24"
+  },
+  {
+    "question": "You are scanning a target that is known to block all ICMP packets, and you want to ensure Nmap skips host discovery and proceeds directly to port scanning. What flag do you use?",
+    "correctAnswer": "nmap -Pn"
+  },
+  {
+    "question": "If you are using Termux on Android to install Nmap, what is the exact command you would run in the terminal?",
+    "correctAnswer": "pkg install nmap"
+  },
+  {
+    "question": "When scanning as a root user, Nmap sends four specific packets for host discovery. Besides the TCP SYN on 443, TCP ACK on 80, and ICMP timestamp request, what is the fourth packet type?",
+    "correctAnswer": "ICMP echo packet"
+  },
+  {
+    "question": "You want to save the output of your scan to a file named 'results.txt' in normal format. What flag do you append to your command?",
+    "correctAnswer": "-oN results.txt"
+  },
+  {
+    "question": "You suspect a firewall is filtering packets and want to perform a TCP SYN scan (half-open scan) on a target. What flag do you use?",
+    "correctAnswer": "-sS"
+  },
+  {
+    "question": "What is the specific Nmap flag used to perform service version detection to identify what application is running on the open ports?",
+    "correctAnswer": "-sV"
+  },
+  {
+    "question": "To perform an OS detection scan on a target IP address, what flag must you use?",
+    "correctAnswer": "-O"
+  },
+  {
+    "question": "If you want to use the most aggressive timing template to complete a scan as quickly as possible, which flag do you use?",
+    "correctAnswer": "-T5"
+  },
+  {
+    "question": "What is the specific Nmap flag to scan all 65535 TCP ports on a target?",
+    "correctAnswer": "-p-"
+  },
+  {
+    "question": "When you perform a TCP SYN scan, if the port is closed, what packet does the target send back to Nmap?",
+    "correctAnswer": "RST/ACK"
+  },
+  {
+    "question": "What command-line flag is used in Nmap to provide a verbose output during the scanning process?",
+    "correctAnswer": "-v"
+  },
+  {
+    "question": "If you want to perform a UDP scan instead of the default TCP scan, what flag do you use?",
+    "correctAnswer": "-sU"
+  },
+  {
+    "question": "You want to scan a specific list of IP addresses contained within a text file named 'targets.txt'. What flag do you use?",
+    "correctAnswer": "-iL targets.txt"
+  },
+  {
+    "question": "In the context of Nmap, what is the technical name for the scan type that sends a TCP packet with the FIN flag set to determine port status?",
+    "correctAnswer": "FIN scan"
+  },
+  {
+    "question": "What is the specific Nmap flag used to perform a 'script scan' using the Nmap Scripting Engine (NSE) with default categories?",
+    "correctAnswer": "-sC"
+  },
+  {
+    "question": "Which Nmap flag allows you to randomize the order in which the hosts are scanned to further evade detection?",
+    "correctAnswer": "--randomize-hosts"
+  },
+  {
+    "question": "What is the Nmap flag used to specify a custom source port for the outgoing scan packets?",
+    "correctAnswer": "--source-port"
+  },
+  {
+    "question": "If you want to output the scan results in XML format for integration with other security tools, which flag do you use?",
+    "correctAnswer": "-oX"
+  }
+]

@@ -1,0 +1,192 @@
+[
+  {
+    "question": "What is the fundamental change introduced by Software Defined Networking (SDN) compared to traditional networks?",
+    "options": [
+      "It relies entirely on hardware-based control.",
+      "It centralizes the data plane while distributing the control plane.",
+      "It separates the control plane from the data plane.",
+      "It eliminates the need for any routing protocols."
+    ],
+    "correctAnswer": "It separates the control plane from the data plane."
+  },
+  {
+    "question": "Which plane is responsible for how we interact with and manage network devices, often using methods like Telnet or SSH?",
+    "options": [
+      "Data Plane",
+      "Control Plane",
+      "Management Plane",
+      "Application Plane"
+    ],
+    "correctAnswer": "Management Plane"
+  },
+  {
+    "question": "Which of the following responsibilities belongs to the Control Plane of network devices?",
+    "options": [
+      "Encapsulation/Decapsulation of data packets.",
+      "Matching Layer 2 data with the MAC Address Table.",
+      "Executing the rules for data transmission.",
+      "Handling routing protocols like OSPF."
+    ],
+    "correctAnswer": "Handling routing protocols like OSPF."
+  },
+  {
+    "question": "What is a primary responsibility of the Data Plane in a network device?",
+    "options": [
+      "Deciding how data moves across the network.",
+      "Running routing protocols to build forwarding tables.",
+      "Handling all data transmission and reception.",
+      "Configuring Access Control Lists (ACLs)."
+    ],
+    "correctAnswer": "Handling all data transmission and reception."
+  },
+  {
+    "question": "In traditional networks, where is the Control Plane typically located?",
+    "options": [
+      "In a centralized SDN Controller.",
+      "Distributed, with each device having its own Control Plane.",
+      "It is entirely eliminated.",
+      "Only in the core routers."
+    ],
+    "correctAnswer": "Distributed, with each device having its own Control Plane."
+  },
+  {
+    "question": "What is a key characteristic of the Control Plane in an SDN environment?",
+    "options": [
+      "It remains distributed across individual network devices.",
+      "All control logic is moved to a centralized SDN Controller.",
+      "It focuses solely on the physical layer.",
+      "It is managed exclusively through CLI."
+    ],
+    "correctAnswer": "All control logic is moved to a centralized SDN Controller."
+  },
+  {
+    "question": "Which South Bound Interface protocol was one of the first to allow direct access to the forwarding plane of network devices and modify forwarding tables?",
+    "options": [
+      "OpFlex",
+      "NETCONF",
+      "OpenFlow",
+      "SNMP"
+    ],
+    "correctAnswer": "OpenFlow"
+  },
+  {
+    "question": "Which South Bound Interface protocol allows the SDN Controller to dictate \"policies\" for devices to implement, rather than directly controlling forwarding decisions, and is useful in Cisco ACI?",
+    "options": [
+      "OpenFlow",
+      "OpFlex",
+      "CLI",
+      "REST API"
+    ],
+    "correctAnswer": "OpFlex"
+  },
+  {
+    "question": "What modern South Bound Interface protocol uses XML-based data encoding over a secure transport layer like SSH for configuring network devices?",
+    "options": [
+      "Telnet",
+      "SNMP",
+      "NETCONF",
+      "OpenFlow"
+    ],
+    "correctAnswer": "NETCONF"
+  },
+  {
+    "question": "How do users primarily interact with the SDN Controller via the North Bound Interface (NBI)?",
+    "options": [
+      "Directly through OpenFlow commands.",
+      "Using routing protocols like OSPF.",
+      "Through a Graphical User Interface (GUI) or Application Programming Interface (API).",
+      "By physically configuring each network device."
+    ],
+    "correctAnswer": "Through a Graphical User Interface (GUI) or Application Programming Interface (API)."
+  },
+  {
+    "question": "What is a primary benefit of SDN Controllers in modern networking?",
+    "options": [
+      "They distribute control across all devices to increase resilience.",
+      "They remove the need for any routing protocols.",
+      "They provide centralized management, reducing complexity and increasing flexibility.",
+      "They rely exclusively on manual configuration for all tasks."
+    ],
+    "correctAnswer": "They provide centralized management, reducing complexity and increasing flexibility."
+  },
+  {
+    "question": "In Intent-Based Networking, what does the user primarily specify?",
+    "options": [
+      "Detailed device-specific configurations.",
+      "The desired outcomes or \"intent.\"",
+      "The exact routing paths for all traffic.",
+      "The physical cabling layout of the network."
+    ],
+    "correctAnswer": "The desired outcomes or \"intent.\""
+  },
+  {
+    "question": "In SDN architecture, what does the \"Underlay\" refer to?",
+    "options": [
+      "The virtual network that runs on top of the physical infrastructure.",
+      "The logical segmentation created by VXLAN.",
+      "The physical network infrastructure that provides connectivity between devices.",
+      "The centralized SDN Controller itself."
+    ],
+    "correctAnswer": "The physical network infrastructure that provides connectivity between devices."
+  },
+  {
+    "question": "What is the purpose of an \"Overlay\" in SDN architecture?",
+    "options": [
+      "To provide the physical cabling and hardware for the network.",
+      "To create logical segmentation and isolated virtual networks over the Underlay.",
+      "To handle routing protocol decisions for the entire network.",
+      "To directly manage the forwarding tables of physical switches."
+    ],
+    "correctAnswer": "To create logical segmentation and isolated virtual networks over the Underlay."
+  },
+  {
+    "question": "Which tunneling protocol is commonly used in SDN to create Layer 2 networks over a Layer 3 Underlay, extending VLAN capabilities and improving scalability?",
+    "options": [
+      "STP",
+      "OSPF",
+      "VXLAN",
+      "SSH"
+    ],
+    "correctAnswer": "VXLAN"
+  },
+  {
+    "question": "In SDN, what does the \"Fabric\" encompass?",
+    "options": [
+      "Only the physical routers and switches.",
+      "Only the virtual networks created by VXLAN.",
+      "The combination of the Underlay, Overlay, and all devices that make up the entire network infrastructure.",
+      "Exclusively the SDN Controller and its applications."
+    ],
+    "correctAnswer": "The combination of the Underlay, Overlay, and all devices that make up the entire network infrastructure."
+  },
+  {
+    "question": "What is the role of the APIC in Cisco's Application Centric Infrastructure (ACI)?",
+    "options": [
+      "It is a physical switch that forwards data packets.",
+      "It is the SDN Controller that centralizes control and manages Underlay/Overlay with intent-based networking.",
+      "It is a protocol used for securing data transmission.",
+      "It is a standalone server that hosts web applications."
+    ],
+    "correctAnswer": "It is the SDN Controller that centralizes control and manages Underlay/Overlay with intent-based networking."
+  },
+  {
+    "question": "What type of network topology is typically used in Cisco ACI for connecting devices?",
+    "options": [
+      "Ring topology",
+      "Bus topology",
+      "Spine-leaf topology",
+      "Star topology"
+    ],
+    "correctAnswer": "Spine-leaf topology"
+  },
+  {
+    "question": "Which of the following correctly lists the three tiers in a typical 3-tier web application model?",
+    "options": [
+      "Front-end, Back-end, Network",
+      "Database, Application, Web",
+      "Underlay, Overlay, Fabric",
+      "Control, Data, Management"
+    ],
+    "correctAnswer": "Database, Application, Web"
+  }
+]

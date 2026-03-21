@@ -1,0 +1,82 @@
+[
+  {
+    "question": "You have initialized a local directory and need to link it to a remote GitHub repository named origin. What command connects the local repository to the remote URL?",
+    "correctAnswer": "git remote add origin <repo-url>"
+  },
+  {
+    "question": "You have accidentally staged a file named 'config.js' but want to remove it from the staging area without deleting the file from your disk. What command do you use?",
+    "correctAnswer": "git restore --staged config.js"
+  },
+  {
+    "question": "You want to see a summary of changes in your working directory, specifically seeing which files are modified versus untracked. What command provides this status?",
+    "correctAnswer": "git status"
+  },
+  {
+    "question": "You need to create a new branch named 'feature-auth' and switch to it immediately. What is the single command to accomplish this?",
+    "correctAnswer": "git checkout -b feature-auth"
+  },
+  {
+    "question": "You have made changes to multiple files and want to stage them all for commit using a single command. What command do you run?",
+    "correctAnswer": "git add ."
+  },
+  {
+    "question": "You are on the 'main' branch and want to incorporate changes from 'feature-auth' into your current branch. What command merges the branches?",
+    "correctAnswer": "git merge feature-auth"
+  },
+  {
+    "question": "You need to view the commit history including the author, date, and commit message for the last 5 commits. What command do you use?",
+    "correctAnswer": "git log -n 5"
+  },
+  {
+    "question": "You want to discard all local changes in a specific file and revert it to the state of the last commit. What command do you run?",
+    "correctAnswer": "git checkout -- <file>"
+  },
+  {
+    "question": "After pushing a new branch to GitHub for the first time, you want to set the upstream tracking so you can just type 'git push' later. What command do you use?",
+    "correctAnswer": "git push -u origin <branch-name>"
+  },
+  {
+    "question": "You need to verify the URL of the remote repository currently configured for your project. What command displays this information?",
+    "correctAnswer": "git remote -v"
+  },
+  {
+    "question": "How do you perform a 'git rebase' to maintain a linear project history when pulling changes from a remote repository?",
+    "correctAnswer": "git pull --rebase"
+  },
+  {
+    "question": "You need to list all branches in your local repository and see which one is currently active. What command do you use?",
+    "correctAnswer": "git branch"
+  },
+  {
+    "question": "If you want to view the differences between your working directory and the last commit for a specific file, what command do you use?",
+    "correctAnswer": "git diff <file>"
+  },
+  {
+    "question": "You need to change the commit message of your last commit before pushing it to the remote server. What command do you use?",
+    "correctAnswer": "git commit --amend"
+  },
+  {
+    "question": "What is the specific command to delete a local branch named 'old-feature' after it has been merged?",
+    "correctAnswer": "git branch -d old-feature"
+  },
+  {
+    "question": "What command is used in Git to temporarily save changes in a dirty working directory so you can switch branches, and later reapply those changes?",
+    "correctAnswer": "git stash"
+  },
+  {
+    "question": "Which Git command is used to display the 'reflog', allowing you to recover commits that are no longer reachable by any branch or tag?",
+    "correctAnswer": "git reflog"
+  },
+  {
+    "question": "How do you force a push to a remote repository, overwriting the remote history with your local history?",
+    "correctAnswer": "git push --force"
+  },
+  {
+    "question": "What command allows you to cherry-pick a specific commit from another branch and apply it to your current active branch?",
+    "correctAnswer": "git cherry-pick <commit-hash>"
+  },
+  {
+    "question": "If you need to remove a file from both the Git index (staging area) and the file system, what command do you execute?",
+    "correctAnswer": "git rm <file>"
+  }
+]

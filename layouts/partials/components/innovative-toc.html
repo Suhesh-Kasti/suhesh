@@ -377,7 +377,9 @@
       link.addEventListener('click', function(e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
+        const idString = targetId.startsWith('#') ? targetId.substring(1) : targetId;
+        // document.querySelector crashes if ID starts with a number. getElementById is perfectly safe!
+        const targetElement = document.getElementById(idString);
 
         if (targetElement) {
           // Highlight the target element briefly
@@ -386,9 +388,12 @@
             targetElement.classList.remove('toc-highlight');
           }, 2000);
 
-          // Smooth scroll to the target
+          // Smooth scroll to the target using absolute screen coordinates
+          const rect = targetElement.getBoundingClientRect();
+          const targetY = rect.top + window.scrollY - 80;
+
           window.scrollTo({
-            top: targetElement.offsetTop - 80,
+            top: targetY,
             behavior: 'smooth'
           });
 

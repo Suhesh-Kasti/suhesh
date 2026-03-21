@@ -4,7 +4,7 @@ description: "Walkthroughs and guides for HackTheBox machines"
 layout: "folder"
 type: "folder"
 folder: "hackthebox"
-weight: 1
+weight: 2
 draft: false
 ---
 

@@ -1,0 +1,82 @@
+[
+  {
+    "question": "If you are using Burp Suite to analyze the entropy and predictability of session tokens to identify potential session hijacking vulnerabilities, which specific module are you utilizing?",
+    "correctAnswer": "Sequencer"
+  },
+  {
+    "question": "If you need to perform a side-by-side visual comparison of two different HTTP responses to identify subtle differences in application behavior, which Burp Suite tool should you open?",
+    "correctAnswer": "Comparer"
+  },
+  {
+    "question": "To install Burp Suite on a Windows machine using the winget package manager, what exact command should be executed in PowerShell?",
+    "correctAnswer": "winget install PortSwigger.BurpSuite.Community"
+  },
+  {
+    "question": "If you are working on an Arch Linux system and want to install Burp Suite from the AUR using the yay helper, what command would you run?",
+    "correctAnswer": "yay -S burpsuite"
+  },
+  {
+    "question": "If you are a macOS user and wish to install Burp Suite using the Homebrew Cask package manager, what is the terminal command?",
+    "correctAnswer": "brew install --cask burp-suite"
+  },
+  {
+    "question": "If you are manually testing a specific request and need to modify parameters and resend the request multiple times to observe the server's response, which module is designed for this workflow?",
+    "correctAnswer": "Repeater"
+  },
+  {
+    "question": "To map out the structure and content of a web application by automatically following links, which module within Burp Suite do you initiate?",
+    "correctAnswer": "Spider"
+  },
+  {
+    "question": "If you intend to perform an automated brute-force or fuzzing attack on a login form by iterating through a list of passwords, which Burp Suite tool is the industry standard for this task?",
+    "correctAnswer": "Intruder"
+  },
+  {
+    "question": "When configuring your browser to route traffic through Burp Suite, what is the default local IP address and port number that Burp's proxy listener typically uses?",
+    "correctAnswer": "127.0.0.1:8080"
+  },
+  {
+    "question": "If you need to decode a Base64 encoded string or URL-encoded parameter found in an HTTP request, which Burp Suite utility handles this?",
+    "correctAnswer": "Decoder"
+  },
+  {
+    "question": "What is the specific name of the Burp Suite extension interface that allows users to load third-party plugins to extend the functionality of the suite?",
+    "correctAnswer": "Extender"
+  },
+  {
+    "question": "Which OWASP ZAP command-line flag is used to initiate a baseline scan against a target URL without requiring a graphical user interface?",
+    "correctAnswer": "-cmd"
+  },
+  {
+    "question": "In the context of Burp Suite, what is the name of the feature that allows you to define which hosts or URL patterns are included in your testing scope?",
+    "correctAnswer": "Target Scope"
+  },
+  {
+    "question": "When using Burp Suite's Intruder tool, what is the term for the markers placed around a payload position in the request template?",
+    "correctAnswer": "Payload positions"
+  },
+  {
+    "question": "If you are using OWASP ZAP and want to generate a report in XML format after a scan, what is the common flag or menu option used?",
+    "correctAnswer": "-reportxml"
+  },
+  {
+    "question": "To perform a vulnerability scan on a web application, which Burp Suite module is responsible for crawling and actively testing input fields for security flaws?",
+    "correctAnswer": "Scanner"
+  },
+  {
+    "question": "What is the primary configuration file format used by Burp Suite to export and import project settings and tool configurations?",
+    "correctAnswer": ".json"
+  },
+  {
+    "question": "Which specific HTTP header is often used to bypass Burp Suite's proxy if the server is configured to trust traffic from specific internal IP addresses?",
+    "correctAnswer": "X-Forwarded-For"
+  },
+  {
+    "question": "When using the Burp Suite Intruder 'Sniper' attack type, how does the tool handle the payload positions?",
+    "correctAnswer": "It cycles through the payload set for each position one by one"
+  },
+  {
+    "question": "What is the name of the Java Runtime Environment component that Burp Suite requires to execute on various operating systems?",
+    "correctAnswer": "JRE"
+  }
+]

@@ -15,6 +15,10 @@ description: "🔠 Unearth the intricate characters that form the backbone of Ja
 categories: ["Japanese"]
 tags: ["Khanji", "Katakana", "Hiragana"]
 draft: false
+quiz:
+  code: learning-japanese
+wordfill:
+  code: learning-japanese
 ---
 
 # Unraveling the Wonders of Learning Japanese 🇯🇵

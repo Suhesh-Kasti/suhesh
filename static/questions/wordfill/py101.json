@@ -1,0 +1,62 @@
+[
+  {
+    "question": "If you have a script named hello.py and need to execute it from the command line, what command do you type?",
+    "correctAnswer": "python hello.py"
+  },
+  {
+    "question": "If you need to define a dictionary variable named user_data with a key 'name' set to 'Alice' and 'age' set to 25, what is the syntax?",
+    "correctAnswer": "user_data = {'name': 'Alice', 'age': 25}"
+  },
+  {
+    "question": "If you have a list named numbers = [1, 2, 3] and want to add the integer 4 to the end of the list, what method do you call?",
+    "correctAnswer": "numbers.append(4)"
+  },
+  {
+    "question": "You need to create a function named greet that takes a parameter name and prints 'Hello, ' followed by the name; how is this defined?",
+    "correctAnswer": "def greet(name): print('Hello, ' + name)"
+  },
+  {
+    "question": "If you need to check if an integer x is greater than 10 and print 'High', otherwise print 'Low' using an if-else block, what is the structure?",
+    "correctAnswer": "if x > 10: print('High') else: print('Low')"
+  },
+  {
+    "question": "You have a float variable pi = 3.14159 and need to convert it into an integer, what function do you use?",
+    "correctAnswer": "int(pi)"
+  },
+  {
+    "question": "If you want to iterate through a list named items and print each element, which loop structure is most appropriate?",
+    "correctAnswer": "for item in items: print(item)"
+  },
+  {
+    "question": "If you need to determine the number of elements currently stored in a list named data, which built-in function do you use?",
+    "correctAnswer": "len(data)"
+  },
+  {
+    "question": "To create a variable named status that stores the boolean value representing 'true', how is it written in Python?",
+    "correctAnswer": "status = True"
+  },
+  {
+    "question": "If you need to join two strings, first = 'Python' and second = 'Magic', into a single string with a space in between, what is the operation?",
+    "correctAnswer": "first + ' ' + second"
+  },
+  {
+    "question": "To install a third-party Python package named 'requests' globally using the standard package manager, what command is used?",
+    "correctAnswer": "pip install requests"
+  },
+  {
+    "question": "If you are working in a production environment and need to isolate your project dependencies, what tool do you use to create a local environment?",
+    "correctAnswer": "venv"
+  },
+  {
+    "question": "In Python, if you want to handle potential errors during execution to prevent a program crash, what block structure is used?",
+    "correctAnswer": "try-except"
+  },
+  {
+    "question": "To read the entire content of a file named data.txt into a variable, what is the standard 'with' statement syntax?",
+    "correctAnswer": "with open('data.txt', 'r') as f: content = f.read()"
+  },
+  {
+    "question": "If you need to create a list of squares for numbers 0 through 9 using a single line of code, what feature do you use?",
+    "correctAnswer": "list comprehension"
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the primary purpose of Git?",
+    "options": [
+      "To host Git repositories on the web.",
+      "To track changes in code and manage code history.",
+      "To provide a web-based interface for project management.",
+      "To deploy static websites."
+    ],
+    "correctAnswer": "To track changes in code and manage code history."
+  },
+  {
+    "question": "What is GitHub primarily known for?",
+    "options": [
+      "Being a distributed version control system.",
+      "Resolving conflicts during merging.",
+      "Hosting platform for Git repositories and collaboration tools.",
+      "Installing Git on various operating systems."
+    ],
+    "correctAnswer": "Hosting platform for Git repositories and collaboration tools."
+  },
+  {
+    "question": "Which of the following is a key feature of Git?",
+    "options": [
+      "Issue tracking and project management features.",
+      "Repository hosting and web-based interface.",
+      "Distributed version control, branching, and merging.",
+      "Creating pull requests for code review."
+    ],
+    "correctAnswer": "Distributed version control, branching, and merging."
+  },
+  {
+    "question": "How can Git typically be installed on macOS according to the blog post?",
+    "options": [
+      "Only by downloading the installer from the official Git website.",
+      "It's typically pre-installed, or can be installed via Homebrew.",
+      "Using the `sudo apt install git` command.",
+      "By visiting github.com and signing up."
+    ],
+    "correctAnswer": "It's typically pre-installed, or can be installed via Homebrew."
+  },
+  {
+    "question": "What command is used to initialize a new Git repository in the current directory?",
+    "options": [
+      "`git clone`",
+      "`git start`",
+      "`git init`",
+      "`git new`"
+    ],
+    "correctAnswer": "`git init`"
+  },
+  {
+    "question": "To clone an existing Git repository from a remote server to your local machine, which command would you use?",
+    "options": [
+      "`git pull <repo-url>`",
+      "`git fetch <repo-url>`",
+      "`git copy <repo-url>`",
+      "`git clone <repo-url>`"
+    ],
+    "correctAnswer": "`git clone <repo-url>`"
+  },
+  {
+    "question": "Which command is used to stage changes in a specified file for the next commit, or all changes with `git add .`?",
+    "options": [
+      "`git commit`",
+      "`git stage`",
+      "`git add`",
+      "`git save`"
+    ],
+    "correctAnswer": "`git add`"
+  },
+  {
+    "question": "After staging changes, what command is used to record them to the repository with a descriptive message?",
+    "options": [
+      "`git push -m \"Message\"`",
+      "`git save -m \"Message\"`",
+      "`git commit -m \"Message\"`",
+      "`git log -m \"Message\"`"
+    ],
+    "correctAnswer": "`git commit -m \"Message\"`"
+  },
+  {
+    "question": "To push committed changes to a remote repository, such as GitHub, which command should be used?",
+    "options": [
+      "`git pull`",
+      "`git send`",
+      "`git upload`",
+      "`git push`"
+    ],
+    "correctAnswer": "`git push`"
+  },
+  {
+    "question": "What is the purpose of the `git pull` command?",
+    "options": [
+      "To send local changes to the remote repository.",
+      "To display the status of the repository.",
+      "To retrieve the latest changes from a remote repository and merge them locally.",
+      "To show the commit history."
+    ],
+    "correctAnswer": "To retrieve the latest changes from a remote repository and merge them locally."
+  },
+  {
+    "question": "Which command displays the current status of the repository, including modified, untracked, and staged files?",
+    "options": [
+      "`git log`",
+      "`git check`",
+      "`git status`",
+      "`git diff`"
+    ],
+    "correctAnswer": "`git status`"
+  },
+  {
+    "question": "How can a user view the commit history of a Git repository?",
+    "options": [
+      "Using `git status`",
+      "Using `git history`",
+      "Using `git log`",
+      "Using `git changes`"
+    ],
+    "correctAnswer": "Using `git log`"
+  },
+  {
+    "question": "When pushing an existing local Git repository to GitHub for the first time, what is the purpose of the `-u` flag in `git push -u origin <branch-name>`?",
+    "options": [
+      "To specify that the push should be unconditional.",
+      "To update all local branches.",
+      "To set the upstream branch, avoiding repetitive remote/branch specification.",
+      "To unstage all pending changes before pushing."
+    ],
+    "correctAnswer": "To set the upstream branch, avoiding repetitive remote/branch specification."
+  },
+  {
+    "question": "What is the first step when you want to clone an existing project from GitHub to your local machine?",
+    "options": [
+      "Make changes to the code.",
+      "Stage and commit the changes.",
+      "Copy the repository URL from the GitHub page.",
+      "Initialize a new Git repository locally."
+    ],
+    "correctAnswer": "Copy the repository URL from the GitHub page."
+  },
+  {
+    "question": "What command is used to create a new branch and simultaneously switch to it?",
+    "options": [
+      "`git branch <branch-name>`",
+      "`git new-branch <branch-name>`",
+      "`git checkout -b <branch-name>`",
+      "`git switch <branch-name>`"
+    ],
+    "correctAnswer": "`git checkout -b <branch-name>`"
+  },
+  {
+    "question": "After making changes in a new branch and pushing it to the remote, what is the next step to integrate these changes into the main codebase on GitHub?",
+    "options": [
+      "Directly merge the branch using `git merge`.",
+      "Open a Pull Request on GitHub.",
+      "Use `git rebase` to apply changes.",
+      "Delete the new branch."
+    ],
+    "correctAnswer": "Open a Pull Request on GitHub."
+  },
+  {
+    "question": "On which operating system is Git typically pre-installed, according to the blog post?",
+    "options": [
+      "Windows",
+      "Linux",
+      "macOS",
+      "All major operating systems"
+    ],
+    "correctAnswer": "macOS"
+  },
+  {
+    "question": "If you are on Ubuntu, which command is suggested for installing Git?",
+    "options": [
+      "`brew install git`",
+      "`sudo apt install git`",
+      "Download from the official Git website.",
+      "`yum install git`"
+    ],
+    "correctAnswer": "`sudo apt install git`"
+  },
+  {
+    "question": "What is the primary benefit of using branching in Git and GitHub for collaboration?",
+    "options": [
+      "It ensures that all changes are immediately applied to the main codebase.",
+      "It allows experimentation and development without affecting the main codebase directly.",
+      "It automatically merges all conflicts without user intervention.",
+      "It reduces the need for committing changes."
+    ],
+    "correctAnswer": "It allows experimentation and development without affecting the main codebase directly."
+  },
+  {
+    "question": "What does `git add .` command typically do?",
+    "options": [
+      "Deletes all files from the current directory.",
+      "Stages a single specified file for the next commit.",
+      "Stages all modified and new files in the current directory and its subdirectories.",
+      "Commits all changes with a default message."
+    ],
+    "correctAnswer": "Stages all modified and new files in the current directory and its subdirectories."
+  }
+]

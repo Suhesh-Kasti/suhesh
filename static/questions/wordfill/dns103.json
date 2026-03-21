@@ -1,0 +1,82 @@
+[
+  {
+    "question": "If you are setting up BIND on Ubuntu and need to install the package, what command do you use?",
+    "correctAnswer": "sudo apt install bind9 bind9utils bind9-doc"
+  },
+  {
+    "question": "After editing your BIND configuration files, what command must you run to check for syntax errors before restarting the service?",
+    "correctAnswer": "named-checkconf"
+  },
+  {
+    "question": "If you have created a forward zone file at /etc/bind/zones/db.lab.local, what command do you use to verify its integrity?",
+    "correctAnswer": "named-checkzone lab.local /etc/bind/zones/db.lab.local"
+  },
+  {
+    "question": "What command allows you to verify that the BIND service is currently active and running on your Ubuntu server?",
+    "correctAnswer": "systemctl status bind9"
+  },
+  {
+    "question": "If you need to ensure the BIND service starts automatically every time the server boots, what command should you execute?",
+    "correctAnswer": "sudo systemctl enable bind9"
+  },
+  {
+    "question": "When debugging DNS resolution from a client machine, which command-line utility is typically used to query your BIND server for a specific record?",
+    "correctAnswer": "dig"
+  },
+  {
+    "question": "If you need to reload the BIND configuration without fully stopping the service, which command is the most efficient?",
+    "correctAnswer": "sudo rndc reload"
+  },
+  {
+    "question": "In the SOA record, if you modify your zone file, what administrative value must be manually incremented to ensure secondary servers recognize an update?",
+    "correctAnswer": "Serial number"
+  },
+  {
+    "question": "Which specific DNS record type is used in the reverse zone file to map an IP address to a hostname?",
+    "correctAnswer": "PTR"
+  },
+  {
+    "question": "If you want to test if your BIND server resolves 'dvwa.lab.local' specifically using the server at 192.168.180.226, what is the exact dig command?",
+    "correctAnswer": "dig @192.168.180.226 dvwa.lab.local"
+  },
+  {
+    "question": "What command would you use to view the real-time logs of the BIND service to troubleshoot failed queries?",
+    "correctAnswer": "journalctl -u bind9 -f"
+  },
+  {
+    "question": "If you are editing the /etc/resolv.conf file to point a client to your new DNS server, what syntax is required to define the nameserver?",
+    "correctAnswer": "nameserver 192.168.180.226"
+  },
+  {
+    "question": "What is the specific command to restart the BIND service after making changes to the configuration?",
+    "correctAnswer": "sudo systemctl restart bind9"
+  },
+  {
+    "question": "Which Linux utility is used to perform a reverse lookup query to test if your PTR records are configured correctly?",
+    "correctAnswer": "dig -x 192.168.180.226"
+  },
+  {
+    "question": "What is the command to display all currently open network ports to verify that BIND is listening on port 53?",
+    "correctAnswer": "ss -tulpn | grep :53"
+  },
+  {
+    "question": "In the context of DNS security, what is the name of the protocol extension that adds cryptographic signatures to DNS records to prevent spoofing?",
+    "correctAnswer": "DNSSEC"
+  },
+  {
+    "question": "Which file in BIND is primarily used to configure global options like forwarders and recursion settings?",
+    "correctAnswer": "/etc/bind/named.conf.options"
+  },
+  {
+    "question": "What is the term for a DNS server that holds the complete copy of a zone's data and is the authoritative source for that zone?",
+    "correctAnswer": "Master"
+  },
+  {
+    "question": "If you need to limit DNS zone transfers to only authorized secondary servers, what statement do you add to your zone configuration?",
+    "correctAnswer": "allow-transfer"
+  },
+  {
+    "question": "What specific command-line tool is used to perform an authenticated DNS zone transfer from a master server to a slave server?",
+    "correctAnswer": "dig axfr"
+  }
+]

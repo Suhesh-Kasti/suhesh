@@ -10,11 +10,14 @@ site.Params.plugins.js }} {{ if findRE "^http" .link }}
 <!-- main script -->
 {{ $cursorJs := resources.Get "js/cursor.js" }}
 {{ $animationsJs := resources.Get "js/animations.js" }}
+{{ $checklistsJs := resources.Get "js/checklists.js" }}
 {{ $performanceJs := resources.Get "js/performance.js" }}
 {{ $scripts = $scripts | append $performanceJs }}
 {{ $scripts = $scripts | append (resources.Get "js/main.js") }}
 {{ $scripts = $scripts | append $cursorJs }}
+{{ $scripts = $scripts | append $checklistsJs }}
 {{ $scripts = $scripts | append $animationsJs }}
+{{ $scripts = $scripts | append (resources.Get "js/checklists.js") }}
 {{ $scripts = $scripts | append (resources.Get "js/navbar.js") }}
 {{ $scripts = $scripts | resources.Concat "js/script.js" }}
 {{ $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }}

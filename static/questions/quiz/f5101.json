@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Which BIG-IP component is responsible for protecting applications against Layer 7 attacks?",
+    "options": [
+      "Local Traffic Manager (LTM)",
+      "Application Security Manager (ASM)",
+      "Access Policy Manager (APM)",
+      "Global Traffic Manager (GTM)"
+    ],
+    "correctAnswer": "Application Security Manager (ASM)"
+  },
+  {
+    "question": "What is a characteristic of BIG-IP's full-proxy architecture?",
+    "options": [
+      "It maintains a single connection between client and server.",
+      "It only handles Layer 3 traffic forwarding.",
+      "It creates separate connections between the client and the server.",
+      "It only encrypts data, never decrypts."
+    ],
+    "correctAnswer": "It creates separate connections between the client and the server."
+  },
+  {
+    "question": "When acting as a reverse proxy, which of the following is a common function of BIG-IP?",
+    "options": [
+      "Masking internal client IP addresses to external servers.",
+      "Monitoring and controlling outgoing traffic from internal clients.",
+      "SSL Offloading, where BIG-IP decrypts incoming SSL traffic.",
+      "Applying security policies on outgoing traffic."
+    ],
+    "correctAnswer": "SSL Offloading, where BIG-IP decrypts incoming SSL traffic."
+  },
+  {
+    "question": "A forward proxy is primarily used for what purpose in a corporate environment?",
+    "options": [
+      "Distributing incoming client requests across backend servers.",
+      "Managing and securing user access to internal applications.",
+      "Handling outgoing traffic from internal clients to external servers for content filtering.",
+      "Ensuring optimal user experience by managing traffic across data centers."
+    ],
+    "correctAnswer": "Handling outgoing traffic from internal clients to external servers for content filtering."
+  },
+  {
+    "question": "Which URL is explicitly mentioned for activating an F5 BIG-IP license?",
+    "options": [
+      "support.f5.com",
+      "activate.f5.com",
+      "licensing.f5.net",
+      "my.f5.com"
+    ],
+    "correctAnswer": "activate.f5.com"
+  },
+  {
+    "question": "Which BIG-IP provisioning level allocates only what's needed and dynamically increases resources as required?",
+    "options": [
+      "Minimum",
+      "Dedicated",
+      "Nominal",
+      "Standard"
+    ],
+    "correctAnswer": "Nominal"
+  },
+  {
+    "question": "At which OSI layers does BIG-IP primarily operate, handling functionalities such as load balancing, encryption, and WAF?",
+    "options": [
+      "Layer 1 to Layer 2",
+      "Layer 2 to Layer 7",
+      "Layer 5 to Layer 7",
+      "Layer 3 to Layer 4"
+    ],
+    "correctAnswer": "Layer 2 to Layer 7"
+  },
+  {
+    "question": "What is a common use case for VLANs on BIG-IP?",
+    "options": [
+      "To resolve IP addresses to MAC addresses.",
+      "To manage user authentication policies.",
+      "To logically segment a physical network, separating different traffic types.",
+      "To create static routes for external networks."
+    ],
+    "correctAnswer": "To logically segment a physical network, separating different traffic types."
+  },
+  {
+    "question": "Which statement best describes the function of SNAT (Source NAT) in BIG-IP?",
+    "options": [
+      "It changes the destination IP address of incoming traffic to internal servers.",
+      "It hides the client\u2019s original IP address by translating it to a local IP for outgoing traffic.",
+      "It distributes incoming traffic across multiple backend servers.",
+      "It monitors traffic for auditing and legal compliance."
+    ],
+    "correctAnswer": "It hides the client\u2019s original IP address by translating it to a local IP for outgoing traffic."
+  },
+  {
+    "question": "What is a primary advantage of hardware-based BIG-IP platforms compared to virtual-based platforms?",
+    "options": [
+      "Faster deployment and scalability in cloud environments.",
+      "Lower acquisition costs and greater flexibility.",
+      "Higher SSL transaction throughput and dedicated SSL processing.",
+      "Ability to run on Amazon AWS without specific hardware."
+    ],
+    "correctAnswer": "Higher SSL transaction throughput and dedicated SSL processing."
+  },
+  {
+    "question": "What is the name of the core component in BIG-IP responsible for handling all traffic and bypassing the general-purpose Linux kernel for higher performance?",
+    "options": [
+      "Control Plane",
+      "Data Plane",
+      "TMOS",
+      "TMM"
+    ],
+    "correctAnswer": "TMM"
+  },
+  {
+    "question": "Which type of virtual server in BIG-IP is optimized for high-speed, Layer 4 (TCP/UDP) traffic processing, prioritizing speed over deep traffic inspection?",
+    "options": [
+      "Standard Virtual Server",
+      "Forwarding IP Virtual Server",
+      "Performance L4 Virtual Server",
+      "Reject Virtual Server"
+    ],
+    "correctAnswer": "Performance L4 Virtual Server"
+  },
+  {
+    "question": "Which load balancing algorithm sends traffic to the server with the fewest active connections?",
+    "options": [
+      "Round Robin",
+      "Least Connections",
+      "Fastest Response",
+      "Source IP"
+    ],
+    "correctAnswer": "Least Connections"
+  },
+  {
+    "question": "What does a 'Yellow (Down)' state for a pool member, as indicated by health monitors, signify?",
+    "options": [
+      "The server is healthy and actively receiving traffic.",
+      "No health monitor is assigned to the server.",
+      "The server is not responsive or fails to meet health criteria.",
+      "The server is in a standby state, awaiting failover."
+    ],
+    "correctAnswer": "The server is not responsive or fails to meet health criteria."
+  },
+  {
+    "question": "What is the primary benefit of using iApps in BIG-IP?",
+    "options": [
+      "To inspect and modify traffic using custom TCL scripts.",
+      "To simplify and streamline the deployment of application services using predefined templates.",
+      "To capture and analyze packet-level traffic for troubleshooting.",
+      "To manage and synchronize configurations between HA devices."
+    ],
+    "correctAnswer": "To simplify and streamline the deployment of application services using predefined templates."
+  },
+  {
+    "question": "Which DDoS mitigation technique specifically uses SYN cookies to validate incoming connections and prevent SYN floods?",
+    "options": [
+      "Rate Limiting",
+      "SYN Cookie Protection",
+      "Layer 7 DDoS Protection",
+      "IP Intelligence"
+    ],
+    "correctAnswer": "SYN Cookie Protection"
+  },
+  {
+    "question": "The Application Security Manager (ASM) in BIG-IP functions as a Web Application Firewall (WAF) to protect against which types of attacks?",
+    "options": [
+      "Layer 3-4 DoS attacks like SYN floods.",
+      "Network routing protocol exploits such as BGP hijacking.",
+      "Web application vulnerabilities like SQL Injection and Cross-Site Scripting (XSS).",
+      "Unauthorized access to the BIG-IP management interface."
+    ],
+    "correctAnswer": "Web application vulnerabilities like SQL Injection and Cross-Site Scripting (XSS)."
+  },
+  {
+    "question": "What scripting language are iRules based on, allowing for granular traffic control and customization on BIG-IP?",
+    "options": [
+      "Python",
+      "JavaScript",
+      "TCL",
+      "Perl"
+    ],
+    "correctAnswer": "TCL"
+  },
+  {
+    "question": "In an Active/Standby High Availability (HA) configuration for BIG-IP, what are the roles of the two units?",
+    "options": [
+      "Both units actively process traffic simultaneously.",
+      "One unit actively processes traffic, and the other remains on standby, ready to take over.",
+      "Both units only monitor each other and do not process traffic.",
+      "One unit handles inbound connections, and the other handles outbound connections."
+    ],
+    "correctAnswer": "One unit actively processes traffic, and the other remains on standby, ready to take over."
+  },
+  {
+    "question": "What is the key difference between a positive security model and a negative security model?",
+    "options": [
+      "A positive model blocks all traffic by default and allows only explicitly permitted, while a negative model allows all traffic except explicitly denied.",
+      "A positive model is easier to implement, while a negative model is more secure by design.",
+      "A positive model relies on attack signatures, while a negative model relies on whitelisting.",
+      "A positive model is used for Layer 7 protection, while a negative model is for Layer 3/4."
+    ],
+    "correctAnswer": "A positive model blocks all traffic by default and allows only explicitly permitted, while a negative model allows all traffic except explicitly denied."
+  }
+]

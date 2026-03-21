@@ -1,0 +1,202 @@
+[
+  {
+    "question": "According to the blog post, what is Katakana primarily used for?",
+    "options": [
+      "Native Japanese words",
+      "Grammatical elements",
+      "Foreign words and brand names",
+      "Verb conjugation"
+    ],
+    "correctAnswer": "Foreign words and brand names"
+  },
+  {
+    "question": "Which Japanese script is described as having 'flowing characters' and being used for native Japanese words and constructing sentences?",
+    "options": [
+      "Kanji",
+      "Hiragana",
+      "Katakana",
+      "Romanji"
+    ],
+    "correctAnswer": "Hiragana"
+  },
+  {
+    "question": "From where are Kanji characters borrowed?",
+    "options": [
+      "Korean",
+      "English",
+      "Chinese",
+      "Sanskrit"
+    ],
+    "correctAnswer": "Chinese"
+  },
+  {
+    "question": "What do Kanji characters primarily convey?",
+    "options": [
+      "Sounds",
+      "Grammatical functions",
+      "Meanings and concepts",
+      "Pitch accents"
+    ],
+    "correctAnswer": "Meanings and concepts"
+  },
+  {
+    "question": "The blog post states that mastering which script is fundamental to unlocking the full potential of the Japanese language?",
+    "options": [
+      "Katakana",
+      "Kanji",
+      "Romanji",
+      "Hiragana"
+    ],
+    "correctAnswer": "Hiragana"
+  },
+  {
+    "question": "How does Katakana differ from Hiragana in its character style?",
+    "options": [
+      "Katakana has flowing characters",
+      "Katakana is more intricate",
+      "Katakana has bold and angular characters",
+      "Katakana uses symbols for meaning"
+    ],
+    "correctAnswer": "Katakana has bold and angular characters"
+  },
+  {
+    "question": "Which of the following is NOT a primary use of Katakana mentioned in the blog post?",
+    "options": [
+      "Foreign words",
+      "Brand names",
+      "Adding international flair",
+      "Verb conjugation"
+    ],
+    "correctAnswer": "Verb conjugation"
+  },
+  {
+    "question": "What role does pitch accent play in Japanese pronunciation?",
+    "options": [
+      "It determines sentence structure",
+      "It alters the meaning of words",
+      "It indicates the grammatical tense",
+      "It signifies politeness levels"
+    ],
+    "correctAnswer": "It alters the meaning of words"
+  },
+  {
+    "question": "What cultural aspect is deeply reflected in the Japanese language, particularly through the use of honorifics?",
+    "options": [
+      "Innovation",
+      "Historical depth",
+      "Politeness and respect",
+      "Artistic expression"
+    ],
+    "correctAnswer": "Politeness and respect"
+  },
+  {
+    "question": "What are examples of honorifics mentioned in the text?",
+    "options": [
+      "-san and -sama",
+      "-chan and -kun",
+      "-desu and -masu",
+      "-wa and -ga"
+    ],
+    "correctAnswer": "-san and -sama"
+  },
+  {
+    "question": "The blog post describes learning Kanji as deciphering what?",
+    "options": [
+      "A phonetic code",
+      "A grammatical formula",
+      "A visual code",
+      "A historical document"
+    ],
+    "correctAnswer": "A visual code"
+  },
+  {
+    "question": "Which script is essential for deeper cultural and literary understanding, according to the blog post?",
+    "options": [
+      "Katakana",
+      "Hiragana",
+      "Romanji",
+      "Kanji"
+    ],
+    "correctAnswer": "Kanji"
+  },
+  {
+    "question": "When would you typically use Hiragana, based on the 'Practical Applications' section?",
+    "options": [
+      "For foreign words like 'coffee'",
+      "To emphasize specific terms",
+      "For grammatical elements and verb conjugation",
+      "To convey complex ideas"
+    ],
+    "correctAnswer": "For grammatical elements and verb conjugation"
+  },
+  {
+    "question": "The coexistence of Katakana, Hiragana, and Kanji is described as creating what in written Japanese?",
+    "options": [
+      "A confusing jumble",
+      "A phonetic system",
+      "A harmonious balance",
+      "A simplified structure"
+    ],
+    "correctAnswer": "A harmonious balance"
+  },
+  {
+    "question": "Unlike stress-based languages, Japanese employs what in its pronunciation?",
+    "options": [
+      "Vowel elongation",
+      "Consonant clusters",
+      "Pitch variations",
+      "Silent letters"
+    ],
+    "correctAnswer": "Pitch variations"
+  },
+  {
+    "question": "What type of character system is Kanji, as described in the blog post?",
+    "options": [
+      "Phonetic",
+      "Syllabic",
+      "Alphabetic",
+      "Logographic"
+    ],
+    "correctAnswer": "Logographic"
+  },
+  {
+    "question": "What does the phrase 'Ganbatte kudasai' mean, as indicated in the blog post?",
+    "options": [
+      "Hello",
+      "Thank you",
+      "Best of luck",
+      "Goodbye"
+    ],
+    "correctAnswer": "Best of luck"
+  },
+  {
+    "question": "According to the blog post, what is Hiragana often used for?",
+    "options": [
+      "Brand names",
+      "Foreign words",
+      "Native Japanese words",
+      "Emphasizing specific terms"
+    ],
+    "correctAnswer": "Native Japanese words"
+  },
+  {
+    "question": "If you encounter the word 'pizza' in Japanese, which script is it most likely written in?",
+    "options": [
+      "Kanji",
+      "Hiragana",
+      "Katakana",
+      "Romanji"
+    ],
+    "correctAnswer": "Katakana"
+  },
+  {
+    "question": "Which of the following is NOT mentioned as a primary purpose for using Kanji?",
+    "options": [
+      "To convey complex ideas",
+      "To represent specific names",
+      "For verb conjugation",
+      "For nouns"
+    ],
+    "correctAnswer": "For verb conjugation"
+  }
+]

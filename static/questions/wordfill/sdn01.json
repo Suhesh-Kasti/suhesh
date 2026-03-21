@@ -1,0 +1,62 @@
+[
+  {
+    "question": "If you need to configure a network device using NETCONF with a specific operation to merge data into the running configuration, which XML element is used in the rpc tag?",
+    "correctAnswer": "<edit-config>"
+  },
+  {
+    "question": "In a Cisco ACI environment, if you want to verify the reachability of a leaf switch from the APIC using the CLI, which specific command allows you to view the operational status of the fabric nodes?",
+    "correctAnswer": "show fabric membership"
+  },
+  {
+    "question": "If you are designing an SDN underlay and need to ensure maximum scalability for Layer 2 segments over a Layer 3 routed core, which encapsulation protocol header adds an 8-byte VXLAN header, an 8-byte UDP header, a 20-byte IP header, and a 14-byte Ethernet header?",
+    "correctAnswer": "VXLAN"
+  },
+  {
+    "question": "If an SDN controller needs to send a flow modification message to an OpenFlow-enabled switch to drop all traffic from a specific MAC address, which OpenFlow message type is used?",
+    "correctAnswer": "OFPT_FLOW_MOD"
+  },
+  {
+    "question": "If you are utilizing REST APIs to interact with an SDN controller's North Bound Interface and you want to retrieve a list of existing Endpoint Groups (EPGs) in JSON format, which HTTP method should be used?",
+    "correctAnswer": "GET"
+  },
+  {
+    "question": "In a Cisco ACI spine-leaf architecture, if you need to troubleshoot a path between two leaves, which protocol is typically used to perform a traceroute that is aware of the VXLAN overlay?",
+    "correctAnswer": "traceroute overlay"
+  },
+  {
+    "question": "If you are automating network device configuration using NETCONF and you need to ensure the device performs a validation check before committing the changes, which capability must be supported and invoked?",
+    "correctAnswer": ":validate"
+  },
+  {
+    "question": "Which specific protocol, used as a South Bound Interface, relies on a model-driven approach where the controller pushes declarative policies that the end devices translate into local forwarding state?",
+    "correctAnswer": "OpFlex"
+  },
+  {
+    "question": "If you are managing a network via the Data Plane and need to perform frame encapsulation for a VXLAN tunnel, what is the specific name of the device that performs the VXLAN encapsulation and decapsulation?",
+    "correctAnswer": "VTEP"
+  },
+  {
+    "question": "If you are performing a scan of ports 80, 443, and 99 on the 192.168.1.0/24 subnet at low speed to avoid triggering IDS, what Nmap command do you use?",
+    "correctAnswer": "nmap -p 80,443,99 -T0 192.168.1.0/24"
+  },
+  {
+    "question": "In the context of RESTCONF, which protocol is used to provide the structural definition of the data models that the API exposes?",
+    "correctAnswer": "YANG"
+  },
+  {
+    "question": "Which specific BGP address family is utilized in an EVPN-VXLAN control plane to distribute MAC and IP reachability information between VTEPs?",
+    "correctAnswer": "L2VPN EVPN"
+  },
+  {
+    "question": "If you are using gRPC for network telemetry, which data serialization format is predominantly used for high-performance structured data exchange between the network device and the collector?",
+    "correctAnswer": "Protocol Buffers"
+  },
+  {
+    "question": "When implementing a Spine-Leaf fabric, what is the standard routing protocol used in the underlay to achieve ECMP (Equal-Cost Multi-Path) for load balancing across all available spine switches?",
+    "correctAnswer": "IS-IS"
+  },
+  {
+    "question": "If you need to define a path in an SDN-controlled network that bypasses the shortest path calculated by the IGP to optimize traffic engineering, which technology is typically employed?",
+    "correctAnswer": "Segment Routing"
+  }
+]

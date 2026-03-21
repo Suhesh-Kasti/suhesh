@@ -1,0 +1,152 @@
+[
+  {
+    "question": "Which SQL injection technique requires the attacker to observe differences in the application's response time to infer database structure?",
+    "options": [
+      "Error-based SQLi",
+      "Union-based SQLi",
+      "Boolean-based blind SQLi",
+      "Time-based blind SQLi"
+    ],
+    "correctAnswer": "Time-based blind SQLi"
+  },
+  {
+    "question": "When performing a Union-based SQL injection, what are the two critical prerequisites for the injected query?",
+    "options": [
+      "Same number of columns and compatible data types",
+      "Same table name and database engine",
+      "Same column names and primary key structure",
+      "Same database user and OS permissions"
+    ],
+    "correctAnswer": "Same number of columns and compatible data types"
+  },
+  {
+    "question": "What is the primary mechanism by which Prepared Statements prevent SQL injection?",
+    "options": [
+      "By sanitizing all input for dangerous characters",
+      "By separating SQL logic from data via placeholders",
+      "By encrypting user input before database transmission",
+      "By restricting database access to specific IP addresses"
+    ],
+    "correctAnswer": "By separating SQL logic from data via placeholders"
+  },
+  {
+    "question": "In the context of SQL injection, what is the purpose of using an 'ORDER BY' clause during the enumeration phase?",
+    "options": [
+      "To sort the data for easier exfiltration",
+      "To determine the number of columns in the original query",
+      "To bypass WAF filtering rules",
+      "To escalate privileges within the database"
+    ],
+    "correctAnswer": "To determine the number of columns in the original query"
+  },
+  {
+    "question": "Which SQL injection type is most effective when the application does not return any visible error messages or content changes to the user?",
+    "options": [
+      "Error-based SQLi",
+      "Union-based SQLi",
+      "Out-of-band SQLi",
+      "In-band SQLi"
+    ],
+    "correctAnswer": "Out-of-band SQLi"
+  },
+  {
+    "question": "Why is 'Escaping User Input' considered a less reliable defense mechanism than 'Prepared Statements'?",
+    "options": [
+      "It is not supported by modern databases",
+      "It is error-prone and context-dependent",
+      "It prevents the database from using indexes",
+      "It increases query execution time"
+    ],
+    "correctAnswer": "It is error-prone and context-dependent"
+  },
+  {
+    "question": "What does the 'OAST' acronym stand for in the context of advanced SQL injection testing?",
+    "options": [
+      "Out-of-Application Security Testing",
+      "Open-source Attack Simulation Tool",
+      "Offensive Automated SQL Testing",
+      "Out-of-band Application Security Testing"
+    ],
+    "correctAnswer": "Out-of-band Application Security Testing"
+  },
+  {
+    "question": "Which tool is specifically designed for the automatic detection and exploitation of SQL injection vulnerabilities?",
+    "options": [
+      "Nmap",
+      "SQLMap",
+      "Wireshark",
+      "Metasploit"
+    ],
+    "correctAnswer": "SQLMap"
+  },
+  {
+    "question": "What is a major risk when testing for SQL injection using 'OR 1=1' payloads in a production environment?",
+    "options": [
+      "The application may crash immediately",
+      "The payload may trigger accidental data loss on UPDATE or DELETE queries",
+      "The database will automatically lock the user account",
+      "The WAF will block the user's IP address permanently"
+    ],
+    "correctAnswer": "The payload may trigger accidental data loss on UPDATE or DELETE queries"
+  },
+  {
+    "question": "Which of the following is considered a 'Defense in Depth' strategy for preventing SQL injection?",
+    "options": [
+      "Only using prepared statements",
+      "Enforcing least privilege on database accounts",
+      "Relying solely on a Web Application Firewall",
+      "Disabling all error reporting in the application"
+    ],
+    "correctAnswer": "Enforcing least privilege on database accounts"
+  },
+  {
+    "question": "In PostgreSQL, which function is commonly used to trigger an out-of-band DNS lookup for data exfiltration?",
+    "options": [
+      "dblink_connect",
+      "pg_sleep",
+      "lo_import",
+      "copy_from"
+    ],
+    "correctAnswer": "dblink_connect"
+  },
+  {
+    "question": "Which SQL injection technique specifically leverages the 'xp_cmdshell' extended stored procedure in Microsoft SQL Server?",
+    "options": [
+      "Blind SQLi",
+      "Union-based SQLi",
+      "Second-order SQLi",
+      "Command execution via SQLi"
+    ],
+    "correctAnswer": "Command execution via SQLi"
+  },
+  {
+    "question": "What is a 'Second-Order' SQL injection attack?",
+    "options": [
+      "An attack where malicious input is stored by the application and executed in a later query",
+      "An attack that requires two separate database connections",
+      "An attack that uses two different SQL dialects simultaneously",
+      "An attack that bypasses two layers of WAF protection"
+    ],
+    "correctAnswer": "An attack where malicious input is stored by the application and executed in a later query"
+  },
+  {
+    "question": "Which SQL clause is often used in blind injection to test character ranges using binary search to optimize extraction speed?",
+    "options": [
+      "LIMIT",
+      "SUBSTRING",
+      "GROUP BY",
+      "HAVING"
+    ],
+    "correctAnswer": "SUBSTRING"
+  },
+  {
+    "question": "When configuring a database for security, what is the primary purpose of removing 'public' schema permissions?",
+    "options": [
+      "To increase query speed",
+      "To prevent unauthorized enumeration of database objects",
+      "To allow for easier backups",
+      "To enable multi-tenancy"
+    ],
+    "correctAnswer": "To prevent unauthorized enumeration of database objects"
+  }
+]

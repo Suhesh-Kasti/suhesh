@@ -1,0 +1,62 @@
+[
+  {
+    "question": "You need to scan ports 80, 443, and 8080 on a target subnet 192.168.1.0/24 with a T3 timing template to keep the scan speed low. What Nmap command do you use?",
+    "correctAnswer": "nmap -p 80,443,8080 -T3 192.168.1.0/24"
+  },
+  {
+    "question": "You are debugging a network issue and need to see the hop-by-hop path to a destination. Which command identifies the route packets take to 8.8.8.8?",
+    "correctAnswer": "traceroute 8.8.8.8"
+  },
+  {
+    "question": "You need to capture traffic on the eth0 interface specifically for TCP port 80. What tcpdump command is required?",
+    "correctAnswer": "tcpdump -i eth0 tcp port 80"
+  },
+  {
+    "question": "An application is failing to connect to a remote server. You need to verify if the server is listening on port 443. Which command-line utility tests this TCP connection?",
+    "correctAnswer": "nc -zv [server_ip] 443"
+  },
+  {
+    "question": "You suspect a DNS resolution issue. Which command-line tool allows you to perform a manual query for the A record of example.com?",
+    "correctAnswer": "dig example.com A"
+  },
+  {
+    "question": "You need to display all active TCP and UDP listening ports on a Linux machine along with the PID of the process using them. Which command do you run?",
+    "correctAnswer": "ss -tulnp"
+  },
+  {
+    "question": "If you need to check the ARP table to map an IP address to a MAC address on your local segment, which command do you execute?",
+    "correctAnswer": "arp -a"
+  },
+  {
+    "question": "You are troubleshooting a routing table issue. Which command displays the current kernel routing table on a Linux system?",
+    "correctAnswer": "ip route show"
+  },
+  {
+    "question": "To force a renewal of your DHCP-assigned IP address on a Linux system using the ISC DHCP client, which command is used?",
+    "correctAnswer": "dhclient -r && dhclient"
+  },
+  {
+    "question": "You need to change the MTU of the eth0 interface to 1400 to accommodate a VPN tunnel. What command do you use?",
+    "correctAnswer": "ip link set dev eth0 mtu 1400"
+  },
+  {
+    "question": "Which specific Linux kernel feature allows for the creation of isolated network namespaces to test networking configurations without affecting the host system?",
+    "correctAnswer": "ip netns"
+  },
+  {
+    "question": "What is the specific name of the mechanism used by the Linux kernel to perform connection tracking for stateful packet inspection in iptables?",
+    "correctAnswer": "conntrack"
+  },
+  {
+    "question": "Which protocol header field in IPv4 is used to prevent infinite routing loops by decrementing the value at each router?",
+    "correctAnswer": "Time to Live"
+  },
+  {
+    "question": "In the context of 802.1Q, what is the term for the 4-byte field inserted into an Ethernet frame to identify the VLAN?",
+    "correctAnswer": "VLAN Tag"
+  },
+  {
+    "question": "What is the name of the protocol defined in RFC 5798 that allows multiple routers on the same subnet to act as a single virtual default gateway for redundancy?",
+    "correctAnswer": "VRRP"
+  }
+]

@@ -138,13 +138,13 @@ resampleFilter = "Lanczos"
   maxAge = "720h"
 
   # New caches for better performance
-  [caches.getcsv]
-  dir = ":cacheDir/:project"
-  maxAge = "24h"
+  #[caches.getcsv]
+  #dir = ":cacheDir/:project"
+  #maxAge = "24h"
 
-  [caches.getjson]
-  dir = ":cacheDir/:project"
-  maxAge = "24h"
+  #[caches.getjson]
+  #dir = ":cacheDir/:project"
+  #maxAge = "24h"
 
   [caches.getresource]
   dir = ":cacheDir/:project"

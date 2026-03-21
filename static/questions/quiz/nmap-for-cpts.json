@@ -1,0 +1,152 @@
+[
+  {
+    "question": "When performing a TCP SYN scan (-sS), why does Nmap send a RST packet after receiving a SYN/ACK?",
+    "options": [
+      "To acknowledge the successful handshake completion",
+      "To prevent the application from logging the connection",
+      "To signal the firewall that the scan is finished",
+      "To request the server to close the specific port"
+    ],
+    "correctAnswer": "To prevent the application from logging the connection"
+  },
+  {
+    "question": "Which Nmap state is uniquely identified by the receipt of an ICMP Port Unreachable (Type 3, Code 3) message?",
+    "options": [
+      "Filtered",
+      "Closed",
+      "Closed|Filtered",
+      "Unfiltered"
+    ],
+    "correctAnswer": "Closed|Filtered"
+  },
+  {
+    "question": "What is the primary advantage of using --source-port 53 during an Nmap scan?",
+    "options": [
+      "It significantly increases the speed of the scan",
+      "It bypasses firewalls that trust traffic originating from DNS servers",
+      "It allows Nmap to perform zone transfers automatically",
+      "It avoids the need for root privileges"
+    ],
+    "correctAnswer": "Bypasses firewalls that trust traffic originating from DNS servers"
+  },
+  {
+    "question": "Why is the use of -Pn considered a standard practice when scanning targets in a lab environment?",
+    "options": [
+      "It forces Nmap to use TCP Connect scans instead of SYN scans",
+      "It prevents the target from identifying the attacker's MAC address",
+      "It ensures the scan proceeds even if the host blocks ICMP echo requests",
+      "It enables the Nmap Scripting Engine to run more efficiently"
+    ],
+    "correctAnswer": "It ensures the scan proceeds even if the host blocks ICMP echo requests"
+  },
+  {
+    "question": "In the context of the Nmap Port State Matrix, what does the 'Unfiltered' state indicate?",
+    "options": [
+      "The port is definitely open and accepting connections",
+      "The port is not reachable due to a firewall",
+      "The port is reachable, but Nmap cannot determine if it is open or closed",
+      "The port is closed and no service is listening"
+    ],
+    "correctAnswer": "The port is reachable, but Nmap cannot determine if it is open or closed"
+  },
+  {
+    "question": "When scanning UDP ports, what is the primary reason Nmap often reports a port as 'open|filtered'?",
+    "options": [
+      "The target is using an outdated operating system",
+      "The port is closed, but the firewall is blocking the ICMP response",
+      "The service is open but did not respond to the probe packet",
+      "The packet was dropped due to network congestion"
+    ],
+    "correctAnswer": "The service is open but did not respond to the probe packet"
+  },
+  {
+    "question": "Which Nmap flag provides a detailed explanation of why a specific port was assigned a particular state?",
+    "options": [
+      "--packet-trace",
+      "--reason",
+      "--verbose",
+      "--reason-code"
+    ],
+    "correctAnswer": "--reason"
+  },
+  {
+    "question": "How does the Nmap intensity setting (--version-intensity) affect service detection?",
+    "options": [
+      "It controls the number of packets per second sent to the target",
+      "It determines the number of probes from the nmap-services-probes database used",
+      "It dictates the timeout duration for each TCP handshake",
+      "It enables or disables the use of SSL/TLS during banner grabbing"
+    ],
+    "correctAnswer": "It determines the number of probes from the nmap-services-probes database used"
+  },
+  {
+    "question": "What is the primary technical distinction between Ncat and traditional Netcat?",
+    "options": [
+      "Ncat supports native SSL/TLS encryption",
+      "Ncat is only compatible with IPv4 addresses",
+      "Ncat does not allow for port forwarding",
+      "Ncat is written in C++ instead of C"
+    ],
+    "correctAnswer": "Ncat supports native SSL/TLS encryption"
+  },
+  {
+    "question": "Which Nmap timing template is generally recommended for CTF environments to balance speed and accuracy?",
+    "options": [
+      "-T2",
+      "-T3",
+      "-T4",
+      "-T5"
+    ],
+    "correctAnswer": "-T4"
+  },
+  {
+    "question": "What is the function of the Nmap '--min-rate' flag?",
+    "options": [
+      "It sets the maximum number of concurrent threads for script execution",
+      "It ensures Nmap sends no fewer than the specified number of packets per second",
+      "It limits the total bandwidth usage of the scan",
+      "It specifies the minimum number of probes required to confirm a port state"
+    ],
+    "correctAnswer": "It ensures Nmap sends no fewer than the specified number of packets per second"
+  },
+  {
+    "question": "When using Nmap's IP ID Idle scan (-sI), what is a prerequisite for the 'zombie' host?",
+    "options": [
+      "It must be running an older version of Linux",
+      "It must have a predictable IP ID incrementing sequence",
+      "It must be on the same physical network segment as the attacker",
+      "It must support the TCP SYN/ACK protocol"
+    ],
+    "correctAnswer": "It must have a predictable IP ID incrementing sequence"
+  },
+  {
+    "question": "What does the '--data-length' flag accomplish in an Nmap scan?",
+    "options": [
+      "It forces the scan to use a specific TCP packet size",
+      "It pads packets with random data to bypass basic firewall filters",
+      "It limits the size of the response packets captured by Nmap",
+      "It automatically calculates the MTU of the network path"
+    ],
+    "correctAnswer": "It pads packets with random data to bypass basic firewall filters"
+  },
+  {
+    "question": "Which of the following is true regarding the '-f' (fragmentation) flag in Nmap?",
+    "options": [
+      "It splits the TCP header into smaller packets to evade simple packet filters",
+      "It forces the target to reassemble packets, slowing down the service",
+      "It enables the use of IPsec to encrypt the scanning traffic",
+      "It ensures all packets are sent as ICMP fragments"
+    ],
+    "correctAnswer": "It splits the TCP header into smaller packets to evade simple packet filters"
+  },
+  {
+    "question": "What is the purpose of the 'auth' category in the Nmap Scripting Engine (NSE)?",
+    "options": [
+      "To brute-force administrative credentials",
+      "To test for authentication bypass vulnerabilities or service configuration",
+      "To encrypt the connection between the scanner and the target",
+      "To automatically generate new user accounts on the target"
+    ],
+    "correctAnswer": "To test for authentication bypass vulnerabilities or service configuration"
+  }
+]

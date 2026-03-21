@@ -9,75 +9,37 @@ function initAnimations() {
   gsap.registerPlugin(ScrollTrigger);
 
   // --------------------------------------------------------------------------
-  // 1. Robust Page Transition (Curtain Slide Up)
+  // 1. Smooth Page Transition (Fade Out on Exit)
   // --------------------------------------------------------------------------
-  let curtain = document.querySelector('.page-transition-curtain');
-  if (!curtain) {
-    curtain = document.createElement('div');
-    curtain.className = 'page-transition-curtain';
-    document.body.appendChild(curtain);
+  // ENTER: Fade in the document body immediately
+  gsap.fromTo(document.body, {opacity: 0}, {opacity: 1, duration: 0.8, ease: "power2.out"});
 
-    const style = document.createElement('style');
-    style.textContent = `
-      .page-transition-curtain {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%; 
-        background-color: #000000;
-        z-index: 999999;
-        pointer-events: none;
-        will-change: transform;
-        transform: translateY(0%);
-      }
-      body:not(.dark) .page-transition-curtain {
-        background-color: #000000;
-      }
-    `;
-    document.head.appendChild(style);
-  }
+  // EXIT: Link Click -> Fade Out Page -> Navigate
+  document.body.addEventListener('click', e => {
+    const link = e.target.closest('a');
+    if (!link) return;
 
-  // ENTER: Page Loaded -> Reveal Content
-  gsap.set(curtain, { transform: "translateY(0%)", display: "block" });
-
-  const enterTl = gsap.timeline({
-    delay: 0.1,
-    onComplete: () => {
-      gsap.set(curtain, { transform: "translateY(100%)", display: "none" }); // HIDE COMPLETELY to fix black bar issue
-    }
-  });
-
-  enterTl.to(curtain, {
-    transform: "translateY(-100%)",
-    duration: 1.0,
-    ease: "power3.inOut"
-  });
-
-  // EXIT: Link Click -> Cover Content
-  const links = document.querySelectorAll('a');
-  links.forEach(link => {
     if (link.hostname === window.location.hostname &&
       !link.hash &&
       link.target !== '_blank' &&
       !link.dataset.noTransition) {
 
-      link.addEventListener('click', e => {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-        e.preventDefault();
-        const targetUrl = link.href;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      const targetUrl = link.href;
 
-        // Reset to bottom and MAKE VISIBLE
-        gsap.set(curtain, { transform: "translateY(100%)", display: "block", pointerEvents: "all" });
+      // Disable pointer events during transition
+      document.body.style.pointerEvents = "none";
 
-        gsap.to(curtain, {
-          transform: "translateY(0%)",
-          duration: 0.8,
-          ease: "power3.inOut",
-          onComplete: () => {
-            window.location.href = targetUrl;
-          }
-        });
+      // Animate body out smoothly, then navigate
+      gsap.to(document.body, {
+        opacity: 0,
+        y: -20,
+        duration: 0.4,
+        ease: "power2.inOut",
+        onComplete: () => {
+          window.location.href = targetUrl;
+        }
       });
     }
   });

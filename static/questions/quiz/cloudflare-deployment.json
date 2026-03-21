@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the primary characteristic of a static site?",
+    "options": [
+      "Content is dynamically generated based on user input",
+      "It requires server-side scripting languages like PHP or Ruby to function",
+      "Content is pre-rendered and served as-is to the user",
+      "It always includes a backend database for content storage"
+    ],
+    "correctAnswer": "Content is pre-rendered and served as-is to the user"
+  },
+  {
+    "question": "Which of the following is a primary advantage of static sites over dynamic websites?",
+    "options": [
+      "They are typically slower due to pre-rendering",
+      "They require complex server-side processing",
+      "They are generally faster and more secure",
+      "Content updates are more difficult to manage"
+    ],
+    "correctAnswer": "They are generally faster and more secure"
+  },
+  {
+    "question": "Which of these features is included in Cloudflare Pages' free plan?",
+    "options": [
+      "Unlimited monthly bandwidth",
+      "Support for custom top-level domains like `your-site.com`",
+      "Continuous Deployment from Git repositories",
+      "More than 500 monthly build minutes"
+    ],
+    "correctAnswer": "Continuous Deployment from Git repositories"
+  },
+  {
+    "question": "What is the monthly bandwidth limit for Cloudflare Pages' free plan?",
+    "options": [
+      "50 GB",
+      "100 GB",
+      "200 GB",
+      "Unlimited"
+    ],
+    "correctAnswer": "100 GB"
+  },
+  {
+    "question": "What type of custom domain support is available in Cloudflare Pages' free plan?",
+    "options": [
+      "Full custom domains with `your-site.com`",
+      "Only subdomains of `*.pages.dev`",
+      "No custom domain support at all",
+      "Custom domains are only for paid plans, subdomains are not mentioned"
+    ],
+    "correctAnswer": "Only subdomains of `*.pages.dev`"
+  },
+  {
+    "question": "What is the initial requirement for your static site repository before deploying to Cloudflare Pages' free plan?",
+    "options": [
+      "It must be a private repository on GitHub or GitLab",
+      "It needs to be manually uploaded to Cloudflare's storage",
+      "It must be a public repository on GitHub or GitLab",
+      "It can be hosted on any version control system"
+    ],
+    "correctAnswer": "It must be a public repository on GitHub or GitLab"
+  },
+  {
+    "question": "After connecting to your Git repository and choosing it, what is the next typical step in deploying to Cloudflare Pages?",
+    "options": [
+      "Manually upload your HTML, CSS, and JS files",
+      "Configure your project, potentially choosing a framework preset",
+      "Request a manual review from Cloudflare support",
+      "Set up a database connection"
+    ],
+    "correctAnswer": "Configure your project, potentially choosing a framework preset"
+  },
+  {
+    "question": "If a deployment fails due to \"Error in Code - Build Failed,\" what is the recommended action?",
+    "options": [
+      "Contact Cloudflare support immediately without changes",
+      "Manually upload the site files via FTP",
+      "Fix the errors in your code, push changes, then retry deployment",
+      "Wait for Cloudflare to automatically resolve the issue"
+    ],
+    "correctAnswer": "Fix the errors in your code, push changes, then retry deployment"
+  },
+  {
+    "question": "What should be done if a Cloudflare Pages deployment fails because \"Large File Size Exceeds Limit\"?",
+    "options": [
+      "Increase the build minutes limit in your account",
+      "Upgrade to a more expensive Cloudflare plan",
+      "Optimize assets or consider using a CDN to serve large files",
+      "Change the repository to a private one"
+    ],
+    "correctAnswer": "Optimize assets or consider using a CDN to serve large files"
+  },
+  {
+    "question": "Which of the following static site frameworks is explicitly mentioned as supported by Cloudflare Pages?",
+    "options": [
+      "Spring Boot",
+      "Django",
+      "Hugo",
+      "ASP.NET Core"
+    ],
+    "correctAnswer": "Hugo"
+  },
+  {
+    "question": "How do the free plan build minutes of Cloudflare Pages compare to Netlify, according to the text?",
+    "options": [
+      "Cloudflare Pages offers 500 build minutes, while Netlify offers 300 build minutes.",
+      "Cloudflare Pages offers 300 build minutes, while Netlify offers 500 build minutes.",
+      "Both platforms offer 100 build minutes in their free plans.",
+      "Netlify offers unlimited build minutes, Cloudflare Pages has a limit."
+    ],
+    "correctAnswer": "Cloudflare Pages offers 500 build minutes, while Netlify offers 300 build minutes."
+  },
+  {
+    "question": "What is a main limitation of GitHub Pages compared to Cloudflare Pages or Netlify?",
+    "options": [
+      "It charges for hosting public repositories",
+      "It has no support for custom domains",
+      "It has limited support for static site frameworks and no built-in build process",
+      "It offers a global CDN but no SSL/HTTPS"
+    ],
+    "correctAnswer": "It has limited support for static site frameworks and no built-in build process"
+  },
+  {
+    "question": "What is a primary drawback of using AWS S3 and CloudFront for static site hosting, as described in the text?",
+    "options": [
+      "It is generally more expensive for all sites",
+      "It lacks scalability and performance",
+      "It requires more technical expertise and a complex setup",
+      "It provides automatic continuous deployment"
+    ],
+    "correctAnswer": "It requires more technical expertise and a complex setup"
+  },
+  {
+    "question": "What is the purpose of a Content Delivery Network (CDN)?",
+    "options": [
+      "To process dynamic server-side logic",
+      "To store user input and database information",
+      "To deliver content to users based on geographic location, reducing latency",
+      "To compile static site code before deployment"
+    ],
+    "correctAnswer": "To deliver content to users based on geographic location, reducing latency"
+  },
+  {
+    "question": "What does Server-side Rendering (SSR) refer to?",
+    "options": [
+      "Generating pages on the client's browser after fetching data",
+      "The server generating HTML pages before sending them to the client",
+      "A technique to optimize image files for faster loading",
+      "A security protocol for encrypted data transfer"
+    ],
+    "correctAnswer": "The server generating HTML pages before sending them to the client"
+  },
+  {
+    "question": "According to the text, which type of web project is an excellent choice for static sites?",
+    "options": [
+      "Large e-commerce platforms with dynamic product inventories",
+      "Complex social media platforms requiring real-time user interaction",
+      "Blogs, company websites, portfolio sites, and small web applications",
+      "Enterprise resource planning (ERP) systems"
+    ],
+    "correctAnswer": "Blogs, company websites, portfolio sites, and small web applications"
+  },
+  {
+    "question": "After logging into the Cloudflare dashboard, which sequence of clicks leads to the Pages section for project creation?",
+    "options": [
+      "Click 'Settings' then 'Pages'",
+      "Click 'Workers' then 'Pages'",
+      "Click 'Analytics' then 'Pages'",
+      "Click 'Domains' then 'Pages'"
+    ],
+    "correctAnswer": "Click 'Workers' then 'Pages'"
+  },
+  {
+    "question": "How does Cloudflare Pages achieve \"Continuous Deployment\"?",
+    "options": [
+      "By requiring manual file uploads for every change",
+      "By automatically deploying whenever changes are pushed to the Git repository",
+      "By scheduling deployments only once a month",
+      "By using a server-side scripting language to rebuild the site"
+    ],
+    "correctAnswer": "By automatically deploying whenever changes are pushed to the Git repository"
+  },
+  {
+    "question": "What do \"Build Minutes\" refer to in the context of a hosting platform like Cloudflare Pages?",
+    "options": [
+      "The total time a website is online in a month",
+      "The amount of time users spend interacting with the site",
+      "The amount of time the platform spends building your site during deployments",
+      "The time required for an initial site setup"
+    ],
+    "correctAnswer": "The amount of time the platform spends building your site during deployments"
+  },
+  {
+    "question": "What are \"Isomorphic/Universal Applications\"?",
+    "options": [
+      "Applications that can only run on specific operating systems",
+      "Web applications that can be rendered on both the server and the client",
+      "Applications designed for offline use only",
+      "Applications that require a specific proprietary framework"
+    ],
+    "correctAnswer": "Web applications that can be rendered on both the server and the client"
+  }
+]

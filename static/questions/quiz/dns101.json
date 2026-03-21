@@ -1,0 +1,182 @@
+[
+  {
+    "question": "What is DNS often referred to as in the blog post's introduction?",
+    "options": [
+      "The internet's search engine",
+      "The internet's phonebook",
+      "The internet's contacts app",
+      "The internet's address book"
+    ],
+    "correctAnswer": "The internet's contacts app"
+  },
+  {
+    "question": "What is the primary function of DNS?",
+    "options": [
+      "Translating IP addresses to domain names",
+      "Storing website content",
+      "Translating human-readable domain names into IP addresses",
+      "Encrypting internet traffic"
+    ],
+    "correctAnswer": "Translating human-readable domain names into IP addresses"
+  },
+  {
+    "question": "Without DNS, how would users navigate the internet as we know it?",
+    "options": [
+      "By using a special browser",
+      "By memorizing website names",
+      "By remembering IP addresses for every website",
+      "By asking a search engine for IP addresses"
+    ],
+    "correctAnswer": "By remembering IP addresses for every website"
+  },
+  {
+    "question": "According to the blog post, what role does DNS play in terms of accessibility?",
+    "options": [
+      "It secures web connections",
+      "It simplifies the process of connecting to web resources",
+      "It balances network load",
+      "It encrypts domain names"
+    ],
+    "correctAnswer": "It simplifies the process of connecting to web resources"
+  },
+  {
+    "question": "How does DNS contribute to scalability?",
+    "options": [
+      "By encrypting data",
+      "By powering billions of devices across a dynamic, growing internet",
+      "By providing faster download speeds",
+      "By ensuring content delivery"
+    ],
+    "correctAnswer": "By powering billions of devices across a dynamic, growing internet"
+  },
+  {
+    "question": "Modern DNS incorporates protections to counter threats. What is an example mentioned in the blog post?",
+    "options": [
+      "SSL/TLS",
+      "VPN",
+      "DNSSEC",
+      "Firewall"
+    ],
+    "correctAnswer": "DNSSEC"
+  },
+  {
+    "question": "DNS enables various advanced features. Which of the following is mentioned as an example of DNS's flexibility?",
+    "options": [
+      "Network traffic encryption",
+      "Content delivery systems and load balancing",
+      "Secure email transmission",
+      "User authentication"
+    ],
+    "correctAnswer": "Enables content delivery systems, load balancing, and more"
+  },
+  {
+    "question": "In the 'Fun Analogy' section, DNS is compared to what?",
+    "options": [
+      "A post office",
+      "A search engine",
+      "A librarian",
+      "A GPS system"
+    ],
+    "correctAnswer": "A librarian"
+  },
+  {
+    "question": "When you type a URL in your browser, what is the first entity your browser contacts in a DNS lookup?",
+    "options": [
+      "The root servers",
+      "The TLD nameservers",
+      "A recursive resolver",
+      "The authoritative server"
+    ],
+    "correctAnswer": "A recursive resolver"
+  },
+  {
+    "question": "After contacting the recursive resolver, which servers are queried next to find the appropriate TLD servers?",
+    "options": [
+      "Authoritative servers",
+      "Root servers",
+      "Local DNS servers",
+      "Content delivery networks"
+    ],
+    "correctAnswer": "Root servers"
+  },
+  {
+    "question": "Which type of server is responsible for locating authoritative servers for a specific domain (e.g., suhesh.com.np)?",
+    "options": [
+      "Recursive resolver",
+      "Root server",
+      "TLD nameserver",
+      "Local cache server"
+    ],
+    "correctAnswer": "TLD nameserver"
+  },
+  {
+    "question": "Which server provides the actual IP address for a domain name to the recursive resolver?",
+    "options": [
+      "Recursive resolver",
+      "Root server",
+      "TLD nameserver",
+      "Authoritative server"
+    ],
+    "correctAnswer": "Authoritative server"
+  },
+  {
+    "question": "Which component in the DNS lookup process acts as the 'middleman'?",
+    "options": [
+      "Root Servers",
+      "TLD Servers",
+      "Recursive Resolver",
+      "Authoritative Servers"
+    ],
+    "correctAnswer": "Recursive Resolver"
+  },
+  {
+    "question": "Every online activity, such as streaming Netflix or sending emails, depends on which system?",
+    "options": [
+      "VPN",
+      "Firewall",
+      "DNS",
+      "Proxy Server"
+    ],
+    "correctAnswer": "DNS"
+  },
+  {
+    "question": "DNS enables improved security using techniques like GeoDNS and what other mentioned technique?",
+    "options": [
+      "SSL",
+      "SSH",
+      "DNSSEC",
+      "HTTPS"
+    ],
+    "correctAnswer": "DNSSEC"
+  },
+  {
+    "question": "Which of the following DNS record types is NOT explicitly mentioned to be covered in upcoming posts?",
+    "options": [
+      "A record",
+      "AAAA record",
+      "SRV record",
+      "MX record"
+    ],
+    "correctAnswer": "SRV record"
+  },
+  {
+    "question": "What is one of the aims of the DNS series mentioned in the blog post?",
+    "options": [
+      "To only focus on theoretical concepts",
+      "To avoid hands-on labs",
+      "To break down complexities in an intuitive way",
+      "To provide only F5 DNS solutions"
+    ],
+    "correctAnswer": "To break down complexities in an intuitive and engaging way"
+  },
+  {
+    "question": "The blog post mentions getting hands-on with setting up your own DNS server using which two configurations?",
+    "options": [
+      "Apache and Nginx",
+      "BIND and F5 DNS",
+      "Microsoft DNS and PowerDNS",
+      "Unbound and CoreDNS"
+    ],
+    "correctAnswer": "BIND and F5 DNS"
+  }
+]

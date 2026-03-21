@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the primary purpose of Nmap?",
+    "options": [
+      "Graphic design software",
+      "Document editing",
+      "Network scanning and security auditing",
+      "Web development framework"
+    ],
+    "correctAnswer": "Network scanning and security auditing"
+  },
+  {
+    "question": "Which phase of hacking does enumeration fall under, according to the text?",
+    "options": [
+      "Exploitation",
+      "Post-exploitation",
+      "Reconnaissance",
+      "Maintaining access"
+    ],
+    "correctAnswer": "Reconnaissance"
+  },
+  {
+    "question": "What is the main goal during the enumeration phase?",
+    "options": [
+      "To exploit known vulnerabilities",
+      "To clean up traces of an attack",
+      "To gather information about the target network for vulnerabilities",
+      "To deploy malware"
+    ],
+    "correctAnswer": "To gather information about the target network for vulnerabilities"
+  },
+  {
+    "question": "How can Windows users download the official Nmap installer?",
+    "options": [
+      "Via the Microsoft Store",
+      "From the Nmap's official website",
+      "Using pip",
+      "Through the Chocolatey package manager"
+    ],
+    "correctAnswer": "From the Nmap's official website"
+  },
+  {
+    "question": "Besides the official installer, which command-line tool can be used to install Nmap on Windows?",
+    "options": [
+      "apt-get",
+      "yum",
+      "winget",
+      "brew"
+    ],
+    "correctAnswer": "winget"
+  },
+  {
+    "question": "What is generally used for Nmap installation on Linux distributions?",
+    "options": [
+      "Homebrew",
+      "Winget",
+      "Package managers",
+      "Official Nmap GUI"
+    ],
+    "correctAnswer": "Package managers"
+  },
+  {
+    "question": "Which package manager is recommended for installing Nmap on macOS?",
+    "options": [
+      "APT",
+      "YUM",
+      "Homebrew",
+      "Snap"
+    ],
+    "correctAnswer": "Homebrew"
+  },
+  {
+    "question": "Which Android app is mentioned as a user-friendly alternative for discovering devices and basic network enumeration?",
+    "options": [
+      "iNetTools",
+      "Termux",
+      "Fing Network Tools",
+      "Termius"
+    ],
+    "correctAnswer": "Fing Network Tools"
+  },
+  {
+    "question": "For advanced Android users, which terminal emulator can be used to install and run Nmap?",
+    "options": [
+      "Termius",
+      "PowerShell",
+      "Termux",
+      "Command Prompt"
+    ],
+    "correctAnswer": "Termux"
+  },
+  {
+    "question": "What command is used to download Nmap within Termux?",
+    "options": [
+      "install nmap",
+      "pkg install nmap",
+      "sudo apt-get install nmap",
+      "brew install nmap"
+    ],
+    "correctAnswer": "pkg install nmap"
+  },
+  {
+    "question": "Which iOS app offers network diagnostic tools like ping and port scanning?",
+    "options": [
+      "Fing Network Tools",
+      "Termux",
+      "iNetTools",
+      "Google Chrome"
+    ],
+    "correctAnswer": "iNetTools"
+  },
+  {
+    "question": "Similar to Termux on Android, which app on iOS allows running Nmap commands within a terminal environment?",
+    "options": [
+      "iNetTools",
+      "Termius",
+      "Fing Network Tools",
+      "Safari"
+    ],
+    "correctAnswer": "Termius"
+  },
+  {
+    "question": "Which of the following is NOT listed as a required item before starting to scan a network with Nmap?",
+    "options": [
+      "IP address and subnet",
+      "Port number",
+      "Target operating system details",
+      "Scan Type"
+    ],
+    "correctAnswer": "Target operating system details"
+  },
+  {
+    "question": "What is the primary purpose of Nmap's host discovery phase?",
+    "options": [
+      "To install malware on inactive hosts",
+      "To identify the operating system of all devices",
+      "To ensure the target host is active and save scanning time",
+      "To perform a full port scan on all possible IPs"
+    ],
+    "correctAnswer": "To ensure the target host is active and save scanning time"
+  },
+  {
+    "question": "Which Nmap flag is used to explicitly perform host discovery?",
+    "options": [
+      "-Pn",
+      "-Sn",
+      "-sS",
+      "-O"
+    ],
+    "correctAnswer": "-Sn"
+  },
+  {
+    "question": "Which Nmap flag is used to disable or skip the host discovery phase?",
+    "options": [
+      "-Sn",
+      "-sV",
+      "-Pn",
+      "-p"
+    ],
+    "correctAnswer": "-Pn"
+  },
+  {
+    "question": "When Nmap performs a scan as a root user, which of these is one of the methods used for host discovery?",
+    "options": [
+      "Sending only a TCP SYN packet on port 22",
+      "Sending an ICMP echo packet",
+      "Only sending a UDP packet on port 53",
+      "Sending a TCP ACK packet on port 443"
+    ],
+    "correctAnswer": "Sending an ICMP echo packet"
+  },
+  {
+    "question": "When Nmap performs a scan as a local user, which of the following is used for host discovery?",
+    "options": [
+      "ICMP timestamp request",
+      "ICMP echo packet",
+      "TCP SYN packet on port 443",
+      "UDP port scan"
+    ],
+    "correctAnswer": "TCP SYN packet on port 443"
+  },
+  {
+    "question": "How does Nmap primarily utilize the TCP handshake to check if a port is active or not?",
+    "options": [
+      "It sends a PING request and waits for a response.",
+      "It sends a SYN packet and expects a SYN+ACK if the target is up.",
+      "It sends a FIN packet and waits for an RST.",
+      "It checks DNS records for the host."
+    ],
+    "correctAnswer": "It sends a SYN packet and expects a SYN+ACK if the target is up."
+  },
+  {
+    "question": "If a target host is down, what kind of packet reply does Nmap receive after sending a SYN packet?",
+    "options": [
+      "SYN+ACK",
+      "PSH+ACK",
+      "RST/ACK",
+      "FIN/ACK"
+    ],
+    "correctAnswer": "RST/ACK"
+  }
+]

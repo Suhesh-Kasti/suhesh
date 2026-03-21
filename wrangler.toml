@@ -1,11 +1,11 @@
 # Configure Cloudflare Worker
 
 name = 'suhesh'
-compatibility_date = "2025-06-10"
+compatibility_date = "2026-03-21"
 
 [build]
 command = "bash build.sh"
 
 [assets]
 directory = "./public"
-not_found_handling = "404.html"
+not_found_handling = "none"

@@ -1,5 +1,5 @@
 main() {
-  HUGO_VERSION=0.147.7
+  HUGO_VERSION=0.157.0
 
   export TZ=Kathmandu/Asia
 

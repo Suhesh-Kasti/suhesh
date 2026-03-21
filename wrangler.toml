@@ -4,7 +4,7 @@ name = 'suhesh'
 compatibility_date = "2025-06-10"
 
 [build]
-command = "./build.sh"
+command = "bash build.sh"
 
 [assets]
 directory = "./public"

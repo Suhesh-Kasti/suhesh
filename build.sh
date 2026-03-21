@@ -1,3 +1,4 @@
+#!/bin/bash
 main() {
   HUGO_VERSION=0.157.0
 

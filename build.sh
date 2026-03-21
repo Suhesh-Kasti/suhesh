@@ -32,5 +32,5 @@ main() {
 
 }
 
-set -euo pipefail
+set -eu
 main "$@"

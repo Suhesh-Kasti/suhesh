@@ -22,7 +22,7 @@ main() {
   echo Node.js: "$(node --version)"
 
   # https://gohugo.io/methods/page/gitinfo/#hosting-considerations
-  git fetch --recurse-submodules --unshallow
+  git fetch --recurse-submodules
 
   # https://github.com/gohugoio/hugo/issues/9810
   git config core.quotepath false

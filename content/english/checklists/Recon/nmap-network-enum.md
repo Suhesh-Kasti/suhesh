@@ -1,6 +1,6 @@
 ---
 title: "Nmap Engagement & Evasion Strategy"
-description: "A comprehensive checklist for network discovery, port scanning, and firewall evasion during pentesting or exams."
+description: "A comprehensive checklist for network discovery, port scanning, and firewall evasion during pentesting or exams using Nmap."
 date: 2026-03-10T10:00:00+05:45
 checklist_categories: ["Recon"]
 checklist_tags: ["cpts", "red-team", "bug hunt"]

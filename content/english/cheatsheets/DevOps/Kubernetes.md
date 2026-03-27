@@ -5,6 +5,7 @@ image: "/images/cheatsheets/kubernetes.svg"
 cheatsheet_categories: ["Devops"]
 cheatsheet_tags: ["kubernetes", "pods", "containers", "kubectl"]
 description: is an open-source container orchestration platform that automates the deployment and management of containerized applications.
+folder: "devops"
 ---
 
 #### 1. Deploy a Pod

@@ -109,6 +109,14 @@ function initAnimations() {
       lastScroll = current;
     }, { passive: true });
   }
+
+  // Restore document body upon hitting the "Back" button (bfcache page-restore feature)
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) {
+      gsap.set(document.body, {opacity: 1, y: 0, clearProps: "all"});
+      document.body.style.pointerEvents = "auto";
+    }
+  });
 }
 
 if (document.readyState === 'loading') {

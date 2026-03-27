@@ -1,0 +1,152 @@
+[
+  {
+    "question": "In the context of DNS enumeration, what information does an SPF (Sender Policy Framework) record primarily provide to an external attacker?",
+    "options": [
+      "The physical geographic location of the DNS server",
+      "Authorized IP address ranges and third-party mail senders allowed to send email on behalf of the domain",
+      "The administrative contact information for the domain registrar",
+      "A complete list of all internal hostnames mapped to private IP addresses"
+    ],
+    "correctAnswer": "Authorized IP address ranges and third-party mail senders allowed to send email on behalf of the domain"
+  },
+  {
+    "question": "Why are Certificate Transparency (CT) logs considered a high-value resource for infrastructure enumeration?",
+    "options": [
+      "They automatically decrypt traffic between the client and the server",
+      "They provide a public, immutable ledger of all domain names for which a certificate has been issued",
+      "They contain the private keys associated with the issued SSL certificates",
+      "They list the specific operating system versions running on the target servers"
+    ],
+    "correctAnswer": "They provide a public, immutable ledger of all domain names for which a certificate has been issued"
+  },
+  {
+    "question": "When analyzing a job description for infrastructure enumeration, which of the following findings is most actionable for identifying potential CI/CD pipeline vulnerabilities?",
+    "options": [
+      "Mention of using Jenkins for automated deployment",
+      "A requirement for 5+ years of experience in Python",
+      "A preference for candidates with strong communication skills",
+      "A mention of using a cloud-based office suite like Office 365"
+    ],
+    "correctAnswer": "Mention of using Jenkins for automated deployment"
+  },
+  {
+    "question": "What is the primary security risk associated with an improperly configured AWS S3 bucket that is publicly accessible?",
+    "options": [
+      "The bucket will automatically delete all stored objects after 24 hours",
+      "It allows unauthorized parties to read, list, or write objects, potentially exposing sensitive data or source code",
+      "The bucket's encryption keys are automatically broadcast over the public internet",
+      "It prevents the company from accessing their own cloud storage assets"
+    ],
+    "correctAnswer": "It allows unauthorized parties to read, list, or write objects, potentially exposing sensitive data or source code"
+  },
+  {
+    "question": "Why is analyzing TXT records in DNS often described as looking into an 'administrative junk drawer'?",
+    "options": [
+      "They are mandatory for all public websites and are always empty",
+      "They are used to store high-resolution images for the domain",
+      "They contain various administrative verification tokens for third-party services like Atlassian or Google",
+      "They are used to bypass firewall rules by hiding malicious payloads in text strings"
+    ],
+    "correctAnswer": "They contain various administrative verification tokens for third-party services like Atlassian or Google"
+  },
+  {
+    "question": "Which of the following describes the purpose of the 6-Layer Methodology in the provided text?",
+    "options": [
+      "To provide a structured approach to mapping a target's attack surface",
+      "To define the steps for exploiting a known zero-day vulnerability",
+      "To automate the process of brute-forcing user credentials",
+      "To identify the most efficient way to disable a target's firewall"
+    ],
+    "correctAnswer": "To provide a structured approach to mapping a target's attack surface"
+  },
+  {
+    "question": "What is the primary danger of finding a hardcoded API key in a public GitHub repository?",
+    "options": [
+      "It allows the developer to track who is accessing the repository",
+      "It provides unauthorized access to the service associated with that key, potentially leading to data breaches",
+      "It automatically triggers a security patch on the server side",
+      "It forces the repository to become private, hiding it from further discovery"
+    ],
+    "correctAnswer": "It provides unauthorized access to the service associated with that key, potentially leading to data breaches"
+  },
+  {
+    "question": "In the context of the blog text, what is 'blind digging'?",
+    "options": [
+      "Using automated tools to map the entire network architecture",
+      "Studying public OSINT data before taking action",
+      "Attempting to brute-force a login page without prior reconnaissance",
+      "Analyzing DNS records to find hidden subdomains"
+    ],
+    "correctAnswer": "Attempting to brute-force a login page without prior reconnaissance"
+  },
+  {
+    "question": "Which tool is specifically mentioned in the text for searching Certificate Transparency logs?",
+    "options": [
+      "Nmap",
+      "Wireshark",
+      "crt.sh",
+      "Metasploit"
+    ],
+    "correctAnswer": "crt.sh"
+  },
+  {
+    "question": "What is the primary goal of OSINT as described in the section regarding the 'Human Element'?",
+    "options": [
+      "To directly hack the employees' personal devices",
+      "To gather information about the people who build and maintain infrastructure to predict the tech stack",
+      "To identify the physical location of the company's headquarters",
+      "To force employees to reveal their corporate passwords"
+    ],
+    "correctAnswer": "To gather information about the people who build and maintain infrastructure to predict the tech stack"
+  },
+  {
+    "question": "What is an 'A record' in the Domain Name System?",
+    "options": [
+      "A record that points a domain name to an IPv4 address",
+      "A record that specifies the mail server for a domain",
+      "A record that contains human-readable text for administrative purposes",
+      "A record that maps a domain name to an IPv6 address"
+    ],
+    "correctAnswer": "A record that points a domain name to an IPv4 address"
+  },
+  {
+    "question": "In the context of Kubernetes security, what is the significance of the Kubelet API?",
+    "options": [
+      "It is the primary interface for managing user identities in the cloud",
+      "It is the component that runs on each node and can potentially be exploited if left unauthenticated",
+      "It is a tool used to generate SSL certificates for containerized applications",
+      "It is a database used to store historical logs of container activity"
+    ],
+    "correctAnswer": "It is the component that runs on each node and can potentially be exploited if left unauthenticated"
+  },
+  {
+    "question": "What is the function of an MX record in DNS?",
+    "options": [
+      "To identify the primary web server for the domain",
+      "To specify the mail servers responsible for receiving email on behalf of a domain",
+      "To store the public key for DNSSEC signatures",
+      "To point subdomains to secondary load balancers"
+    ],
+    "correctAnswer": "To specify the mail servers responsible for receiving email on behalf of a domain"
+  },
+  {
+    "question": "What is the primary purpose of rate-limiting on an API endpoint?",
+    "options": [
+      "To encrypt data in transit between the client and server",
+      "To prevent unauthorized users from accessing administrative functions",
+      "To control the number of requests a client can make in a given timeframe to prevent abuse or DoS",
+      "To optimize the database query speed for frequently accessed resources"
+    ],
+    "correctAnswer": "To control the number of requests a client can make in a given timeframe to prevent abuse or DoS"
+  },
+  {
+    "question": "In the context of web application security, what does the term 'debug mode' often imply when left enabled in production?",
+    "options": [
+      "The application will run faster due to additional logging",
+      "The application may disclose verbose error messages, stack traces, or configuration details to the user",
+      "The application is automatically protected against SQL injection attacks",
+      "The application disables all authentication mechanisms to improve user experience"
+    ],
+    "correctAnswer": "The application may disclose verbose error messages, stack traces, or configuration details to the user"
+  }
+]

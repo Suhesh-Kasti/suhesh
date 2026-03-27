@@ -5,6 +5,7 @@ image: "/images/cheatsheets/sql.svg"
 cheatsheet_categories: ["Programming Language"]
 cheatsheet_tags: ["query language", "sql", "sqli", "sql injection", "database"]
 description: is a domain-specific language for managing and manipulating relational databases.
+folder: "programming"
 ---
 
 #### 1. SELECT

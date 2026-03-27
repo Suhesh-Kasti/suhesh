@@ -2,9 +2,10 @@
 title: Terminal & Shell
 email: kastisuhesh1@gmail.com
 image: "/images/cheatsheets/terminal.svg"
-description: Master the command line with essential navigation, editing, and history shortcuts for Zsh and Ghostty.
+description: Command line essentials.... navigation, editing, and history shortcuts for Zsh and Ghostty.
 cheatsheet_categories: ["Tools"]
 cheatsheet_tags: ["zsh", "ghostty", "cli"]
+folder: "linux"
 ---
 
 #### 1. Cursor Movement

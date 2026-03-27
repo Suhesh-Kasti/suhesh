@@ -9,18 +9,32 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   var urlParams = new URLSearchParams(window.location.search);
   var codeFromUrl = urlParams.get("code");
-  // Optional dataset fallback if added to body
-  var code = codeFromUrl || document.body.dataset.quizCode || "nmap101";
+  // Prioritize window.flashcardCode set by the template, then URL param
+  var code = window.flashcardCode || codeFromUrl || document.body.dataset.quizCode || "nmap101";
 
   let flashcards = [];
   let currentIndex = 0;
   let isFlipped = false;
 
   try {
-    // Attempt to load wordfill by default since they map perfectly as scenarios to answers
-    const response = await fetch(`/questions/quiz/${code}.json`);
-    if (!response.ok) throw new Error("Flashcards not found");
-    flashcards = await response.json();
+    // Fetch both quiz and wordfill pools for this code
+    const quizPath = `/questions/quiz/${code}.json`;
+    const wordfillPath = `/questions/wordfill/${code}.json`;
+    
+    const results = await Promise.allSettled([
+      fetch(quizPath).then(r => r.ok ? r.json() : []),
+      fetch(wordfillPath).then(r => r.ok ? r.json() : [])
+    ]);
+
+    // Merge only successful results
+    flashcards = results
+      .filter(r => r.status === 'fulfilled')
+      .flatMap(r => r.value)
+      .filter(q => q.question && q.correctAnswer);
+
+    if (flashcards.length === 0) {
+      throw new Error("No questions found for this code");
+    }
 
     // Shuffle the deck!
     flashcards = flashcards.sort(() => 0.5 - Math.random());
@@ -37,14 +51,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     isFlipped = false;
     container.style.transform = "rotateY(0deg)";
 
-    questionText.innerText = flashcards[currentIndex].question;
-    answerText.innerText = flashcards[currentIndex].correctAnswer;
-    currentSpan.innerText = currentIndex + 1;
+    // Small delay to prevent text flash during fast transitions
+    setTimeout(() => {
+        questionText.innerText = flashcards[currentIndex].question;
+        answerText.innerText = flashcards[currentIndex].correctAnswer;
+        currentSpan.innerText = currentIndex + 1;
+    }, 150);
   }
 
   window.flipCard = function (e) {
     // Ignore flip if user clicks the actual answer button
-    if (e && e.target.tagName === 'BUTTON') return;
+    if (e && (e.target.tagName === 'BUTTON' || e.target.closest('button'))) return;
 
     isFlipped = !isFlipped;
     container.style.transform = isFlipped ? "rotateY(180deg)" : "rotateY(0deg)";

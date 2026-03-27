@@ -5,10 +5,7 @@ image: "/images/cheatsheets/nmap.svg"
 description: is a powerful network discovery and security auditing tool used to discover hosts, map networks, and enumerate services and vulnerabilities.
 cheatsheet_categories: ["Reconnaissance"]
 cheatsheet_tags: ["nmap", "cpts", "htb", "red-team"]
-quiz:
-  code: nmap101
-wordfill:
-  code: nmap101
+folder: "enumeration"
 ---
 
 # 1. Host Discovery

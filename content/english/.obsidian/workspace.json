@@ -13,12 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "blog/nmap-for-cpts.md",
+                "file": "blog/enumerating.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "nmap-for-cpts"
+              "title": "enumerating"
+            }
+          },
+          {
+            "id": "43cc9b8852bf722c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "blog/exploring-nmap.md",
+                "mode": "source",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "exploring-nmap"
             }
           }
         ]
@@ -221,8 +235,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -245,35 +258,39 @@
   },
   "active": "a46e8132feec0bb1",
   "lastOpenFiles": [
-    "checklists/Recon/nmap-network-enum.md",
-    "cheatsheets/Nmap.md",
-    "blog/nmap-for-cpts.md",
-    "checklists/Recon/_index.md",
-    "checklists/HackTheBox/htb-cap.md",
-    "checklists/HackTheBox/_index.md",
-    "checklists/_index.md",
-    "checklists/TryHackMe/machine1.md",
-    "checklists/TryHackMe/_index.md",
-    "checklists/HackTheBox/machine2.md",
-    "blog/Cap-HTB.md",
-    "checklists/f5_software_update.md",
-    "checklists/ctfs.md",
+    "blog/exploring-SDNs.md",
+    "blog/enumerating.md",
+    "blog/exploring-nmap.md",
+    "cheatsheets/Enumeration/Enumeration Tools.md",
+    "cheatsheets/Enumeration/Dig and NSlookup.md",
+    "cheatsheets/Enumeration/Dorking.md",
+    "checklists/Enumeration/_index.md",
+    "checklists/Enumeration/passive-enumeration.md",
+    "cheatsheets/Enumeration/_index.md",
+    "cheatsheets/Enumeration/Nmap.md",
+    "cheatsheets/Programming/_index.md",
+    "cheatsheets/Enumeration/python.md",
+    "cheatsheets/Enumeration/SQL.md",
+    "cheatsheets/Enumeration",
+    "cheatsheets/Programming/SQL.md",
+    "cheatsheets/Programming/python.md",
+    "cheatsheets/nginx/nginx-security.md",
+    "cheatsheets/nginx/_index.md",
+    "cheatsheets/nginx/nginx-api-gateway.md",
+    "cheatsheets/Linux/_index.md",
+    "cheatsheets/Linux/Terminal and Shell.md",
+    "cheatsheets/Linux/Linux.md",
+    "cheatsheets/DevOps/Kubernetes.md",
+    "cheatsheets/DevOps/Git.md",
+    "cheatsheets/DevOps/Docker.md",
+    "cheatsheets/DevOps/_index.md",
+    "cheatsheets/Linux/python.md",
+    "cheatsheets/Linux",
+    "cheatsheets/Programming",
+    "checklists/Enumeration",
     "checklists/Recon",
-    "til/automate-nmap-port-copy-to-clipboard.md",
-    "til/password-found-in-breach.md",
-    "cheatsheets/Docker.md",
-    "blog/bigip-logging.md",
-    "blog/_index.md",
-    "blog/bigip-awaf.md",
     "images/Pasted image 20250530172551.png",
     "images",
-    "til/git-interactive-rebase.md",
-    "til/for ppt.md",
-    "cheatsheets/nginx/nginx-configuration.md",
-    "cheatsheets/nginx/nginx-performance-caching.md",
-    "cheatsheets/nginx/nginx-high-availability.md",
-    "cheatsheets/nginx/nginx-logging-monitoring.md",
-    "cheatsheets/nginx/nginx-security.md",
     "pool_node_vs.png",
     "blog/half-proxy.md~",
     "halfproxy.png",
@@ -284,10 +301,6 @@
     "images/Pasted image 20240930104616.png",
     "images/Pasted image 20240930104611.png",
     "images/arp_request_flow.png",
-    "obsidian.zip",
-    "3. Resource/f5.networks.selftestengine.101.simulations.2022-feb-24.by.jonathan.176q.vce.pdf",
-    "4. Archives",
-    "2. Area",
     "images/android_dex_odex.png",
     "images/wireshark_tcp_syn_set.png",
     "images/wireshark_tcp_syn1.png"

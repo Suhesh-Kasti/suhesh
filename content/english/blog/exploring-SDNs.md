@@ -28,7 +28,8 @@ quiz:
   code: sdn01
 wordfill:
   code: sdn01
-flashcard: true
+flashcard: 
+  code: sdn01
 ---
 
 Software Defined Networking (SDN) is an approach that revolutionizes the way networks are controlled and managed. Instead of relying on traditional, hardware-based methods, SDN separates the network’s control plane from the data plane. This enables centralized, software-based control, giving you more flexibility and agility in managing your network.

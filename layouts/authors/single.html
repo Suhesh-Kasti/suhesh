@@ -32,10 +32,10 @@
                 href="{{ .link | safeURL }}"
                 target="_blank"
                 rel="noopener nofollow"
-                class="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-darkmode-body shadow-sm transition-all duration-300 hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-dark"
+                class="!flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-darkmode-body shadow-sm transition-all duration-300 hover:bg-primary hover:text-white dark:hover:bg-darkmode-primary dark:hover:text-darkmode-body"
               >
                 <span class="sr-only">{{ .title }}</span>
-                <i class="{{ .icon }}"></i>
+                <i class="{{ .icon }} leading-none"></i>
               </a>
             </li>
             {{ end }}

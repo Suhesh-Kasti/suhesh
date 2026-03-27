@@ -75,7 +75,7 @@
             <li>
               <a
                 href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/"
-                class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-dark rounded px-3 py-1 text-sm"
+                class="bg-theme-dark/10 dark:bg-darkmode-theme-dark/10 hover:bg-primary dark:hover:bg-darkmode-primary hover:text-white dark:hover:text-darkmode-body rounded px-3 py-1 text-sm"
               >
                 {{ . | humanize }}
               </a>
@@ -127,48 +127,5 @@
   </div>
 </section>
 
-<!-- Reading Progress Script -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Reading progress with floating indicator
-    function updateReadingProgress() {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight - windowHeight;
-      const scrollTop = window.scrollY;
-      const progress = (scrollTop / documentHeight) * 100;
-      const roundedProgress = Math.round(progress);
-
-      // Update floating progress indicator
-      const floatingProgress = document.getElementById('floating-progress');
-      const progressCircle = document.getElementById('progress-circle');
-      const floatingProgressText = document.getElementById('floating-progress-text');
-
-      if (floatingProgress && progressCircle && floatingProgressText) {
-        // Show floating progress when scrolled down
-        if (scrollTop > 300) {
-          floatingProgress.style.opacity = '1';
-        } else {
-          floatingProgress.style.opacity = '0';
-        }
-
-        // Update circle progress
-        const circumference = 2 * Math.PI * 16; // 2πr where r=16
-        const dashoffset = circumference - (progress / 100) * circumference;
-        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-        progressCircle.style.strokeDashoffset = dashoffset;
-
-        // Update text
-        floatingProgressText.textContent = `${roundedProgress}%`;
-      }
-    }
-
-    // Event listeners
-    window.addEventListener('scroll', function() {
-      updateReadingProgress();
-    });
-
-    // Initialize
-    updateReadingProgress();
-  });
-</script>
+<!-- Reading Progress Script centralized in TOC partial -->
 {{ end }}

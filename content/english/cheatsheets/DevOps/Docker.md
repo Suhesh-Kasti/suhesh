@@ -5,10 +5,7 @@ image: "/images/cheatsheets/docker.svg"
 description: is a platform for developing, shipping, and running applications in containers, providing consistent environments across systems.
 cheatsheet_categories: ["Devops"]
 cheatsheet_tags: ["docker", "containers"]
-quiz:
-  code: docker101
-wordfill:
-  code: dock101
+folder: "devops"
 ---
 
 #### 1. Docker Hello World

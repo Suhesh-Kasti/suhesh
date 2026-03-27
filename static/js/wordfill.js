@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const response = await fetch(`/questions/wordfill/${wordCode}.json`);
     if (!response.ok) throw new Error("Question set not found");
     fetchedQuestions = await response.json();
+    
+    // Randomize questions
+    fetchedQuestions.sort(() => Math.random() - 0.5);
   } catch (err) {
     console.error("AI hasn't generated these questions yet:", err);
     if (document.getElementById("question-word")) {

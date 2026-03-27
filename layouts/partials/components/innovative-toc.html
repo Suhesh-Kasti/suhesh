@@ -131,18 +131,31 @@
     const copyLinkBtn = document.getElementById('copy-link-btn');
     const printArticleBtn = document.getElementById('print-article-btn');
 
+    if (!tocToggle || !tocContent) return;
 
-    // Set initial state - TOC is open by default
+    // Set initial state - TOC is closed on mobile, open on desktop
     const icon = tocToggle.querySelector('i');
-    icon.classList.remove('fa-chevron-down');
-    icon.classList.add('fa-chevron-up');
+    if (window.innerWidth < 1024) {
+      tocContent.classList.add('hidden');
+      if (icon) {
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+      }
+    } else {
+      if (icon) {
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      }
+    }
 
     // Toggle TOC visibility
     window.toggleTOC = function() {
       tocContent.classList.toggle('hidden');
       const icon = tocToggle.querySelector('i');
-      icon.classList.toggle('fa-chevron-down');
-      icon.classList.toggle('fa-chevron-up');
+      if (icon) {
+        icon.classList.toggle('fa-chevron-down');
+        icon.classList.toggle('fa-chevron-up');
+      }
     };
 
     // Toggle button click handler
@@ -247,10 +260,33 @@
 
     // Reading progress with floating indicator
     function updateReadingProgress() {
+      const content = document.querySelector('.prose');
+      let progress = 0;
+      
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight - windowHeight;
-      const scrollTop = window.scrollY;
-      const progress = (scrollTop / documentHeight) * 100;
+
+      if (content) {
+        // Calculate progress relative to the .prose content element
+        const contentRect = content.getBoundingClientRect();
+        const contentHeight = contentRect.height;
+        const contentTop = contentRect.top + scrollTop;
+        
+        // Progress starts when content top is at or above viewport top
+        // Progress ends when content bottom is at viewport bottom
+        const start = contentTop;
+        const end = contentTop + contentHeight - windowHeight;
+        
+        // Ensure denominator is not zero
+        const totalToScroll = Math.max(1, end - start);
+        progress = ((scrollTop - start) / totalToScroll) * 100;
+        progress = Math.max(0, Math.min(100, progress));
+      } else {
+        // Fallback to document-based calculation if .prose is not found
+        const documentHeight = document.documentElement.scrollHeight - windowHeight;
+        progress = (scrollTop / Math.max(1, documentHeight)) * 100;
+      }
+      
       const roundedProgress = Math.round(progress);
 
       // Update floating progress indicator
@@ -259,11 +295,13 @@
       const floatingProgressText = document.getElementById('floating-progress-text');
 
       if (floatingProgress && progressCircle && floatingProgressText) {
-        // Show floating progress when scrolled down
+        // Show floating progress when scrolled down a bit
         if (scrollTop > 300) {
           floatingProgress.style.opacity = '1';
+          floatingProgress.style.pointerEvents = 'auto';
         } else {
           floatingProgress.style.opacity = '0';
+          floatingProgress.style.pointerEvents = 'none';
         }
 
         // Update circle progress

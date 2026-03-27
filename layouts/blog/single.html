@@ -176,9 +176,17 @@
 <script src="{{ "js/wordfill.js" | relURL }}?code={{ .Params.wordfill.code }}"></script>
 {{ end }}
 {{ if .Params.flashcard }}
+{{ $flashcardCode := "" }}
+{{ if reflect.IsMap .Params.flashcard }}
+  {{ $flashcardCode = .Params.flashcard.code }}
+{{ else if .Params.wordfill }}
+  {{ $flashcardCode = .Params.wordfill.code }}
+{{ else if .Params.quiz }}
+  {{ $flashcardCode = .Params.quiz.code }}
+{{ end }}
 <script>
-  var flashcardCode = "{{ with .Params.wordfill }}{{ .code }}{{ else }}{{ with .Params.quiz }}{{ .code }}{{ end }}{{ end }}";
+  window.flashcardCode = "{{ $flashcardCode }}";
 </script>
-<script src="{{ "js/flashcards.js" | relURL }}?code={{ with .Params.wordfill }}{{ .code }}{{ else }}{{ with .Params.quiz }}{{ .code }}{{ end }}{{ end }}"></script>
+<script src="{{ "js/flashcards.js" | relURL }}?code={{ $flashcardCode }}"></script>
 {{ end }}
 {{ end }}

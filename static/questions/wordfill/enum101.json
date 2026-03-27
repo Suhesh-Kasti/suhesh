@@ -1,0 +1,82 @@
+[
+  {
+    "question": "If you need to query the TXT records of a domain to identify third-party SaaS integrations, what command-line tool and flag would you use?",
+    "correctAnswer": "dig -t TXT domain.com"
+  },
+  {
+    "question": "You are scanning a target network 192.168.1.0/24 for ports 80, 443, and 8080 at a very low timing template to avoid IDS detection. What is the correct Nmap command?",
+    "correctAnswer": "nmap -p 80,443,8080 -T1 192.168.1.0/24"
+  },
+  {
+    "question": "Which specific Google Dork operator would you use to find public AWS S3 buckets associated with a specific company domain, e.g., 'company.com'?",
+    "correctAnswer": "site:s3.amazonaws.com \"company.com\""
+  },
+  {
+    "question": "When performing DNS enumeration, which command will retrieve the Mail Exchange (MX) records for a target domain?",
+    "correctAnswer": "dig MX domain.com"
+  },
+  {
+    "question": "If you suspect an application is using an Oracle database based on job postings, what is the default port you would prioritize in your initial Nmap scan?",
+    "correctAnswer": "1521"
+  },
+  {
+    "question": "To perform a zone transfer attempt against a name server to map internal subdomains, what command and flag would you use?",
+    "correctAnswer": "dig axfr @ns1.target.com target.com"
+  },
+  {
+    "question": "You want to find subdomains for 'target.com' using the crt.sh database via the command line. Which tool is commonly used to automate this search?",
+    "correctAnswer": "subfinder"
+  },
+  {
+    "question": "When scanning for Jenkins instances (as mentioned in the text), which default port would you add to your enumeration list?",
+    "correctAnswer": "8080"
+  },
+  {
+    "question": "What is the specific command to perform a reverse DNS lookup on a specific IP address using the dig utility?",
+    "correctAnswer": "dig -x 192.168.1.1"
+  },
+  {
+    "question": "If you are using Nmap to perform service version detection on a target, which flag must be included?",
+    "correctAnswer": "-sV"
+  },
+  {
+    "question": "In the context of Kubernetes enumeration, which port is commonly checked for an unauthenticated Kubelet API?",
+    "correctAnswer": "10250"
+  },
+  {
+    "question": "What Linux command is used to search for specific strings like 'AWS_ACCESS_KEY_ID' within a local directory of downloaded repository files?",
+    "correctAnswer": "grep -r \"AWS_ACCESS_KEY_ID\" ."
+  },
+  {
+    "question": "When enumerating a Django application, which environment variable or setting, if leaked, typically allows for Remote Code Execution (RCE)?",
+    "correctAnswer": "SECRET_KEY"
+  },
+  {
+    "question": "To identify if a target uses an internal PostgreSQL database, what is the standard default port you should scan for?",
+    "correctAnswer": "5432"
+  },
+  {
+    "question": "Which specific HTTP header should you inspect in a web server's response to identify the underlying technology stack, such as the web server software version?",
+    "correctAnswer": "Server"
+  },
+  {
+    "question": "What is the name of the specialized Linux tool used to perform automated, high-speed DNS subdomain brute-forcing?",
+    "correctAnswer": "ffuf"
+  },
+  {
+    "question": "When performing OSINT on GitHub, what specific search query would you use to find private SSH keys in public repositories?",
+    "correctAnswer": "filename:id_rsa"
+  },
+  {
+    "question": "Which Nmap flag is used to perform an aggressive scan that includes OS detection, version detection, script scanning, and traceroute?",
+    "correctAnswer": "-A"
+  },
+  {
+    "question": "In the context of the '6-Layer Methodology', which layer specifically focuses on identifying WAFs and Firewalls?",
+    "correctAnswer": "Layer 2"
+  },
+  {
+    "question": "What specific command can be used in the Linux terminal to display all environment variables, which is useful for checking for leaked API keys in a compromised shell?",
+    "correctAnswer": "env"
+  }
+]

@@ -8,6 +8,8 @@ import SearchButton from "@/components/SearchButton";
 import TableOfContents from "@/components/TableOfContents";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
 
+export const dynamic = "force-static";
+
 interface Props {
   params: Promise<{ slug: string[] }>;
 }

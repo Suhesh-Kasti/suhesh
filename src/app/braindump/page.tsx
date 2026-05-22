@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import SearchButton from "@/components/SearchButton";
 import BrainDumpList from "@/components/BrainDumpList";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Brain Dump — Cybersecurity Writeups, Research & Deep Dives",
   description:

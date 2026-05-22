@@ -1,0 +1,98 @@
+---
+title: "BurpSuite Basics"
+date: "2024-03-12"
+tags: ["BurpSuite", "Web App Security", "Penetration Testing", "Proxy", "Scanner"]
+excerpt: "BurpSuite is the industry standard for web app testing. Here's what it does, how to set it up, and why every pentester needs it."
+type: "blog"
+category: "Web Security"
+---
+
+BurpSuite is a proxy that sits between your browser and the target. Every request passes through it. You inspect, modify, replay, and automate. It's the central nervous system of web app pentesting.
+
+<IdeaNode color="blue">**Free (Community) vs Pro:** Community has Proxy, Repeater, Intruder (throttled), Decoder. Pro adds Scanner (automated vuln detection). For most work, Community is enough.</IdeaNode>
+
+## The Core Tools
+
+<Accordion title="Proxy — Intercept traffic" color="#0055ff">
+
+Burp acts as a man-in-the-middle between browser and server. Configure your browser to use `127.0.0.1:8080`, install Burp's CA certificate, and every HTTP request flows through the Proxy tab.
+
+- **Intercept** — pause and modify requests before they reach the server
+- **HTTP History** — every request/response logged for analysis
+- **Scope** — limit to target domain to reduce noise
+
+</Accordion>
+
+<Accordion title="Repeater — Manual testing" color="#00cc55">
+
+Send a request, modify it, send again. Repeat. The bread and butter of manual testing.
+
+```http
+POST /login HTTP/1.1
+Host: target.com
+Content-Type: application/x-www-form-urlencoded
+
+username=admin' OR '1'='1&password=anything
+```
+<CopyButton text={`POST /login HTTP/1.1
+Host: target.com
+Content-Type: application/x-www-form-urlencoded
+
+username=admin' OR '1'='1&password=anything`} label="Copy payload" />
+
+</Accordion>
+
+<Accordion title="Intruder — Automate attacks" color="#ff6600">
+
+Automated fuzzing. Select positions in a request, load payloads, and fire. Used for:
+- Brute-forcing passwords
+- Fuzzing parameters for SQLi/XSS
+- Enumerating valid usernames
+- Testing rate limiting
+
+</Accordion>
+
+<Accordion title="Decoder — Encode/decode" color="#7700ff">
+
+Base64, URL encoding, HTML entities, hex, etc. Right-click any selected text in Burp → "Send to Decoder."
+
+</Accordion>
+
+## Setup in 3 Steps
+
+<Tabs
+  tabs={[
+    {
+      label: "1. Install",
+      children: (
+        <div>
+          <p>Download from <a href="https://portswigger.net/burp/communitydownload">PortSwigger</a>. Community Edition is free.</p>
+          <pre className="font-mono text-sm bg-brutal-black text-brutal-green p-4 overflow-x-auto">
+{`java -jar burpsuite_community.jar`}
+          </pre>
+        </div>
+      )
+    },
+    {
+      label: "2. Browser Config",
+      children: (
+        <div>
+          <p>Set browser proxy to <code>127.0.0.1:8080</code>. Install Burp&apos;s CA certificate by visiting <code>http://burpsuite</code> in the proxied browser.</p>
+          <p className="mt-2">For Firefox: Settings → Network Settings → Manual proxy configuration.</p>
+        </div>
+      )
+    },
+    {
+      label: "3. Test",
+      children: (
+        <div>
+          <p>Browse any HTTPS site. You should see traffic in Burp&apos;s Proxy → HTTP History tab. If nothing shows, your browser proxy isn&apos;t configured correctly.</p>
+          <p className="mt-2">Turn Intercept ON to pause and modify requests before they reach the server.</p>
+        </div>
+      )
+    }
+  ]}
+  color="#0055ff"
+/>
+
+<BrutalButton color="#ffdd00">Start with Proxy. Master Repeater. Everything else follows.</BrutalButton>

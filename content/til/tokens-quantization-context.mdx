@@ -1,0 +1,64 @@
+---
+title: "Tokens, quantization, and context windows — what they actually mean"
+date: "2026-05-16T10:30:00+05:45"
+excerpt: "I kept nodding along when people said 'tokens' and 'quantization' without actually knowing what they meant. Here's what they actually are."
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+Three things that people throw around constantly when talking about LLMs that I nodded along with for way too long before actually figuring out what they meant.
+
+## Tokens
+
+A token is not a word. It's closer to a word *fragment*. The model breaks text into chunks using a vocabulary it learned during training, and those chunks are tokens. Common words are usually one token. Rare words get split. Punctuation, spaces, and code get treated differently.
+
+"Hello world" → `["Hello", " world"]` → 2 tokens  
+"Subterranean" → `["Sub", "terr", "ane", "an"]` → 4 tokens  
+"😂" → 1-3 tokens depending on the tokenizer
+
+Why does this matter? Because everything in LLMs is measured in tokens. Context window (how much the model can "remember") is in tokens. Speed is measured in tokens per second. Cost, if you're using an API, is per token. A rough rule of thumb: 1 token ≈ 0.75 words in English, so a 128k context window holds roughly 96,000 words, which is about a novel.
+
+The model never sees your raw text. It sees numbers — the token IDs. "Hello" maps to token 9906 or something. The whole language is compressed into a vocabulary of 32k-128k tokens, and everything the model reads and writes flows through that vocabulary.
+
+## Context Window
+
+The context window is how much text the model can hold in "working memory" at once. Not long-term memory — it doesn't remember past conversations. Just the current one.
+
+When you're five messages into a Goose session and the agent has already run nmap, analyzed the output, queried Qdrant, and started planning next steps, all of that is sitting in the context window. Every token of it. When you hit the limit, the model starts forgetting the earliest parts, which is why long sessions go weird — it literally can't see what it did 10,000 tokens ago.
+
+The KV cache is what stores all this. For each token in context, the model stores intermediate computation results (K and V matrices, hence "KV") so it doesn't have to recompute from scratch every time. This is what eats VRAM as context grows.
+
+Most modern models support 128k+ tokens. Whether that's actually usable depends on how well the model was trained on long contexts. Some models are trained with 128k context but start losing coherence past 32k. The Qwen family is genuinely good at long context — I've pushed it to 64k without obvious degradation.
+
+## Quantization
+
+This is the one I had half-right. My mental model was "Q8 stores numbers with more decimal places than Q4" which is basically correct but let me explain properly.
+
+Model weights are just numbers. After training, they're stored as 32-bit or 16-bit floating point numbers (FP32 or FP16). FP16 is already a compression from FP32. A 27B parameter model in FP16 would be:
+
+27,000,000,000 × 2 bytes = **54GB**
+
+That doesn't fit in any consumer GPU. Quantization is the process of converting those weights to use fewer bits — trading precision for size.
+
+**Q8** (8-bit integer): Each weight gets stored in 8 bits instead of 16. Half the size. Quality loss is nearly imperceptible. 27B model ≈ 27GB.
+
+**Q4** (4-bit integer): Each weight in 4 bits. Quarter the original size. 27B model ≈ 14-18GB. Noticeable quality loss on very precise tasks, but for conversation and reasoning it's fine.
+
+**Q2** (2-bit): Getting rough. 27B model ≈ 7-9GB. Models start sounding confused. Not recommended unless you absolutely have to.
+
+The K_M, K_S, K_P, K_XL suffixes in GGUF filenames? Those describe how the quantization is applied across different parts of the model. Some layers are more sensitive to precision loss than others. K_M is a balanced mixed-precision quantization, K_P is slightly higher quality (some layers stay at higher precision), K_XL prioritizes quality. In practice: if you're unsure, grab Q4_K_M or Q4_K_P.
+
+Your analogy about floating point precision is actually close: in Q8, a weight that was `1.98765432` might become `1.988`. In Q4, it might be stored as `2.0`. The model has billions of these so the approximation errors mostly average out — but you can definitely feel it on tasks requiring precise reasoning at the extremes.
+
+The format (GGUF in llama.cpp, safetensors for HuggingFace) is separate from quantization. GGUF is just the container format that includes the tokenizer, metadata, and quantized weights all in one file. Very convenient.
+
+## The practical guide
+
+If you have 24GB VRAM:
+- 70B models: need Q2-Q3, quality suffers, not worth it
+- 27B-34B models: Q4_K_P or Q4_K_M, runs great, looks good
+- 13B models: Q6_K or even Q8, excellent quality
+- 7-9B models: fits at Q8 or even FP16 if you squeeze
+
+The jump from Q4 to Q8 is usually worth it when the model fits. The jump from Q8 to FP16 is usually not — you're paying double the VRAM for marginal improvement. Q4 to Q3 is where things start getting noticeable. Don't go below Q4 unless you're desperate.

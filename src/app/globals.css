@@ -1,0 +1,373 @@
+@import "tailwindcss";
+
+/* ── Spiderverse Brutalism Design System ── */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── CSS Custom Properties (dynamic, theme-aware) ── */
+:root {
+  --surf: #fafaf5;
+  --surf-invert: #0a0a0a;
+  --fg: #0a0a0a;
+  --fg-muted: #555555;
+
+  --pink: #ff2d95;
+  --blue: #0055ff;
+  --yellow: #ffdd00;
+  --green: #00dd44;
+  --orange: #ff5500;
+  --purple: #8800ff;
+  --cyan: #00e5ff;
+  --red: #ff1144;
+}
+
+.dark {
+  --surf: #111118;
+  --surf-invert: #f0f0f8;
+  --fg: #f0f0f8;
+  --fg-muted: #999999;
+}
+
+/* ── Design Tokens exposed as Tailwind-aware variables ── */
+@theme inline {
+  --color-spider-pink: var(--pink);
+  --color-spider-blue: var(--blue);
+  --color-spider-yellow: var(--yellow);
+  --color-spider-green: var(--green);
+  --color-spider-orange: var(--orange);
+  --color-spider-purple: var(--purple);
+  --color-spider-cyan: var(--cyan);
+  --color-spider-red: var(--red);
+
+  --color-brutal-white: var(--surf-invert);
+  --color-brutal-black: var(--fg);
+  --color-brutal-pink: var(--pink);
+  --color-brutal-blue: var(--blue);
+  --color-brutal-orange: var(--orange);
+  --color-brutal-green: var(--green);
+  --color-brutal-purple: var(--purple);
+  --color-brutal-teal: var(--cyan);
+  --color-brutal-red: var(--red);
+
+  --color-surface: var(--surf);
+  --color-surface-invert: var(--surf-invert);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 1;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.2;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.4;
+  --text-base: 1rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.4;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.3;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 2.5rem;
+  --text-4xl--line-height: 1.1;
+  --text-5xl: 3.5rem;
+  --text-5xl--line-height: 1.05;
+  --text-6xl: 5rem;
+  --text-6xl--line-height: 1;
+
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+
+  --shadow-brutal-sm: 2px 2px 0px var(--fg);
+  --shadow-brutal: 4px 4px 0px var(--fg);
+  --shadow-brutal-lg: 8px 8px 0px var(--fg);
+  --shadow-brutal-xl: 12px 12px 0px var(--fg);
+
+  --tracking-label: 0.14em;
+  --tracking-tight: -0.03em;
+  --tracking-wide: 0.04em;
+  --tracking-display: -0.05em;
+
+  --font-display: var(--font-clash-display, sans-serif);
+  --font-mono: var(--font-space-mono, monospace);
+  --font-sans: var(--font-syne, sans-serif);
+}
+
+/* ── Core Utility Classes ── */
+@utility bg-surface {
+  background-color: var(--surf);
+}
+@utility bg-surface-invert {
+  background-color: var(--surf-invert);
+}
+@utility text-fg {
+  color: var(--fg);
+}
+@utility text-fg-muted {
+  color: var(--fg-muted);
+}
+@utility border-fg {
+  border-color: var(--fg);
+}
+@utility border-fg-muted {
+  border-color: var(--fg-muted);
+}
+@utility bg-fg {
+  background-color: var(--fg);
+}
+@utility text-surface {
+  color: var(--surf);
+}
+
+/* Brutalist color utilities */
+@utility bg-brutal-pink { background-color: var(--pink); }
+@utility bg-brutal-yellow { background-color: var(--yellow); }
+@utility bg-brutal-green { background-color: var(--green); }
+@utility bg-brutal-orange { background-color: var(--orange); }
+@utility bg-brutal-blue { background-color: var(--blue); }
+@utility bg-brutal-purple { background-color: var(--purple); }
+@utility bg-brutal-black { background-color: var(--surf-invert); }
+@utility bg-brutal-white { background-color: var(--surf); }
+@utility text-brutal-black { color: var(--surf-invert); }
+@utility text-brutal-white { color: var(--surf); }
+
+/* ── Ben-Day dots / halftone / comic panels ── */
+.benday-dots {
+  background-image: radial-gradient(circle, var(--fg) 0.5px, transparent 0.5px);
+  background-size: 6px 6px;
+}
+
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--fg) 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel-comic {
+  box-shadow: 8px 8px 0px var(--pink), 12px 12px 0px var(--blue);
+}
+
+/* ── Base Layer ── */
+@layer base {
+  body {
+    background-color: var(--surf);
+    color: var(--fg);
+    font-family: var(--font-sans, system-ui, sans-serif);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  * {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+
+  ::selection {
+    background-color: var(--pink);
+    color: var(--surf);
+  }
+}
+
+/* ── Buttons (Tactile Brutalism) ── */
+@layer components {
+  .btn-brutal {
+    font-family: var(--font-display, sans-serif);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 2px solid var(--fg);
+    background-color: var(--surf);
+    color: var(--fg);
+    box-shadow: 4px 4px 0px var(--fg);
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
+  }
+  .btn-brutal:hover {
+    background-color: var(--fg);
+    color: var(--surf);
+    box-shadow: 2px 2px 0px var(--fg);
+    transform: translate(2px, 2px);
+  }
+  .btn-brutal:active {
+    box-shadow: 0px 0px 0px var(--fg);
+    transform: translate(4px, 4px);
+  }
+  .btn-brutal-accent {
+    background-color: var(--pink);
+    color: var(--surf);
+    border-color: var(--pink);
+    box-shadow: 4px 4px 0px var(--fg);
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+    font-weight: 800;
+  }
+  .btn-brutal-accent:hover {
+    background-color: var(--fg);
+    color: var(--surf);
+  }
+
+  .btn-brutal-invert {
+    background-color: var(--fg);
+    color: var(--surf);
+    border-color: var(--fg);
+    box-shadow: 4px 4px 0px var(--pink);
+    font-weight: 800;
+  }
+  .btn-brutal-invert:hover {
+    background-color: var(--surf);
+    color: var(--fg);
+    box-shadow: 2px 2px 0px var(--pink);
+    transform: translate(2px, 2px);
+  }
+
+  .btn-brutal-sm {
+    @apply text-sm px-4 py-2;
+  }
+}
+
+/* ── Spiderverse: Glitch Animation ── */
+@keyframes glitch-shift {
+  0%, 90%, 100% { transform: translate(0); }
+  92% { transform: translate(-3px, 1px); }
+  94% { transform: translate(3px, -1px); }
+  96% { transform: translate(-1px, -2px); }
+  98% { transform: translate(2px, 1px); }
+}
+
+.glitch-anim {
+  animation: glitch-shift 3s ease-in-out infinite;
+}
+
+/* ── Spiderverse: Comic / Ben-Day Patterns ── */
+@keyframes dot-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 6px 6px; }
+}
+
+.bg-brutal-dots {
+  background-image: radial-gradient(circle, var(--fg) 1px, transparent 1px);
+  background-size: 8px 8px;
+  animation: dot-drift 20s linear infinite;
+}
+
+/* ── Spiderverse: Halftone Gradient ── */
+.bg-brutal-halftone {
+  background-image:
+    radial-gradient(circle at 25% 25%, var(--pink) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, var(--blue) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+/* ── Print Distress (edges) ── */
+.distress-bottom {
+  position: relative;
+}
+.distress-bottom::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--fg) 0px,
+    var(--fg) 8px,
+    transparent 8px,
+    transparent 12px,
+    var(--fg) 12px,
+    var(--fg) 16px,
+    transparent 16px,
+    transparent 24px
+  );
+}
+
+/* ── Glitch text effect ── */
+@keyframes text-glitch {
+  0%, 94%, 100% { clip-path: none; }
+  95% { clip-path: inset(20% 0 60% 0); }
+  96% { clip-path: inset(60% 0 20% 0); }
+  97% { clip-path: inset(40% 0 40% 0); }
+  98% { clip-path: inset(80% 0 5% 0); }
+  99% { clip-path: inset(10% 0 70% 0); }
+}
+
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.glitch-text::before {
+  color: var(--pink);
+  animation: text-glitch 3s infinite;
+  z-index: -1;
+}
+.glitch-text::after {
+  color: var(--blue);
+  animation: text-glitch 2.5s infinite reverse;
+  z-index: -2;
+}
+
+/* ── Matrix rain (for 404 page) ── */
+@keyframes matrix-rain {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* ── Press Start 2P Glitch ── */
+@keyframes p2p-glitch {
+  0%, 90%, 100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  91% { clip-path: polygon(0 15%, 100% 10%, 100% 85%, 0 90%); }
+  93% { clip-path: polygon(0 0, 100% 5%, 100% 95%, 0 100%); }
+  95% { clip-path: polygon(10% 0, 90% 0, 90% 100%, 10% 100%); }
+  97% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+}
+
+.p2p-glitch {
+  animation: p2p-glitch 4s steps(1) infinite;
+}
+
+/* ── IdeaNode pushpin animation ── */
+@keyframes pin-wobble {
+  0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+  50% { transform: translate(-50%, -50%) rotate(5deg); }
+}
+
+/* ── GlitchBox animation ── */
+@keyframes glitchbox-skew {
+  0%, 92%, 100% { transform: translate(0); clip-path: none; }
+  93% { transform: translate(-2px, 1px); clip-path: inset(20% 0 60% 0); }
+  95% { transform: translate(2px, -1px); clip-path: inset(60% 0 20% 0); }
+  97% { transform: translate(-1px, -2px); clip-path: inset(40% 0 40% 0); }
+  99% { transform: translate(1px, 2px); clip-path: inset(80% 0 5% 0); }
+}

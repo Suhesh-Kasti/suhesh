@@ -1,0 +1,13 @@
+---
+title: "Portswigger SQL Injection Lab 1"
+date: "2025-05-31T09:57:00+05:45"
+excerpt: "SQL injection vulnerability in WHERE clause allowing retrieval of hidden data"
+tags: []
+category: "Web Security"
+type: "cheatsheet"
+---
+
+> This lab contains a SQL injection vulnerability in the product category filter. When the user selects a category, the application carries out a SQL query like the following:
+  `SELECT * FROM products WHERE category = 'Gifts' AND released = 1`
+   To solve the lab, perform a SQL injection attack that causes the application to display one or more unreleased products.
+

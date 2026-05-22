@@ -1,0 +1,50 @@
+---
+title: "Why LLMs eat VRAM and what actually happens during inference"
+date: "2026-05-16T10:00:00+05:45"
+excerpt: "Finally understood what inference actually means, why GPU VRAM is the bottleneck, and why my 64GB of RAM did almost nothing to help when the model was too big"
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+Okay so I kept hearing "this model needs 24GB VRAM" and I just accepted it as a fact of life without really understanding *why*. Like why can't it just use RAM? I have 64GB of RAM, that's way more than 24GB VRAM. Let me explain what I actually figured out.
+
+## What a model actually is
+
+An LLM is basically a massive pile of numbers called **parameters** or **weights**. When you read "Qwen3.6-27B" the 27B is 27 billion of these numbers. Each number describes something about how language works — some capture grammar, some capture facts, some capture reasoning patterns. Nobody hand-coded them; they got learned by training on text.
+
+At inference time (when the model generates a response), every single one of those 27 billion numbers gets involved in calculating each token. The math is: input → multiply by weights → activate → multiply by more weights → repeat for every layer → output a probability distribution over the next token.
+
+That multiply-by-weights operation has to happen **billions of times per token**, and it has to happen fast enough that you don't wait 10 minutes for a response. GPUs are specifically built to do massive parallel matrix multiplications. CPUs can do it too, they're just 50-100x slower for this workload.
+
+## Why VRAM specifically
+
+The GPU can only do fast math on data that's sitting in its own memory — VRAM. If the weights are in system RAM, the GPU has to fetch them over PCIe, which is a much slower bus. For a 27B model at 4-bit quantization, that's about 14-18GB of data that needs to move from wherever it's stored to wherever the GPU can multiply it.
+
+If it all fits in VRAM, every token is fast. If some of it is in RAM, every token requires PCIe transfers, and you're back to slow.
+
+The frustrating discovery I made: I had 14.5GB of VRAM sitting idle while my model ran at 3.4 tokens per second. Turned out my config was pushing all the computational work to CPU even though the GPU had room. The GPU was just computing attention layers while the CPU did all the heavy lifting. Felt like having a sports car and only using it to carry groceries.
+
+## What "inference" actually means
+
+Inference = using a trained model to generate output. As opposed to training, which is teaching the model. When you run `llama-server` and hit it with a request, that's inference.
+
+During inference, the model generates one token at a time. It looks at everything that came before (the context), does the math across all its weights, and outputs probabilities for what token should come next. Then it picks one (or samples from the distribution based on temperature), appends it to context, and does it again.
+
+This is why **context window** matters for memory. The KV cache stores intermediate computation results for everything in the context. Longer context = bigger KV cache = more VRAM needed. For a typical transformer model at 32k context, the KV cache alone can be 4-8GB. The Qwen3.6-27B I ended up using has a trick here — it uses Gated DeltaNet layers (a kind of linear attention) for 75% of its layers, which store a fixed-size state instead of a growing cache. So 64k context only costs like 700MB. Huge win.
+
+## The bandwidth thing nobody explains
+
+Here's what actually determines tokens-per-second: **memory bandwidth**, not compute.
+
+During inference, you're reading billions of weights from memory once per token. The speed limit is how fast you can read data, not how fast you can multiply it. An NVIDIA L4 has 300 GB/s bandwidth. An RTX 4090 has about 1000 GB/s. That's why the same model generates tokens 3x faster on a 4090 even though they have similar VRAM.
+
+Quick math: 27B model at 4-bit = ~14GB. At 300 GB/s bandwidth: 14GB / 300 GB/s ≈ 0.047 seconds per token = ~21 tokens/second theoretical max. In practice I got 15-18, which is reasonable. If I had a 4090, that same model would do 60+ tokens/second.
+
+## The takeaway
+
+- Model weights need to live in VRAM for fast inference
+- The GPU bandwidth determines speed, not just size
+- Context window adds KV cache on top of model weight memory
+- System RAM is a fallback, not a solution — you pay a heavy PCIe penalty for every token
+- For my L4 with 24GB VRAM, a 27B model at Q4 (~14-18GB) left just enough room for context and was the sweet spot

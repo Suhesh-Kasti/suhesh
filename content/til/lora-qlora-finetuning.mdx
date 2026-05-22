@@ -1,0 +1,138 @@
+---
+title: "LoRA and QLoRA — fine-tuning LLMs without a supercomputer"
+date: "2026-05-16T13:30:00+05:45"
+excerpt: "Fine-tuning always sounded like a thing only big companies could do. LoRA changed that. Here's what LoRA and QLoRA actually are and how they let you customize models on consumer hardware."
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+Fine-tuning was always something I filed under "requires A100s and a Google-sized budget." LoRA broke that assumption. Here's what it actually is.
+
+## The problem with full fine-tuning
+
+A standard model fine-tune means: take the pretrained weights, run gradient descent on your dataset, update all the weights. For a 27B model, that's 27 billion numbers getting updated. To do that without memory issues, you need roughly 6-8× the model size in GPU memory during training (for optimizer states, gradients, activations). That's 150-200GB just to fine-tune Qwen3.6-27B. Multiple A100s territory.
+
+Even if you have the hardware, fine-tuning all parameters on a small dataset risks **catastrophic forgetting** — the model overwrites general knowledge to overfit on your data. You might teach it to write JSON output format and accidentally lobotomize its Python knowledge.
+
+## What LoRA is
+
+LoRA (Low-Rank Adaptation) is a technique that sidesteps all of this. The key insight comes from a 2021 Microsoft Research paper: during fine-tuning, the *changes* to the weight matrices are actually low-rank. Meaning you don't need to represent the full update — you can approximate it with two much smaller matrices.
+
+Instead of updating a large weight matrix W directly, LoRA freezes W and adds trainable matrices A and B next to it:
+
+```
+output = W·x + (B·A)·x
+
+Where:
+- W is frozen (27B params, not touched)
+- A is small: [rank × d_in]
+- B is small: [d_out × rank]
+- rank is typically 4, 8, 16, or 64
+- d_in, d_out are the original matrix dimensions
+```
+
+If your weight matrix is 4096×4096 (16M params) and you use rank 16:
+- Full update: 16M parameters
+- LoRA: A (4096×16) + B (16×4096) = 131K parameters
+
+You're training ~0.8% of the weight count of a full fine-tune, while covering the same model. At inference, you merge B·A back into W (or keep it separate as an adapter).
+
+This is why you see `.safetensors` adapter files that are 300-600MB for a 14GB model — the adapter contains only the LoRA matrices, not the full weights.
+
+## QLoRA — making it work on consumer hardware
+
+QLoRA (Quantized LoRA) combines two ideas:
+1. Load the base model in 4-bit quantization (NF4 format) — reduces memory
+2. Train LoRA adapters on top of the frozen quantized model in 16-bit
+
+The trick is that even though the base weights are quantized, the LoRA matrices are trained in full precision. The quantized base provides context; the precise adapters learn the new behavior. Gradients flow through both.
+
+This let people fine-tune 7B models on a single RTX 3090 (24GB VRAM) and even 13B models with gradient checkpointing. Something that previously required a cluster of A100s became possible on hardware people actually own.
+
+## What you actually need for QLoRA fine-tuning
+
+**Dataset:** Your training data in a conversational format. For behavior changes, even 500-2000 examples can work. For knowledge injection, more is better. The format is usually instruction-response pairs:
+
+```json
+{"instruction": "Analyze this HTTP response for security issues", 
+ "input": "HTTP/1.1 200 OK\nX-Powered-By: PHP/7.2.0\n...",
+ "output": "The X-Powered-By header reveals PHP 7.2.0, which is EOL..."}
+```
+
+**Hardware:** For a 7-9B model: 16-24GB VRAM works fine with QLoRA. For 13B: 24GB with gradient checkpointing. For 27B: you're looking at 40GB+ or need to use CPU offloading tricks (slow).
+
+**Software:** Unsloth is the go-to in 2026. It's faster than HuggingFace PEFT, uses less memory, and has good documentation. Axolotl is the other popular one, more configurable, steeper learning curve.
+
+## A minimal Unsloth QLoRA training example
+
+```python
+from unsloth import FastLanguageModel
+from trl import SFTTrainer
+from transformers import TrainingArguments
+from datasets import load_dataset
+
+# Load model in 4-bit
+model, tokenizer = FastLanguageModel.from_pretrained(
+    model_name="unsloth/Qwen3-8B",
+    max_seq_length=8192,
+    load_in_4bit=True,
+)
+
+# Add LoRA adapters
+model = FastLanguageModel.get_peft_model(
+    model,
+    r=16,                  # LoRA rank — higher = more capacity but more memory
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                    "gate_proj", "up_proj", "down_proj"],
+    lora_alpha=16,         # scaling factor, usually same as r
+    lora_dropout=0,        # 0 is fine for most cases
+    bias="none",
+    use_gradient_checkpointing="unsloth",  # saves memory
+    random_state=42,
+)
+
+# Load your dataset
+dataset = load_dataset("json", data_files="my_data.jsonl")["train"]
+
+# Train
+trainer = SFTTrainer(
+    model=model,
+    tokenizer=tokenizer,
+    train_dataset=dataset,
+    dataset_text_field="text",
+    max_seq_length=8192,
+    args=TrainingArguments(
+        per_device_train_batch_size=2,
+        gradient_accumulation_steps=4,
+        warmup_steps=10,
+        num_train_epochs=3,
+        learning_rate=2e-4,
+        fp16=True,
+        output_dir="./outputs",
+        save_steps=100,
+    ),
+)
+trainer.train()
+
+# Save just the adapter
+model.save_pretrained("./my-lora-adapter")
+
+# Or merge and save full model
+model.save_pretrained_merged("./my-merged-model", tokenizer)
+```
+
+## LoRA hyperparameters that actually matter
+
+**Rank (r):** How much capacity the adapter has. r=4 is minimal but fast. r=16 is the sweet spot for most tasks. r=64 for complex behavior changes. Higher rank = more trainable params = more VRAM = slower training.
+
+**Alpha:** The scaling factor. Set it equal to rank and forget about it. Some people set it to 2× rank. The ratio alpha/rank is what matters, not the absolute values.
+
+**Target modules:** Which weight matrices get adapters. Usually all the attention projections plus FFN. If you're short on memory, skip some FFN layers. The attention layers are usually more important.
+
+**Learning rate:** 1e-4 to 3e-4 is the typical range for LoRA. Higher than full fine-tuning because only a small fraction of params are being trained. Too high and you'll overfit fast.
+
+## When to use LoRA vs when to just use RAG
+
+| | LoRA Fine-tuning | RAG |
+|

@@ -1,0 +1,17 @@
+---
+title: "RAG vs Fine-tuning"
+date: "2026-05-16"
+tags: ["RAG", "fine-tuning", "Qdrant", "vector database", "embeddings", "LLM"]
+excerpt: "Why I built a Qdrant RAG pipeline instead of fine-tuning on CVEs, and the actual tradeoffs."
+type: "til"
+category: "AI/ML"
+---
+
+Someone asked me "why build a RAG pipeline instead of just fine-tuning the model on security data?" I said "good point" and then spent a week building the RAG anyway. Here's what I figured out.
+
+<IdeaNode color="blue">**The short answer:** RAG for facts that change. Fine-tuning for behavior that shouldn't.</IdeaNode>
+
+## What they actually do
+
+| | Fine-tuning | RAG |
+|

@@ -1,0 +1,23 @@
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import Projects from "@/components/Projects";
+import AboutSection from "@/components/AboutSection";
+import BrainDumpPreview from "@/components/BrainDumpPreview";
+import ContactSection from "@/components/ContactSection";
+import SearchButton from "@/components/SearchButton";
+
+export default function Home() {
+  return (
+    <>
+      <Navbar />
+      <main className="flex-1">
+        <Hero />
+        <AboutSection />
+        <BrainDumpPreview />
+        <Projects />
+        <ContactSection />
+      </main>
+      <SearchButton />
+    </>
+  );
+}

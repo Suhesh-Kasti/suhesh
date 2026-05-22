@@ -1,0 +1,13 @@
+---
+title: "CPTS: Network Enumeration with Nmap"
+date: "2026-03-15T12:00:00"
+excerpt: "Comprehensive guide to mastering Nmap for Hack The Box CPTS. Covers Host Discovery, UDP scanning headaches, NSE scripting, Firewall/IDS evasion, and custom ZSH automation for extracting ports."
+tags: ['Red Team', 'Hack The Box', 'Nmap', 'Evasion', 'CPTS']
+category: "Penetration Testing"
+type: "blog"
+---
+
+## 1. The Philosophy of Enumeration
+
+Scanning is the process of sending a specific probe (a packet with certain flags) and observing the response. The "State" Nmap reports is simply an interpretation of that response based on RFC standards. If a firewall sits in the middle, it "lies" or "silences" the conversation, which is why Nmap has complex states like `open|filtered`.
+

@@ -1,0 +1,62 @@
+---
+title: "Abliteration — what HauhauCS and Heretic models actually are"
+date: "2026-05-16T14:00:00+05:45"
+excerpt: "What abliteration does to a model, why uncensored variants exist, what HauhauCS-Aggressive and Heretic model families are, and the actual tradeoffs of using them"
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+When I was setting up my local security research stack, I kept seeing model names like "Qwen3.6-27B-Uncensored-HauhauCS-Aggressive" and "Heretic-something" and had no idea what the suffix meant beyond "probably has no content filters." Here's what's actually happening.
+
+## What safety training is
+
+When a foundation model gets trained (Qwen, LLaMA, Mistral, etc.), the base model is then fine-tuned on a second stage called RLHF (Reinforcement Learning from Human Feedback) or DPO (Direct Preference Optimization). During this stage, human raters mark certain responses as good (helpful, harmless) and others as bad (refusals of legitimate requests, harmful outputs).
+
+The result is a model that has a learned "refusal direction" — a pattern in its activations that triggers when it recognizes certain request types and routes toward a refusal response. This is intentional. It's what makes a commercial model say "I can't help with that."
+
+The problem for security research: the refusal triggers are pattern-matched, not context-aware. A model trained to refuse "how do I exploit X" also refuses legitimate security research questions, vulnerability analysis, exploit chain documentation, and anything that looks vaguely offensive-security-adjacent. If you're doing authorized penetration testing and need the model to help write a Burp extension or analyze a deserialization gadget chain, you'll hit the refusal wall constantly.
+
+## What abliteration does
+
+Abliteration is a technique from representation engineering research. The idea: instead of retraining the model to remove specific fine-tuning, you identify where the refusal direction lives in the model's activation space and surgically remove it.
+
+The process in general terms:
+1. Run the model on many "harmful" request examples and many "harmless" examples
+2. Compare the activation patterns — find the direction in activation space that separates refused from non-refused content
+3. Project out that direction from the model's weight matrices — orthogonalize the weights against the refusal direction
+4. The model loses its ability to refuse along that dimension
+
+It's less like "deleting the safety system" and more like removing a specific concept from the model's internal representation. The model doesn't become malicious or incoherent — it just stops having the refusal reflex. It behaves more like the base model before RLHF.
+
+The original public implementation was done by mlabonne on HuggingFace. The technique was documented and the code open-sourced, which is why community model variants using it proliferated quickly.
+
+## HauhauCS and Heretic — what these model families are
+
+**HauhauCS** models are a series of community fine-tunes that combine abliteration (removing refusal behavior) with additional fine-tuning for more direct, assertive responses. The "Aggressive" suffix means it's been tuned to respond without hedging, without disclaimers, and without the constant "please note that..." padding that safety-tuned models add. For security research prompts, this is genuinely better — you want the model to just analyze the thing, not spend half the response warning you about it.
+
+**Heretic** models (by Doctor Shotgun and related community contributors) take a similar approach but tend to focus more on removing specific RLHF artifacts — the over-cautious phrasing, the refusal to engage with hypotheticals, the automatic "as an AI, I cannot" canned responses. The heretic naming is a bit tongue-in-cheek — the model is "heretical" to the safety orthodoxy.
+
+Both families layer on top of base models (Qwen, LLaMA, Mistral) and the quality of the underlying base model carries through. A HauhauCS fine-tune of Qwen3.6 is still Qwen3.6's architecture and training — just without the refusal layer and with some behavior adjustments.
+
+## The actual tradeoffs
+
+**What you gain:** The model actually engages with security research questions. It'll analyze exploit chains, discuss vulnerability classes, help write detection scripts, reason about attack vectors. For authorized security work, this is necessary functionality, not a bug.
+
+**What you lose:** The model is less careful about context. A safety-tuned model adds "make sure you have authorization before testing" reminders and similar safeguards. An abliterated model just answers. The moral guardrails are gone — the responsibility for using it appropriately is entirely on you.
+
+**Quality impact:** Abliteration can slightly degrade coherence on edge cases, especially if the removal was done too aggressively. The "Aggressive" tag in HauhauCS refers to the directness of behavior, but there is a version where removing too much from the activation space causes the model to occasionally get confused. Better-quality abliterations are targeted — remove the refusal direction without touching unrelated capabilities. Most community models are reasonably careful about this.
+
+**Factual accuracy:** Unchanged. Abliteration doesn't affect the model's knowledge or reasoning — just its willingness to apply that reasoning to certain topics.
+
+## Why this matters for the project
+
+Running a standard safety-tuned model for security research is genuinely painful. Asking it to analyze a CVE reproduction PoC gets a refusal. Asking it to generate a nuclei template for a known vulnerability gets hedged responses with warnings. Asking it to think through an exploit chain gets "I'm not able to assist with potentially harmful activities."
+
+For authorized bug bounty work against targets you have explicit permission to test, you need a model that just... does the thing. The HauhauCS variant was the practical choice.
+
+The ethics of this are: it's your machine, your model, your responsibility for how you use it. The same way you can compile Metasploit without Rapid7 judging what targets you run it against, you can run an abliterated model without the model second-guessing your authorization status. The tool doesn't confer authorization — that's between you and the target.
+
+## One more thing — the mmproj file
+
+The models I used came with an mmproj (multimodal projector) file — that's the vision encoder adapter. This is a separate fine-tuned component that maps image embeddings into the same space as text tokens, allowing the model to "see" images. Super useful for security research: screenshot a web app's response headers, feed it to the model, get analysis without copy-pasting. Standard llama.cpp loads it with `--mmproj path/to/mmproj.gguf`.

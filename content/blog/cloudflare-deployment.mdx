@@ -1,0 +1,115 @@
+---
+title: "Deploying to Cloudflare"
+meta_title: "Cloudflare pages"
+description: "If you are a beginner frontend developer, this is a goldmine for you. Host your website projects for free in cloudflare pages easily and shine infront of your competition in recruitments."
+date: 2024-02-25T20:53:06+05:45
+category: "DevOps"
+image: "/images/blog/deployment/cloudflare/hosting.jpg"
+categories: ["Web development"]
+author: "Suhesh Kasti"
+tags: ["Static sites", "Hosting", "Deployment"]
+buttons:
+  - label: "Goto Cloudflare's Site"
+    url: "https://dash.cloudflare.com/"
+quiz:
+  code: cloudflare-deployment
+wordfill:
+---
+
+# Deploying a Static Site to Cloudflare Pages
+
+## What is a Static Site?
+
+In the world of web development, static sites have been gaining popularity in recent years. A static site is a website where the content is pre-rendered and served as-is to the user, without any dynamic server-side processing. This means that the content of the pages doesn't change based on user input or interaction.
+
+Static sites are typically faster and more secure than dynamic websites, as they don't require a server-side scripting language (like PHP, Ruby, or Python) to generate the pages on the fly. Instead, the entire site is pre-built and stored as HTML, CSS, and JavaScript files, which can be efficiently delivered to the user's browser.
+
+This simplicity also makes static sites easier to maintain and scale. Content updates can be as straightforward as pushing changes to a version control system, like Git, and then re-deploying the site. Static sites are, therefore, an excellent choice for many types of web projects, including blogs, company websites, portfolio sites, and even small web applications.
+
+## What Can and Can't be Hosted for Free on Cloudflare Pages?
+
+Cloudflare Pages is a powerful and easy-to-use platform that allows you to host your static sites for free. This makes it an attractive option for developers and individuals who are looking to build and deploy their web projects without incurring significant hosting costs.
+
+The free plan offered by Cloudflare Pages comes with some notable features and limitations:
+
+**Features:**
+
+- **Continuous Deployment**: Cloudflare Pages automatically deploys your site whenever you push changes to your Git repository, making it easy to keep your site up-to-date.
+- **Global CDN**: Your static site is served from Cloudflare's global content delivery network (CDN), ensuring fast load times for your visitors.
+- **SSL/HTTPS**: Cloudflare Pages provides free SSL/HTTPS support, so your site can be served securely.
+- **Custom Domains**: While the free plan only supports subdomains of `*.pages.dev`, you can use your own custom domain if you upgrade to a paid plan.
+
+**Limitations:**
+
+- **Bandwidth Limit**: The free plan has a monthly bandwidth limit of 100GB, which may be sufficient for many small to medium-sized static sites.
+- **Build Minutes**: The free plan comes with a monthly build time limit of 500 minutes, which is the amount of time Cloudflare Pages can spend building your site during deployments.
+- **Custom Domains**: As mentioned, the free plan only supports subdomains of `*.pages.dev`. If you want to use your own custom domain, you'll need to upgrade to a paid plan.
+
+It's important to note that the free plan is well-suited for hosting simple, static websites. If you have more advanced requirements, such as increased bandwidth or custom domain support, you may need to consider upgrading to one of Cloudflare's paid plans.
+
+## Deploying Your Static Site on Cloudflare Pages
+
+Deploying your static site on Cloudflare Pages is a straightforward process, even for users with no prior experience. Here's a step-by-step guide to help you get started:
+
+> For this demonstration, I have used this very unique [gallery application](https://github.com/Sped0n/bridget) made using Solid Js and Hugo.
+
+1. **Create a Public Repository**: Your static site must be in a public repository on GitHub or GitLab. This is a requirement for the free Cloudflare Pages plan. If you want help on how to push your code to GitHub, I have got you covered, just [click here](https://suhesh.com.np/blog/github-basics-1/).
+
+2. **Open the Cloudflare Dashboard**: Log in to your Cloudflare account and navigate to the dashboard.
+   ![Cloudflare Dashboard](/images/blog/deployment/cloudflare/dashboard.png)
+
+3. **Click "Create a Project"**: This will start the process of setting up your new static site project.
+
+   ![Create a Project](/images/blog/deployment/cloudflare/create-project.png)
+
+4. **Click on "Workers" and then "Pages"**: This will take you to the Cloudflare Pages section of the dashboard.
+
+   ![Cloudflare Pages](/images/blog/deployment/cloudflare/pages.png)
+
+   **Connect to Your Git Repository**: Click the "Connect to Git" button and select the platform (GitHub or GitLab) where your site's repository is hosted.
+
+5. **Choose Your Repository**: Select the repository where your static site is located.
+
+   ![Choose Repository](/images/blog/deployment/cloudflare/choose-repo.png)
+
+6. **Configure Your Project**: Cloudflare Pages will try to automatically detect the type of framework your site is built with. You can choose a different framework preset if needed.
+
+   ![Configure Project](/images/blog/deployment/cloudflare/configure-project.png)
+
+   **Click "Deploy"**: This will start the deployment process, and your site will be available at a Cloudflare Pages subdomain (e.g., `your-site.pages.dev`).
+
+7. **Deployed**: If your application is deployed without any errors, it should be available under the domain `YOUR_PROJECT_NAME.pages.dev` in a few moments. You can continue to your project.
+   ![Deployed](/images/blog/deployment/cloudflare/deployed.png)
+
+During the deployment process, Cloudflare Pages will fetch the code from your Git repository, build your site according to the selected framework preset, and then publish the generated files to its global CDN.
+
+8. **Handling Deployment Errors**:
+
+   Sometimes, the deployment may fail due to various reasons. Here are some common errors you might encounter and how to handle them:
+
+   ![Error](/images/blog/deployment/cloudflare/error.png)
+
+   a. **Error in Code - Build Failed**:
+   If there are issues in your code, the deployment process may fail during the build step. In this case, you can fix the errors in your code, push the changes to your Git repository, and then manually retry the deployment by clicking the "Retry Deployment" button.
+
+   b. **Large File Size Exceeds Limit**:
+   Cloudflare Pages has a file size limit, and if your site includes large files (such as high-resolution images or videos), the deployment may fail. To resolve this, you can optimize your assets or consider using a content delivery network (CDN) to serve the large files.
+
+   c. **Unknown Error: Manual Rebuild Fixes It**:
+   Occasionally, you may encounter an unknown error during the deployment process. In such cases, manually retrying the deployment by clicking the "Retry Deployment" button may resolve the issue.
+
+   d. **Other Errors**:
+   Depending on the nature of the error, you may need to consult the deployment logs or seek help from the Cloudflare support team to troubleshoot the issue.
+
+During the deployment process, you can view the deployment logs by clicking on the "Deployments" tab in the Cloudflare Pages section of the dashboard. This can help you identify and troubleshoot any issues that may arise.
+
+![Available](/images/blog/deployment/cloudflare/available.png)
+
+Once the deployment is complete, you'll be able to access your static site at the provided Cloudflare Pages subdomain. If you need to update your site, simply push your changes to your Git repository, and Cloudflare Pages will automatically rebuild and redeploy your site.
+
+## Supported Frameworks
+
+Cloudflare Pages supports a wide range of static site frameworks and generators, making it a versatile platform for hosting various types of web projects. Here's a table with some of the most popular options:
+
+| Framework                 | Description                                                                                                                                                                                                                                                    |
+| 

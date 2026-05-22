@@ -1,0 +1,87 @@
+---
+title: "MoE vs Dense — why a 27B model beat a 122B model on my hardware"
+date: "2026-05-16T12:30:00+05:45"
+excerpt: "Mixture of Experts sounds impressive and the parameter count looks better on paper. But I spent a week learning the hard way that bigger numbers don't always mean better results."
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+I started this project wanting to run the biggest possible model because I figured bigger = smarter. Downloaded a 122B MoE model, got 3.4 tokens per second, spent a week debugging, and eventually switched to a 27B dense model that ran at 15-18 tok/s and performed better at my actual tasks. Here's what I learned.
+
+## What a dense model is
+
+Every layer gets involved for every token. If you have 27B parameters arranged in 64 layers, all 64 layers process each input. All the parameters are "always on." Simple, predictable, well-understood.
+
+Most of the older famous models are dense: GPT-2, LLaMA, Mistral-7B. The size you see is the size that runs. A 27B model uses 27B parameters worth of compute per token, no asterisks.
+
+## What a MoE (Mixture of Experts) model is
+
+A MoE model has a different architecture. The FFN (feed-forward network) layers — which are the bulk of parameter count in transformers — are split into multiple "experts." A smaller routing network decides which experts to activate for each token.
+
+So in Qwen3.5-122B-A10B:
+- 122B total parameters
+- 10B active parameters per token (the "A10B" part)
+- The other 112B sit in memory, doing nothing for that token
+- A router picks which 10B worth of experts are relevant
+
+In theory: you get the "knowledge capacity" of a 122B model (lots of experts covering different domains) with the compute cost of a 10B model. Smart!
+
+In practice: it depends heavily on your hardware.
+
+## Why MoE failed on my setup
+
+The inactive parameters have to live *somewhere*. With 122B at Q4 = ~60GB and only 24GB VRAM, the inactive experts had to go into system RAM. Every token generation requires:
+1. Router decides which experts to use
+2. Those experts need to be in VRAM for fast computation
+3. The active experts might already be there or need to be loaded from RAM
+4. PCIe transfer from RAM to VRAM happens at ~16 GB/s
+5. That's the bottleneck
+
+In the ideal scenario, the same experts get activated repeatedly (high locality), and they stay cached in VRAM. In practice, with diverse prompts, you're constantly swapping experts in and out.
+
+My L4's PCIe bandwidth was the chokepoint. Even with the config fixed to use VRAM properly, a 60GB model on a 24GB GPU means constant RAM↔VRAM transfers.
+
+The dense 27B at Q4 is ~14-18GB. Fits entirely in 24GB VRAM. Zero PCIe transfers during inference. Every token: read weights from VRAM at 300 GB/s, done.
+
+## When MoE actually wins
+
+MoE shines when you have enough VRAM for the entire model — or specifically enough VRAM for all the active parameters plus a fast NVMe/HBM2 to hold inactive ones.
+
+On a system with 80GB VRAM (like an A100 or H100), a 70B MoE model with 13B active params would:
+- Keep the entire model in VRAM (80GB is enough)
+- No RAM transfers ever
+- Run at full memory bandwidth speed
+- Have a 70B model's knowledge with 13B compute costs
+
+That's the sweet spot. Cloud inference providers with big multi-GPU machines love MoE because they can serve many concurrent requests with the compute efficiency of a smaller model while offering the quality of a larger one.
+
+For a single 24GB GPU at home, MoE is usually the wrong choice unless the entire model fits. If it doesn't fit, the PCIe bottleneck kills you.
+
+## The quality question
+
+For coding and reasoning tasks specifically, Qwen3.6-27B consistently outperformed Qwen3.5-122B-A10B in benchmarks even before hardware is considered. The dense model has been fine-tuned more aggressively on specific tasks. The 122B MoE's breadth (lots of specialists) doesn't necessarily win on focused tasks.
+
+SWE-bench Verified (coding benchmark): Qwen3.6-27B scored 77.2%, while Qwen3.5-122B scored around 72%. The "smaller" model wins here.
+
+## The mental model
+
+Think of MoE like a hospital with 50 specialist doctors vs. a dense model like one extremely good generalist surgeon. For any given problem, the specialist might be better — but if the hospital's logistics (PCIe, RAM bandwidth) are slow, getting the right specialist to the operating room takes too long, and the generalist who's already there wins on pure throughput.
+
+**Use a dense model when:** You have limited VRAM and the model fits cleanly in it. Single GPU consumer hardware. Latency-sensitive applications.
+
+**Use a MoE model when:** You have abundant VRAM, the full model fits, or you're serving in a high-throughput multi-GPU setup where the expert specialization actually pays off.
+
+## The practical test
+
+When comparing models for a new setup, run this before committing:
+
+```bash
+# Quick throughput test
+llama-bench -m model.gguf -ngl 999 -p 512 -n 128 -b 512
+
+# Watch VRAM during inference
+watch -n0.5 nvidia-smi --query-gpu=memory.used --format=csv,noheader
+```
+
+If VRAM stays flat during inference and GPU utilization is high, the model is fully on GPU and you're in good shape. If VRAM is suspiciously low and the GPU is sitting at 9% utilization like mine was — something's wrong.

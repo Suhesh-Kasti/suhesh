@@ -1,0 +1,13 @@
+---
+title: "F5 BigIP Software Update Checklist"
+date: "2024-12-25"
+tags: ["bigip", "firmware update", "f5", "network"]
+excerpt: "Step-by-step checklist for updating firmware on F5 BigIP appliances — from ISO import to traffic verification."
+category: "Network Operations"
+---
+
+Don't skip verification steps. The F5 carries production traffic — blind upgrades cause outages.
+
+<ProgressChecklist checklistId="f5-update" />
+
+<IdeaNode color="pink">**Critical:** The Internal Server Error during boot location change is NORMAL. Don't panic. Wait 15-20 minutes and the instance comes back.</IdeaNode>

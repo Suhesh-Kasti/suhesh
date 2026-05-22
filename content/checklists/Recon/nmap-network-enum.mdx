@@ -1,0 +1,31 @@
+---
+title: "Nmap Engagement & Evasion Strategy"
+date: "2026-03-10"
+tags: ["cpts", "red-team", "nmap", "port scanning", "evasion", "recon"]
+excerpt: "A systematic Nmap workflow — host discovery to service enumeration to firewall evasion. Run these phases in order."
+category: "Reconnaissance"
+---
+
+Run these phases in order. Don't skip host discovery. Don't full-scan before you know what's alive.
+
+---
+
+### Phase 1: Host Discovery
+
+<ProgressChecklist checklistId="nmap-host-discovery" />
+
+---
+
+### Phase 2: Port Scanning
+
+<ProgressChecklist checklistId="nmap-port-scanning" />
+
+---
+
+### Phase 3: Firewall Evasion
+
+<ProgressChecklist checklistId="nmap-evasion" />
+
+<IdeaNode color="green">After scanning, save grepable output: nmap -oG scan.txt. Parse with grep or awk for quick analysis.</IdeaNode>
+
+<IdeaNode color="pink">Never skip host discovery. Blind full-port scanning wastes time and generates noise. Know what's alive first, then scan surgically.</IdeaNode>

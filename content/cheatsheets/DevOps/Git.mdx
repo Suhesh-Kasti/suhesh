@@ -1,0 +1,247 @@
+---
+title: "Git"
+excerpt: "is a distributed version control system for tracking changes in code and coordinating work among multiple developers."
+tags: []
+category: "DevOps"
+type: "cheatsheet"
+---
+
+#### 1. Clone
+
+<Accordion title="git clone: Clone a repository into a new directory">
+Clone a Git repository from a remote source to your local machine.
+<br />
+
+```bash
+git clone repository_url
+```
+
+</Accordion>
+
+#### 2. Init
+
+<Accordion title="git init: Create an empty Git repository or reinitialize an existing one">
+Initialize a new Git repository for a project or reinitialize an existing one.
+<br />
+
+```bash
+git init
+```
+
+</Accordion>
+
+#### 3. Add
+
+<Accordion title="git add: Add file contents to the index for the next commit">
+Stage changes for the next commit by adding modified or new files.
+<br />
+
+```bash
+git add file_name
+```
+
+</Accordion>
+
+#### 4. Commit
+
+<Accordion title="git commit: Record changes to the repository">
+Save staged changes to the local repository with a descriptive commit message.
+<br />
+
+```bash
+git commit -m "Your commit message"
+```
+
+</Accordion>
+
+#### 5. Status
+
+<Accordion title="git status: Show the working tree status">
+View the status of your working directory and see changes that need to be committed.
+<br />
+
+```bash
+git status
+```
+
+</Accordion>
+
+#### 6. Diff
+
+<Accordion title="git diff: Show changes between commits, commit and working tree, etc">
+Display the differences between various states, such as commits and the working tree.
+<br />
+
+```bash
+git diff
+```
+
+</Accordion>
+
+#### 7. Log
+
+<Accordion title="git log: Show the commit logs">
+View a chronological log of commits with their hashes, authors, dates, and messages.
+<br />
+
+```bash
+git log
+```
+
+</Accordion>
+
+#### 8. Branch
+
+<Accordion title="git branch: List, create, or delete branches">
+Manage branches in your Git repository - list, create, or delete branches.
+<br />
+
+```bash
+git branch branch_name
+```
+
+</Accordion>
+
+#### 9. Checkout
+
+<Accordion title="git checkout: Switch branches or restore working tree files">
+Move between branches or restore files to a previous state.
+<br />
+
+```bash
+git checkout branch_name
+```
+
+</Accordion>
+
+#### 10. Merge
+
+<Accordion title="git merge: Join two or more development histories together">
+Combine changes from different branches into the current branch.
+<br />
+
+```bash
+git merge branch_name
+```
+
+</Accordion>
+
+#### 11. Remote
+
+<Accordion title="git remote: Manage set of tracked repositories">
+Configure connections to remote repositories where your code is stored.
+<br />
+
+```bash
+git remote add origin repository_url
+```
+
+</Accordion>
+
+#### 12. Fetch
+
+<Accordion title="git fetch: Download objects and refs from another repository">
+Retrieve changes from a remote repository without merging them into your working directory.
+<br />
+
+```bash
+git fetch origin
+```
+
+</Accordion>
+
+#### 13. Pull
+
+<Accordion title="git pull: Fetch from and integrate with another repository or a local branch">
+Fetch changes from a remote repository and integrate them into your current branch.
+<br />
+
+```bash
+git pull origin branch_name
+```
+
+</Accordion>
+
+#### 14. Push
+
+<Accordion title="git push: Update remote refs along with associated objects">
+Send your committed changes to a remote repository.
+<br />
+
+```bash
+git push origin branch_name
+```
+
+</Accordion>
+
+#### 15. Reset
+
+<Accordion title="git reset: Reset current HEAD to the specified state">
+Unstage changes or move the current branch to a specific commit.
+<br />
+
+```bash
+git reset commit_hash
+```
+
+</Accordion>
+
+#### 16. Revert
+
+<Accordion title="git revert: Create new commit that undoes changes to the previous commit">
+Reverse the changes introduced by a specific commit by creating a new commit.
+<br />
+
+```bash
+git revert commit_hash
+```
+
+</Accordion>
+
+#### 17. Tag
+
+<Accordion title="git tag: Create, list, delete, or verify a tag object signed with GPG">
+Mark specific commits as releases by creating lightweight or annotated tags.
+<br />
+
+```bash
+git tag -a v1.0 -m "Release version 1.0"
+```
+
+</Accordion>
+
+#### 18. Cherry-Pick
+
+<Accordion title="git cherry-pick: Apply the changes introduced by some existing commits">
+Select and apply specific commits from one branch to another.
+<br />
+
+```bash
+git cherry-pick commit_hash
+```
+
+</Accordion>
+
+#### 19. Stash
+
+<Accordion title="git stash: Stash the changes in a dirty working directory away">
+Temporarily save changes that are not ready to be committed.
+<br />
+
+```bash
+git stash save "Your stash message"
+```
+
+</Accordion>
+
+#### 20. Help
+
+<Accordion title="git help: Display help information">
+Access Git's built-in documentation to get information about Git commands.
+<br />
+
+```bash
+git help command_name
+```
+
+</Accordion>

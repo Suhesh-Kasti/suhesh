@@ -1,0 +1,119 @@
+---
+title: "SQL Injection 101"
+date: "2025-03-12"
+tags: ["SQL Injection", "Web Security", "Penetration Testing", "OWASP"]
+excerpt: "From basic concepts to data extraction — everything you need to understand SQL injection attacks and how to prevent them."
+type: "blog"
+category: "Web Security"
+---
+
+SQL injection is still in the OWASP Top 10 after decades. Not because it's hard to fix — because it's easy to miss. User input meets database query. No validation. Game over.
+
+<IdeaNode color="pink">**The one-line fix:** parameterized queries. Everything else in this post is understanding *why* that matters.</IdeaNode>
+
+## The Three Attack Types
+
+<Accordion title="1. In-Band (Classic) — attacker sees results directly" color="#ff2d95">
+
+The attacker uses the same channel to launch the attack and read results. Data appears in the web page.
+
+**Union-based example — extracting credentials:**
+
+```sql
+-- Original query behind the scenes:
+SELECT title FROM products WHERE id=1
+
+-- Attacker injects:
+' UNION SELECT username, password FROM users--
+```
+
+Response leaks usernames and passwords directly in the product title field.
+
+</Accordion>
+
+<Accordion title="2. Blind (Inferential) — attacker infers from behavior" color="#0055ff">
+
+No data is returned visibly. The attacker asks True/False questions and watches how the app responds.
+
+**Boolean-based — check one character at a time:**
+```sql
+' AND SUBSTRING((SELECT Password FROM Users WHERE Username="admin"),1,1)="a"
+```
+If the page renders: first char is "a". If blank page: it's not. Automate this and you extract the entire password.
+
+**Time-based — use SLEEP():**
+```sql
+' AND IF(SUBSTRING(password,1,1)="a", SLEEP(10), 0)
+```
+If the response takes 10 seconds — character confirmed. No visible difference needed.
+
+</Accordion>
+
+<Accordion title="3. Out-of-Band (OAST) — attacker gets data via external channel" color="#ff6600">
+
+Rare but powerful. Forces the database to make DNS/HTTP requests to an attacker-controlled server carrying exfiltrated data. Works when the app shows nothing and timing is unreliable.
+
+</Accordion>
+
+<InteractiveCode
+  defaultLanguage="typescript"
+  defaultValue={`// The ONLY correct way to query a database
+// Parameterized queries — never string concatenation
+
+// WRONG — vulnerable to injection:
+const query = "SELECT * FROM users WHERE id = " + userId;
+
+// RIGHT — parameterized:
+const query = "SELECT * FROM users WHERE id = ?";
+db.execute(query, [userId]);
+
+// In Node.js with mysql2:
+import mysql from 'mysql2/promise';
+const [rows] = await connection.execute(
+  'SELECT * FROM users WHERE username = ? AND password = ?',
+  [username, password]
+);
+`}
+/>
+
+## Detection Checklist
+
+<Accordion title="How to spot SQLi during testing" color="#00cc55">
+
+**Quick tests:**
+1. Add `'` to a parameter — look for database errors
+2. Try `' OR '1'='1` — does it return all rows?
+3. Add `' AND SLEEP(5)--` — does the response delay?
+4. Try boolean pairs: `' AND 1=1--` vs `' AND 1=2--` — different responses?
+
+**Tools:**
+```bash
+sqlmap -u "http://target.com/page.php?id=1" --dbs
+```
+<CopyButton text={`sqlmap -u "http://target.com/page.php?id=1" --dbs`} label="Copy sqlmap" />
+
+</Accordion>
+
+<QuizCard
+  title="SQLi Quick Quiz"
+  color="#ff2d95"
+  questions={[
+    {
+      question: "Which SQLi type never shows data in the response?",
+      options: ["Blind SQLi", "Union-based SQLi", "Error-based SQLi", "Stacked queries"],
+      correct: 0,
+      explanation: "Blind SQLi infers data from application behavior (true/false, timing) rather than seeing it directly in the response."
+    },
+    {
+      question: "What's the single best defense against SQL injection?",
+      options: [
+        "Parameterized queries / prepared statements",
+        "Input sanitization with regex",
+        "Web Application Firewall",
+        "Escaping single quotes"
+      ],
+      correct: 0,
+      explanation: "Parameterized queries separate code from data at the database driver level — no amount of escaping can beat that. Everything else is a bandage."
+    }
+  ]}
+/>

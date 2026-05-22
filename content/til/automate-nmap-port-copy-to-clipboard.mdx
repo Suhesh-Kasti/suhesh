@@ -1,0 +1,74 @@
+---
+title: "Automating Nmap Port Extraction to Clipboard"
+date: "2026-03-10"
+tags: ["nmap", "zsh", "automation", "pentesting", "workflow"]
+excerpt: "A ZSH function that extracts open ports from Nmap discovery scans and copies them to clipboard — saving precious seconds between recon phases."
+type: "til"
+category: "Automation"
+---
+
+The most annoying 10 seconds in pentesting: manually copying port numbers from an Nmap scan into the next service enumeration command.
+
+```bash
+# Discovery scan finishes
+Nmap done: 1 host up, ports: 22,80,110,139,143,445,31337
+
+# Then you manually type:
+sudo nmap -p 22,80,110,139,143,445,31337 ...  # ugh
+```
+
+Not anymore. A ZSH function + Nmap's grepable output + clipboard = instant.
+
+<IdeaNode color="green">Parse the scan output while it runs. Extract ports. Sort. Copy. All in one command.</IdeaNode>
+
+## How it works
+
+1. **Nmap `-oG` flag** — writes grepable format to a temp file. One line per host, machine-parseable. Your terminal output stays human-readable.
+2. **Regex `\d+(?=/open)`** — extracts digits before "/open". Only open ports. Closed/filtered ports ignored.
+3. **Sort unique → comma-join → clipboard** — `sort -u -n | paste -sd "," | wl-copy`
+
+<InteractiveCode defaultLanguage="bash" defaultValue={`nscan() {
+    local target="$1"
+    shift
+    local tmpfile="/tmp/nmap_grep_output.gnmap"
+    
+    # Run Nmap normally — user sees standard output
+    # Grepable output silently written to tmpfile
+    sudo nmap "$target" "$@" -oG "$tmpfile"
+    
+    # Extract open ports → clipboard
+    if [[ -f "$tmpfile" ]]; then
+        local ports=$(sudo grep -oP '\\d+(?=/open)' "$tmpfile" \
+            | sort -u -n \
+            | paste -sd "," - \
+            | tr -d '\\n')
+        
+        if [[ -n "$ports" ]]; then
+            echo "$ports" | wl-copy
+            echo "Ports [$ports] copied to clipboard"
+        fi
+        sudo rm "$tmpfile"
+    fi
+}
+`} />
+
+<Accordion title="Example run" color="#00cc55">
+```bash
+$ nscan 10.129.2.49 -p- --min-rate 5000
+
+# ... Nmap output scrolls normally ...
+Nmap done: 1 IP address (1 host up) scanned in 15.42 seconds
+Ports [22,80,110,139,143,445,31337] copied to clipboard
+
+# Immediately paste into your next command:
+$ sudo nmap -p [Ctrl+V] ...  # → -p 22,80,110,139,143,445,31337
+```
+</Accordion>
+
+## Why this matters
+
+That 10-second fumble between discovery and service enumeration adds up. Over 100 scans in an engagement, that's 15+ minutes of manual copy-paste. This is zero seconds. Scan finishes → ports are in clipboard → paste into next command.
+
+<CopyButton text="sudo nmap -p- --min-rate 5000 -oG /tmp/nmap.gnmap" label="Copy full-port scan" />
+
+Put the function in `~/.zshrc` and you never think about port extraction again.

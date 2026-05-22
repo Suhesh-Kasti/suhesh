@@ -1,0 +1,129 @@
+---
+title: "llama-swap vs llama.cpp router mode — two ways to juggle models on one GPU"
+date: "2026-05-16T14:30:00+05:45"
+excerpt: "When you have two models and not enough VRAM for both, you need model switching. I tried llama-swap (didn't work), discovered llama.cpp's native router mode (does work), and learned why the distinction matters."
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+The problem: I have a 27B model (18GB VRAM) and a 9B model (7GB VRAM). Total: 25GB. Available VRAM: 23GB. Can't run both at once. But I want both available on demand — heavy model for complex reasoning, light model for quick tool outputs.
+
+Two approaches exist. One gave me 502 errors for days. The other worked.
+
+## llama-swap — the third-party solution
+
+llama-swap is a lightweight Go binary that acts as a proxy in front of llama.cpp. The idea:
+- You send a request with `"model": "heavy"`
+- llama-swap checks if the heavy model is loaded
+- If not, it kills the current llama-server process, starts a new one with the heavy model config, waits for it to be ready
+- Forwards your request
+- You get a response 12 seconds later (model load time)
+
+It uses a YAML config that maps model names to llama-server commands:
+
+```yaml
+models:
+  heavy:
+    cmd: llama-server --model heavy.gguf --port ${PORT} --n-gpu-layers 999
+    proxy: http://localhost:${PORT}
+  light:
+    cmd: llama-server --model light.gguf --port ${PORT} --n-gpu-layers 999
+    proxy: http://localhost:${PORT}
+```
+
+The `${PORT}` is filled in by llama-swap so you don't hardcode ports.
+
+**Why it didn't work for me:** The YAML config used Go template macros (`{{.MODELS}}`) that didn't expand `~` in paths. The model subprocess would fail to start silently, llama-swap would report 502, and the logs just said "non-200 response" with no indication of why the subprocess died. Debugging this was infuriating because there was no way to see what command it was actually trying to run.
+
+The fix would have been using absolute paths everywhere. But by the time I figured that out, I'd found the better solution.
+
+## llama.cpp native router mode — the built-in solution
+
+Shipped in December 2025. You start llama-server *without* a `-m` flag and point it at a directory of models:
+
+```bash
+llama-server \
+  --models-dir ~/.schizo/models \
+  --models-preset ~/.schizo/models-preset.ini \
+  --models-max 1 \
+  --port 6969
+```
+
+`--models-max 1` means only one model in VRAM at a time. LRU eviction: when a request comes in for model B while model A is loaded, model A gets unloaded, model B loads. You pay the swap time once, then subsequent requests to the same model are instant.
+
+Requests specify which model they want via the `model` field:
+
+```bash
+curl http://localhost:6969/v1/chat/completions \
+  -d '{"model": "Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P", ...}'
+```
+
+The model name matches the filename (without .gguf extension). llama-server finds it in the models directory, loads it with the preset settings, responds.
+
+**Per-model settings:** The `--models-preset` INI file lets you specify different context sizes, GPU layers, cache types, and other settings per model:
+
+```ini
+[Qwen3.5-9B-Uncensored-HauhauCS-Aggressive-Q6_K.gguf]
+ctx-size     = 16384
+n-gpu-layers = 999
+cache-type-k = q4_0
+n-predict    = 4096
+flash-attn   = true
+threads      = 8
+
+[Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf]
+ctx-size     = 65536
+n-gpu-layers = 999
+cache-type-k = q4_0
+n-predict    = 4096
+flash-attn   = true
+threads      = 16
+mmproj       = /home/appsec/.schizo/models/mmproj-...f16.gguf
+presence-penalty = 1.0
+```
+
+The gotcha I hit: wrote `max_tokens = 4096` in the INI file. That's an OpenAI API parameter, not a llama.cpp server flag. The correct one is `n-predict`. The router crashed on startup with `option 'max_tokens' not recognized` until I fixed it.
+
+**The built-in web UI:** The router mode also serves a web interface at `http://localhost:6969`. There's a model dropdown, you can see which models are loaded (loaded/loading/unloaded status), manually trigger loads/unloads. It's basically Ollama's interface but in llama.cpp. Useful for quick testing.
+
+**Manual model control via API:**
+```bash
+# List models and their status
+curl http://localhost:6969/models
+
+# Pre-load the heavy model
+curl -X POST http://localhost:6969/models/load \
+  -d '{"model": "Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P"}'
+
+# Free VRAM
+curl -X POST http://localhost:6969/models/unload \
+  -d '{"model": "Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P"}'
+```
+
+## The smart router layer on top
+
+The llama.cpp router picks models based on the `model` field in the request. By default, Goose sends whatever `GOOSE_MODEL` is set to. To get automatic switching between light and heavy based on prompt complexity, I added a thin Python FastAPI proxy on port 7000 that:
+
+1. Reads the incoming request
+2. Analyzes the prompt — length, keywords, complexity indicators
+3. Sets `body["model"]` to either the light or heavy filename
+4. Forwards to port 6969
+
+So Goose → port 7000 (smart router) → port 6969 (llama.cpp router) → right model.
+
+Short prompt asking to parse nmap output → light model → 36 tok/s, responds in seconds.  
+Long prompt asking to analyze a complex auth flow for vulnerabilities → heavy model → 12-second swap + 15 tok/s, but the quality is worth it.
+
+## Actual swap times on L4
+
+- 9B Q6_K (~7GB): ~4-5 seconds cold load
+- 27B Q4_K_P (~18GB): ~11-13 seconds cold load
+- Subsequent requests to same model: instant (already loaded)
+
+The 12-second heavy model load is noticeable but not painful. You're usually reading the light model's output anyway while the heavy one spins up. And once it's loaded, it stays loaded until a light model request comes in.
+
+## tldr comparison
+
+| | llama-swap | llama.cpp router mode |
+|

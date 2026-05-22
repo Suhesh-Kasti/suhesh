@@ -1,0 +1,67 @@
+---
+title: "Ollama vs llama.cpp vs vLLM — picking your LLM serving layer"
+date: "2026-05-16T12:00:00+05:45"
+excerpt: "Three different ways to run LLMs locally and when each one makes sense. I tried all three approaches and ended up on llama.cpp for reasons that only became obvious after a lot of pain."
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+When I started this project I kept seeing three names — Ollama, llama.cpp, vLLM — treated as roughly interchangeable. They're not. They solve the same problem (run LLMs locally) but make very different tradeoffs.
+
+## Ollama — the user-friendly one
+
+Ollama wraps llama.cpp in a polished interface. You get:
+- `ollama run llama3` and it downloads, configures, and runs the model
+- OpenAI-compatible API out of the box
+- Auto-manages models (downloads, caches, serves)
+- Works on Mac, Windows, Linux without configuration
+
+It's genuinely great for "I want to run a model and talk to it." Zero config. The model library is curated, quantizations are chosen for you, everything just works.
+
+The tradeoff: it abstracts away almost everything. You can't easily swap quantization methods, tweak per-layer settings, or run custom router logic. The abstraction layer that makes it easy also makes it less flexible. For my use case — running community fine-tuned models in GGUF format with custom per-model presets and a router — Ollama would have needed a lot of workarounds.
+
+Also, Ollama uses its own modelfile format and model library. GGUF files from HuggingFace work, but the integration is less seamless than llama.cpp native.
+
+**Use Ollama when:** You want to get a model running in 5 minutes and don't need to customize anything.
+
+## llama.cpp — the flexible one
+
+This is the C++ inference engine that actually runs the model. Ollama uses it under the hood. Everything eventually runs on llama.cpp (or a fork of it).
+
+Running it directly gives you full control:
+- Every startup flag, every quantization option, every thread count
+- GGUF files from anywhere, no model library restrictions
+- Multi-modal support (mmproj for vision models)
+- The new router mode (run multiple models, switch on demand)
+- Per-model preset files (INI format, control each model's settings separately)
+- Flash attention, KV cache quantization, every optimization
+
+It's verbose. Starting the server means writing a command with 15 flags. Managing multiple models means writing INI configs. The router mode took me a while to find because it was added in December 2025 and wasn't widely documented yet.
+
+But for custom workflows — HauhauCS fine-tuned models with vision support, per-model context sizes, smart routing — nothing else gives this level of control.
+
+**Use llama.cpp when:** You need fine-grained control, non-standard models, custom routing, or are building on top of the inference engine.
+
+## vLLM — the throughput one
+
+vLLM is built for serving LLMs at scale. Its main innovation is **PagedAttention** — a memory management technique that handles KV cache like OS virtual memory, allowing much higher throughput when serving many concurrent requests.
+
+Where llama.cpp optimizes for single-user latency (fast time-to-first-token, fast streaming), vLLM optimizes for throughput (serve 100 requests efficiently by batching KV cache pages).
+
+It also has excellent FP8 support, which matters for data center GPUs like the L4. On an L4, FP8 roughly doubles throughput compared to FP16 because the L4's tensor cores are specifically good at INT8/FP8 operations.
+
+The gotchas:
+- Doesn't natively handle GGUF files — needs HuggingFace safetensors format
+- Vision model support (mmproj/vision encoder) OOMs on single GPU because the vision encoder stays resident in VRAM even when not needed
+- More complex setup, more dependencies
+- Designed for multi-GPU or cloud inference, overkill for single-GPU personal use
+
+I tried vLLM early on and hit the vision encoder OOM on my L4. For a model without vision support running many concurrent requests, vLLM would probably be faster. For my single-user agentic workload with a vision model, llama.cpp won.
+
+**Use vLLM when:** You're serving multiple users concurrently, you have multi-GPU hardware, you want FP8 optimization on supported GPUs, or you're building production inference infrastructure.
+
+## The summary
+
+| | Ollama | llama.cpp | vLLM |
+|

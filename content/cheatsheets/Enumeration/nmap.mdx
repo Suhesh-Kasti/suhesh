@@ -1,0 +1,174 @@
+---
+title: "Nmap Command Reference"
+date: "2025-06-15"
+tags: ["nmap", "reconnaissance", "cpts", "htb", "red-team", "port scanning"]
+excerpt: "Nmap scanning techniques, host discovery, service enumeration, and NSE scripting — the definitive recon cheatsheet."
+type: "cheatsheet"
+category: "Reconnaissance"
+---
+
+Nmap is the Swiss Army knife of network recon. Every flag here is battle-tested from real engagements.
+
+<IdeaNode color="green">**Pro tip:** Always start with `-sn` for host discovery, then `-sS` for stealth scan on live hosts. Don't blind-full-scan a /16 subnet.</IdeaNode>
+
+## Host Discovery
+
+<Accordion title="-sn — Ping scan (no port scan)" color="#00cc55">
+Discovers live hosts using ICMP, TCP SYN/ACK, and ARP depending on privileges.
+```bash
+nmap -sn 10.129.2.0/24
+```
+<CopyButton text="nmap -sn 10.129.2.0/24" label="Copy" />
+</Accordion>
+
+<Accordion title="-Pn — Skip host discovery (treat all as up)" color="#00cc55">
+Essential when firewalls block ICMP. Forces port scan on every target regardless of ping.
+```bash
+nmap -Pn 10.129.2.47
+```
+<CopyButton text="nmap -Pn 10.129.2.47" label="Copy" />
+</Accordion>
+
+<Accordion title="-PE — ICMP Echo with packet trace" color="#00cc55">
+Force ICMP Echo and disable ARP ping for Layer 3 routing visibility.
+```bash
+nmap 10.129.2.47 -sn -PE --disable-arp-ping --packet-trace
+```
+<CopyButton text="nmap 10.129.2.47 -sn -PE --disable-arp-ping --packet-trace" label="Copy" />
+</Accordion>
+
+## Scan Techniques
+
+<Accordion title="-sS — TCP SYN scan (stealth, default as root)" color="#ff2d95">
+Half-open scan — sends SYN, waits for SYN-ACK, never completes handshake. Faster and slightly stealthier.
+```bash
+sudo nmap -sS 10.129.2.47
+```
+<CopyButton text="sudo nmap -sS 10.129.2.47" label="Copy" />
+</Accordion>
+
+<Accordion title="-sT — TCP Connect scan (default without root)" color="#ff2d95">
+Completes full 3-way handshake. Accurate but logged by target systems.
+```bash
+nmap -sT 10.129.2.47
+```
+<CopyButton text="nmap -sT 10.129.2.47" label="Copy" />
+</Accordion>
+
+<Accordion title="-sU — UDP scan" color="#ff2d95">
+Scans UDP ports. Slow — combine with `--min-rate` for engagement speed.
+```bash
+sudo nmap -sU -p 53,161 10.129.2.47
+```
+<CopyButton text="sudo nmap -sU -p 53,161 10.129.2.47" label="Copy" />
+</Accordion>
+
+<Accordion title="-sV — Service version detection" color="#ff2d95">
+Probes open ports to determine service/version info.
+```bash
+nmap -sV -p 22,80,443 10.129.2.47
+```
+<CopyButton text="nmap -sV -p 22,80,443 10.129.2.47" label="Copy" />
+</Accordion>
+
+<Accordion title="-O — OS detection" color="#ff2d95">
+Fingerprints the target operating system via TCP/IP stack analysis.
+```bash
+sudo nmap -O 10.129.2.47
+```
+<CopyButton text="sudo nmap -O 10.129.2.47" label="Copy" />
+</Accordion>
+
+<Accordion title="-A — Aggressive mode" color="#ff2d95">
+Enables OS detection, version detection, script scanning, and traceroute. Noisy but comprehensive.
+```bash
+sudo nmap -A 10.129.2.47
+```
+<CopyButton text="sudo nmap -A 10.129.2.47" label="Copy" />
+</Accordion>
+
+## Port Specification
+
+<Accordion title="-p — Specify ports" color="#ffdd00">
+```bash
+nmap -p 22,80,443 target
+nmap -p 1-1000 target
+nmap -p- target    # all 65535 ports
+nmap --top-ports 100 target
+```
+<CopyButton text="nmap -p- --min-rate 1000 target" label="Copy full scan" />
+</Accordion>
+
+## Performance & Evasion
+
+<Accordion title="Timing templates (-T0 to -T5)" color="#ff6600">
+```bash
+nmap -T4 target   # aggressive timing (default T3)
+nmap -T2 target   # polite — for IDS evasion
+```
+<CopyButton text="nmap -T4 -p- target" label="Copy T4 full" />
+</Accordion>
+
+<Accordion title="--min-rate — Minimum packets per second" color="#ff6600">
+```bash
+nmap --min-rate 5000 -p- target
+```
+<CopyButton text="nmap --min-rate 5000 -p- target" label="Copy" />
+</Accordion>
+
+<Accordion title="Fragment packets + decoys" color="#ff6600">
+```bash
+nmap -f target                         # fragment packets
+nmap -D RND:5 target                   # 5 random decoys
+nmap -D 10.0.0.1,10.0.0.2 target      # specific decoys
+```
+<CopyButton text="nmap -f -D RND:3 target" label="Copy" />
+</Accordion>
+
+## Output Formats
+
+<Accordion title="-oN / -oG / -oX / -oA — Output formats" color="#7700ff">
+```bash
+nmap -oN normal.txt target     # human readable
+nmap -oG grepable.txt target   # grep-friendly
+nmap -oX xml.xml target        # XML (for tools)
+nmap -oA full target           # all formats
+```
+<CopyButton text="nmap -sS -sV -oA scan_results target" label="Copy" />
+</Accordion>
+
+## NSE Scripting
+
+<Accordion title="--script — NSE script engine" color="#00e5ff">
+```bash
+nmap --script vuln target
+nmap --script http-enum target
+nmap --script "smb-*" target
+nmap --script "default,safe" target
+```
+<CopyButton text="nmap --script vuln,safe target" label="Copy vuln scan" />
+</Accordion>
+
+<QuizCard
+  title="Nmap Basics"
+  color="#00cc55"
+  questions={[
+    {
+      question: "Which scan type never completes the TCP 3-way handshake?",
+      options: ["-sS (SYN scan)", "-sT (Connect scan)", "-sU (UDP scan)", "-sA (ACK scan)"],
+      correct: 0,
+      explanation: "SYN scan sends SYN, receives SYN-ACK, then sends RST instead of ACK — the handshake never completes."
+    },
+    {
+      question: "When would you use -Pn?",
+      options: [
+        "When ICMP is blocked by a firewall",
+        "When you want a faster scan",
+        "When scanning UDP ports",
+        "When running as non-root"
+      ],
+      correct: 0,
+      explanation: "-Pn skips host discovery entirely. Use it when ping probes are blocked by firewalls and hosts appear 'down' even though they're up."
+    }
+  ]}
+/>

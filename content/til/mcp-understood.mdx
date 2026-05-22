@@ -1,0 +1,91 @@
+---
+title: "MCP — how AI agents grow new limbs"
+date: "2026-05-16T11:30:00+05:45"
+excerpt: "Model Context Protocol explained — what the server and client actually are, why it exists, and how it turned my LLM from a chatbot into something that can actually run commands"
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+MCP (Model Context Protocol) is the thing that turns an LLM from a text box into an agent that can actually *do stuff*. I kept seeing it mentioned everywhere without a clear explanation of what the client and server actually are and how the pipe works. Here's what I figured out.
+
+## The problem MCP solves
+
+An LLM on its own can only produce text. It can describe how to run nmap, but it can't actually run it. It can write Python code, but it can't execute it. It lives in a prompt-response box.
+
+The way people tried to solve this before MCP was chaos — every agent framework (LangChain, AutoGPT, etc.) invented its own tool-calling format. If you built a Qdrant integration for LangChain, it didn't work in AutoGPT. If you built a shell execution tool for one agent, you had to rewrite it for every other agent. No standard.
+
+MCP is Anthropic's attempt at a standard protocol for connecting AI models to tools. The idea: write a tool once, use it anywhere that speaks MCP.
+
+## Client and server — what's actually what
+
+**MCP Server:** A process that exposes tools. That's it. It implements the MCP protocol and advertises "I have these tools available, here's how to call them."
+
+My SearXNG MCP server is a Python script that:
+1. Reads JSON-RPC messages from stdin
+2. If the message is `tools/list`, responds with a list of available tools
+3. If the message is `tools/call`, runs a search against my local SearXNG instance and returns results
+4. Writes responses to stdout
+
+That's the whole server. It's a dumb process sitting there waiting for instructions over stdin/stdout.
+
+**MCP Client:** The agent framework — in my case, Goose. The client is what orchestrates the LLM and talks to the servers. It:
+1. Starts the MCP server processes (via `cmd` and `args` in the config)
+2. Queries each server for available tools at startup
+3. Includes those tool descriptions in the LLM's context
+4. When the LLM decides to call a tool, the client serializes the call, sends it to the right server, gets the result, feeds it back to the LLM
+
+So the LLM never directly talks to the MCP server. The flow is:
+
+```
+LLM decides: "I should search for CVE-2024-6387"
+      ↓
+Goose (client) receives the tool call from LLM output
+      ↓
+Goose sends JSON-RPC to the searxng MCP server's stdin
+      ↓
+SearXNG server hits localhost:4000, gets results
+      ↓
+Server writes JSON response to stdout
+      ↓
+Goose reads it, formats it, injects into LLM context
+      ↓
+LLM continues with search results available
+```
+
+## The transport types
+
+**stdio** (most common): Server runs as a subprocess. Communication happens over stdin/stdout pipes. Dead simple, works on anything. My qdrant and searxng servers both use this.
+
+```yaml
+searxng:
+  type: stdio
+  cmd: python3
+  args: ["/opt/mcp-searxng/server.py"]
+```
+
+Goose spawns `python3 /opt/mcp-searxng/server.py` and talks to it via pipes.
+
+**SSE / HTTP**: Server runs as a network service. Used for remote servers or when you want multiple clients connecting to the same server. More complex, used for cloud integrations.
+
+## Why the `available_tools: []` in Goose config
+
+When you add an extension in Goose's config.yaml, the `available_tools` field lists which specific tools from that server you want exposed to the LLM. Empty list means "all of them." Specific entries let you restrict which tools the agent can call — useful if a server exposes 50 tools and you only want 3 of them visible.
+
+## The tool description is everything
+
+When the client queries `tools/list`, each tool returns a name, description, and input schema. The description is what the LLM reads to understand when to call the tool. This is critical — a poorly written description means the LLM never calls the tool even when it should.
+
+My original searxng tool had description: "search the web." The model called it rarely. After changing it to: "Private web search via local SearXNG. Use for CVE lookups, PoC research, recent exploits, security advisories, and anything that might have changed after your training data cutoff" — it started using it proactively.
+
+The LLM literally reads this description and decides whether to use the tool based on whether it seems relevant. Write it like you're writing a job posting for the tool.
+
+## The real win
+
+Before MCP, each tool integration was a hardcoded connection between specific agent software and specific tools. With MCP:
+
+- I write a searxng server once, it works in Goose, Claude Desktop, any MCP-compatible client
+- Someone else writes a Burp Suite server, I just add it to my config, it works
+- The LLM doesn't need to know implementation details — it just knows "there's a tool called `searxng_search` that takes a query string"
+
+It's basically USB for AI tools. Write the tool once, plug it into anything that has a USB port.

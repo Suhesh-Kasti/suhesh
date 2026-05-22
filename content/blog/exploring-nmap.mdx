@@ -1,0 +1,99 @@
+---
+title: "Exploring Nmap — Getting Started"
+date: "2023-09-28"
+tags: ["Nmap", "Port Scanning", "Penetration Testing", "Enumeration"]
+excerpt: "Every hack starts with enumeration. Nmap is the tool. Here's how to install it and run your first scans."
+type: "blog"
+category: "Reconnaissance"
+---
+
+Enumeration is the first real step in any engagement. Before you exploit anything, you need to know what's there. Nmap answers that question.
+
+<IdeaNode color="green">**Golden rule:** Don't scan targets you don't own without written permission. Network scanning without authorization is illegal in most jurisdictions.</IdeaNode>
+
+## Installation
+
+<Tabs
+  tabs={[
+    {
+      label: "Linux",
+      children: (
+        <div>
+          <pre className="font-mono text-sm bg-brutal-black text-brutal-green p-4 overflow-x-auto">
+{`sudo apt install nmap   # Debian/Ubuntu
+sudo pacman -S nmap      # Arch
+sudo dnf install nmap    # Fedora`}
+          </pre>
+        </div>
+      )
+    },
+    {
+      label: "Windows",
+      children: (
+        <div>
+          <p>Download from <a href="https://nmap.org/download.html">nmap.org</a> or use winget:</p>
+          <pre className="font-mono text-sm bg-brutal-black text-brutal-green p-4 overflow-x-auto mt-2">
+{`winget install -e --id Insecure.Nmap`}
+          </pre>
+        </div>
+      )
+    },
+    {
+      label: "macOS",
+      children: (
+        <div>
+          <pre className="font-mono text-sm bg-brutal-black text-brutal-green p-4 overflow-x-auto">
+{`brew install nmap`}
+          </pre>
+        </div>
+      )
+    }
+  ]}
+  color="#00cc55"
+/>
+
+## Your First Scans
+
+<Accordion title="Ping sweep — find live hosts" color="#00cc55">
+```bash
+nmap -sn 192.168.1.0/24
+```
+Sends ICMP echo, TCP SYN to port 443, TCP ACK to port 80, and ICMP timestamp. Shows which IPs respond.
+<CopyButton text="nmap -sn 192.168.1.0/24" label="Copy" />
+</Accordion>
+
+<Accordion title="Quick port scan" color="#ff2d95">
+```bash
+nmap -sS -p 1-1000 192.168.1.1
+```
+SYN scan on the top 1000 ports. Fast, stealthy (half-open connections).
+<CopyButton text="nmap -sS -p 1-1000 192.168.1.1" label="Copy" />
+</Accordion>
+
+<Accordion title="Service version detection" color="#0055ff">
+```bash
+nmap -sV -p 22,80,443 192.168.1.1
+```
+Probes open ports to determine: service name, version number, OS hints, and sometimes hostname.
+<CopyButton text="nmap -sV -p 22,80,443 192.168.1.1" label="Copy" />
+</Accordion>
+
+## Understanding Output
+
+<Accordion title="Reading scan results" color="#7700ff">
+
+```
+PORT     STATE    SERVICE      VERSION
+22/tcp   open     ssh          OpenSSH 8.9p1
+80/tcp   open     http         Apache httpd 2.4.54
+443/tcp  closed   https
+3306/tcp filtered mysql
+```
+
+- **open** — A service is listening
+- **closed** — Port accessible but no service
+- **filtered** — Firewall blocking — can't tell if open or closed
+
+</Accordion>
+
+<BrutalButton color="#ffdd00">Check the full Nmap Cheatsheet →</BrutalButton>

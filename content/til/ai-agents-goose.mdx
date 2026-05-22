@@ -1,0 +1,82 @@
+---
+title: "AI Agents — Goose, Hermes, and the Octopus Theory"
+date: "2026-05-16T13:00:00+05:45"
+excerpt: "What AI agents actually are, how Goose works under the hood, what MCP extensions do for agents, and why the octopus analogy actually explains it better than any technical description"
+tags: []
+category: "AI/ML"
+type: "til"
+---
+
+An AI agent is an LLM that can do things. That's the whole definition. The "agent" part is just the scaffolding that gives the LLM hands.
+
+## The octopus theory
+
+Here's the mental model that finally made it click for me.
+
+The LLM is a brain. Smart, knowledgeable, can reason through complex problems. But it has no body. It can't pick things up, can't look at the world, can't press buttons. It can only think and talk.
+
+An agent framework is the body. It takes the brain's decisions and executes them in the real world. But the interesting part is you can attach *any limbs you want*.
+
+Want the brain to run terminal commands? Attach a terminal arm. Want it to browse the web? Attach a browser arm. Want it to remember things between sessions? Attach a memory organ. Want it to query a database? Database tentacle. Spawn other agents? Another brain in the same body.
+
+The octopus analogy is apt because octopi have 8 limbs that can each act semi-independently, and their brain architecture actually delegates some intelligence to each arm. Your agent can have 20 tools and the model picks which ones to use, in what order, based on what the task needs. Very octopus-y.
+
+## What actually happens in an agentic loop
+
+When you give Goose a task, here's what happens under the hood:
+
+1. Goose builds a system prompt that includes: your `.goosehints` file, descriptions of all available tools, any active skill files, and memory from previous sessions
+2. Your message gets added to the conversation
+3. That whole thing gets sent to the LLM (in my case, via llama.cpp's OpenAI-compatible API)
+4. The LLM responds with either: a text reply, or a tool call (structured JSON requesting a specific tool with specific parameters)
+5. If it's a tool call, Goose executes it — runs the shell command, queries Qdrant, fetches the URL, whatever
+6. The result gets added to the conversation
+7. Back to step 3 — the LLM sees the result and decides what to do next
+8. Repeat until the LLM produces a final text response with no more tool calls
+
+This loop is the "agentic" part. The LLM isn't just answering once and stopping — it's reasoning, acting, observing the results, and deciding what to do next. More like a person working through a problem than a search engine returning an answer.
+
+## Goose specifically
+
+Goose is built by the Block (formerly Square) team, now under the Linux Foundation's AAIF. It's one of the most MCP-complete implementations — supports all transport types, handles parallel tool calls, has subagent spawning via the `summon` extension, can run multiple sessions via `orchestrator`.
+
+The extensions in Goose map directly to capabilities:
+- `developer` → terminal and file access (the most important one)
+- `memory` → writes notes to disk that survive session resets
+- `summon` → spawns subagents that can work in parallel
+- `computercontroller` → browser automation, web scraping
+- MCP stdio servers → anything else you wire up
+
+The model never directly controls anything. Goose is the intermediary. The LLM says "call shell with `nmap -p 80,443 target`", Goose executes it, Goose returns the output, the LLM decides what to do with that output.
+
+## Goose vs Hermes
+
+Hermes Agent (Nous Research, February 2026) is the other name that comes up. It's interesting — the focus is on self-improvement, where the agent can modify its own prompts and skills based on what works. The GitHub stars exploded fast.
+
+But it's very new. The MCP ecosystem around it is thin, the security model isn't mature (no sandbox mode, no prompt injection detection), and the documentation is sparse. For a workflow that needs stable tool execution with real commands, Goose is more battle-tested.
+
+Hermes Agent's self-improvement loop is genuinely cool as a concept — imagine an agent that gets better at your specific workflow over time. That's worth watching. Just not ready for "run terminal commands on my machine" use yet.
+
+## The skills system
+
+Skills (SKILL.md files in `~/.config/agents/skills/`) are instruction files that get loaded based on relevance. At startup Goose reads only the frontmatter (tiny — just name and description). When you start a task matching a skill's description, the full skill loads.
+
+So a `web-hunter/SKILL.md` with description "web application security testing — XSS, SQLi, IDOR on authorized targets" gets loaded when you mention an HTTP target. The model suddenly has a detailed methodology it didn't have before, without you typing it out every session.
+
+Think of skills as the muscle memory of your octopus. The brain doesn't have to rediscover how to recon a web target from first principles every time — the skill file encodes the methodology and it's available on demand.
+
+## What GOOSE_MODE controls
+
+`smart_approve` — Goose pauses before "risky" shell commands and asks if you want to proceed. Good for demos, infuriating for autonomous work.
+
+`auto` — fully autonomous, runs everything without stopping. This is what you want when you've kicked off a task and walked away.
+
+The `GOOSE_CLI_MIN_PRIORITY` setting controls which tool calls Goose bothers asking about vs just does. At `0.0`, it executes everything. Raising it filters out low-priority operations.
+
+## The Telegram integration angle
+
+`goose gateway start telegram` runs Goose as a Telegram bot. Each Telegram user gets their own session. You send a message to the bot, the agentic loop runs on your machine, results come back to Telegram.
+
+It's genuinely useful. Kick off a long scan from your phone, come back to results. The bot persists on your machine; you just need to keep the systemd service running.
+
+The security model is Telegram authentication — only people who know the bot exist and can message it. Not exposed to the public internet. For a private research machine on a VM, that's fine.

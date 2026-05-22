@@ -1,0 +1,192 @@
+---
+title: "SQL"
+excerpt: "is a domain-specific language for managing and manipulating relational databases."
+tags: []
+category: "Programming"
+type: "cheatsheet"
+---
+
+#### 1. SELECT
+
+<Accordion title="SELECT: Retrieve data from one or more tables">
+The fundamental command to query and retrieve data from a database.
+<br />
+
+```sql
+SELECT column1, column2 FROM table_name WHERE condition;
+```
+
+</Accordion>
+
+#### 2. INSERT
+
+<Accordion title="INSERT: Add new records to a table">
+Insert one or more new rows into a specified table.
+<br />
+
+```sql
+INSERT INTO table_name (column1, column2) VALUES (value1, value2);
+```
+
+</Accordion>
+
+#### 3. UPDATE
+
+<Accordion title="UPDATE: Modify existing records in a table">
+Update the values of existing records in a specified table.
+<br />
+
+```sql
+UPDATE table_name SET column1 = value1 WHERE condition;
+```
+
+</Accordion>
+
+#### 4. DELETE
+
+<Accordion title="DELETE: Remove records from a table">
+Delete one or more rows from a table based on a specified condition.
+<br />
+
+```sql
+DELETE FROM table_name WHERE condition;
+```
+
+</Accordion>
+
+#### 5. CREATE TABLE
+
+<Accordion title="CREATE TABLE: Define a new table">
+Create a new table with specified columns, data types, and constraints.
+<br />
+
+```sql
+CREATE TABLE table_name (
+  column1 datatype,
+  column2 datatype,
+  ...
+);
+```
+
+</Accordion>
+
+#### 6. ALTER TABLE
+
+<Accordion title="ALTER TABLE: Modify an existing table">
+Add, modify, or delete columns in an existing table.
+<br />
+
+```sql
+ALTER TABLE table_name
+ADD column_name datatype;
+```
+
+</Accordion>
+
+#### 7. DROP TABLE
+
+<Accordion title="DROP TABLE: Delete an existing table">
+Permanently remove a table and its data from the database.
+<br />
+
+```sql
+DROP TABLE table_name;
+```
+
+</Accordion>
+
+#### 8. CREATE INDEX
+
+<Accordion title="CREATE INDEX: Create an index on a table">
+Improve the speed of data retrieval by creating an index on one or more columns.
+<br />
+
+```sql
+CREATE INDEX index_name ON table_name (column1, column2, ...);
+```
+
+</Accordion>
+
+#### 9. SELECT DISTINCT
+
+<Accordion title="SELECT DISTINCT: Retrieve unique values">
+Retrieve only unique values from a specified column or set of columns.
+<br />
+
+```sql
+SELECT DISTINCT column1 FROM table_name;
+```
+
+</Accordion>
+
+#### 10. WHERE
+
+<Accordion title="WHERE: Filter records based on a condition">
+Specify conditions to filter records in a SELECT, UPDATE, or DELETE statement.
+<br />
+
+```sql
+SELECT * FROM table_name WHERE condition;
+```
+
+</Accordion>
+
+#### 11. GROUP BY
+
+<Accordion title="GROUP BY: Group rows that have the same values in specified columns">
+Group rows based on common values in one or more columns.
+<br />
+
+```sql
+SELECT column1, COUNT(*) FROM table_name GROUP BY column1;
+```
+
+</Accordion>
+
+#### 12. HAVING
+
+<Accordion title="HAVING: Filter results of GROUP BY based on a condition">
+Apply a condition to filter the results of a GROUP BY clause.
+<br />
+
+```sql
+SELECT column1, COUNT(*) FROM table_name GROUP BY column1 HAVING COUNT(*) > 1;
+```
+
+</Accordion>
+
+#### 13. ORDER BY
+
+<Accordion title="ORDER BY: Sort the result set of a query">
+Arrange the output of a SELECT statement in ascending or descending order.
+<br />
+
+```sql
+SELECT * FROM table_name ORDER BY column1 ASC;
+```
+
+</Accordion>
+
+#### 14. JOIN
+
+<Accordion title="JOIN: Combine rows from two or more tables based on a related column">
+Merge data from multiple tables based on a specified condition.
+<br />
+
+```sql
+SELECT * FROM table1 JOIN table2 ON table1.column_name = table2.column_name;
+```
+
+</Accordion>
+
+#### 15. COUNT
+
+<Accordion title="COUNT: Count the number of rows in a table">
+Calculate the number of rows that satisfy a given condition.
+<br />
+
+```sql
+SELECT COUNT(*) FROM table_name WHERE condition;
+```
+
+</Accordion>

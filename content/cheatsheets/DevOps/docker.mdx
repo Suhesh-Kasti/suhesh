@@ -1,0 +1,162 @@
+---
+title: "Docker Command Reference"
+date: "2025-06-10"
+tags: ["docker", "containers", "devops", "images", "volumes"]
+excerpt: "Essential Docker commands for building, running, and managing containers — from hello-world to production deployments."
+type: "cheatsheet"
+category: "DevOps"
+---
+
+Every Docker command you need, organized by operation. Copy buttons included so you never type a command twice.
+
+<BrutalButton color="#0055ff">Container Lifecycle Below</BrutalButton>
+
+## Image Management
+
+<Accordion title="docker build — Build an image from a Dockerfile" color="#0055ff">
+```bash
+docker build -t my-image:latest .
+```
+<CopyButton text="docker build -t my-image:latest ." label="Copy" />
+</Accordion>
+
+<Accordion title="docker pull — Download an image from a registry" color="#0055ff">
+```bash
+docker pull nginx:alpine
+```
+<CopyButton text="docker pull nginx:alpine" label="Copy" />
+</Accordion>
+
+<Accordion title="docker images — List all local images" color="#0055ff">
+```bash
+docker images
+```
+<CopyButton text="docker images" label="Copy" />
+</Accordion>
+
+<Accordion title="docker rmi — Remove an image" color="#0055ff">
+```bash
+docker rmi image_id
+docker image prune -a
+```
+<CopyButton text="docker image prune -a" label="Copy prune" />
+</Accordion>
+
+<Accordion title="docker tag — Tag an image" color="#0055ff">
+```bash
+docker tag my-image:latest registry.example.com/my-image:v1.0
+```
+<CopyButton text="docker tag my-image:latest registry.example.com/my-image:v1.0" label="Copy" />
+</Accordion>
+
+## Container Lifecycle
+
+<Accordion title="docker run — Run a container" color="#00cc55">
+```bash
+docker run -d -p 8080:80 --name webserver nginx
+```
+<CopyButton text="docker run -d -p 8080:80 --name webserver nginx" label="Copy" />
+</Accordion>
+
+<Accordion title="docker ps — List running containers" color="#00cc55">
+```bash
+docker ps
+docker ps -a  # including stopped
+```
+<CopyButton text="docker ps -a" label="Copy" />
+</Accordion>
+
+<Accordion title="docker stop / start / restart" color="#00cc55">
+```bash
+docker stop container_name
+docker start container_name
+docker restart container_name
+```
+<CopyButton text="docker stop container_name && docker start container_name" label="Copy restart" />
+</Accordion>
+
+<Accordion title="docker rm — Remove a container" color="#00cc55">
+```bash
+docker rm container_id
+docker rm -f container_id  # force remove running
+```
+<CopyButton text="docker rm -f container_id" label="Copy" />
+</Accordion>
+
+<Accordion title="docker exec — Run command inside running container" color="#00cc55">
+```bash
+docker exec -it container_name /bin/bash
+```
+<CopyButton text="docker exec -it container_name /bin/bash" label="Copy" />
+</Accordion>
+
+<Accordion title="docker logs — View container logs" color="#00cc55">
+```bash
+docker logs -f container_name  # follow
+docker logs --tail 50 container_name
+```
+<CopyButton text="docker logs -f container_name" label="Copy" />
+</Accordion>
+
+## Volumes & Networks
+
+<Accordion title="docker volume — Manage persistent data" color="#7700ff">
+```bash
+docker volume create my_volume
+docker run -v my_volume:/data nginx
+```
+<CopyButton text="docker volume create my_volume" label="Copy" />
+</Accordion>
+
+<Accordion title="docker network — Manage networks" color="#7700ff">
+```bash
+docker network create my_network
+docker run --network my_network nginx
+```
+<CopyButton text="docker network create my_network" label="Copy" />
+</Accordion>
+
+## Docker Compose
+
+<Accordion title="docker compose — Multi-container orchestration" color="#ff6600">
+```bash
+docker compose up -d
+docker compose down
+docker compose ps
+docker compose logs -f
+```
+<CopyButton text="docker compose up -d" label="Copy up" />
+</Accordion>
+
+## Cleanup
+
+<Accordion title="System cleanup — Reclaim disk space" color="#ff2244">
+```bash
+docker system prune -a --volumes
+```
+<CopyButton text="docker system prune -a --volumes" label="Copy" /> ⚠️ Destroys everything not in use!
+</Accordion>
+
+<QuizCard
+  title="Docker Basics"
+  color="#0055ff"
+  questions={[
+    {
+      question: "Which flag runs a container in detached mode?",
+      options: ["-d", "-f", "-b", "-r"],
+      correct: 0,
+      explanation: "-d (detach) runs the container in the background and returns the container ID."
+    },
+    {
+      question: "What does docker exec -it container /bin/bash do?",
+      options: [
+        "Opens an interactive shell inside the running container",
+        "Starts a new container from the image",
+        "Copies /bin/bash from the container",
+        "Deletes the container and starts bash"
+      ],
+      correct: 0,
+      explanation: "exec runs a command inside an already-running container. -i (interactive) + -t (TTY) gives you a terminal."
+    }
+  ]}
+/>

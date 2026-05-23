@@ -4,6 +4,38 @@ import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SEARCH, TYPOGRAPHY, MOTION, COLORS, SITE, SOCIAL, WORK } from "@/lib/design-tokens";
 
+const PLACEHOLDERS = [
+  "AI-powered search...",
+  "Talk to me like a friend",
+  "You're talking directly to schizo ... a SCHIZO",
+  "Ask me anything, I'm chill..I think",
+  "Type your question, press enter",
+  "I'm listening... kinda",
+  "You're still just looking at me??",
+  "still looking....",
+  "Still Looking.........",
+  "STILL LOOKING?????????????",
+  "Did Someone tell you you're looking gorgeous today??",
+  "Don't worry I wont either",
+  "You still here???",
+  "Okay let's medidate together",
+  "BREATHE IN.....",
+  "BREATHE OUT........",
+  "BREATHE IN.....",
+  "BREATHE OUT........",
+  "BREATHE IN.....",
+  "BREATHE OUT........",
+  "BREATHE IN.....",
+  "BREATHE OUT........",
+  "BREATHE IN.....",
+  "BREATHE OUT........",
+  "BREATHE IN.....",
+  "BREATHE OUT........",
+  "Maybe...you are in love with me",
+  "Can't blame you, I am that adorable ;-)",
+  "But sadly for you, I'm just an ..",
+];
+
 interface SearchResult {
   type: "answer" | "link" | "error";
   content: string;
@@ -94,6 +126,15 @@ export default function SearchButton() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const interval = setInterval(() => {
+      setPlaceholderIdx((prev) => (prev + 1) % PLACEHOLDERS.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   const handleSearch = useCallback(async (q: string) => {
     if (!q.trim()) {
@@ -139,11 +180,11 @@ export default function SearchButton() {
 
   useEffect(() => {
     if (!isOpen) return;
-    const timer = setTimeout(() => {
-      handleSearch(query);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query, isOpen, handleSearch]);
+    if (query.trim().length === 0) {
+      setResults([]);
+      setLoading(false);
+    }
+  }, [query, isOpen]);
 
   return (
     <>
@@ -179,17 +220,47 @@ export default function SearchButton() {
             >
               <div className="w-full max-w-2xl border-2 border-fg bg-surface shadow-brutal-lg">
                 {/* Search input */}
-                <div className="flex items-center border-b-2 border-fg px-4">
+                <div className="flex items-center border-b-2 border-fg px-4 relative">
                   <span className="font-mono text-fg-muted mr-3">?</span>
-                  <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={SEARCH.placeholder}
-                    className="flex-1 bg-transparent text-fg font-sans text-lg py-4 focus:outline-none placeholder:text-fg-muted"
-                    style={{ fontFamily: TYPOGRAPHY.fontSans }}
-                    autoFocus
-                  />
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSearch(query);
+                      }}
+                      placeholder=""
+                      className="w-full bg-transparent text-fg font-sans text-lg py-4 focus:outline-none placeholder:text-transparent relative z-10"
+                      style={{ fontFamily: TYPOGRAPHY.fontSans }}
+                      autoFocus
+                    />
+                    {/* Cycling placeholder overlay */}
+                    {!query && (
+                      <div className="absolute inset-0 flex items-center pointer-events-none z-0 overflow-hidden">
+                        <AnimatePresence mode="popLayout">
+                          <motion.span
+                            key={placeholderIdx}
+                            initial={{ y: 22, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -22, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="text-lg text-fg-muted"
+                            style={{ fontFamily: TYPOGRAPHY.fontSans }}
+                          >
+                            {PLACEHOLDERS[placeholderIdx]}
+                          </motion.span>
+                        </AnimatePresence>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleSearch(query)}
+                    className="font-mono text-xs text-fg hover:text-brutal-pink ml-2 px-3 py-1 border border-fg hover:border-brutal-pink transition-colors cursor-pointer"
+                    aria-label="Search"
+                  >
+                    GO
+                  </button>
                   <button
                     onClick={() => setIsOpen(false)}
                     className="font-mono text-fg-muted hover:text-brutal-pink ml-2 text-sm px-2 py-1 border border-fg-muted hover:border-brutal-pink transition-colors"

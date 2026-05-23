@@ -211,11 +211,11 @@ export default function About() {
             </div>
 
             {/* Stats */}
-            <div className="about-animate grid grid-cols-3 gap-3">
-              {[{ value: "2+", label: "Years in Security" }, { value: "3+", label: "Cyber Certifications" }, { value: "∞", label: "Curiosity" }].map((stat) => (
-                <motion.div key={stat.label} className="border-2 border-fg p-3 text-center panel-comic" whileHover={{ y: -4 }} transition={MOTION.snappy}>
-                  <div className="font-display text-2xl font-extrabold text-fg" style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{stat.value}</div>
-                  <div className="font-mono text-2xs uppercase text-fg-muted mt-1 tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>{stat.label}</div>
+            <div className="about-animate grid grid-cols-3 gap-2 sm:gap-3">
+              {[{ value: "2+", label: "Years in Security" }, { value: "3+", label: "Cyber Certs" }, { value: "∞", label: "Curiosity" }].map((stat) => (
+                <motion.div key={stat.label} className="border-2 border-fg p-2 sm:p-3 text-center panel-comic" whileHover={{ y: -4 }} transition={MOTION.snappy}>
+                  <div className="font-display text-xl sm:text-2xl font-extrabold text-fg" style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{stat.value}</div>
+                  <div className="font-mono text-2xs uppercase text-fg-muted mt-1 tracking-label leading-tight" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>{stat.label}</div>
                 </motion.div>
               ))}
             </div>

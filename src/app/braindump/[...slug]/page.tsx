@@ -4,6 +4,7 @@ import { getPostBySlug, getAllSlugs } from "@/lib/braindump";
 import { MdxContent } from "@/components/MdxContent";
 import Navbar from "@/components/Navbar";
 import SearchButton from "@/components/SearchButton";
+import TableOfContents from "@/components/TableOfContents";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
 
 export const dynamic = "force-static";
@@ -75,7 +76,8 @@ export default async function BrainDumpPost({ params }: Props) {
       />
       <Navbar />
       <main className="flex-1 pt-16">
-        <article className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        <TableOfContents content={post.rawContent} />
+        <article className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <header className="mb-12">
             <span className="font-mono text-2xs uppercase tracking-label text-fg-muted" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>
               {post.meta.date}

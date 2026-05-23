@@ -23,7 +23,10 @@ export default function ProgressChecklist({
 
   // Use registry items by default, fall back to prop items
   const registryData = CHECKLIST_REGISTRY[checklistId];
-  const safeItems = propItems?.length ? propItems : (registryData?.items ?? []);
+  const safeItems = (propItems?.length ? propItems : (registryData?.items ?? [])).map((item, index) => ({
+    ...item,
+    id: item.id || `item-${index}`,
+  }));
   const displayTitle = title ?? registryData?.title ?? "";
 
   useEffect(() => {
@@ -118,10 +121,10 @@ export default function ProgressChecklist({
 
       {/* Items */}
       <ul className="divide-y divide-fg-muted/20">
-        {safeItems.map((item) => {
+        {safeItems.map((item, index) => {
           const isChecked = checked.has(item.id);
           return (
-            <li key={item.id}>
+            <li key={item.id || `item-${index}`}>
               <label
                 className={`flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors ${
                   isChecked

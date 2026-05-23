@@ -1,9 +1,9 @@
 "use client";
 
-import { ReactNode, HTMLAttributes, useState, useCallback } from "react";
+import { ReactNode, HTMLAttributes, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faCheck, faXmark, faExpand } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faExpand, faCopy, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 type ElProps = HTMLAttributes<HTMLElement> & { children?: ReactNode };
 type CodeProps = HTMLAttributes<HTMLElement> & { children?: ReactNode; className?: string };
@@ -13,9 +13,9 @@ function isInlineCode(children: ReactNode): boolean {
   return true;
 }
 
-function CopyCode({ text }: { text: string }) {
+function HeaderCopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
-  const handleCopy = useCallback(() => {
+  const handleCopy = () => {
     navigator.clipboard.writeText(text).catch(() => {
       const ta = document.createElement("textarea");
       ta.value = text;
@@ -26,7 +26,7 @@ function CopyCode({ text }: { text: string }) {
     });
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
-  }, [text]);
+  };
 
   return (
     <button
@@ -64,8 +64,7 @@ export function BrutalCode({ children, className, ...props }: CodeProps) {
 }
 
 export function BrutalPre({ children, ...props }: ElProps) {
-  const codeText = typeof children === "string" ? children : (children as any)?.props?.children ?? "";
-  const textStr = typeof codeText === "string" ? codeText : "";
+  const codeText = extractTextContent(children);
 
   return (
     <div className="my-6 border-2 border-fg shadow-brutal overflow-x-auto not-prose" style={{ backgroundColor: "var(--surf)" }}>
@@ -78,7 +77,7 @@ export function BrutalPre({ children, ...props }: ElProps) {
           </span>
           <span className="font-mono text-2xs uppercase tracking-label ml-2" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>code</span>
         </div>
-        <CopyCode text={textStr} />
+        <HeaderCopyButton text={codeText} />
       </div>
       <pre className="font-mono text-sm leading-relaxed overflow-x-auto p-5 whitespace-pre" style={{ fontFamily: "var(--font-space-mono)", color: "var(--fg)", backgroundColor: "var(--surf)" }} {...props}>
         {children}
@@ -87,10 +86,21 @@ export function BrutalPre({ children, ...props }: ElProps) {
   );
 }
 
+function extractTextContent(node: ReactNode): string {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(extractTextContent).join("");
+  if (node && typeof node === "object" && "props" in node) {
+    const children = (node as any).props?.children;
+    return extractTextContent(children);
+  }
+  return "";
+}
+
 export function BrutalLink({ children, href, ...props }: ElProps & { href?: string }) {
   return (
     <a href={href} className="font-mono text-sm uppercase text-spider-blue hover:text-spider-pink underline decoration-2 underline-offset-2 transition-colors" style={{ fontFamily: "var(--font-space-mono)" }} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noopener noreferrer" : undefined} {...props}>
-      {children} {href?.startsWith("http") ? "" : ""}
+      {children}
     </a>
   );
 }

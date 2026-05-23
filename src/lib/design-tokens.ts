@@ -215,6 +215,15 @@ export const SEARCH = {
 
 export const WORK = {
   projects: [
+     {
+      title: "Local AI Security Agent",
+      category: "AI Security",
+      description: "Fully private local AI agent stack — dual LLM routing, RAG knowledge base, MCP tools, Telegram control.",
+      tags: ["Python", "llama.cpp", "Qdrant", "FastAPI", "Docker"],
+      color: COLORS.orange,
+      url: "/projects/ai-agent",
+      image: null,
+    },
     {
       title: "Hack The Box",
       category: "Capture The Flag",
@@ -260,15 +269,7 @@ export const WORK = {
       url: "/projects/subisu",
       image: null,
     },
-    {
-      title: "Local AI Security Agent",
-      category: "AI Security",
-      description: "Fully private local AI agent stack — dual LLM routing, RAG knowledge base, MCP tools, Telegram control.",
-      tags: ["Python", "llama.cpp", "Qdrant", "FastAPI", "Docker"],
-      color: COLORS.orange,
-      url: "/projects/ai-agent",
-      image: null,
-    },
+
 
   ],
 } as const;

@@ -52,5 +52,15 @@ export function MdxContent({ compiledSource }: Props) {
     );
   }
 
-  return <div className="post-content">{content}</div>;
+  return (
+    <div className="
+      [&_table]:w-full [&_table]:border-collapse [&_table]:border-2 [&_table]:border-fg [&_table]:font-mono [&_table]:text-sm [&_table]:my-6 [&_table]:shadow-brutal
+      [&_th]:border-2 [&_th]:border-fg [&_th]:bg-fg [&_th]:text-surface [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:uppercase [&_th]:text-xs
+      [&_td]:border-2 [&_td]:border-fg [&_td]:px-4 [&_td]:py-2
+      [&_thead]:border-b-2 [&_thead]:border-fg
+      [&_tbody]:divide-y [&_tbody]:divide-fg-muted/20
+    ">
+      {content}
+    </div>
+  );
 }

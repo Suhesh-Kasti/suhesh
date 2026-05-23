@@ -1,0 +1,770 @@
+---
+title: "Building a Local AI-Powered Security Research Agent from Scratch"
+meta_title: "Local LLM Security Research Agent — Full Build Log"
+description: "A full honest build log of setting up a completely local, private AI agent stack for authorized security research and bug bounty — llama.cpp, Goose, Qdrant RAG, model routing, Telegram integration — everything that went wrong and how it got fixed."
+date: 2026-05-21T22:00:00+05:45
+image: "/images/blog/ai-security-agent/cover.svg"
+categories: ["Cybersecurity", "AI", "Bug Bounty", "Infrastructure"]
+author: "Suhesh Kasti"
+tags: ["LLM", "llama.cpp", "Goose", "Qdrant", "RAG", "NVIDIA L4", "Bug Bounty Automation", "Local AI", "Qwen", "MCP", "SearXNG"]
+---
+
+<IdeaNode color="orange">This is not a clean tutorial. This is the "I spent 3 hours debugging why 14GB of VRAM was sitting empty" kind of log. Everything below is strictly for authorized security research only.</IdeaNode>
+
+So I spent what felt like an embarrassingly long time trying to get a fully local AI security research agent working. The idea was simple: run everything on my own hardware, no cloud APIs, completely private, and have the AI actually help with authorized bug bounty work — not just chat about it but actually run tools, remember findings, look up CVEs, and think through attack chains.
+
+---
+
+## The Goal
+
+<GlitchBox color="#ffdd00" intensity="heavy">
+  A fully local, private AI stack that can run LLMs on my own GPU, autonomously execute security research tools, look up CVEs from a local knowledge base, search the web privately, remember findings between sessions, and be controllable from Telegram.
+</GlitchBox>
+
+---
+
+## Hardware
+
+| Component | Spec |
+|-----------|------|
+| GPU | NVIDIA L4 (24GB GDDR6, 300 GB/s bandwidth) |
+| RAM | 64GB DDR4 |
+| OS | Ubuntu 24.04 (VM) |
+| CUDA | 13.0 / Driver 580.126.20 |
+
+<IdeaNode color="blue">The L4 is a data center inference card — great for sustained workloads, terrible bandwidth compared to a consumer RTX 4090 (300 GB/s vs ~1008 GB/s). This matters for LLM token generation speed because it's a memory-bandwidth-bound operation.</IdeaNode>
+
+---
+
+## Phase 1 — Picking Models (and getting it wrong first)
+
+The original plan was dual MoE: a massive model for heavy lifting, a small fast model for easy tasks.
+
+<Tabs color="#ff6600">
+  <div label="What I tried first (wrong)">
+    Started with **Qwen3.5-122B-A10B** in MXFP4_MOE quantization. The theory: 122B total params, only 10B active per token, so the active computation stays in VRAM and inactive MoE experts sit in RAM. Smart on paper.
+
+```bash
+# This was my first attempt — looked reasonable
+nohup llama-server \
+  -m Qwen3.5-122B-A10B-MXFP4_MOE.gguf \
+  --n-gpu-layers 999 \
+  --override-tensor "blk\..*\.ffn_.*_exps\.weight=CPU" \
+  --ctx-size 32768 \
+  --cache-type-k q4_0 --cache-type-v q4_0 \
+  -fa --port 6969 > logs/qwen-heavy.log 2>&1 &
+```
+
+Result: **3.4 tokens per second**. GPU at 9% utilization. `nvidia-smi` showing 8.5GB used out of 23GB.
+  </div>
+  <div label="What was actually wrong">
+
+The `--override-tensor` regex matched every single MoE expert weight tensor in every layer — 14.5GB VRAM idle, GPU at 9% utilization. MXFP4_MOE was retired by Unsloth and had poor CUDA kernel support for Qwen's Gated DeltaNet layers. Even if fixed, 122B at Q4 is ~61GB with 300 GB/s bandwidth ceiling = ~5 tok/s theoretical max. Physics don't work out.
+
+  </div>
+  <div label="What actually worked">
+
+Switched to Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P — dense model, not MoE. 18GB fits entirely in VRAM, no CPU offloading needed. Gated DeltaNet means tiny KV cache (~0.7GB for 64k context). 14.5–18 tok/s, 5× faster than the 122B. HauhauCS-Aggressive removes safety filters that refuse security tasks. Has vision encoder (mmproj). Also runs Qwen3.5-9B via router mode for quick tasks.
+
+  </div>
+</Tabs>
+
+<Accordion title="Model download commands" color="#00cc55">
+
+```bash
+pip install huggingface_hub hf_transfer
+export HF_HUB_ENABLE_HF_TRANSFER=1
+
+# The main working model (27B, Q4_K_P, ~18GB)
+huggingface-cli download unsloth/Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-GGUF \
+  --include "*Q4_K_P*" \
+  --local-dir $PATH_TO_PROJECT/models/
+
+# Light model for quick tasks (9B, Q6_K, ~7GB)
+huggingface-cli download unsloth/Qwen3.5-9B-GGUF \
+  --include "*Q6_K*" \
+  --local-dir $PATH_TO_PROJECT/models/
+```
+
+<CopyButton text={`pip install huggingface_hub hf_transfer
+export HF_HUB_ENABLE_HF_TRANSFER=1
+huggingface-cli download unsloth/Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-GGUF --include "*Q4_K_P*" --local-dir $PATH_TO_PROJECT/models/`} label="COPY ALL" />
+
+</Accordion>
+
+---
+
+## Phase 2 — Setting Up llama.cpp
+
+Building from source because I needed CUDA support and the latest router mode features.
+
+```bash
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+
+cmake -B build \
+  -DGGML_CUDA=ON \
+  -DGGML_CUDA_F16=ON \
+  -DLLAMA_CURL=ON
+
+cmake --build build --config Release -j$(nproc)
+```
+
+### The Router Mode Discovery
+
+Originally tried to run two separate llama-server instances and proxy between them. That failed spectacularly. Then tried **llama-swap** — a third-party binary that hot-swaps models on demand. Also failed (502 errors, config path issues with Go template macros not expanding `~`).
+
+Turns out llama.cpp shipped their own router mode in December 2025 and I just hadn't read the changelog. You start the server without `-m` and it auto-discovers models:
+
+```bash
+llama-server --models-dir $PATH_TO_PROJECT/models --models-max 1 --port 6969
+```
+
+<IdeaNode color="green">`--models-max 1` means only one model in VRAM at a time — LRU eviction kicks the old one out when a request comes in for a different model. Swap time is ~4 seconds for 9B, ~12 seconds for 27B. Way better than CPU inference.</IdeaNode>
+
+### Per-Model Presets
+
+The router uses an INI file to know what settings to apply when loading each model:
+
+<CopyButton text={`[Qwen3.5-9B-Uncensored-HauhauCS-Aggressive-Q6_K.gguf]
+model        = $PATH_TO_PROJECT/models/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive-Q6_K.gguf
+ctx-size     = 16384
+n-gpu-layers = 999
+cache-type-k = q4_0
+cache-type-v = q4_0
+n-predict    = 4096
+flash-attn   = true
+threads      = 8
+temp         = 0.6
+top-k        = 20
+top-p        = 0.95
+min-p        = 0.0
+
+[Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf]
+model        = $PATH_TO_PROJECT/models/Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf
+mmproj       = $PATH_TO_PROJECT/models/mmproj-Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-f16.gguf
+ctx-size     = 65536
+n-gpu-layers = 999
+cache-type-k = q4_0
+cache-type-v = q4_0
+n-predict    = 4096
+flash-attn   = true
+threads      = 16
+temp         = 0.6
+top-k        = 20
+top-p        = 0.95
+min-p        = 0.0
+presence-penalty = 1.0`} label="COPY PRESETS" />
+
+<IdeaNode color="red">**Gotcha:** I initially wrote `max_tokens = 4096` which crashed the router with `option 'max_tokens' not recognized`. That's an OpenAI API parameter, not a llama.cpp server flag. The correct one is `n-predict`.</IdeaNode>
+
+### Systemd Service
+
+```bash
+sudo tee /etc/systemd/system/llama-router.service << 'EOF'
+[Unit]
+Description=llama.cpp router mode
+After=network.target
+
+[Service]
+User=appsec
+ExecStart=$PATH_TO_PROJECT/llama.cpp/build/bin/llama-server \
+  --models-dir $PATH_TO_PROJECT/models \
+  --models-preset $PATH_TO_PROJECT/models-preset.ini \
+  --models-max 1 \
+  --host 0.0.0.0 \
+  --port 6969 \
+  --jinja
+Restart=always
+RestartSec=5
+Environment=HOME=/home/appsec
+StandardOutput=append:$PATH_TO_PROJECT/logs/llama/router.log
+StandardError=append:$PATH_TO_PROJECT/logs/llama/router.log
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now llama-router
+```
+
+---
+
+## Phase 3 — The Smart Router (Python Proxy)
+
+The llama.cpp router picks which model to load based on the `model` field in the request. So I wrote a thin FastAPI proxy that sits on port 7000, looks at the incoming prompt, and injects the right model name before forwarding to port 6969.
+
+<CopyButton text={`# router.py — smart model selection based on prompt complexity
+import httpx
+from fastapi import FastAPI, Request
+from fastapi.responses import StreamingResponse, JSONResponse
+
+app = FastAPI()
+BACKEND = "http://localhost:6969"
+LIGHT_MODEL = "Qwen3.5-9B-Uncensored-HauhauCS-Aggressive-Q6_K"
+HEAVY_MODEL = "Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf"
+
+HEAVY_PATTERNS = [
+    "analyz", "exploit", "vulnerabilit", "bypass", "chain", "review",
+    "audit", "explain", "reason", "plan", "strateg", "compare",
+    "assess", "investigat", "what does", "is this vuln",
+    "summarize", "report", "attack surface", "misconfig",
+    "cve-", "poc ", "proof of concept", "write a", "generate a",
+    "how would", "what could", "help me understand", "what is"
+]
+
+def pick_model(body: dict) -> str:
+    requested = body.get("model", "")
+    if requested in (LIGHT_MODEL, HEAVY_MODEL):
+        return requested
+    if requested == "light": return LIGHT_MODEL
+    if requested == "heavy": return HEAVY_MODEL
+    msgs = body.get("messages", [])
+    if not msgs: return HEAVY_MODEL
+    last = ""
+    for m in reversed(msgs):
+        if m.get("role") == "user":
+            last = (m.get("content") or "").lower()
+            break
+    if len(last) > 400: return HEAVY_MODEL
+    if any(p in last for p in HEAVY_PATTERNS): return HEAVY_MODEL
+    return LIGHT_MODEL
+
+@app.post("/v1/chat/completions")
+async def completions(request: Request):
+    body = await request.json()
+    body["model"] = pick_model(body)
+    if "max_tokens" not in body:
+        body["max_tokens"] = 4096
+    stream = body.get("stream", False)
+    async with httpx.AsyncClient(timeout=700) as client:
+        if stream:
+            async def gen():
+                async with client.stream(
+                    "POST", f"{BACKEND}/v1/chat/completions",
+                    json=body, headers={"Content-Type": "application/json"}
+                ) as r:
+                    async for chunk in r.aiter_bytes():
+                        yield chunk
+            return StreamingResponse(gen(), media_type="text/event-stream")
+        r = await client.post(f"{BACKEND}/v1/chat/completions", json=body)
+        return JSONResponse(r.json())`} label="COPY ROUTER.PY" />
+
+### The 203/EXEC Nightmare
+
+<Accordion title="The systemd bug that cost me 2 hours" color="#ff1144">
+The router service kept failing with `status=203/EXEC`. Turned out the systemd service file was written using a heredoc where `$PYTHON_PATH` was never set, so the ExecStart ended up being literally `ExecStart=m uvicorn router:app` (just the letter "m"). Systemd was trying to run a binary called `m`.
+
+**Fix:** Always use single-quoted heredoc `<< 'EOF'` when writing service files to prevent variable expansion, then hardcode paths.
+</Accordion>
+
+---
+
+## Phase 4 — Goose Agent
+
+<IdeaNode color="purple">Goose is the agentic layer. Think of it as the "body" that gives the LLM hands — it can run terminal commands, manage files, browse the web, query databases, spawn sub-agents. The LLM is just the brain; Goose is what lets it actually *do* things.</IdeaNode>
+
+When you send it a task, it:
+1. **Plans** — breaks the task into tool-call steps (heavy model)
+2. **Acts** — calls MCP extensions (terminal, Qdrant, SearXNG, etc.)
+3. **Observes** — reads tool output, decides next step
+4. **Loops** — keeps going until task is done or it asks for input
+
+### The Final Working Config
+
+<Tabs color="#7700ff">
+  <div label="config.yaml">
+```yaml
+# ~/.config/goose/config.yaml
+GOOSE_PROVIDER: openai
+GOOSE_MODEL: Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf
+OPENAI_BASE_URL: http://localhost:7000/v1
+OPENAI_API_KEY: sk-your-key-here
+OPENAI_TIMEOUT: "600"
+GOOSE_MODE: auto
+GOOSE_CLI_MIN_PRIORITY: 0.0
+
+extensions:
+  developer:
+    enabled: true
+    type: builtin
+    name: developer
+    timeout: 600
+    bundled: true
+  memory:
+    enabled: true
+    type: builtin
+    name: memory
+    timeout: 300
+    bundled: true
+  summon:
+    enabled: true
+    type: platform
+    name: summon
+    bundled: true
+  todo:
+    enabled: true
+    type: platform
+    name: todo
+    bundled: true
+  analyze:
+    enabled: true
+    type: platform
+    name: analyze
+    bundled: true
+  orchestrator:
+    enabled: true
+    type: platform
+    name: orchestrator
+    bundled: true
+  chatrecall:
+    enabled: true
+    type: platform
+    name: chatrecall
+    bundled: true
+  qdrant:
+    enabled: true
+    name: qdrant
+    type: stdio
+    cmd: uvx
+    args: ["mcp-server-qdrant"]
+    timeout: 30
+    env:
+      QDRANT_URL: "http://localhost:6333"
+      COLLECTION_NAME: "security_kb"
+      EMBEDDING_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+  searxng:
+    enabled: true
+    name: searxng
+    type: stdio
+    cmd: python3
+    args: ["/opt/mcp-searxng/server.py"]
+    timeout: 30
+    env:
+      SEARXNG_URL: "http://localhost:4000"
+  # DISABLED extensions
+  container-use:
+    enabled: false
+  code_execution:
+    enabled: false
+  apps:
+    enabled: false
+```
+  </div>
+  <div label="Issues I hit">
+
+container-use failed on every startup — tries to connect to a remote NPM registry. qdrant and searxng silently skipped — missing `enabled: true`, no warnings. code_execution caused -32602 EOF while parsing — oversized token responses. GOOSE_MODE: smart_approve paused before every command — changed to auto.
+
+  </div>
+</Tabs>
+
+### The .goosehints File
+
+<Marquee speed="8" color="#ffdd00">MOST IMPORTANT FILE IN THE WHOLE STACK ↓</Marquee>
+
+```bash
+# Place in your working directory before starting a session
+cat > $PATH_TO_PROJECT/.goosehints << 'EOF'
+## MANDATORY TOOL USE — no exceptions
+
+### On every new target or technology identified:
+1. Call qdrant_store_memory: query = "{technology} vulnerability exploit"
+2. Call searxng_search: query = "{technology} CVE 2025 2026 exploit site:github.com"
+Do NOT skip. Do NOT say you'll search without calling the tool.
+
+### Shell command rules:
+- Use nmap --top-ports 1000 NEVER -p- (all ports takes forever and times out)
+- Keep individual commands under 2 minutes
+- Use /no_think before every tool invocation
+- One tool call at a time, analyze result, then next call
+
+### Memory rules — MANDATORY:
+After EVERY confirmed finding: call memory tool with tag #finding
+After EVERY failed attempt: call memory tool with tag #failed
+At session START: read memories tagged #finding and #todo first
+
+### Session start ritual:
+1. Read memories (#finding, #todo)
+2. Qdrant: "recent critical vulnerabilities web application"
+3. Confirm available tools
+4. Ask for target and scope
+EOF
+```
+
+---
+
+## Phase 5 — RAG Stack (Qdrant + SearXNG)
+
+### Infrastructure
+
+```yaml
+# docker-compose.yml
+version: "3.9"
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports: ["6333:6333", "6334:6334"]
+    volumes: [qdrant_data:/qdrant/storage]
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports: ["4000:8080"]
+    volumes: ["./searxng:/etc/searxng"]
+    environment:
+      SEARXNG_BASE_URL: "http://localhost:4000/"
+      SEARXNG_SECRET_KEY: "change-this-to-random-string"
+volumes:
+  qdrant_data:
+```
+
+### The SearXNG MCP Server
+
+The MCP server at `/opt/mcp-searxng/server.py` doesn't exist by default — you have to write it. It's a simple JSON-RPC stdio server that wraps the SearXNG API:
+
+<CopyButton text={`#!/usr/bin/env python3
+import sys, json, requests, os
+
+SEARXNG_URL = os.getenv("SEARXNG_URL", "http://localhost:4000")
+
+def search(query: str, num_results: int = 10) -> str:
+    try:
+        r = requests.get(f"{SEARXNG_URL}/search",
+            params={"q": query, "format": "json"}, timeout=15)
+        results = r.json().get("results", [])[:num_results]
+        out = []
+        for i, res in enumerate(results, 1):
+            out.append(f"[{i}] {res.get('title','')}\\n{res.get('url','')}\\n{res.get('content','')[:300]}")
+        return "\\n\\n".join(out) if out else "No results."
+    except Exception as e:
+        return f"Search error: {e}"
+
+TOOLS = [{"name": "searxng_search",
+    "description": "Search the web via private local SearXNG",
+    "inputSchema": {"type": "object",
+        "properties": {"query": {"type": "string"}, "num_results": {"type": "integer", "default": 10}},
+        "required": ["query"]}}]
+
+def handle(msg):
+    method = msg.get("method"); mid = msg.get("id")
+    if method == "initialize":
+        return {"jsonrpc":"2.0","id":mid,"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{}},"serverInfo":{"name":"searxng","version":"1.0"}}}
+    if method == "tools/list":
+        return {"jsonrpc":"2.0","id":mid,"result":{"tools":TOOLS}}
+    if method == "tools/call":
+        args = msg.get("params",{}).get("arguments",{})
+        result = search(args.get("query",""), args.get("num_results",10))
+        return {"jsonrpc":"2.0","id":mid,"result":{"content":[{"type":"text","text":result}]}}
+    if method == "notifications/initialized": return None
+    return {"jsonrpc":"2.0","id":mid,"error":{"code":-32601,"message":"Method not found"}}
+
+for line in sys.stdin:
+    line = line.strip()
+    if not line: continue
+    try:
+        msg = json.loads(line)
+        resp = handle(msg)
+        if resp: print(json.dumps(resp), flush=True)
+    except Exception as e:
+        print(json.dumps({"jsonrpc":"2.0","id":None,"error":{"code":-32700,"message":str(e)}}), flush=True)`} label="COPY SEARXNG MCP" />
+
+### Ingesting Security Knowledge
+
+<Tabs color="#00aa44">
+  <div label="CVE ingestion">
+Daily delta — run via cron. Pulls NVD and CISA KEV:
+
+```python
+# Daily delta — run via cron
+import requests, uuid, hashlib
+from datetime import datetime, timedelta
+from qdrant_client import QdrantClient
+from qdrant_client.models import PointStruct
+from sentence_transformers import SentenceTransformer
+
+client = QdrantClient(url="http://localhost:6333")
+embedder = SentenceTransformer("BAAI/bge-base-en-v1.5")
+
+def upsert(text, meta):
+    vec = embedder.encode(text, normalize_embeddings=True).tolist()
+    uid = str(uuid.UUID(hashlib.md5(text.encode()).hexdigest()))
+    client.upsert("security_kb", points=[
+        PointStruct(id=uid, vector=vec, payload={"text": text, **meta})
+    ])
+
+def ingest_nvd_delta(days=1):
+    end = datetime.utcnow()
+    start = end - timedelta(days=days)
+    url = f"https://services.nvd.nist.gov/rest/json/cves/2.0?lastModStartDate={start.strftime('%Y-%m-%dT%H:%M:%S.000')}&lastModEndDate={end.strftime('%Y-%m-%dT%H:%M:%S.000')}&resultsPerPage=2000"
+    r = requests.get(url, timeout=60, headers={"User-Agent": "research/1.0"})
+    for item in r.json().get("vulnerabilities", []):
+        cve = item["cve"]
+        desc = next((d["value"] for d in cve.get("descriptions",[]) if d["lang"]=="en"), "")
+        if desc:
+            upsert(f"{cve['id']}: {desc}", {"source":"nvd","cve_id":cve["id"],"type":"cve"})
+
+def ingest_cisa_kev():
+    r = requests.get("https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json", timeout=30)
+    for v in r.json().get("vulnerabilities", []):
+        text = f"ACTIVELY EXPLOITED: {v['cveID']}\nProduct: {v.get('vendorProject','')} {v.get('product','')}\nDescription: {v.get('shortDescription','')}"
+        upsert(text, {"source":"cisa_kev","cve_id":v["cveID"],"type":"actively_exploited","priority":"critical"})
+```
+
+<CopyButton text="pip install qdrant-client sentence-transformers" label="COPY INSTALL" />
+  </div>
+  <div label="Technique knowledge">
+Weekly ingestion of MITRE ATT&CK techniques and HackerOne public disclosures:
+
+```python
+# MITRE ATT&CK techniques
+def ingest_mitre():
+    r = requests.get(
+        "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json",
+        timeout=60)
+    for obj in r.json()["objects"]:
+        if obj.get("type") != "attack-pattern": continue
+        tid = next((ref["external_id"] for ref in obj.get("external_references",[])
+                    if ref.get("source_name")=="mitre-attack"), "")
+        name = obj.get("name","")
+        desc = obj.get("description","")[:2000]
+        upsert(f"ATT&CK {tid}: {name}\n\n{desc}",
+               {"source":"mitre_attack","technique_id":tid,"type":"technique"})
+
+# HackerOne public disclosures
+def ingest_h1_public():
+    query = '{ hacktivity(order_by:{field:popular},product_type:bug-bounty,limit:200) { nodes { ... on HacktivityItem { report { title vulnerability_information severity { rating score } weakness { name } }}}}}'
+    r = requests.post("https://hackerone.com/graphql", json={"query": query}, timeout=30)
+    for node in r.json().get("data",{}).get("hacktivity",{}).get("nodes",[]):
+        report = node.get("report",{})
+        title = report.get("title","")
+        info = (report.get("vulnerability_information") or "")[:1500]
+        text = f"Bug Bounty: {title}\nSeverity: {report.get('severity',{}).get('rating','')}\n\n{info}"
+        upsert(text, {"source":"hackerone","type":"bug_bounty_report"})
+```
+  </div>
+</Tabs>
+
+---
+
+## Phase 6 — Telegram Gateway
+
+<Marquee speed="6" color="#00aaff">
+Control your AI agent from your phone · <a href="https://t.me/verydepressedbot" target="_blank" rel="noopener noreferrer" className="underline hover:text-brutal-pink transition-colors">@verydepressedbot</a> · <a href="https://t.me/rozeenabot" target="_blank" rel="noopener noreferrer" className="underline hover:text-brutal-pink transition-colors">@rozeenabot</a> · Kick off a scan · Come back to results in chat
+</Marquee>
+
+```bash
+# Get goose binary path first
+which goose   # probably /home/appsec/.local/bin/goose
+
+# Store bot token securely (NEVER in the service file directly)
+cat > $PATH_TO_PROJECT/.env.telegram << 'EOF'
+TELEGRAM_BOT_TOKEN=your_fresh_bot_token_here
+EOF
+chmod 600 $PATH_TO_PROJECT/.env.telegram
+
+sudo tee /etc/systemd/system/goose-telegram.service << 'SVCEOF'
+[Unit]
+Description=Goose Telegram Gateway
+After=network.target
+
+[Service]
+User=appsec
+WorkingDirectory=/home/appsec/.schizo
+EnvironmentFile=$PATH_TO_PROJECT/.env.telegram
+ExecStart=/home/appsec/.local/bin/goose gateway start telegram \
+  --bot-token ${TELEGRAM_BOT_TOKEN} \
+  --max-actions 500 --yes
+Restart=always
+RestartSec=10
+Environment=HOME=/home/appsec
+Environment=GOOSE_MODE=auto
+Environment=OPENAI_BASE_URL=http://localhost:7000/v1
+Environment=OPENAI_API_KEY=sk-your-key-here
+Environment=GOOSE_PROVIDER=openai
+Environment=GOOSE_MODEL=Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf
+Environment=OPENAI_TIMEOUT=600
+StandardOutput=append:$PATH_TO_PROJECT/logs/goose-telegram.log
+StandardError=append:$PATH_TO_PROJECT/logs/goose-telegram.log
+
+[Install]
+WantedBy=multi-user.target
+SVCEOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now goose-telegram
+```
+
+<IdeaNode color="blue">Each Telegram user gets their own isolated session. Target and scope get injected via the `tom` extension env var. Send a target from your phone, get results back in chat.</IdeaNode>
+
+---
+
+## Phase 7 — Zsh Aliases
+
+Quality of life additions:
+
+```bash
+SCHIZO="$HOME/.schizo"
+LLAMA="$SCHIZO/llama.cpp/build/bin/llama-server"
+
+ai-start() {
+  echo "[*] Starting llama.cpp router..."
+  pkill -f "llama-server" 2>/dev/null; sleep 1
+  nohup "$LLAMA" --models-dir "$SCHIZO/models" \
+    --models-preset "$SCHIZO/models-preset.ini" \
+    --models-max 1 --host 0.0.0.0 --port 6969 --jinja \
+    > "$SCHIZO/logs/llama/router.log" 2>&1 &
+  echo "[*] Starting smart router..."
+  sudo systemctl restart llm-router 2>/dev/null
+  sleep 3
+  curl -sf http://localhost:6969/health > /dev/null && echo "[+] llama.cpp OK :6969"
+  curl -sf http://localhost:7000/health > /dev/null && echo "[+] router    OK :7000"
+}
+
+ai-stop() {
+  pkill -f "llama-server" && echo "[-] llama.cpp stopped"
+  sudo systemctl stop llm-router 2>/dev/null && echo "[-] router stopped"
+}
+
+ai-status() {
+  echo "── GPU ──"
+  nvidia-smi --query-gpu=name,memory.used,memory.total,temperature.gpu,utilization.gpu \
+    --format=csv,noheader,nounits | \
+    awk -F, '{printf "  %s | VRAM %s/%s MB | %s°C | %s%%\n",$1,$2,$3,$4,$5}'
+  echo "── Services ──"
+  curl -sf http://localhost:6969/health > /dev/null && echo "  :6969 llama.cpp  UP" || echo "  :6969 llama.cpp  DOWN"
+  curl -sf http://localhost:7000/health > /dev/null && echo "  :7000 router     UP" || echo "  :7000 router     DOWN"
+  docker ps --format "  :{{.Ports}} {{.Names}} UP" 2>/dev/null | grep -E "qdrant|searxng"
+}
+
+alias ais="ai-status"
+alias ail="tail -f $SCHIZO/logs/llama/router.log"
+```
+
+---
+
+## Final Architecture
+
+```
+Telegram / Open WebUI / SSH terminal
+         │
+         ▼
+  smart router :7000  ←── picks light/heavy based on prompt complexity
+         │
+         ▼
+  llama.cpp router :6969  ←── loads/unloads model on demand (LRU)
+         │
+    ┌────┴────┐
+    │         │
+  27B GPU   9B GPU  (only one in VRAM at a time, ~4-12s swap)
+  ~18GB     ~7GB
+    │
+    ▼
+  Goose agent
+  ├── developer (terminal, 600s timeout)
+  ├── memory (persists to ~/.local/share/goose/memory/)
+  ├── summon (spawn parallel subagents)
+  ├── orchestrator (manage multiple sessions)
+  ├── skills (auto-loads SKILL.md from ~/.config/agents/skills/)
+  ├── qdrant MCP ──► Qdrant :6333 (CVEs, ATT&CK, H1 reports)
+  ├── searxng MCP ─► SearXNG :4000 (live web search, private)
+  └── fetch MCP (web content)
+```
+
+---
+
+## Things That Went Wrong
+
+<Accordion title="VRAM disaster — 8.5GB used out of 23GB" defaultOpen={false}>
+Used `--override-tensor "blk\..*\.ffn_.*_exps\.weight=CPU"` which sent ALL MoE expert weights to CPU. Spent ages wondering why GPU utilization was 9%.
+
+**Fix:** Don't use this flag for dense models. For MoE models if you must offload, use `--n-cpu-moe N` instead.
+</Accordion>
+
+<Accordion title="MXFP4_MOE quantization silently broken" defaultOpen={false}>
+Unsloth retired MXFP4 from their XL quants. The format also had poor CUDA kernel support for Qwen's Gated DeltaNet layers, causing silent CPU fallback. 3.4 tok/s was the result.
+
+**Fix:** Switch to UD-Q4_K_XL or Q4_K_P. Well-tested, proper CUDA support.
+</Accordion>
+
+<Accordion title="llama-swap 502 errors" defaultOpen={false}>
+llama-swap config used Go template macros with `~` in paths. Go templates don't expand `~`. Every model process failed to start silently, returning 502.
+
+**Fix:** Abandoned llama-swap entirely. Used llama.cpp's native router mode instead.
+</Accordion>
+
+<Accordion title="systemd 203/EXEC — the letter 'm'" defaultOpen={false}>
+Wrote a systemd service file using a double-quoted heredoc with `$PYTHON_PATH` variable. Variable was never set, so ExecStart became `ExecStart=m uvicorn router:app`. systemd tried to run a binary called `m`.
+
+**Fix:** Always use single-quoted heredoc `<< 'EOF'` to prevent variable expansion. Hardcode all paths.
+</Accordion>
+
+<Accordion title="qdrant/searxng silently not loading" defaultOpen={false}>
+Both extensions in config.yaml were missing `enabled: true`. Goose skipped them without any warning or error.
+
+**Fix:** Add `enabled: true` to every external MCP extension.
+</Accordion>
+
+<Accordion title="JSON truncation -32602 EOF error" defaultOpen={false}>
+`code_execution` extension routes all tool calls through a code interpreter, producing huge intermediate outputs. Combined with the model's long thinking chains, responses exceeded token limits mid-JSON.
+
+**Fix:** Disable `code_execution`. Add `/no_think` instruction to `.goosehints`.
+</Accordion>
+
+<Accordion title="nmap -p- timing out Goose sessions" defaultOpen={false}>
+The agent ran `nmap -sV -p- localhost` which scans all 65,535 ports. With the developer extension's default 60-second timeout, the process got killed mid-scan.
+
+**Fix:** Set `timeout: 600` on developer extension. Add `.goosehints` instruction to use `--top-ports 1000`.
+</Accordion>
+
+<Accordion title="Telegram bot token leaked" defaultOpen={false}>
+Put the bot token directly in the systemd service ExecStart line. It's visible in `systemctl status` and `journalctl`.
+
+**Fix:** Store tokens in separate file (`.env.telegram`, chmod 600). Reference via `EnvironmentFile`.
+</Accordion>
+
+---
+
+## Interactive Recap
+
+<ProgressChecklist items={[
+  { label: "Picked models (and got it wrong)", done: true },
+  { label: "Set up llama.cpp router mode", done: true },
+  { label: "Built smart Python proxy for model routing", done: true },
+  { label: "Configured Goose agent with MCP extensions", done: true },
+  { label: "Deployed Qdrant RAG + SearXNG", done: true },
+  { label: "Ingested CVE/KEV/ATT&CK knowledge", done: true },
+  { label: "Set up Telegram bot gateway", done: true },
+  { label: "Wired up Zsh aliases", done: true },
+]} />
+
+---
+
+<FlipCard front={
+  <div className="text-center p-4">
+    <h3 className="font-display text-xl font-extrabold uppercase" style={{fontFamily:"var(--font-clash-display)"}}>Quick Quiz</h3>
+    <p className="font-mono text-sm mt-2" style={{fontFamily:"var(--font-space-mono)"}}>What crashed the router with "option not recognized"?</p>
+    <p className="font-mono text-2xs text-fg-muted mt-3" style={{fontFamily:"var(--font-space-mono)"}}>Click to reveal answer →</p>
+  </div>
+} back={
+  <div className="text-center p-4">
+    <h3 className="font-display text-lg font-extrabold uppercase text-brutal-pink" style={{fontFamily:"var(--font-clash-display)"}}>Using `max_tokens` instead of `n-predict`!</h3>
+    <p className="font-mono text-sm mt-2" style={{fontFamily:"var(--font-space-mono)"}}>OpenAI parameter names don't work in llama.cpp server flags.</p>
+  </div>
+} color="#ff6600" />
+
+---
+
+<GlitchBox intensity="heavy" color="#ffdd00">
+  **Final verdict:** The stack isn't perfect — model swapping costs 4-12 seconds per switch, the L4's bandwidth limits token speed, and Goose occasionally still needs hand-holding on complex multi-step tasks. But it's completely offline, completely private, and genuinely useful for authorized security research work.
+</GlitchBox>
+
+<BrutalButton color="#ff1144">
+  Everything above is for authorized security research only — bug bounty programs, owned infrastructure, CTF environments. Unauthorized testing is illegal everywhere.
+</BrutalButton>
+
+---
+
+*Built May 2026. Special thanks to <a href="https://t.me/verydepressedbot" target="_blank" rel="noopener noreferrer" className="underline hover:text-brutal-pink transition-colors">@verydepressedbot</a> for being the most patient test subject.*

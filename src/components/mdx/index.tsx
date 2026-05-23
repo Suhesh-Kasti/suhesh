@@ -1,4 +1,9 @@
 import { MDXComponents } from "mdx/types";
+
+function slugify(text: unknown): string {
+  if (typeof text !== "string") return "";
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
 import {
   BrutalBlockquote,
   BrutalCode,
@@ -42,12 +47,14 @@ export const mdxComponents: MDXComponents = {
   h1: ({ children, ...props }: any) => (
     <h1 className="font-display text-4xl font-extrabold uppercase text-fg mt-12 mb-6 border-b-2 border-fg pb-2" style={{ fontFamily: "var(--font-clash-display)" }} {...props}>{children}</h1>
   ),
-  h2: ({ children, ...props }: any) => (
-    <h2 className="font-display text-2xl font-bold uppercase text-fg mt-10 mb-4" style={{ fontFamily: "var(--font-clash-display)" }} {...props}>{children}</h2>
-  ),
-  h3: ({ children, ...props }: any) => (
-    <h3 className="font-mono text-lg font-bold uppercase text-fg mt-8 mb-3" style={{ fontFamily: "var(--font-space-mono)" }} {...props}>{children}</h3>
-  ),
+  h2: ({ children, ...props }: any) => {
+    const id = slugify(children);
+    return <h2 id={id} className="font-display text-2xl font-bold uppercase text-fg mt-10 mb-4 scroll-mt-20" style={{ fontFamily: "var(--font-clash-display)" }} {...props}>{children}</h2>;
+  },
+  h3: ({ children, ...props }: any) => {
+    const id = slugify(children);
+    return <h3 id={id} className="font-mono text-lg font-bold uppercase text-fg mt-8 mb-3 scroll-mt-20" style={{ fontFamily: "var(--font-space-mono)" }} {...props}>{children}</h3>;
+  },
   h4: ({ children, ...props }: any) => (
     <h4 className="font-mono text-base font-bold uppercase text-fg-muted mt-6 mb-2" style={{ fontFamily: "var(--font-space-mono)" }} {...props}>{children}</h4>
   ),

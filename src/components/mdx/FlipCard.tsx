@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface FlipCardProps {
-  front: string;
-  back: string;
+  front?: string;
+  back?: string;
   color?: string;
 }
 
@@ -35,7 +35,7 @@ export default function FlipCard({ front, back, color = "#ff2d95" }: FlipCardPro
             backfaceVisibility: "hidden",
           }}
         >
-          <p className="font-display text-lg font-bold uppercase text-center" style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{front}</p>
+          <div className="font-display text-lg font-bold uppercase text-center" style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{front}</div>
         </div>
 
         {/* Back */}
@@ -48,7 +48,7 @@ export default function FlipCard({ front, back, color = "#ff2d95" }: FlipCardPro
             transform: "rotateY(180deg)",
           }}
         >
-          <p className="font-mono text-sm text-center" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{back}</p>
+          <div className="font-mono text-sm text-center" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{back}</div>
         </div>
       </motion.div>
     </div>

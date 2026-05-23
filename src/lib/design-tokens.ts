@@ -221,7 +221,7 @@ export const WORK = {
       description: "HTB boxes' CTF's walkthrough and writeups - of the ones i could solve.",
       tags: ["CTF", "Pentesting", "HTB", "Walkthrough"],
       color: COLORS.green,
-      url: "/braindumps",
+      url: "/braindump?tag=htb",
       image: null,
     },
     {

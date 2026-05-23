@@ -19,11 +19,18 @@ const TYPE_CONFIG: Record<
   blog: { label: "Deep Dives", color: COLORS.purple, icon: faFileCode, order: 5 },
 };
 
-export default function BrainDumpList({ posts }: { posts: BrainDumpMeta[] }) {
+export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMeta[]; filterTag?: string }) {
   const [activeType, setActiveType] = useState<ContentType | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [page, setPage] = useState(0);
+
+  // Check URL ?tag= on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tag = filterTag ?? params.get("tag");
+    if (tag) setActiveTag(tag);
+  }, [filterTag]);
   const PER_PAGE = 9;
 
   const types = useMemo(() => {

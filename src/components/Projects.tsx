@@ -145,7 +145,7 @@ export default function Projects() {
                   }}
                   transition={MOTION.snappy}
                 >
-                  <Link href={project.url} className="absolute inset-0 z-10" aria-label={project.title}>
+                  <Link href={project.url} className="absolute inset-0 z-20" aria-label={project.title}>
                     <span className="sr-only">{project.title}</span>
                   </Link>
                 {/* Color background accent */}
@@ -159,7 +159,7 @@ export default function Projects() {
 
                 {/* Top color stripe */}
                 <div
-                  className="absolute top-0 left-0 w-full transition-all duration-300"
+                  className="absolute top-0 left-0 w-full transition-all duration-300 pointer-events-none"
                   style={{
                     backgroundColor: project.color,
                     height: isHovered ? "5px" : "3px",
@@ -168,7 +168,7 @@ export default function Projects() {
 
                 {/* Left color stripe (subtle) */}
                 <div
-                  className="absolute top-0 left-0 h-full transition-all duration-300 hidden sm:block"
+                  className="absolute top-0 left-0 h-full transition-all duration-300 hidden sm:block pointer-events-none"
                   style={{
                     backgroundColor: project.color,
                     width: isHovered ? "4px" : "0px",
@@ -177,7 +177,7 @@ export default function Projects() {
                 />
 
                 <div
-                  className="relative z-10 h-full flex flex-col justify-between"
+                  className="relative h-full flex flex-col justify-between pointer-events-none"
                   style={{
                     paddingLeft: isHovered ? "0.5rem" : "0",
                     transition: "padding-left 0.2s ease",
@@ -231,14 +231,12 @@ export default function Projects() {
                       ))}
                     </div>
                     <div className="mt-3 flex justify-between items-center gap-3">
-                      <Link
-                        href={project.url}
-                        className="font-mono text-xs uppercase text-fg hover:text-brutal-pink transition-colors flex items-center gap-1 whitespace-nowrap"
+                      <span
+                        className="font-mono text-xs uppercase text-fg group-hover:text-brutal-pink transition-colors flex items-center gap-1 whitespace-nowrap"
                         style={{
                           fontFamily: TYPOGRAPHY.fontMono,
                           letterSpacing: TYPOGRAPHY.tracking.mono,
                         }}
-                        data-cursor-label="View Project"
                       >
                         Details
                         <motion.span
@@ -247,7 +245,7 @@ export default function Projects() {
                         >
                           →
                         </motion.span>
-                      </Link>
+                      </span>
                     </div>
                   </div>
                 </div>

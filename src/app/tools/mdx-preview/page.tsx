@@ -190,7 +190,7 @@ This content glitches periodically. Perfect for highlighting warnings or gotchas
 
 <CopyButton text="SELECT * FROM users" label="Copy SQL" />
 
-<FlipCard front="What is blind SQLi?" back="Injection where the attacker infers data from application behavior rather than seeing it directly" />
+<FlipCard front="What is blind SQLi?" back="Injection attacks which are performed by notorius but blind hackers." />
 `;
 
 export default function MdxPreviewPage() {

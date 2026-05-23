@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
 import unwrapImages from "rehype-unwrap-images";
@@ -9,6 +10,7 @@ import TableOfContents from "@/components/TableOfContents";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
 
 export const dynamic = "force-static";
+export const revalidate = false;
 
 interface Props {
   params: Promise<{ slug: string[] }>;
@@ -70,12 +72,19 @@ export default async function BrainDumpPost({ params }: Props) {
     const result = await compileMDX({
       source: post.content,
       components: mdxComponents,
-      options: { parseFrontmatter: false, mdxOptions: { rehypePlugins: [unwrapImages] } },
+      options: {
+        parseFrontmatter: false,
+        mdxOptions: { rehypePlugins: [unwrapImages] },
+      },
     });
     content = result.content;
   } catch (e) {
     console.error(`MDX compile error for ${slugStr}:`, e);
-    content = <div className="font-mono text-sm text-red-500 border-2 border-red-500 p-4">Failed to render this page. The MDX may have invalid syntax.</div>;
+    content = (
+      <div className="font-mono text-sm text-red-500 border-2 border-red-500 p-4">
+        Failed to render this post. MDX syntax may be invalid.
+      </div>
+    );
   }
 
   return (

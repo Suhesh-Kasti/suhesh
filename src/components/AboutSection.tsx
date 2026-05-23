@@ -127,8 +127,8 @@ export default function About() {
             <div className="about-animate mt-6">
               <h3 className="font-display text-2xl font-bold uppercase text-fg" style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{SITE.realName}</h3>
               <p className="mt-2 font-mono text-sm uppercase text-spider-pink tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>{SITE.role}</p>
-              <p className="mt-4 text-sm leading-relaxed text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.narrow }}>I&apos;m an application security engineer and offensive security researcher. I find vulnerabilities before the bad guys do. When I&apos;m not breaking things, I build tools that help others break things — responsibly.</p>
-              <p className="mt-3 text-sm leading-relaxed text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.narrow }}>This site is my brain dump — raw, unfiltered research notes, project writeups, and creative experiments.</p>
+              <p className="mt-4 text-sm leading-relaxed text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.narrow }}>I&apos;m an application security engineer. I secure applications from notorious hacker people. Right now, I&apos;m learning offensive security and pentesting. You either die a defender or live long enough to become an attacker.</p>
+              <p className="mt-3 text-sm leading-relaxed text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.narrow }}>This site is my brain dump — raw, unfiltered research notes, project writeups, and weird experiments.</p>
               <a
                 href="/Suhesh-Cybersecurity-CV.pdf"
                 download

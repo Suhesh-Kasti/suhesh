@@ -46,7 +46,7 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Suhesh Kasti — Application Security & Offensive Security | SCHIZO",
+    default: "You look beautiful today ;-)",
     template: "%s | SCHIZO",
   },
   description: DESCRIPTION,

@@ -15,7 +15,6 @@ export interface BrainDumpMeta {
 export interface BrainDumpPost {
   meta: BrainDumpMeta;
   content: string;
-  rawPath: string;
 }
 
 export function getAllSlugs(): string[] {
@@ -39,7 +38,6 @@ export function getPostBySlug(slug: string): BrainDumpPost | null {
       category: entry.category,
     },
     content,
-    rawPath: `content/${entry.type}/${entry.slug}.mdx`,
   };
 }
 

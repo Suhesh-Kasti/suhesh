@@ -167,10 +167,10 @@ export const NAVIGATION = {
 export const HERO = {
   title: "Suhesh Kasti",
   description:
-    "Exploring application security, software secuity and . Exploring the intersection of security, design, and raw expression.",
+    "Exploring application security, pentesting and red teaming. Here documented are braindumps of all my learnings, exploration and mistakes as well.",
   primaryAction: { label: "Explore Work", href: "/projects" },
   secondaryAction: { label: "Brain Dump", href: "/braindump" },
-  tertiaryAction: { label: "Download CV", href: "/Suhesh-Cybersecurity-CV.pdf" },
+  tertiaryAction: { label: "Download CV", href: "/cv.pdf" },
   scrollTrigger: {
     start: "top top",
     end: "bottom 200px",
@@ -185,18 +185,18 @@ export const HERO = {
 } as const;
 
 export const SOCIAL = {
-  github: { label: "GitHub", url: "https://github.com/Suhesh-Kasti", handle: "@Suhesh-Kasti" },
+  github: { label: "GitHub", url: "https://github.com/suheshkasti", handle: "@suheshkasti" },
   linkedin: { label: "LinkedIn", url: "https://linkedin.com/in/suheshkasti", handle: "suheshkasti" },
   twitter: { label: "Twitter", url: "https://twitter.com/suheshkasti", handle: "@suheshkasti" },
-  youtube: { label: "YouTube", url: "https://www.youtube.com/@schizo...", handle: "@schizo..." },
+  youtube: { label: "YouTube", url: "https://youtube.com/@suheshkasti", handle: "@suheshkasti" },
   telegram: { label: "Telegram", url: "https://t.me/suheshkasti", handle: "@suheshkasti" },
-  whatsapp: { label: "WhatsApp", url: "https://wa.me/9779861084025", handle: "+977 9861084025" },
-  email: { label: "Email", url: "mailto:kastisuhesh1@gmail.com", handle: "kastisuhesh1@gmail.com" },
-  phone: { label: "Phone", url: "tel:+9779861084025", handle: "+977 9861084025" },
+  whatsapp: { label: "WhatsApp", url: "https://wa.me/919XXXXXXXXX", handle: "+91 9XXX XXXXX" },
+  email: { label: "Email", url: "mailto:hello@suheshkasti.dev", handle: "hello@suheshkasti.dev" },
+  phone: { label: "Phone", url: "tel:+919XXXXXXXXX", handle: "+91 9XXX XXXXX" },
 } as const;
 
 export const FORMSPREE = {
-  formId: "mrgwjvry",
+  formId: "YOUR_FORMSPREE_FORM_ID",
 } as const;
 
 export const CURSOR = {
@@ -218,19 +218,10 @@ export const WORK = {
     {
       title: "Hack The Box",
       category: "Capture The Flag",
-      description: "Hack The Box boxes solved by me and provided walkthrough for you and for future myself",
-      tags: ["Hack The Box", "Capture The Flag", "Hacking", "Pentesting", "Practise"],
+      description: "HTB boxes' CTF's walkthrough and writeups - of the ones i could solve.",
+      tags: ["CTF", "Pentesting", "HTB", "Walkthrough"],
       color: COLORS.green,
-      url: "/braindump",
-      image: null,
-    },   
-    {
-      title: "Local AI Security Agent",
-      category: "AI Security",
-      description: "Fully private local AI agent stack — dual LLM routing, RAG knowledge base, MCP tools, Telegram control.",
-      tags: ["Python", "llama.cpp", "Qdrant", "FastAPI", "Docker"],
-      color: COLORS.orange,
-      url: "/projects/ai-agent",
+      url: "/braindumps",
       image: null,
     },
     {
@@ -259,7 +250,7 @@ export const WORK = {
       color: COLORS.blue,
       url: "/projects/browser11",
       image: null,
-    }, 
+    },
     {
       title: "Subisu TSC Desktop App",
       category: "Desktop App",
@@ -269,5 +260,15 @@ export const WORK = {
       url: "/projects/subisu",
       image: null,
     },
+    {
+      title: "Local AI Security Agent",
+      category: "AI Security",
+      description: "Fully private local AI agent stack — dual LLM routing, RAG knowledge base, MCP tools, Telegram control.",
+      tags: ["Python", "llama.cpp", "Qdrant", "FastAPI", "Docker"],
+      color: COLORS.orange,
+      url: "/projects/ai-agent",
+      image: null,
+    },
+
   ],
 } as const;

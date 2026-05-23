@@ -62,6 +62,8 @@ for (const { dir, type } of CONTENT_DIRS) {
       data.checklist_tags ??
       [];
 
+    contentMap[slug] = content;
+
     allEntries.push({
       slug,
       title: data.title ?? slug.replace(/-/g, " "),
@@ -78,8 +80,6 @@ for (const { dir, type } of CONTENT_DIRS) {
         data.folder ??
         "",
     });
-
-    contentMap[slug] = raw;
   }
 }
 

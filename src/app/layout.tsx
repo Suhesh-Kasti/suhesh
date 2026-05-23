@@ -6,6 +6,7 @@ import CustomCursor from "@/components/CustomCursor";
 import FontAwesomeConfig from "@/components/FontAwesomeConfig";
 import Footer from "@/components/Footer";
 import { StructuredData } from "@/components/StructuredData";
+import TitleCycler from "@/components/TitleCycler";
 import "./globals.css";
 
 const clashDisplay = localFont({
@@ -46,7 +47,7 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "You look beautiful today ;-)",
+    default: "Suhesh Kasti — Application Security & Offensive Security | SCHIZO",
     template: "%s | SCHIZO",
   },
   description: DESCRIPTION,
@@ -129,6 +130,7 @@ export default function RootLayout({
         <ThemeProvider>
           <FontAwesomeConfig />
           <StructuredData />
+          <TitleCycler />
           <CustomCursor />
           {children}
           <Footer />

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllSlugs } from "@/lib/braindump";
+import { MdxContent } from "@/components/MdxContent";
 import Navbar from "@/components/Navbar";
 import SearchButton from "@/components/SearchButton";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
@@ -92,22 +93,7 @@ export default async function BrainDumpPost({ params }: Props) {
             <hr className="mt-8 border-0 h-[2px] bg-fg" />
           </header>
 
-          <div
-            className="prose prose-invert prose-lg max-w-none
-              prose-headings:font-display prose-headings:font-extrabold prose-headings:uppercase
-              prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b-2 prose-h2:border-fg prose-h2:pb-2
-              prose-h3:text-lg prose-h3:font-mono prose-h3:mt-8 prose-h3:mb-3
-              prose-p:font-sans prose-p:leading-relaxed prose-p:my-4
-              prose-a:text-brutal-pink prose-a:underline prose-a:decoration-brutal-pink/50
-              prose-code:font-mono prose-code:text-sm prose-code:bg-fg/10 prose-code:px-1.5 prose-code:py-0.5
-              prose-pre:bg-fg/5 prose-pre:border-2 prose-pre:border-fg
-              prose-img:border-2 prose-img:border-fg
-              prose-strong:text-fg prose-strong:font-extrabold
-              prose-ul:font-sans prose-li:my-1
-              prose-blockquote:border-l-4 prose-blockquote:border-brutal-pink prose-blockquote:pl-4
-              [&_details]:my-4 [&_summary]:cursor-pointer [&_summary]:font-mono"
-            dangerouslySetInnerHTML={{ __html: post.html }}
-          />
+          <MdxContent compiledSource={post.compiledSource} />
 
           <hr className="mt-16 border-0 h-[2px] bg-fg" />
           <nav className="mt-8 flex justify-between items-center">

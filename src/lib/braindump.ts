@@ -1,4 +1,4 @@
-import { CONTENT_ENTRIES, CONTENT_HTML } from "./content-registry";
+import { CONTENT_ENTRIES, COMPILED_MAP } from "./content-registry";
 
 export type ContentType = "blog" | "til" | "cheatsheet" | "checklist" | "braindump";
 
@@ -14,7 +14,7 @@ export interface BrainDumpMeta {
 
 export interface BrainDumpPost {
   meta: BrainDumpMeta;
-  html: string;
+  compiledSource: string;
 }
 
 export function getAllSlugs(): string[] {
@@ -24,8 +24,8 @@ export function getAllSlugs(): string[] {
 export function getPostBySlug(slug: string): BrainDumpPost | null {
   const entry = CONTENT_ENTRIES.find((e) => e.slug === slug);
   if (!entry) return null;
-  const html = CONTENT_HTML[slug];
-  if (!html) return null;
+  const compiledSource = COMPILED_MAP[slug];
+  if (!compiledSource) return null;
 
   return {
     meta: {
@@ -37,7 +37,7 @@ export function getPostBySlug(slug: string): BrainDumpPost | null {
       type: entry.type as ContentType,
       category: entry.category,
     },
-    html,
+    compiledSource,
   };
 }
 

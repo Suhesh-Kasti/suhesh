@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { compileMDX } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
-import unwrapImages from "rehype-unwrap-images";
 import { getPostBySlug, getAllSlugs } from "@/lib/braindump";
-import { mdxComponents } from "@/components/mdx";
 import Navbar from "@/components/Navbar";
 import SearchButton from "@/components/SearchButton";
-import TableOfContents from "@/components/TableOfContents";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
 
 export const dynamic = "force-static";
@@ -67,26 +63,6 @@ export default async function BrainDumpPost({ params }: Props) {
 
   if (!post) notFound();
 
-  let content: React.ReactNode;
-  try {
-    const result = await compileMDX({
-      source: post.content,
-      components: mdxComponents,
-      options: {
-        parseFrontmatter: false,
-        mdxOptions: { rehypePlugins: [unwrapImages] },
-      },
-    });
-    content = result.content;
-  } catch (e) {
-    console.error(`MDX compile error for ${slugStr}:`, e);
-    content = (
-      <div className="font-mono text-sm text-red-500 border-2 border-red-500 p-4">
-        Failed to render this post. MDX syntax may be invalid.
-      </div>
-    );
-  }
-
   return (
     <>
       <BlogPostingStructuredData
@@ -98,37 +74,40 @@ export default async function BrainDumpPost({ params }: Props) {
       />
       <Navbar />
       <main className="flex-1 pt-16">
-        <article className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
-          <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-10">
-            <div>
-              <header className="mb-12">
-                <span className="font-mono text-2xs uppercase tracking-label text-fg-muted" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>
-                  {post.meta.date}
+        <article className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <header className="mb-12">
+            <span className="font-mono text-2xs uppercase tracking-label text-fg-muted" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>
+              {post.meta.date}
+            </span>
+            <h1 className="mt-2 font-display text-4xl md:text-5xl font-extrabold uppercase text-fg leading-[1.05]" style={{ fontFamily: "var(--font-clash-display)" }}>
+              {post.meta.title}
+            </h1>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {post.meta.tags.map((tag) => (
+                <span key={tag} className="font-mono text-2xs uppercase text-fg-muted border border-fg-muted px-2 py-0.5" style={{ fontFamily: "var(--font-space-mono)" }}>
+                  {tag}
                 </span>
-                <h1 className="mt-2 font-display text-4xl md:text-5xl font-extrabold uppercase text-fg leading-[1.05]" style={{ fontFamily: "var(--font-clash-display)" }}>
-                  {post.meta.title}
-                </h1>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {post.meta.tags.map((tag) => (
-                    <span key={tag} className="font-mono text-2xs uppercase text-fg-muted border border-fg-muted px-2 py-0.5" style={{ fontFamily: "var(--font-space-mono)" }}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <hr className="mt-8 border-0 h-[2px] bg-fg" />
-              </header>
-
-              <div className="[&_h2]:scroll-mt-24 [&_h3]:scroll-mt-24" id="post-content">
-                {content}
-              </div>
+              ))}
             </div>
+            <hr className="mt-8 border-0 h-[2px] bg-fg" />
+          </header>
 
-            <aside className="hidden lg:block">
-              <div className="sticky top-24">
-                <TableOfContents content={post.content} />
-              </div>
-            </aside>
-          </div>
+          <div
+            className="prose prose-invert prose-lg max-w-none
+              prose-headings:font-display prose-headings:font-extrabold prose-headings:uppercase
+              prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b-2 prose-h2:border-fg prose-h2:pb-2
+              prose-h3:text-lg prose-h3:font-mono prose-h3:mt-8 prose-h3:mb-3
+              prose-p:font-sans prose-p:leading-relaxed prose-p:my-4
+              prose-a:text-brutal-pink prose-a:underline prose-a:decoration-brutal-pink/50
+              prose-code:font-mono prose-code:text-sm prose-code:bg-fg/10 prose-code:px-1.5 prose-code:py-0.5
+              prose-pre:bg-fg/5 prose-pre:border-2 prose-pre:border-fg
+              prose-img:border-2 prose-img:border-fg
+              prose-strong:text-fg prose-strong:font-extrabold
+              prose-ul:font-sans prose-li:my-1
+              prose-blockquote:border-l-4 prose-blockquote:border-brutal-pink prose-blockquote:pl-4
+              [&_details]:my-4 [&_summary]:cursor-pointer [&_summary]:font-mono"
+            dangerouslySetInnerHTML={{ __html: post.html }}
+          />
 
           <hr className="mt-16 border-0 h-[2px] bg-fg" />
           <nav className="mt-8 flex justify-between items-center">

@@ -23,7 +23,10 @@
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "rehype-unwrap-images": "^1.0.0"
+    "rehype-raw": "^7.0.0",
+    "rehype-stringify": "^10.0.1",
+    "rehype-unwrap-images": "^1.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.19.11",

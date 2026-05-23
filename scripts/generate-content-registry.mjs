@@ -2,6 +2,13 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import matter from "gray-matter";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
+import rehypeUnwrapImages from "rehype-unwrap-images";
+import rehypeRaw from "rehype-raw";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -44,7 +51,7 @@ function formatDate(value) {
 }
 
 const allEntries = [];
-const contentMap = {};
+const htmlMap = {};
 
 for (const { dir, type } of CONTENT_DIRS) {
   const files = walkDir(dir);
@@ -62,7 +69,21 @@ for (const { dir, type } of CONTENT_DIRS) {
       data.checklist_tags ??
       [];
 
-    contentMap[slug] = content;
+    // Compile MDX to HTML string at build time — no eval needed at runtime
+    try {
+      const result = await unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeRaw)
+        .use(rehypeUnwrapImages)
+        .use(rehypeStringify)
+        .process(content);
+      htmlMap[slug] = String(result);
+    } catch (err) {
+      console.error(`⚠ Failed to compile ${slug}: ${err.message}`);
+      htmlMap[slug] = `<pre>${escapeHtml(content)}</pre>`;
+    }
 
     allEntries.push({
       slug,
@@ -81,6 +102,10 @@ for (const { dir, type } of CONTENT_DIRS) {
         "",
     });
   }
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 allEntries.sort((a, b) => {
@@ -107,10 +132,11 @@ export interface RegistryEntry {
 
 export const CONTENT_ENTRIES: RegistryEntry[] = ${JSON.stringify(allEntries)};
 
-export const CONTENT_MAP: Record<string, string> = ${JSON.stringify(contentMap)};
+// Pre-compiled MDX → HTML strings (no eval needed at runtime)
+export const CONTENT_HTML: Record<string, string> = ${JSON.stringify(htmlMap)};
 
 export const TOTAL_POSTS = ${allEntries.length};
 `;
 
 fs.writeFileSync(registryPath, output);
-console.log(`✅ Content registry written (${allEntries.length} posts)`);
+console.log(`✅ Content registry written (${allEntries.length} posts, ${Object.keys(htmlMap).length} compiled to HTML)`);

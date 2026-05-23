@@ -170,7 +170,7 @@ export const HERO = {
     "Exploring application security, pentesting and red teaming. Here documented are braindumps of all my learnings, exploration and mistakes as well.",
   primaryAction: { label: "Explore Work", href: "/projects" },
   secondaryAction: { label: "Brain Dump", href: "/braindump" },
-  tertiaryAction: { label: "Download CV", href: "/cv.pdf" },
+  tertiaryAction: { label: "Download CV", href: "/Suhesh-Cybersecurity-CV.pdf" },
   scrollTrigger: {
     start: "top top",
     end: "bottom 200px",
@@ -185,18 +185,18 @@ export const HERO = {
 } as const;
 
 export const SOCIAL = {
-  github: { label: "GitHub", url: "https://github.com/suheshkasti", handle: "@suheshkasti" },
+  github: { label: "GitHub", url: "https://github.com/Suhesh-Kasti", handle: "@Suhesh-Kasti" },
   linkedin: { label: "LinkedIn", url: "https://linkedin.com/in/suheshkasti", handle: "suheshkasti" },
-  twitter: { label: "Twitter", url: "https://twitter.com/suheshkasti", handle: "@suheshkasti" },
+  twitter: { label: "Twitter", url: "https://twitter.com/kastisuhesh", handle: "@kastisuhesh" },
   youtube: { label: "YouTube", url: "https://youtube.com/@suheshkasti", handle: "@suheshkasti" },
   telegram: { label: "Telegram", url: "https://t.me/suheshkasti", handle: "@suheshkasti" },
-  whatsapp: { label: "WhatsApp", url: "https://wa.me/919XXXXXXXXX", handle: "+91 9XXX XXXXX" },
-  email: { label: "Email", url: "mailto:hello@suheshkasti.dev", handle: "hello@suheshkasti.dev" },
-  phone: { label: "Phone", url: "tel:+919XXXXXXXXX", handle: "+91 9XXX XXXXX" },
+  whatsapp: { label: "WhatsApp", url: "https://wa.me/9779861084025", handle: "+977 9861084025" },
+  email: { label: "Email", url: "mailto:kastisuhesh1@gmail.com", handle: "kastisuhesh1@gmail.com" },
+  phone: { label: "Phone", url: "tel:+9779861084025", handle: "+977 9861084025" },
 } as const;
 
 export const FORMSPREE = {
-  formId: "YOUR_FORMSPREE_FORM_ID",
+  formId: "mrgwjvry",
 } as const;
 
 export const CURSOR = {

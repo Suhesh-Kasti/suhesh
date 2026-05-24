@@ -2,7 +2,11 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SEARCH, TYPOGRAPHY, MOTION, COLORS, SITE, SOCIAL, WORK } from "@/lib/design-tokens";
+import Link from "next/link";
+import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
+import { parseSimpleMarkdown } from "@/lib/markdown";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faBook, faFileCode, faLightbulb, faClipboardCheck, faBrain, faWrench } from "@fortawesome/free-solid-svg-icons";
 
 const PLACEHOLDERS = [
   "AI-powered search...",
@@ -23,109 +27,49 @@ const PLACEHOLDERS = [
   "BREATHE OUT........",
   "BREATHE IN.....",
   "BREATHE OUT........",
-  "BREATHE IN.....",
-  "BREATHE OUT........",
-  "BREATHE IN.....",
-  "BREATHE OUT........",
-  "BREATHE IN.....",
-  "BREATHE OUT........",
-  "BREATHE IN.....",
-  "BREATHE OUT........",
   "Maybe...you are in love with me",
   "Can't blame you, I am that adorable ;-)",
   "But sadly for you, I'm just an ..",
 ];
 
-interface SearchResult {
-  type: "answer" | "link" | "error";
-  content: string;
-  url?: string;
+interface SearchResults {
+  aiAnswer: string;
+  posts: Array<{
+    title: string;
+    excerpt: string;
+    url: string;
+    type: string;
+  }>;
+  projects: Array<{
+    title: string;
+    description: string;
+    url: string;
+    color: string;
+    category: string;
+  }>;
 }
 
-const SITE_INDEX = `
-Site: ${SITE.name} - ${SITE.realName}'s portfolio
-Role: ${SITE.role}
-Description: ${SITE.description}
+const TYPE_ICONS: Record<string, typeof faBook> = {
+  blog: faBook,
+  til: faLightbulb,
+  cheatsheet: faFileCode,
+  checklist: faClipboardCheck,
+  braindump: faBrain,
+};
 
-Contact:
-${Object.entries(SOCIAL)
-  .map(([k, v]) => `${v.label}: ${v.handle} (${v.url})`)
-  .join("\n")}
-
-Projects:
-${WORK.projects.map((p) => `- ${p.title} (${p.category}): ${p.description} Tags: ${p.tags.join(", ")}`).join("\n")}
-
-CV: Available at /cv.pdf (download link on the homepage and contact section)
-About: ${SITE.realName}, Application Security Engineer & Offensive Security researcher
-`;
-
-function localSearch(query: string): SearchResult {
-  const q = query.toLowerCase();
-
-  if (q.includes("cv") || q.includes("resume") || q.includes("download cv")) {
-    return { type: "link", content: "Download my CV directly:", url: "/cv.pdf" };
-  }
-  if (q.includes("whatsapp") || q.includes("wa")) {
-    return { type: "link", content: `Reach me on WhatsApp: ${SOCIAL.whatsapp.handle}`, url: SOCIAL.whatsapp.url };
-  }
-  if (q.includes("telegram") || q.includes("tg")) {
-    return { type: "link", content: `Message me on Telegram: ${SOCIAL.telegram.handle}`, url: SOCIAL.telegram.url };
-  }
-  if (q.includes("email") || q.includes("mail")) {
-    return { type: "link", content: `Email me: ${SOCIAL.email.handle}`, url: SOCIAL.email.url };
-  }
-  if (q.includes("phone") || q.includes("call") || q.includes("number")) {
-    return { type: "link", content: `Call me: ${SOCIAL.phone.handle}`, url: SOCIAL.phone.url };
-  }
-  if (q.includes("github") || q.includes("code") || q.includes("repo")) {
-    return { type: "link", content: `Check out my GitHub: ${SOCIAL.github.handle}`, url: SOCIAL.github.url };
-  }
-  if (q.includes("linkedin") || q.includes("linked")) {
-    return { type: "link", content: `Connect on LinkedIn: ${SOCIAL.linkedin.handle}`, url: SOCIAL.linkedin.url };
-  }
-  if (q.includes("youtube") || q.includes("video")) {
-    return { type: "link", content: `Watch on YouTube: ${SOCIAL.youtube.handle}`, url: SOCIAL.youtube.url };
-  }
-  if (q.includes("twitter") || q.includes("x.com")) {
-    return { type: "link", content: `Follow on Twitter: ${SOCIAL.twitter.handle}`, url: SOCIAL.twitter.url };
-  }
-  if (q.includes("about") || q.includes("who") || q.includes("suhesh") || q.includes("bio")) {
-    return { type: "answer", content: `I'm ${SITE.realName}, an ${SITE.role}. ${SITE.description} I specialize in web security, binary exploitation, network pentesting, reverse engineering, and malware analysis.` };
-  }
-  if (q.includes("work") || q.includes("project") || q.includes("portfolio")) {
-    const projects = WORK.projects.map(p => p.title).join(", ");
-    return { type: "answer", content: `My featured projects: ${projects}. Check them out at /work or scroll to the Featured Work section on the homepage.` };
-  }
-  if (q.includes("tools") || q.includes("playground") || q.includes("lab") || q.includes("cyber tool") || q.includes("base64") || q.includes("hash") || q.includes("regex") || q.includes("nmap parse")) {
-    return { type: "link", content: "Cyber Tools lab — Base64 encoder/decoder, hash generator, regex tester, and Nmap port parser.", url: "/#playground" };
-  }
-  if (q.includes("cheatsheet") || q.includes("reference") || q.includes("commands")) {
-    return { type: "link", content: "Cheatsheets: Docker, Nmap, SQLMap, Linux — all with copy buttons and quick quizzes.", url: "/braindump" };
-  }
-  if (q.includes("checklist") || q.includes("procedure")) {
-    return { type: "link", content: "Interactive checklists — passive enumeration, Nmap engagement, F5 update. Progress auto-saves.", url: "/braindump" };
-  }
-  if (q.includes("til") || q.includes("byte") || q.includes("quick tip")) {
-    return { type: "link", content: "Byte-sized TILs — single-concept technical nuggets with interactive components.", url: "/braindump" };
-  }
-  if (q.includes("skill") || q.includes("stack") || q.includes("tech")) {
-    return { type: "answer", content: "Skills: Web Security (95%), Binary Exploitation (90%), Network Pentesting (88%), Reverse Engineering (85%), Malware Analysis (82%), Cloud Security (80%), Cryptography (78%), Incident Response (85%)." };
-  }
-  if (q.includes("contact") || q.includes("reach") || q.includes("connect")) {
-    return { type: "link", content: "All ways to reach me — scroll to the Connect section.", url: "/#contact" };
-  }
-  if (q.includes("summarize") || q.includes("summary") || q.includes("overview")) {
-    return { type: "answer", content: SITE_INDEX };
-  }
-
-  return { type: "answer", content: "Try asking about: my CV, WhatsApp, email, projects, skills, brain dump, or contact info." };
-}
+const TYPE_LABELS: Record<string, string> = {
+  blog: "Deep Dive",
+  til: "Byte-Sized",
+  cheatsheet: "Cheatsheet",
+  checklist: "Checklist",
+  braindump: "Brain Dump",
+};
 
 export default function SearchButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<SearchResults | null>(null);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
 
   useEffect(() => {
@@ -138,7 +82,7 @@ export default function SearchButton() {
 
   const handleSearch = useCallback(async (q: string) => {
     if (!q.trim()) {
-      setResults([]);
+      setResults(null);
       return;
     }
     setLoading(true);
@@ -151,16 +95,16 @@ export default function SearchButton() {
       });
       if (res.ok) {
         const data = await res.json();
-        setResults([{ type: "answer", content: data.answer }]);
+        setResults(data);
         setLoading(false);
         return;
       }
     } catch {
-      // Fall back to local search
+      // fallback
     }
 
-    const result = localSearch(q.trim());
-    setResults([result as SearchResult]);
+    // Fallback: show empty state with AI queue message
+    setResults({ aiAnswer: "Search is warming up. Try again in a moment!", posts: [], projects: [] });
     setLoading(false);
   }, []);
 
@@ -181,10 +125,12 @@ export default function SearchButton() {
   useEffect(() => {
     if (!isOpen) return;
     if (query.trim().length === 0) {
-      setResults([]);
+      setResults(null);
       setLoading(false);
     }
   }, [query, isOpen]);
+
+  const hasAnyResults = results && (results.aiAnswer || results.posts.length > 0 || results.projects.length > 0);
 
   return (
     <>
@@ -212,16 +158,16 @@ export default function SearchButton() {
               onClick={() => setIsOpen(false)}
             />
             <motion.div
-              className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4"
+              className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4"
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={MOTION.snappy}
             >
               <div className="w-full max-w-2xl border-2 border-fg bg-surface shadow-brutal-lg">
-                {/* Search input */}
+                {/* Input bar */}
                 <div className="flex items-center border-b-2 border-fg px-4 relative">
-                  <span className="font-mono text-fg-muted mr-3">?</span>
+                  <span className="font-mono text-fg-muted mr-3 text-lg">?</span>
                   <div className="flex-1 relative">
                     <input
                       type="text"
@@ -235,7 +181,6 @@ export default function SearchButton() {
                       style={{ fontFamily: TYPOGRAPHY.fontSans }}
                       autoFocus
                     />
-                    {/* Cycling placeholder overlay */}
                     {!query && (
                       <div className="absolute inset-0 flex items-center pointer-events-none z-0 overflow-hidden">
                         <AnimatePresence mode="popLayout">
@@ -263,7 +208,7 @@ export default function SearchButton() {
                   </button>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="font-mono text-fg-muted hover:text-brutal-pink ml-2 text-sm px-2 py-1 border border-fg-muted hover:border-brutal-pink transition-colors"
+                    className="font-mono text-fg-muted hover:text-brutal-pink ml-2 text-sm px-2 py-1 border border-fg-muted hover:border-brutal-pink transition-colors cursor-pointer"
                     aria-label="Close search"
                   >
                     ESC
@@ -271,51 +216,55 @@ export default function SearchButton() {
                 </div>
 
                 {/* Results */}
-                <div className="max-h-[50vh] overflow-y-auto">
+                <div className="max-h-[60vh] overflow-y-auto">
+                  {/* Loading */}
                   {loading && (
-                    <div className="p-6 text-center">
-                      <span
-                        className="font-mono text-sm text-fg-muted animate-pulse"
-                        style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                    <div className="p-8 text-center">
+                      <motion.div
+                        className="inline-flex gap-1"
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
                       >
-                        {SEARCH.loadingText}
-                      </span>
-                    </div>
-                  )}
-
-                  {!loading && results.length === 0 && query.length > 0 && (
-                    <div className="p-6 text-center">
-                      <span
-                        className="font-mono text-sm text-fg-muted"
-                        style={{ fontFamily: TYPOGRAPHY.fontMono }}
-                      >
-                        {SEARCH.noResults}
-                      </span>
-                    </div>
-                  )}
-
-                  {!loading && results.length === 0 && query.length === 0 && (
-                    <div className="p-6 space-y-3">
-                      <p
-                        className="font-mono text-xs text-fg-muted uppercase tracking-label"
-                        style={{
-                          fontFamily: TYPOGRAPHY.fontMono,
-                          letterSpacing: TYPOGRAPHY.tracking.label,
-                        }}
-                      >
-                        Try asking:
+                        <span className="w-2 h-2 bg-brutal-pink" />
+                        <span className="w-2 h-2 bg-brutal-yellow" />
+                        <span className="w-2 h-2 bg-brutal-blue" />
+                      </motion.div>
+                      <p className="mt-3 font-mono text-xs text-fg-muted uppercase" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                        Thinking...
                       </p>
+                    </div>
+                  )}
+
+                  {/* Empty state */}
+                  {!loading && !hasAnyResults && query.length > 0 && (
+                    <div className="p-8 text-center">
+                      <p className="font-mono text-sm text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                        Nothing found. Try a different query?
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Suggestions (no query yet) */}
+                  {!loading && !hasAnyResults && query.length === 0 && (
+                    <div className="p-6 space-y-3">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="flex-1 h-px bg-fg-muted/30" />
+                        <span className="font-mono text-2xs uppercase text-fg-muted tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>
+                          try asking
+                        </span>
+                        <div className="flex-1 h-px bg-fg-muted/30" />
+                      </div>
                       {[
                         "How to download CV?",
                         "WhatsApp number",
                         "Skills and expertise",
-                        "Summarize the site",
+                        "Tell me about the projects",
                         "Contact info",
                       ].map((suggestion) => (
                         <button
                           key={suggestion}
-                          onClick={() => setQuery(suggestion)}
-                          className="block w-full text-left font-sans text-sm text-fg-muted hover:text-fg border-l-2 border-fg-muted hover:border-brutal-pink pl-3 py-1 transition-all"
+                          onClick={() => { setQuery(suggestion); handleSearch(suggestion); }}
+                          className="block w-full text-left font-sans text-sm text-fg-muted hover:text-fg border-l-2 border-fg-muted hover:border-brutal-pink pl-3 py-1 transition-all cursor-pointer"
                           style={{ fontFamily: TYPOGRAPHY.fontSans }}
                         >
                           {suggestion}
@@ -324,45 +273,164 @@ export default function SearchButton() {
                     </div>
                   )}
 
-                  {!loading &&
-                    results.map((result, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="border-b border-fg-muted/20 last:border-b-0 p-6"
-                      >
-                        <span
-                          className="font-mono text-2xs uppercase text-brutal-pink tracking-label"
-                          style={{
-                            fontFamily: TYPOGRAPHY.fontMono,
-                            letterSpacing: TYPOGRAPHY.tracking.label,
-                          }}
-                        >
-                          {result.type === "answer" ? "Answer" : "Link"}
-                        </span>
-                        <p
-                          className="mt-2 text-sm leading-relaxed text-fg"
-                          style={{ fontFamily: TYPOGRAPHY.fontSans }}
-                        >
-                          {result.content}
-                        </p>
-                        {result.url && (
-                          <a
-                            href={result.url}
-                            className="inline-block mt-3 font-mono text-xs uppercase text-fg border-2 border-fg px-3 py-1 hover:bg-fg hover:text-surface transition-all"
-                            style={{
-                              fontFamily: TYPOGRAPHY.fontMono,
-                              letterSpacing: TYPOGRAPHY.tracking.mono,
-                            }}
-                            target={result.url.startsWith("http") ? "_blank" : undefined}
-                            rel={result.url.startsWith("http") ? "noopener noreferrer" : undefined}
-                          >
-                            Open →
-                          </a>
-                        )}
-                      </motion.div>
-                    ))}
+                  {/* Results */}
+                  {!loading && hasAnyResults && (
+                    <div>
+                      {/* AI Answer */}
+                      {results!.aiAnswer && (
+                        <div className="border-b-2 border-fg p-5" style={{ backgroundColor: `${COLORS.pink}05` }}>
+                          <div className="flex items-center gap-2 mb-3">
+                            <div
+                              className="w-4 h-4 border"
+                              style={{ borderColor: COLORS.pink, backgroundColor: `${COLORS.pink}20` }}
+                            />
+                            <span
+                              className="font-mono text-2xs uppercase tracking-label"
+                              style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color: COLORS.pink }}
+                            >
+                              AI Response
+                            </span>
+                          </div>
+                          <div
+                            className="font-sans text-sm leading-relaxed text-fg space-y-2"
+                            style={{ fontFamily: TYPOGRAPHY.fontSans }}
+                            dangerouslySetInnerHTML={{ __html: parseSimpleMarkdown(results!.aiAnswer) }}
+                          />
+                        </div>
+                      )}
+
+                      {/* Projects matches */}
+                      {results!.projects.length > 0 && (
+                        <div className="border-b-2 border-fg p-5">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div
+                              className="w-4 h-4 border"
+                              style={{ borderColor: COLORS.yellow, backgroundColor: `${COLORS.yellow}20` }}
+                            />
+                            <span
+                              className="font-mono text-2xs uppercase tracking-label"
+                              style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color: COLORS.yellow }}
+                            >
+                              Projects
+                            </span>
+                            <span className="font-mono text-2xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                              {results!.projects.length}
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {results!.projects.map((p, i) => (
+                              <motion.div
+                                key={p.url}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.05 }}
+                              >
+                                <Link
+                                  href={p.url}
+                                  className="group flex items-start gap-3 p-3 border-2 border-fg-muted/20 hover:border-fg transition-all cursor-pointer"
+                                  style={{ borderLeftColor: p.color, borderLeftWidth: 4 }}
+                                >
+                                  <FontAwesomeIcon icon={faWrench} className="text-xs mt-0.5 shrink-0" style={{ color: p.color }} />
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <span
+                                        className="font-mono text-xs font-bold uppercase group-hover:text-brutal-pink transition-colors"
+                                        style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                                      >
+                                        {p.title}
+                                      </span>
+                                      <span
+                                        className="font-mono text-2xs uppercase text-fg-muted"
+                                        style={{ fontFamily: TYPOGRAPHY.fontMono, color: p.color }}
+                                      >
+                                        {p.category}
+                                      </span>
+                                    </div>
+                                    <p
+                                      className="mt-0.5 text-xs text-fg-muted line-clamp-2"
+                                      style={{ fontFamily: TYPOGRAPHY.fontSans }}
+                                    >
+                                      {p.description}
+                                    </p>
+                                  </div>
+                                  <span className="text-fg-muted group-hover:text-brutal-pink shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-all">
+                                    <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
+                                  </span>
+                                </Link>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Brain Dump matches */}
+                      {results!.posts.length > 0 && (
+                        <div className="p-5">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div
+                              className="w-4 h-4 border"
+                              style={{ borderColor: COLORS.green, backgroundColor: `${COLORS.green}20` }}
+                            />
+                            <span
+                              className="font-mono text-2xs uppercase tracking-label"
+                              style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color: COLORS.green }}
+                            >
+                              Brain Dump
+                            </span>
+                            <span className="font-mono text-2xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                              {results!.posts.length}
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {results!.posts.map((p, i) => {
+                              const icon = TYPE_ICONS[p.type] ?? faBook;
+                              const label = TYPE_LABELS[p.type] ?? p.type;
+                              return (
+                                <motion.div
+                                  key={p.url}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: i * 0.05 }}
+                                >
+                                  <Link
+                                    href={p.url}
+                                    className="group flex items-start gap-3 p-3 border-2 border-fg-muted/20 hover:border-fg transition-all cursor-pointer"
+                                  >
+                                    <FontAwesomeIcon icon={icon} className="text-xs mt-0.5 shrink-0" style={{ color: COLORS.green }} />
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-2">
+                                        <span
+                                          className="font-mono text-xs font-bold uppercase group-hover:text-brutal-pink transition-colors"
+                                          style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                                        >
+                                          {p.title}
+                                        </span>
+                                        <span
+                                          className="font-mono text-2xs uppercase text-fg-muted border border-fg-muted/30 px-1.5 py-0.5"
+                                          style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                                        >
+                                          {label}
+                                        </span>
+                                      </div>
+                                      <p
+                                        className="mt-0.5 text-xs text-fg-muted line-clamp-2"
+                                        style={{ fontFamily: TYPOGRAPHY.fontSans }}
+                                      >
+                                        {p.excerpt}
+                                      </p>
+                                    </div>
+                                    <span className="text-fg-muted group-hover:text-brutal-pink shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-all">
+                                      <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
+                                    </span>
+                                  </Link>
+                                </motion.div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>

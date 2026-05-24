@@ -371,3 +371,46 @@
   97% { transform: translate(-1px, -2px); clip-path: inset(40% 0 40% 0); }
   99% { transform: translate(1px, 2px); clip-path: inset(80% 0 5% 0); }
 }
+
+/* ── Brutalist Scrollbars ── */
+
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--fg) var(--surf);
+}
+
+/* Chrome / Edge / Safari */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surf);
+  border-left: 2px solid var(--fg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surf);
+  border: 2px solid var(--fg);
+  box-shadow: 2px 2px 0px var(--fg);
+  min-height: 40px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pink);
+  border-color: var(--fg);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--yellow);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--fg);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--surf);
+  border-left: 2px solid var(--fg);
+  border-top: 2px solid var(--fg);
+}

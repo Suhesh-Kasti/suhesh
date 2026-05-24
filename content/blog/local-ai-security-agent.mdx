@@ -69,6 +69,17 @@ Switched to Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P — dense model, n
   </div>
 </Tabs>
 
+<DataBar
+  title="Model Speed Comparison (measured on L4)"
+  data={[
+    {"label": "Qwen3.5-122B-MoE (broken config)", "value": 3.4, "color": "#ff2d95"},
+    {"label": "Qwen3.5-122B-MoE (fixed, theoretical)", "value": 5, "color": "#ff8800"},
+    {"label": "Qwen3.6-27B Q4_K_P (actual)", "value": 18, "color": "#00dd44"},
+    {"label": "Qwen3.5-9B Q6_K (quick tasks)", "value": 35, "color": "#0055ff"},
+    {"label": "Qwen3.6-27B Q8 (max quality)", "value": 12, "color": "#8800ff"}
+  ]}
+/>
+
 <Accordion title="Model download commands" color="#00cc55">
 
 ```bash
@@ -642,6 +653,25 @@ ai-status() {
 alias ais="ai-status"
 alias ail="tail -f $SCHIZO/logs/llama/router.log"
 ```
+
+---
+
+## Request Flow: Step by Step
+
+<ConceptExplorer
+  title="What happens when you send a security research query"
+  steps={[
+    {"label":"1. Receives query","content":"A message arrives from Telegram, Open WebUI, or the SSH terminal — e.g. \"scan hackthebox.com for common web vulnerabilities\".","highlight":"Input"},
+    {"label":"2. Smart router picks model","content":"The Python proxy at :7000 scans the prompt. Keywords like \"scan\", \"vulnerability\", and command length trigger the 27B heavy model. A simple \"what is XSS?\" would stay on 9B.","highlight":"Router"},
+    {"label":"3. llama.cpp loads model","content":"If the 9B model is currently in VRAM and the 27B is needed, llama.cpp hot-swaps — ~12 second pause while 18GB loads onto the GPU. The request waits via the proxy queue.","highlight":"GPU Swap"},
+    {"label":"4. Goose plans the task","content":"The LLM receives the system prompt + .goosehints instructions. It outputs a plan of tool calls: first search for the target, then Nmap scan, then analyze results.","highlight":"Planning"},
+    {"label":"5. MCP tools execute","content":"Goose calls searxng_search for the target URL, then developer.run_shell_command(\"nmap --top-ports 1000 hackthebox.com\"). Each tool call returns output that Goose feeds back to the LLM.","highlight":"Execution"},
+    {"label":"6. RAG enriches context","content":"Before responding, Goose queries Qdrant: \"web vulnerability scanner hackthebox CVE\". Matching CVEs, ATT&CK techniques, and past H1 reports get injected into context — no hallucinated vuln details.","highlight":"RAG"},
+    {"label":"7. Memory persists findings","content":"Confirmed findings tagged #finding, dead ends tagged #failed. On the next session, Goose reads these first — it remembers what you already tried and what worked.","highlight":"Memory"},
+    {"label":"8. Response arrives","content":"The user gets a structured analysis on Telegram: what was found, which tools ran, relevant CVEs, suggested next steps. The full session log stays in Goose's memory for the next query.","highlight":"Output"}
+  ]}
+  color="#ff5500"
+/>
 
 ---
 

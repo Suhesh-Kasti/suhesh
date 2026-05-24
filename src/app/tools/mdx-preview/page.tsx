@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import SearchButton from "@/components/SearchButton";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
@@ -12,6 +12,100 @@ import FlipCard from "@/components/mdx/FlipCard";
 import GlitchBox from "@/components/mdx/GlitchBox";
 import Marquee from "@/components/mdx/Marquee";
 import CopyButton from "@/components/mdx/CopyButton";
+import DataBar from "@/components/mdx/DataBar";
+import ConceptExplorer from "@/components/mdx/ConceptExplorer";
+
+function extractJsonBlock(text: string, key: string): string | null {
+  const startMarker = `${key}={`;
+  const idx = text.indexOf(startMarker);
+  if (idx === -1) return null;
+
+  let i = idx + startMarker.length;
+  let depth = 1;
+  let inString = false;
+  let escaped = false;
+
+  while (i < text.length && depth > 0) {
+    const ch = text[i];
+    if (escaped) { escaped = false; i++; continue; }
+    if (ch === "\\") { escaped = true; i++; continue; }
+    if (ch === '"' && !inString) { inString = true; i++; continue; }
+    if (ch === '"' && inString) { inString = false; i++; continue; }
+    if (!inString) {
+      if (ch === "{") depth++;
+      else if (ch === "}") depth--;
+    }
+    i++;
+  }
+  if (depth > 0) return null;
+  return text.slice(idx + startMarker.length, i - 1);
+}
+
+function parseJsonArray(json: string): any[] {
+  const cleaned = json
+    .replace(/,\s*(\]|\})/g, "$1")
+    .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    return [];
+  }
+}
+
+const STORAGE_KEY = "mdx-preview-content";
+const DEFAULT_MDX = `# My Security Note
+
+## SQL Injection Discovery
+
+I found a juicy SQLi endpoint today while testing an API.
+
+<Accordion title="The vulnerable payload" color="#ff2d95">
+\`\`\`bash
+curl 'https://target.com/api?id=1' OR '1'='1'
+\`\`\`
+</Accordion>
+
+<BrutalButton color="#ffdd00">Exploit this</BrutalButton>
+
+<IdeaNode color="blue">
+Always test for blind SQLi — not everything echoes back. Use **time-based** or **boolean-based** techniques.
+</IdeaNode>
+
+<DataBar
+  title="Nmap scan speeds"
+  data={[
+    {"label":"T0 Paranoid","value":1},
+    {"label":"T4 Aggressive","value":100},
+    {"label":"T5 Insane","value":250}
+  ]}
+/>
+
+<ConceptExplorer
+  title="SQL Injection Flow"
+  steps={[
+    {"label":"Find entry point","content":"Look for user input reflected in SQL queries — login forms, search bars, URL params, API endpoints.","highlight":"Recon"},
+    {"label":"Test for injection","content":"Add a single quote ' or double quote \" to break the SQL syntax. If you get an error, there's likely SQLi.","highlight":"Probe"},
+    {"label":"Determine type","content":"Is it UNION-based, boolean blind, time-based blind, or error-based? Each needs different exploitation.","highlight":"Classify"},
+    {"label":"Extract data","content":"Use UNION SELECT to pull database names → tables → columns → rows. Or automated tools like sqlmap.","highlight":"Exploit"}
+  ]}
+  color="#ff5500"
+/>
+
+<GlitchBox>
+This content glitches periodically. Perfect for highlighting warnings or gotchas.
+</GlitchBox>
+
+| Tool | Purpose |
+|------|---------|
+| sqlmap | Automated SQLi detection |
+| BurpSuite | Manual testing proxy |
+
+<Marquee speed={15}>PATCH YOUR INPUTS — PARAMETERIZE YOUR QUERIES — PATCH YOUR INPUTS</Marquee>
+
+<CopyButton text="SELECT * FROM users" label="Copy SQL" />
+
+<FlipCard front="What is blind SQLi?" back="Injection attacks which are performed by notorius but blind hackers." />
+`;
 
 function parseMdxPreview(raw: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = [];
@@ -61,6 +155,40 @@ function parseMdxPreview(raw: string): React.ReactNode[] {
       continue;
     }
 
+    // ── ConceptExplorer multiline block ──
+    if (/<ConceptExplorer/.test(line)) {
+      let block = line; i++;
+      while (i < lines.length && !lines[i].includes("</ConceptExplorer>")) { block += "\n" + lines[i]; i++; }
+      if (i < lines.length) { block += "\n" + lines[i]; i++; }
+      const titleMatch = block.match(/title="([^"]*)"/);
+      const colorMatch = block.match(/color="([^"]*)"/);
+      const stepsJson = extractJsonBlock(block, "steps");
+      const steps: Array<{label:string;content:string;highlight?:string}> = [];
+      if (stepsJson) {
+        const arr = parseJsonArray(`[${stepsJson}]`);
+        for (const item of arr) if (item.label && item.content) steps.push(item);
+      }
+      if (steps.length === 0) steps.push({ label: "Example", content: "Add steps to see them here" });
+      nodes.push(<ConceptExplorer key={key++} title={titleMatch?.[1] || "Concept"} steps={steps} color={colorMatch?.[1] || "#ff5500"} />);
+      continue;
+    }
+
+    // ── DataBar multiline block ──
+    if (/<DataBar/.test(line)) {
+      let block = line; i++;
+      while (i < lines.length && !lines[i].includes("</DataBar>") && !lines[i].includes("/>")) { block += "\n" + lines[i]; i++; }
+      if (i < lines.length) { block += "\n" + lines[i]; i++; }
+      const titleMatch = block.match(/title="([^"]*)"/);
+      const dataJson = extractJsonBlock(block, "data");
+      let data: Array<{label:string;value:number;color?:string}> = [];
+      if (dataJson) {
+        const arr = parseJsonArray(`[${dataJson}]`);
+        for (const item of arr) if (item.label && typeof item.value === "number") data.push(item);
+      }
+      nodes.push(<DataBar key={key++} title={titleMatch?.[1]} data={data.length > 0 ? data : [{label:"Example",value:50}]} />);
+      continue;
+    }
+
     if (/<Accordion\s+title="([^"]+)"\s*(?:color="([^"]+)")?\s*>/.test(line)) {
       const m = line.match(/<Accordion\s+title="([^"]+)"\s*(?:color="([^"]+)")?\s*>/);
       if (m) {
@@ -74,11 +202,6 @@ function parseMdxPreview(raw: string): React.ReactNode[] {
 
     if (/<BrutalButton/.test(line)) {
       const m = line.match(/<BrutalButton\s*(?:color="([^"]+)")?\s*>(.*?)<\/BrutalButton>/);
-      const revealMatch = line.match(/<BrutalButton\s*(?:color="([^"]+)")?\s*reveal="([^"]*)"\s*>(.*?)<\/BrutalButton>/);
-      if (revealMatch) {
-        nodes.push(<BrutalButton key={key++} color={revealMatch[1]} reveal={<span>{revealMatch[2]}</span>}>{revealMatch[3]}</BrutalButton>);
-        i++; continue;
-      }
       if (m) { nodes.push(<BrutalButton key={key++} color={m[1]}>{m[2]}</BrutalButton>); i++; continue; }
     }
 
@@ -159,43 +282,30 @@ function parseMdxPreview(raw: string): React.ReactNode[] {
   return nodes;
 }
 
-const DEFAULT_MDX = `# My Security Note
-
-## SQL Injection Discovery
-
-I found a juicy SQLi endpoint today while testing an API.
-
-<Accordion title="The vulnerable payload" color="#ff2d95">
-\`\`\`bash
-curl 'https://target.com/api?id=1' OR '1'='1'
-\`\`\`
-</Accordion>
-
-<BrutalButton color="#ffdd00">Exploit this</BrutalButton>
-
-<IdeaNode color="blue">
-Always test for blind SQLi — not everything echoes back. Use **time-based** or **boolean-based** techniques.
-</IdeaNode>
-
-<GlitchBox>
-This content glitches periodically. Perfect for highlighting warnings or gotchas.
-</GlitchBox>
-
-| Tool | Purpose |
-|------|---------|
-| sqlmap | Automated SQLi detection |
-| BurpSuite | Manual testing proxy |
-
-<Marquee speed={15}>PATCH YOUR INPUTS — PARAMETERIZE YOUR QUERIES — PATCH YOUR INPUTS</Marquee>
-
-<CopyButton text="SELECT * FROM users" label="Copy SQL" />
-
-<FlipCard front="What is blind SQLi?" back="Injection attacks which are performed by notorius but blind hackers." />
-`;
-
 export default function MdxPreviewPage() {
-  const [input, setInput] = useState(DEFAULT_MDX);
+  const [input, setInput] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      setInput(saved && saved.length > 0 ? saved : DEFAULT_MDX);
+      setMounted(true);
+    }
+  }, []);
+
+  // Save to localStorage on changes
+  useEffect(() => {
+    if (!mounted) return;
+    const timer = setTimeout(() => localStorage.setItem(STORAGE_KEY, input), 500);
+    return () => clearTimeout(timer);
+  }, [input, mounted]);
+
   const previewNodes = useMemo(() => parseMdxPreview(input), [input]);
+
+  if (!mounted) {
+    return <div className="min-h-screen flex items-center justify-center font-mono text-sm text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Loading editor...</div>;
+  }
 
   return (
     <>
@@ -209,30 +319,28 @@ export default function MdxPreviewPage() {
               <span className="font-mono text-xs uppercase tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color: "var(--fg-muted)" }}>live editor</span>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0" style={{ minHeight: "80vh" }}>
-              {/* Left: Editor */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0" style={{ minHeight: "85vh" }}>
               <div className="border-2 border-fg" style={{ backgroundColor: "var(--surf)" }}>
                 <div className="px-4 py-2 border-b-2 border-fg flex items-center justify-between" style={{ backgroundColor: "var(--fg)", color: "var(--surf)" }}>
                   <span className="font-mono text-2xs uppercase tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>input.mdx</span>
-                  <span className="font-mono text-2xs" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{input.split("\n").length} lines</span>
+                  <span className="font-mono text-2xs" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{input.split("\n").length} lines · auto-saved</span>
                 </div>
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  className="w-full h-[80vh] bg-transparent font-mono text-sm p-4 resize-none focus:outline-none placeholder:text-fg-muted"
-                  style={{ color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+                  className="w-full bg-transparent font-mono text-sm p-4 resize-none focus:outline-none placeholder:text-fg-muted"
+                  style={{ color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono, minHeight: "85vh" }}
                   placeholder="Type MDX content..."
                   spellCheck={false}
                 />
               </div>
 
-              {/* Right: Preview */}
               <div className="border-2 border-fg border-l-0" style={{ backgroundColor: "var(--surf)" }}>
                 <div className="px-4 py-2 border-b-2 border-fg flex items-center justify-between" style={{ backgroundColor: "var(--fg)", color: "var(--surf)" }}>
                   <span className="font-mono text-2xs uppercase tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>preview</span>
                   <span className="font-mono text-2xs" style={{ fontFamily: TYPOGRAPHY.fontMono }}>live render</span>
                 </div>
-                <div className="h-[80vh] overflow-y-auto p-6" style={{ backgroundColor: "var(--surf)" }}>
+                <div className="overflow-y-auto p-6" style={{ backgroundColor: "var(--surf)", maxHeight: "85vh", minHeight: "85vh" }}>
                   <div className="max-w-[68ch] mx-auto">{previewNodes}</div>
                 </div>
               </div>

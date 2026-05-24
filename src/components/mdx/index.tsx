@@ -28,6 +28,8 @@ import QuizCard from "./QuizCard";
 import FlipCard from "./FlipCard";
 import Marquee from "./Marquee";
 import GlitchBox from "./GlitchBox";
+import DataBar from "./DataBar";
+import ConceptExplorer from "./ConceptExplorer";
 
 export const mdxComponents: MDXComponents = {
   // Standard markdown overrides
@@ -80,6 +82,8 @@ export const mdxComponents: MDXComponents = {
   FlipCard: FlipCard as any,
   Marquee: Marquee as any,
   GlitchBox: GlitchBox as any,
+  DataBar: DataBar as any,
+  ConceptExplorer: ConceptExplorer as any,
 };
 
 export {

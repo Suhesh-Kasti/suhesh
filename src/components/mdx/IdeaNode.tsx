@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface IdeaNodeProps {
   children: string;
@@ -10,61 +10,48 @@ interface IdeaNodeProps {
 }
 
 export default function IdeaNode({ children, color = "#ffdd00" }: IdeaNodeProps) {
-  const constraintsRef = useRef<HTMLDivElement>(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [spins, setSpins] = useState(0);
 
   return (
-    <div ref={constraintsRef} className="relative my-10 min-h-[160px] not-prose">
+    <div className="relative my-8 not-prose group">
       <motion.div
-        drag
-        dragConstraints={constraintsRef}
-        dragElastic={0.1}
-        dragMomentum
-        className="absolute top-0 left-0 right-0 max-w-md p-5 cursor-grab active:cursor-grabbing font-sans text-sm leading-relaxed z-10 not-prose"
+        className="relative max-w-md mx-auto p-5 cursor-pointer font-sans text-sm leading-relaxed transition-shadow hover:shadow-brutal-lg"
         style={{
           border: `3px solid ${color}`,
-          boxShadow: `8px 8px 0px ${color}`,
+          boxShadow: `6px 6px 0px ${color}`,
           backgroundColor: "var(--surf)",
           fontFamily: TYPOGRAPHY.fontSans,
           color: "var(--fg)",
         }}
-        animate={{
-          x: offset.x,
-          y: offset.y,
-          rotate: 0 + spins * 2,
-        }}
-        onDragEnd={(_, info) => {
-          setOffset((prev) => ({
-            x: prev.x + info.offset.x,
-            y: prev.y + info.offset.y,
-          }));
-        }}
+        whileTap={{ scale: 0.98, boxShadow: `2px 2px 0px ${color}` }}
         onClick={() => setSpins((s) => s + 1)}
-        data-cursor-label="Drag or click me"
+        data-cursor-label="Click to spin"
       >
-        {/* Colored pushpin */}
+        {/* Pushpin */}
         <div
           className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 border-2"
           style={{ borderColor: color, backgroundColor: color }}
         />
         {/* Tape strip */}
         <div
-          className="absolute -top-1 left-8 w-8 h-2 opacity-30"
-          style={{ backgroundColor: color, transform: "rotate(-12deg)" }}
+          className="absolute -top-1 left-6 w-10 h-2 opacity-30 rotate-[-10deg]"
+          style={{ backgroundColor: color }}
+        />
+        <div
+          className="absolute -top-1 right-6 w-8 h-2 opacity-20 rotate-[8deg]"
+          style={{ backgroundColor: color }}
         />
 
-        <div className="mt-2 [&_strong]:font-extrabold [&_strong]:uppercase [&_strong]:block [&_strong]:text-lg [&_strong]:mb-1 relative">
+        <div className="mt-2 [&_strong]:font-extrabold [&_strong]:uppercase [&_strong]:block [&_strong]:text-lg [&_strong]:mb-1">
           <span
-            className="absolute -left-1 top-0 font-mono text-lg font-bold"
-            style={{ color: color }}
+            className="absolute left-1 top-0 font-mono text-lg font-bold"
+            style={{ color }}
           >
             &gt;
           </span>
           <span className="pl-4 block">{children}</span>
         </div>
 
-        {/* Decorative pin stripes on bottom */}
         <div className="mt-3 flex gap-1">
           {[...Array(5)].map((_, i) => (
             <div
@@ -77,17 +64,19 @@ export default function IdeaNode({ children, color = "#ffdd00" }: IdeaNodeProps)
 
         <div className="mt-2 flex items-center justify-between">
           <span
-            className="font-mono text-2xs uppercase tracking-label"
-            style={{ fontFamily: TYPOGRAPHY.fontMono, color: `${color}80` }}
+            className="font-mono text-2xs uppercase tracking-label group-hover:opacity-100 opacity-50 transition-opacity"
+            style={{ fontFamily: TYPOGRAPHY.fontMono, color: `${color}99` }}
           >
             spins: {spins}
           </span>
-          <span
+          <motion.span
             className="font-mono text-2xs uppercase tracking-label"
-            style={{ fontFamily: TYPOGRAPHY.fontMono, color: `${color}80` }}
+            style={{ fontFamily: TYPOGRAPHY.fontMono, color }}
+            animate={{ rotate: spins * 360 }}
+            transition={{ type: "spring", stiffness: 100, damping: 10 }}
           >
-            drag me
-          </span>
+            ★
+          </motion.span>
         </div>
       </motion.div>
     </div>

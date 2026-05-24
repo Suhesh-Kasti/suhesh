@@ -121,3 +121,11 @@ export const TOTAL_POSTS = ${allEntries.length};
 `);
 
 console.log(`✅ Content registry written (${allEntries.length} posts)`);
+
+// Write search index for API route — compact format
+const searchEntries = allEntries.map(e => ({
+  s: e.slug, t: e.title, x: (e.excerpt || "").slice(0, 200), g: e.tags.slice(0, 6), y: e.type, c: e.category
+}));
+const searchPath = path.join(ROOT, "src", "app", "api", "search", "search-index.json");
+fs.writeFileSync(searchPath, JSON.stringify(searchEntries));
+console.log(`✅ Search index written (${searchEntries.length} entries, ${JSON.stringify(searchEntries).length} bytes)`);

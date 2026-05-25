@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { COLORS, TYPOGRAPHY, MOTION } from "@/lib/design-tokens";
@@ -10,22 +10,56 @@ import CertDecoder from "@/components/tools/CertDecoder";
 
 type Tool = "encoder" | "hash" | "regex" | "nmap-parse" | "multi-encoder" | "password" | "cert" | "timestamp" | "diff" | "json-fmt";
 
+// ── localStorage helpers ──
+const LS_TOOL = "tool-active";
+const LS_INPUT = "tool-input";
+const LS_HASH = "tool-hash";
+const LS_PATTERN = "tool-regex-pattern";
+const LS_FLAGS = "tool-regex-flags";
+const LS_REGEX_INPUT = "tool-regex-input";
+const LS_TS_INPUT = "tool-ts-input";
+const LS_DIFF_LEFT = "tool-diff-left";
+const LS_DIFF_RIGHT = "tool-diff-right";
+const LS_JSON_INPUT = "tool-json-input";
+
+function load(key: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  return localStorage.getItem(key) ?? fallback;
+}
+function save(key: string, val: string) {
+  if (typeof window !== "undefined") localStorage.setItem(key, val);
+}
+
 export default function ArtPlayground() {
-  const [tool, setTool] = useState<Tool>("encoder");
-  const [input, setInput] = useState("");
+  const [tool, setTool] = useState<Tool>(() => (load(LS_TOOL, "encoder") as Tool));
+  const [mounted, setMounted] = useState(false);
+  const [input, setInput] = useState(() => load(LS_INPUT, ""));
   const [output, setOutput] = useState("");
-  const [hashType, setHashType] = useState("sha256");
-  const [regexPattern, setRegexPattern] = useState("");
-  const [regexFlags, setRegexFlags] = useState("gi");
-  const [regexInput, setRegexInput] = useState("");
+  const [hashType, setHashType] = useState(() => load(LS_HASH, "sha256"));
+  const [regexPattern, setRegexPattern] = useState(() => load(LS_PATTERN, ""));
+  const [regexFlags, setRegexFlags] = useState(() => load(LS_FLAGS, "gi"));
+  const [regexInput, setRegexInput] = useState(() => load(LS_REGEX_INPUT, ""));
   const [regexMatches, setRegexMatches] = useState<string[]>([]);
-  const [tsInput, setTsInput] = useState("");
+  const [tsInput, setTsInput] = useState(() => load(LS_TS_INPUT, ""));
   const [tsResult, setTsResult] = useState("");
-  const [diffLeft, setDiffLeft] = useState("");
-  const [diffRight, setDiffRight] = useState("");
+  const [diffLeft, setDiffLeft] = useState(() => load(LS_DIFF_LEFT, ""));
+  const [diffRight, setDiffRight] = useState(() => load(LS_DIFF_RIGHT, ""));
   const [diffResult, setDiffResult] = useState<Array<{type:"same"|"add"|"del";text:string}>>([]);
-  const [jsonInput, setJsonInput] = useState("");
+  const [jsonInput, setJsonInput] = useState(() => load(LS_JSON_INPUT, ""));
   const [jsonResult, setJsonResult] = useState("");
+
+  // Mark mounted and set up save-on-change for each state
+  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { save(LS_TOOL, tool); }, [tool]);
+  useEffect(() => { if (mounted) save(LS_INPUT, input); }, [input, mounted]);
+  useEffect(() => { save(LS_HASH, hashType); }, [hashType]);
+  useEffect(() => { save(LS_PATTERN, regexPattern); }, [regexPattern]);
+  useEffect(() => { save(LS_FLAGS, regexFlags); }, [regexFlags]);
+  useEffect(() => { save(LS_REGEX_INPUT, regexInput); }, [regexInput]);
+  useEffect(() => { save(LS_TS_INPUT, tsInput); }, [tsInput]);
+  useEffect(() => { save(LS_DIFF_LEFT, diffLeft); }, [diffLeft]);
+  useEffect(() => { save(LS_DIFF_RIGHT, diffRight); }, [diffRight]);
+  useEffect(() => { save(LS_JSON_INPUT, jsonInput); }, [jsonInput]);
 
   const handleEncode = useCallback(() => { try { setOutput(btoa(input)); } catch { setOutput("Invalid input for encoding"); } }, [input]);
   const handleDecode = useCallback(() => { try { setOutput(atob(input)); } catch { setOutput("Invalid Base64 input"); } }, [input]);
@@ -68,13 +102,50 @@ export default function ArtPlayground() {
   }, [tsInput]);
 
   const handleDiff = useCallback(() => {
-    const left = diffLeft.split("\n"), right = diffRight.split("\n");
-    const rSet = new Set(right);
-    const result: typeof diffResult = [];
-    for (const l of left) result.push({ type: rSet.has(l) ? "same" : "del", text: l });
-    const lSet = new Set(left);
-    for (const r of right) if (!lSet.has(r)) result.push({ type: "add", text: r });
-    setDiffResult(result);
+    // Character-level diff using longest common subsequence (LCS)
+    function lcsMatrix(a: string, b: string): number[][] {
+      const m = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          m[i][j] = a[i-1] === b[j-1] ? m[i-1][j-1] + 1 : Math.max(m[i-1][j], m[i][j-1]);
+        }
+      }
+      return m;
+    }
+
+    function backtrack(m: number[][], a: string, b: string): Array<{type:"same"|"add"|"del";text:string}> {
+      const result: typeof diffResult = [];
+      let i = a.length, j = b.length;
+      const buf: string[] = [];
+      let mode: "same"|"add"|"del"|null = null;
+
+      const flush = () => {
+        if (!buf.length) return;
+        result.unshift({ type: mode!, text: buf.reverse().join("") });
+        buf.length = 0;
+      };
+
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && a[i-1] === b[j-1]) {
+          if (mode !== "same") { flush(); mode = "same"; }
+          buf.push(a[i-1]);
+          i--; j--;
+        } else if (j > 0 && (i === 0 || m[i][j-1] >= m[i-1][j])) {
+          if (mode !== "add") { flush(); mode = "add"; }
+          buf.push(b[j-1]);
+          j--;
+        } else {
+          if (mode !== "del") { flush(); mode = "del"; }
+          buf.push(a[i-1]);
+          i--;
+        }
+      }
+      flush();
+      return result;
+    }
+
+    const m = lcsMatrix(diffLeft, diffRight);
+    setDiffResult(backtrack(m, diffLeft, diffRight));
   }, [diffLeft, diffRight]);
 
   const handleJsonFmt = useCallback(() => {

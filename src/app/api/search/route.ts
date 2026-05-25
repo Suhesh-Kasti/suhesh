@@ -14,15 +14,14 @@ export async function POST(request: Request) {
 
     let aiAnswer = "";
     try {
-      const ai = (globalThis as any).AI;
+      // Try Cloudflare AI binding (workers environment)
+      const ctx = (globalThis as any)[Symbol.for("__cloudflare-context__")];
+      const ai = ctx?.env?.AI;
       if (ai?.run) {
-        const hasContent = posts.length > 0 || projects.length > 0;
-        const sys = `You are SCHIZO — Suhesh's witty digital sidekick. He's an AppSec & Offensive Security engineer. Use markdown (bold, lists). 2-4 sentences max. Be fun, unhinged. Roast Suhesh playfully. Never corporate.${hasContent ? ` Found ${posts.length} post(s) and ${projects.length} project(s) — mention briefly.` : " No site matches found."}`;
-        const resp = await ai.run("@cf/meta/llama-3.1-8b-instruct", {
-          messages: [{ role: "system", content: sys }, { role: "user", content: query }],
-          max_tokens: 200, temperature: 0.85,
-        });
-        if (resp?.response) aiAnswer = resp.response;
+        aiAnswer = await callAI(ai, query, posts, projects);
+      } else {
+        // Fallback: REST API for local dev / non-worker environments
+        aiAnswer = await callAIRest(query, ctx?.env, posts.length > 0 || projects.length > 0);
       }
     } catch {}
 
@@ -54,4 +53,34 @@ function searchProjects(q: string, words: string[]) {
   }).slice(0, 3).map((p: any) => ({
     title: p.title, description: p.description, url: p.url, color: p.color, category: p.category, tags: (p.tags||[]).slice(0, 4)
   }));
+}
+
+async function callAI(ai: any, query: string, posts: any[], projects: any[]): Promise<string> {
+  const hasContent = posts.length > 0 || projects.length > 0;
+  const sys = `You are SCHIZO — Suhesh's witty digital sidekick. He's an AppSec & Offensive Security engineer. Use markdown (bold, lists). 2-4 sentences max. Be fun, unhinged. Roast Suhesh playfully. Never corporate.${hasContent ? ` Found ${posts.length} post(s) and ${projects.length} project(s) — mention briefly.` : " No site matches found."}`;
+  const resp = await ai.run("@cf/meta/llama-3.1-8b-instruct", {
+    messages: [{ role: "system", content: sys }, { role: "user", content: query }],
+    max_tokens: 200, temperature: 0.85,
+  });
+  return resp?.response || "";
+}
+
+async function callAIRest(query: string, env?: any, hasContent?: boolean): Promise<string> {
+  const accountId = env?.CF_ACCOUNT_ID || process.env.CF_ACCOUNT_ID;
+  const token = env?.CF_API_TOKEN || process.env.CF_API_TOKEN;
+  if (!accountId || !token) return "";
+
+  try {
+    const sys = `You are SCHIZO — Suhesh's witty digital sidekick. He's an AppSec & Offensive Security engineer. Use markdown (bold, lists). 2-4 sentences max. Be fun, unhinged. Roast Suhesh playfully. Never corporate.${hasContent ? " Content matched — mention it briefly." : " No site matches."}`;
+    const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3.1-8b-instruct`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "system", content: sys }, { role: "user", content: query }], max_tokens: 200 }),
+    });
+    if (!res.ok) return "";
+    const data = await res.json() as any;
+    return data?.result?.response || "";
+  } catch {
+    return "";
+  }
 }

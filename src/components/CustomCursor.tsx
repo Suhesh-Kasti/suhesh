@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 function hasTouch(): boolean {
   if (typeof window === "undefined") return false;
@@ -9,151 +8,105 @@ function hasTouch(): boolean {
 }
 
 export default function CustomCursor() {
-  const [pos, setPos] = useState({ x: -100, y: -100 });
-  const [hovering, setHovering] = useState(false);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef({ x: -100, y: -100 });
+  const targetRef = useRef({ x: -100, y: -100 });
+  const hoveringRef = useRef(false);
+  const clickingRef = useRef(false);
+  const activeRef = useRef(false);
   const [label, setLabel] = useState("");
-  const [clicking, setClicking] = useState(false);
-  const [isTouch, setIsTouch] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const visible = useRef(true);
-  const touchActive = useRef(false);
+
+  // Animation loop
+  const animate = useCallback(() => {
+    const p = posRef.current;
+    const t = targetRef.current;
+    const h = hoveringRef.current;
+    const c = clickingRef.current;
+
+    // Tighter lerp for responsiveness
+    p.x += (t.x - p.x) * 0.55;
+    p.y += (t.y - p.y) * 0.55;
+
+    const ring = ringRef.current;
+    const dot = dotRef.current;
+    const lbl = labelRef.current;
+
+    if (ring) {
+      ring.style.transform = `translate3d(${p.x - 19}px, ${p.y - 19}px, 0) rotate(${h ? 135 : c ? 90 : 0}deg) scale(${c ? 0.8 : h ? 1.1 : 1})`;
+      ring.style.borderWidth = h ? "3px" : "2px";
+    }
+    if (dot) {
+      dot.style.transform = `translate3d(${p.x - 6}px, ${p.y - 6}px, 0) scale(${c ? 1.4 : h ? 0.5 : 1})`;
+      dot.style.backgroundColor = h ? "#ffdd00" : c ? "#ff1144" : "#ff2d95";
+    }
+    if (lbl) {
+      lbl.style.transform = `translate3d(${p.x - 16}px, ${p.y + 28}px, 0) scale(${h && label ? 1 : 0.7})`;
+      lbl.style.opacity = h && label ? "1" : "0";
+    }
+
+    const idle = Math.abs(p.x - t.x) < 0.1 && Math.abs(p.y - t.y) < 0.1 && !c;
+    if (idle) {
+      activeRef.current = false;
+    } else {
+      requestAnimationFrame(animate);
+    }
+  }, [label]);
+
+  const wake = useCallback(() => {
+    if (!activeRef.current) {
+      activeRef.current = true;
+      requestAnimationFrame(animate);
+    }
+  }, [animate]);
 
   useEffect(() => {
-    const touch = hasTouch();
-    setIsTouch(touch);
+    if (hasTouch()) return;
     setMounted(true);
-    if (!touch) {
-      document.body.classList.add("cursor-none");
-    }
+    document.body.classList.add("cursor-none");
+
+    // Single pointermove handler — position + hover in one shot
+    const onMove = (e: PointerEvent) => {
+      targetRef.current = { x: e.clientX, y: e.clientY };
+      const el = (e.target as HTMLElement).closest?.("a, button, [data-cursor-label]") as HTMLElement | null;
+      const nowHover = !!el;
+      if (nowHover !== hoveringRef.current) {
+        hoveringRef.current = nowHover;
+        setLabel(el?.dataset.cursorLabel ?? "");
+      }
+      wake();
+    };
+
+    const onDown = () => { clickingRef.current = true; wake(); };
+    const onUp = () => { clickingRef.current = false; wake(); };
+    const onLeave = () => { if (ringRef.current) ringRef.current.style.opacity = "0"; if (dotRef.current) dotRef.current.style.opacity = "0"; };
+    const onEnter = () => { if (ringRef.current) ringRef.current.style.opacity = "1"; if (dotRef.current) dotRef.current.style.opacity = "1"; };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("pointerup", onUp);
+    document.addEventListener("pointerleave", onLeave);
+    document.addEventListener("pointerenter", onEnter);
+
     return () => {
       document.body.classList.remove("cursor-none");
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("pointerup", onUp);
+      document.removeEventListener("pointerleave", onLeave);
+      document.removeEventListener("pointerenter", onEnter);
     };
-  }, []);
+  }, [wake]);
 
-  useEffect(() => {
-    if (isTouch || !mounted) return;
-    const clamp = (v: number, max: number) => Math.max(0, Math.min(v, max));
-
-    const onMove = (e: MouseEvent) => {
-      if (touchActive.current) return;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      setPos({
-        x: clamp(e.clientX, vw),
-        y: clamp(e.clientY, vh),
-      });
-    };
-
-    const onOver = (e: MouseEvent) => {
-      if (touchActive.current) return;
-      const el = (e.target as HTMLElement).closest?.("a, button, [data-cursor-label]") as HTMLElement;
-      if (el) {
-        setHovering(true);
-        setLabel(el.dataset.cursorLabel ?? "");
-      } else {
-        setHovering(false);
-        setLabel("");
-      }
-    };
-
-    const onOut = () => { setHovering(false); setLabel(""); };
-    const onEnter = () => { visible.current = true; };
-    const onLeave = () => { visible.current = false; };
-    const onDown = () => { if (!touchActive.current) setClicking(true); };
-    const onUp = () => setClicking(false);
-
-    // Touch detection — when user touches screen, flag it so mouse events are ignored
-    const onTouchStart = () => {
-      touchActive.current = true;
-      setClicking(false);
-      setHovering(false);
-    };
-    // After a delay with no touch, re-enable cursor
-    const onTouchEnd = () => {
-      setTimeout(() => { touchActive.current = false; }, 500);
-    };
-
-    window.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseover", onOver);
-    document.addEventListener("mouseout", onOut);
-    document.addEventListener("mouseenter", onEnter);
-    document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("mouseup", onUp);
-    document.addEventListener("touchstart", onTouchStart, { passive: true });
-    document.addEventListener("touchend", onTouchEnd, { passive: true });
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseover", onOver);
-      document.removeEventListener("mouseout", onOut);
-      document.removeEventListener("mouseenter", onEnter);
-      document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("mouseup", onUp);
-      document.removeEventListener("touchstart", onTouchStart);
-      document.removeEventListener("touchend", onTouchEnd);
-    };
-  }, [isTouch, mounted]);
-
-  const size = 14;
-  const ringSize = 38;
-
-  if (!mounted || isTouch) return null;
+  if (!mounted) return null;
 
   return (
     <>
-      {/* Outer ring */}
-      <motion.div
-        className="pointer-events-none fixed z-[999999]"
-        style={{
-          left: 0,
-          top: 0,
-          width: ringSize,
-          height: ringSize,
-          border: "2px solid #ff2d95",
-          borderRadius: "0%",
-        }}
-        animate={{
-          x: pos.x - ringSize / 2,
-          y: pos.y - ringSize / 2,
-          rotate: hovering ? 135 : clicking ? 90 : 0,
-          scale: clicking ? 0.8 : hovering ? 1.1 : 1,
-          borderWidth: hovering ? "3px" : "2px",
-        }}
-        transition={{ type: "spring", stiffness: 200, damping: 18, mass: 0.3 }}
-      />
-
-      {/* Inner dot */}
-      <motion.div
-        className="pointer-events-none fixed z-[999999]"
-        style={{
-          width: size,
-          height: size,
-          borderRadius: "0%",
-        }}
-        animate={{
-          x: pos.x - size / 2,
-          y: pos.y - size / 2,
-          backgroundColor: hovering ? "#ffdd00" : clicking ? "#ff1144" : "#ff2d95",
-          scale: clicking ? 1.3 : hovering ? 0.6 : 1,
-        }}
-        transition={{ type: "spring", stiffness: 300, damping: 20, mass: 0.2 }}
-      />
-
-      {/* Label badge */}
-      <motion.div
-        className="pointer-events-none fixed z-[99999] font-mono text-2xs uppercase tracking-label font-bold px-2 py-1 border-2 whitespace-nowrap shadow-brutal-sm"
-        style={{ borderColor: "#ff2d95", backgroundColor: "var(--surf)", color: "var(--fg)" }}
-        animate={{
-          x: pos.x - 14,
-          y: pos.y + 26,
-          opacity: hovering && label ? 1 : 0,
-          scale: hovering && label ? 1 : 0.8,
-        }}
-        transition={{ type: "spring", stiffness: 250, damping: 20 }}
-      >
-        {label}
-      </motion.div>
+      <div ref={ringRef} className="pointer-events-none fixed z-[999999] will-change-transform" style={{ left: 0, top: 0, width: 38, height: 38, border: "2px solid #ff2d95" }} />
+      <div ref={dotRef} className="pointer-events-none fixed z-[999999] will-change-transform" style={{ left: 0, top: 0, width: 12, height: 12, backgroundColor: "#ff2d95" }} />
+      <div ref={labelRef} className="pointer-events-none fixed z-[99999] font-mono text-2xs uppercase font-bold px-2 py-1 border-2 border-[#ff2d95] whitespace-nowrap shadow-brutal-sm opacity-0 will-change-transform" style={{ backgroundColor: "var(--surf)", color: "var(--fg)" }}>{label}</div>
     </>
   );
 }

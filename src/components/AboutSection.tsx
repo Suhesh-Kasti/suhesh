@@ -19,6 +19,7 @@ const EXPERIENCE = [
 const PHOTOS = [
   "/images/admin/AMULUMULULULU.webp",
   "/images/admin/BUAHAHAHA.webp",
+  "/images/admin/CHISSSCHISSFUSSFUSS.webp",
   "/images/admin/DHISSSS.webp",
   "/images/admin/LOLWAHAHA.webp",
   "/images/admin/OIUIIIU.webp",

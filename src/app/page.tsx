@@ -5,10 +5,11 @@ import AboutSection from "@/components/AboutSection";
 import BrainDumpPreview from "@/components/BrainDumpPreview";
 import ContactSection from "@/components/ContactSection";
 import SearchButton from "@/components/SearchButton";
+import ScrollSnapHandler from "@/components/ScrollSnapHandler";
 
 export default function Home() {
   return (
-    <>
+    <ScrollSnapHandler>
       <Navbar />
       <main className="flex-1">
         <Hero />
@@ -18,6 +19,6 @@ export default function Home() {
         <ContactSection />
       </main>
       <SearchButton />
-    </>
+    </ScrollSnapHandler>
   );
 }

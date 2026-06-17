@@ -135,12 +135,12 @@ export default function RootLayout({
           <StructuredData />
           <TitleCycler />
           <CustomCursor />
-          <Navbar />
           <OverscrollBounce>
+            <Navbar />
             {children}
+            <Footer />
           </OverscrollBounce>
           <SearchButton />
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

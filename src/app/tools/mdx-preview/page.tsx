@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 import Accordion from "@/components/mdx/Accordion";
 import BrutalButton from "@/components/mdx/BrutalButton";
@@ -309,7 +307,6 @@ export default function MdxPreviewPage() {
 
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <section className="relative w-full py-20" style={{ backgroundColor: "var(--surf)" }}>
           <div className="max-w-full mx-auto px-6 md:px-12">
@@ -348,7 +345,6 @@ export default function MdxPreviewPage() {
           </div>
         </section>
       </main>
-      <SearchButton />
     </>
   );
 }

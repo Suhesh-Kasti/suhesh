@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 import DataBar from "@/components/mdx/DataBar";
 
@@ -110,7 +108,6 @@ export default function HexDumpPage() {
 
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16 min-h-screen" style={{ backgroundColor: "var(--surf)" }}>
         <section className="py-16 px-6 md:px-12 max-w-4xl mx-auto">
           <h1 className="font-display text-4xl md:text-5xl font-extrabold uppercase mb-2" style={{ fontFamily: TYPOGRAPHY.fontDisplay, color: "var(--fg)" }}>
@@ -221,7 +218,6 @@ export default function HexDumpPage() {
           )}
         </section>
       </main>
-      <SearchButton />
     </>
   );
 }

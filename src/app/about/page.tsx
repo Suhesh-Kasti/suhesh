@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
 import AboutSection from "@/components/AboutSection";
-import SearchButton from "@/components/SearchButton";
 
 export const metadata: Metadata = {
   title: "About — Application Security Engineer & Creative Coder",
@@ -12,11 +10,9 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <AboutSection />
       </main>
-      <SearchButton />
     </>
   );
 }

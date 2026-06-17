@@ -2,8 +2,6 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faCheck, faTerminal, faGlobe, faDatabase, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -76,7 +74,6 @@ export default function PayloadGenerator() {
 
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <section className="relative w-full min-h-screen py-16 md:py-24 bg-surface">
           <div className="max-w-5xl mx-auto px-6 md:px-12">
@@ -146,7 +143,6 @@ export default function PayloadGenerator() {
           </div>
         </section>
       </main>
-      <SearchButton />
     </>
   );
 }

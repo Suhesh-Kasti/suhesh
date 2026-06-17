@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getPostMetas } from "@/lib/braindump";
-import Navbar from "@/components/Navbar";
 import MindMap from "@/components/MindMap";
 
 export const metadata: Metadata = {
@@ -14,7 +13,6 @@ export default function MapPage() {
 
   return (
     <div className="h-screen overflow-hidden pt-16">
-      <Navbar />
       <MindMap posts={posts} />
     </div>
   );

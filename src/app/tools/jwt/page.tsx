@@ -2,8 +2,6 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faCheck, faUnlock } from "@fortawesome/free-solid-svg-icons";
 import { TYPOGRAPHY, COLORS, MOTION } from "@/lib/design-tokens";
@@ -53,7 +51,6 @@ export default function JwtDebugger() {
 
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <section className="relative w-full py-20 md:py-32" style={{ backgroundColor: "var(--surf)" }}>
           <div className="max-w-4xl mx-auto px-6 md:px-12">
@@ -130,7 +127,6 @@ export default function JwtDebugger() {
           </div>
         </section>
       </main>
-      <SearchButton />
     </>
   );
 }

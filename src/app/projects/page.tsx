@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import Link from "next/link";
 import { WORK, TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 
@@ -13,7 +11,6 @@ export const metadata: Metadata = {
 export default function ProjectsPage() {
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <section className="relative w-full bg-surface py-20 md:py-32">
           <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
@@ -33,7 +30,6 @@ export default function ProjectsPage() {
           </div>
         </section>
       </main>
-      <SearchButton />
     </>
   );
 }

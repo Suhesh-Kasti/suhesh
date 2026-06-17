@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { getPostMetas } from "@/lib/braindump";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import BrainDumpList from "@/components/BrainDumpList";
 
 export const dynamic = "force-static";
@@ -17,11 +15,9 @@ export default function BrainDumpPage() {
 
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <BrainDumpList posts={posts} />
       </main>
-      <SearchButton />
     </>
   );
 }

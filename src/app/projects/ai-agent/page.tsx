@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import ImageGallery from "@/components/ImageGallery";
 import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 
@@ -13,7 +11,6 @@ export const metadata: Metadata = {
 function ProjectLayout({ title, category, color, children }: { title: string; category: string; color: string; children: React.ReactNode }) {
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <article className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <span className="font-mono text-2xs uppercase tracking-label px-2 py-0.5 border inline-block" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, borderColor: color, color }}>{category}</span>
@@ -24,7 +21,6 @@ function ProjectLayout({ title, category, color, children }: { title: string; ca
           </div>
         </article>
       </main>
-      <SearchButton />
     </>
   );
 }

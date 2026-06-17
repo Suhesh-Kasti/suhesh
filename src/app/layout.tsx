@@ -5,6 +5,9 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import CustomCursor from "@/components/CustomCursor";
 import FontAwesomeConfig from "@/components/FontAwesomeConfig";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import OverscrollBounce from "@/components/OverscrollBounce";
+import SearchButton from "@/components/SearchButton";
 import { StructuredData } from "@/components/StructuredData";
 import TitleCycler from "@/components/TitleCycler";
 import "./globals.css";
@@ -132,7 +135,11 @@ export default function RootLayout({
           <StructuredData />
           <TitleCycler />
           <CustomCursor />
-          {children}
+          <Navbar />
+          <OverscrollBounce>
+            {children}
+          </OverscrollBounce>
+          <SearchButton />
           <Footer />
         </ThemeProvider>
       </body>

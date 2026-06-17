@@ -133,12 +133,6 @@ export const MOTION = {
     damping: 20,
     mass: 0.8,
   },
-  bouncy: {
-    type: "spring" as const,
-    stiffness: 200,
-    damping: 15,
-    mass: 1,
-  },
   gentle: {
     type: "spring" as const,
     stiffness: 80,

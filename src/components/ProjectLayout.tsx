@@ -1,5 +1,3 @@
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 export default function ProjectLayout({
@@ -15,7 +13,6 @@ export default function ProjectLayout({
 }) {
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <article className="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24">
           <span
@@ -39,7 +36,6 @@ export default function ProjectLayout({
           </div>
         </article>
       </main>
-      <SearchButton />
     </>
   );
 }

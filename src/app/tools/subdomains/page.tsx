@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 const COMMON_SUBDOMAINS = [
@@ -79,7 +77,6 @@ export default function SubdomainsPage() {
 
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16 min-h-screen" style={{ backgroundColor: "var(--surf)" }}>
         <section className="py-16 px-6 md:px-12 max-w-3xl mx-auto">
           <h1 className="font-display text-4xl md:text-5xl font-extrabold uppercase mb-2" style={{ fontFamily: TYPOGRAPHY.fontDisplay, color: "var(--fg)" }}>
@@ -169,7 +166,6 @@ export default function SubdomainsPage() {
           )}
         </section>
       </main>
-      <SearchButton />
     </>
   );
 }

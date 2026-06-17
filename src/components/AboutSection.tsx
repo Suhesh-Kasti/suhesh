@@ -4,7 +4,8 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faCircle, faGraduationCap } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faCircle, faGraduationCap, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faGithub, faLinkedin, faTelegram } from "@fortawesome/free-brands-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { SITE, TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 
@@ -29,7 +30,8 @@ const PHOTOS = [
 const CERTS = [
   { name: "CAPT", issuer: "Hackviser", color: COLORS.green, fullName: "Certified Associate Penetration Tester", image: "/images/certificates/0xCAPT.png" },
   { name: "CWSE", issuer: "Hackviser", color: COLORS.purple, fullName: "Certified Web Security Expert", image: "/images/certificates/0xCWSE.png" },
-  { name: "F5 CA", issuer: "F5 Networks", color: COLORS.red, fullName: "F5 Certified BIG-IP Administrator", image: "/images/certificates/0x00F5.png" },
+  { name: "F5 CTS", issuer: "F5 Networks", color: COLORS.red, fullName: "F5 Certified Technology Specialist", image: "/images/certificates/0xF5CTS.png" },
+  { name: "F5 CA", issuer: "F5 Networks", color: COLORS.pink, fullName: "F5 Certified BIG-IP Administrator", image: "/images/certificates/0xF5CA.png" },
   { name: "Cybersecurity Certificate", issuer: "Google", color: COLORS.yellow, fullName: "Google Cybersecurity Certificate", image: "/images/certificates/0x000G.jpg" },
 ];
 
@@ -49,7 +51,7 @@ const SKILLS = [
   { name: "Incident Response", level: 55, color: COLORS.red },
 ];
 
-export default function About() {
+export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [isClient, setIsClient] = useState(false);
   const [animatedSkills, setAnimatedSkills] = useState(false);
@@ -141,14 +143,49 @@ export default function About() {
               </a>
             </div>
 
-            <div className="about-animate mt-8">
-              <h4 className="font-mono text-xs uppercase text-spider-blue tracking-label mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Certifications</h4>
-              <div className="grid grid-cols-2 gap-3">
-                {CERTS.map((cert) => (
-                  <CertCard key={cert.name} cert={cert} onView={setZoomedCert} />
-                ))}
+            {featuredCerts ? (
+              <div className="about-animate mt-8">
+                <h4 className="font-mono text-xs uppercase text-spider-blue tracking-label mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Certifications</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  {CERTS.filter((c) => featuredCerts.includes(c.name)).map((cert) => (
+                    <CertCard key={cert.name} cert={cert} onView={setZoomedCert} />
+                  ))}
+                </div>
+                <a
+                  href="/about"
+                  className="mt-4 inline-flex items-center gap-2 px-4 py-2 border-2 border-fg font-mono text-xs uppercase text-fg hover:bg-fg hover:text-surface transition-all cursor-pointer"
+                  style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+                >
+                  View All Certifications →
+                </a>
               </div>
-            </div>
+            ) : (
+              <div className="about-animate mt-8">
+                <h4 className="font-mono text-xs uppercase text-spider-teal tracking-label mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Contact & Links</h4>
+                <div className="space-y-2">
+                  {[
+                    { label: "Email", value: "kastisuhesh1@gmail.com", href: "mailto:kastisuhesh1@gmail.com", icon: faEnvelope },
+                    { label: "GitHub", value: "@Suhesh-Kasti", href: "https://github.com/Suhesh-Kasti", icon: faGithub },
+                    { label: "LinkedIn", value: "suheshkasti", href: "https://linkedin.com/in/suheshkasti", icon: faLinkedin },
+                    { label: "Telegram", value: "@suheshkasti", href: "https://t.me/suheshkasti", icon: faTelegram },
+                  ].map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="border-2 border-fg p-3 flex items-center gap-3 hover:bg-fg hover:text-surface transition-all cursor-pointer group"
+                    >
+                      <FontAwesomeIcon icon={link.icon} className="text-base group-hover:text-surface" />
+                      <div>
+                        <p className="font-mono text-2xs uppercase text-fg-muted tracking-label group-hover:text-surface" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>{link.label}</p>
+                        <p className="font-mono text-xs text-fg group-hover:text-surface mt-0.5" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{link.value}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right column: qualifications, certs, experience */}
@@ -211,7 +248,8 @@ export default function About() {
               ))}
             </div>
 
-            {/* Stats */}
+            {/* Stats — homepage only */}
+            {featuredCerts && (
             <div className="about-animate grid grid-cols-3 gap-2 sm:gap-3">
               {[{ value: "2+", label: "Years in Security" }, { value: "3+", label: "Cyber Certs" }, { value: "∞", label: "Curiosity" }].map((stat) => (
                 <motion.div key={stat.label} className="border-2 border-fg p-2 sm:p-3 text-center panel-comic" whileHover={{ y: -4 }} transition={MOTION.snappy}>
@@ -220,8 +258,24 @@ export default function About() {
                 </motion.div>
               ))}
             </div>
+            )}
           </div>
         </div>
+
+        {/* Full cert section — about page only */}
+        {!featuredCerts && (
+          <div className="about-animate mt-20">
+            <div className="flex items-center gap-4 mb-10">
+              <h3 className="font-display text-2xl md:text-4xl font-extrabold uppercase text-fg" style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>Certifications</h3>
+              <div className="flex-1 h-1 bg-fg" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              {CERTS.map((cert) => (
+                <CertCard key={cert.name} cert={cert} onView={setZoomedCert} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Cert fullscreen overlay — simple lightbox style */}

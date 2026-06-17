@@ -66,7 +66,7 @@ export default function ThemeToggle() {
             : "0 0 8px 3px rgba(255,221,0,0.6)",
           border: "2px solid var(--color-fg)",
         }}
-        transition={MOTION.bouncy}
+        transition={MOTION.snappy}
       />
 
       {/* Sun rays (light mode) */}
@@ -102,13 +102,12 @@ export default function ThemeToggle() {
           top: "50%",
           y: "-50%",
         }}
-        transition={MOTION.bouncy}
+        transition={MOTION.snappy}
       >
         <FontAwesomeIcon
           icon={isDark ? faMoon : faSun}
           className="text-[10px]"
           style={{ color: isDark ? "#ffdd00" : "#000" }}
-          bounce={isDark}
         />
       </motion.div>
     </button>

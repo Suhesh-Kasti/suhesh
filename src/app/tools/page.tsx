@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import ArtPlayground from "@/components/ArtPlayground";
 
 export const metadata: Metadata = {
@@ -12,11 +10,9 @@ export const metadata: Metadata = {
 export default function ToolsPage() {
   return (
     <>
-      <Navbar />
       <main className="flex-1 pt-16">
         <ArtPlayground />
       </main>
-      <SearchButton />
     </>
   );
 }

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllSlugs } from "@/lib/braindump";
 import { MdxContent } from "@/components/MdxContent";
-import Navbar from "@/components/Navbar";
-import SearchButton from "@/components/SearchButton";
 import TableOfContents from "@/components/TableOfContents";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
 
@@ -74,7 +72,6 @@ export default async function BrainDumpPost({ params }: Props) {
         slug={slugStr}
         tags={post.meta.tags}
       />
-      <Navbar />
       <main className="flex-1 pt-16">
         <TableOfContents content={post.rawContent} />
         <article className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
@@ -108,7 +105,6 @@ export default async function BrainDumpPost({ params }: Props) {
           </nav>
         </article>
       </main>
-      <SearchButton />
     </>
   );
 }

@@ -1,0 +1,41 @@
+---
+title: Source code disclosure via backup files
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - information-disclosure
+  - walkthrough
+excerpt: >-
+  This lab leaks its source code via backup files in a hidden directory. To
+  solve the lab, identify and submit the database password, which is hard-coded
+  in the leaked source code.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+
+# Lab: Source code disclosure via backup files
+
+## Objective
+This lab leaks its source code via backup files that were left in a publicly accessible directory. To solve the lab, locate the backup files, extract the hard-coded database password, and submit it.
+
+## Why This Works (The Principle)
+- **The vulnerability:** Backup copies of source files (`.bak`, `.backup`, `.old`, `.swp`) are left in publicly accessible web directories.
+- **Root cause:** Development or deployment processes leave behind temporary/backup files that should not be served to users.
+- **Exploitation:** Access the backup files through the web server to read the original source code and find hardcoded credentials.
+- **Key insight:** Robots.txt and directory listing can sometimes reveal backup file locations. Always try common backup extensions on known filenames.
+
+## Solution Reconstruction
+- [ ] Step 1: Browsed the target application and examined the page source
+- [ ] Step 2: Attempted to access common backup file extensions (`.bak`, `.old`, `.backup`) on known pages
+- [ ] Step 3: Found a backup file containing database credentials in plaintext
+- [ ] Final payload / exploit: Submitted the recovered database password
+
+## Key Takeaway
+*Write ONE principle I must remember:*
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

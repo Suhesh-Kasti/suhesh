@@ -1,0 +1,47 @@
+---
+title: Reflected XSS into attribute with angle brackets HTML-encoded
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - xss
+  - walkthrough
+excerpt: "This lab contains a reflected cross-site scripting vulnerability in the search blog functionality where angle brackets are HTML-encoded. To solve this lab, perform a cross-site scripting attack that injects an attribute and calls the\_`alert`\_function."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Reflected XSS into attribute with angle brackets HTML-encoded
+
+## Objective
+This lab contains a reflected cross-site scripting vulnerability in the search blog functionality where angle brackets are HTML-encoded. To solve this lab, perform a cross-site scripting attack that injects an attribute and calls the `alert` function.
+
+## Why This Works (The Principle)
+- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
+- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
+- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
+- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+
+## Blind Attempt (15-20 min max)
+- **What I tried:** I tried to do the same thing but was trying other functions  
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [x] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+*After viewing full solution, close it immediately.*
+- [ ] Step 1: The string in search was being reflected back in two places 
+- [ ] Step 2: Since it was being reflected in `<input>`, we used onmouseover function
+- [ ] Step 3: We had to made the exploit in a way it didn't break no javascript
+![](/images/series/URL_encoded_HTML_tags_reflected_XSS.png)
+
+## Key Takeaway
+*Write ONE principle I must remember:*
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

@@ -1,0 +1,52 @@
+---
+title: Reflected XSS with some SVG markup allowed
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - xss
+  - walkthrough
+excerpt: >-
+  This lab has a simple reflected XSS vulnerability. The site is blocking common
+  tags but misses some SVG tags and events.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Reflected XSS with some SVG markup allowed
+
+## Objective
+This lab has a simple reflected XSS vulnerability. The site is blocking common tags but misses some SVG tags and events.
+To solve the lab, perform a cross-site scripting attack that calls the `alert()` function.
+
+## Why This Works (The Principle)
+- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
+- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
+- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
+- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+
+## Blind Attempt (15-20 min max)
+*Try without any hints. Document everything.*
+- **What I tried:** Tried  `<svg>` and using intruder tried events
+- **Where I got stuck:** Found this payload was working but had no idea how to  use it. `<svg><discard onbegin=alert(1)>`
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [x] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+- [ ] Step 1: In the search field tried all the tags and found out [svg animate transform](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet#onbegin) was also passing through.  
+- [ ] Step 2: Simply threw the payload below in search field and the attack was successful
+![](/images/series/svg_markup_animatetransform_allowed.png)
+- [ ] Final payload / exploit: 
+``` html
+<svg><animatetransform onbegin=alert(1) attributeName=transform>
+```
+
+## Key Takeaway
+Try all tags instead of throwing `<svg>` and just trying out events  
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

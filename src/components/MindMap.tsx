@@ -16,6 +16,8 @@ import {
   faBrain,
   faPlus,
   faMinus,
+  faRoad,
+  faFlask,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface MindMapProps {
@@ -39,12 +41,121 @@ const TYPE_CONFIG: Record<ContentType, { label: string; icon: typeof faBook; col
   cheatsheet: { label: "Cheatsheets", icon: faFileCode, color: COLORS.green },
   checklist: { label: "Checklists", icon: faClipboardCheck, color: COLORS.blue },
   braindump: { label: "Brain Dump", icon: faBrain, color: COLORS.purple },
+  series: { label: "Series & Roadmaps", icon: faRoad, color: COLORS.teal },
+  lab: { label: "Labs & Walkthroughs", icon: faFlask, color: COLORS.orange },
 };
 
 function buildMap(posts: BrainDumpMeta[]): MapNode[] {
   const nodes: MapNode[] = [];
+
+  // Separate posts by type
+  const seriesPosts = posts.filter((p) => p.type === "series");
+  const labPosts = posts.filter((p) => p.type === "lab");
+  const otherPosts = posts.filter((p) => p.type !== "series" && p.type !== "lab");
+
+  // Build Roadmaps node with nested lab walkthroughs
+  if (seriesPosts.length > 0 || labPosts.length > 0) {
+    const roadmapNode: MapNode = {
+      id: "type-series",
+      label: "Roadmaps",
+      icon: faRoad,
+      color: COLORS.teal,
+      parentId: null,
+      children: [],
+    };
+
+    // Group series by category (e.g., "PortSwigger Academy", "HTB CPTS")
+    const seriesCategories: Record<string, BrainDumpMeta[]> = {};
+    for (const post of seriesPosts) {
+      const cat = post.category || "Uncategorized";
+      if (!seriesCategories[cat]) seriesCategories[cat] = [];
+      seriesCategories[cat].push(post);
+    }
+
+    // Group labs by category
+    const labCategories: Record<string, BrainDumpMeta[]> = {};
+    for (const post of labPosts) {
+      const cat = post.category || "Uncategorized";
+      if (!labCategories[cat]) labCategories[cat] = [];
+      labCategories[cat].push(post);
+    }
+
+    for (const [cat, catSeries] of Object.entries(seriesCategories)) {
+      const catNode: MapNode = {
+        id: `cat-series-${cat}`,
+        label: cat,
+        icon: faRoad,
+        color: COLORS.teal,
+        parentId: "type-series",
+        children: [],
+      };
+
+      // Add the series index as a clickable node
+      for (const s of catSeries) {
+        catNode.children.push({
+          id: `post-${s.slug}`,
+          label: s.title,
+          icon: faRoad,
+          color: COLORS.teal,
+          parentId: catNode.id,
+          children: [],
+          slug: `/braindump/${s.slug}`,
+          excerpt: s.excerpt,
+        });
+      }
+
+      // Nest matching lab walkthroughs under this roadmap category
+      if (labCategories[cat]) {
+        for (const lab of labCategories[cat].slice(0, 20)) {
+          catNode.children.push({
+            id: `post-${lab.slug}`,
+            label: lab.title,
+            icon: faFlask,
+            color: COLORS.orange,
+            parentId: catNode.id,
+            children: [],
+            slug: `/braindump/${lab.slug}`,
+            excerpt: lab.excerpt,
+          });
+        }
+        delete labCategories[cat];
+      }
+
+      roadmapNode.children.push(catNode);
+    }
+
+    // Remaining orphan labs (no matching roadmap) get their own category
+    for (const [cat, catLabs] of Object.entries(labCategories)) {
+      const catNode: MapNode = {
+        id: `cat-series-${cat}`,
+        label: cat,
+        icon: faFlask,
+        color: COLORS.orange,
+        parentId: "type-series",
+        children: [],
+      };
+      for (const lab of catLabs.slice(0, 20)) {
+        catNode.children.push({
+          id: `post-${lab.slug}`,
+          label: lab.title,
+          icon: faFlask,
+          color: COLORS.orange,
+          parentId: catNode.id,
+          children: [],
+          slug: `/braindump/${lab.slug}`,
+          excerpt: lab.excerpt,
+        });
+      }
+      roadmapNode.children.push(catNode);
+    }
+
+    nodes.push(roadmapNode);
+  }
+
+  // Build rest of the types (blog, til, cheatsheet, checklist, braindump)
   for (const [type, cfg] of Object.entries(TYPE_CONFIG)) {
-    const typePosts = posts.filter((p) => p.type === type);
+    if (type === "series" || type === "lab") continue;
+    const typePosts = otherPosts.filter((p) => p.type === type);
     if (typePosts.length === 0) continue;
     const typeNode: MapNode = {
       id: `type-${type}`,
@@ -275,14 +386,19 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
   const handleMouseUp = () => { isDragging.current = false; };
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
     const handler = (e: WheelEvent) => {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
         setZoom((z) => Math.max(0.3, Math.min(2, z - e.deltaY * 0.001)));
+      } else {
+        e.preventDefault();
+        setPan((p) => ({ x: p.x - e.deltaX, y: p.y - e.deltaY }));
       }
     };
-    window.addEventListener("wheel", handler, { passive: false });
-    return () => window.removeEventListener("wheel", handler);
+    canvas.addEventListener("wheel", handler, { passive: false });
+    return () => canvas.removeEventListener("wheel", handler);
   }, []);
 
   return (
@@ -309,22 +425,30 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
 
       <div
         ref={canvasRef}
-        className="map-canvas relative flex-1 overflow-auto select-none"
-        style={{ backgroundColor: "var(--surf)", cursor: isDragging.current ? "grabbing" : "grab" }}
+        className="map-canvas relative flex-1 select-none"
+        style={{
+          cursor: isDragging.current ? "grabbing" : "grab",
+          overflow: "hidden",
+        }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
+        {/* Infinite grid background */}
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="absolute pointer-events-none"
           style={{
+            inset: "-500%",
+            backgroundColor: "var(--surf)",
             backgroundImage: "linear-gradient(var(--fg) 1px, transparent 1px), linear-gradient(90deg, var(--fg) 1px, transparent 1px)",
             backgroundSize: "40px 40px",
+            opacity: 0.03,
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
           }}
         />
         <motion.div
-          className="p-12 inline-block min-w-full min-h-full"
+          className="absolute p-12"
           style={{ transformOrigin: "0 0" }}
           animate={{ x: pan.x, y: pan.y, scale: zoom }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -351,9 +475,9 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
             ))}
           </div>
         </motion.div>
-        <div className="absolute bottom-3 left-3 font-mono text-2xs text-fg-muted/30 flex gap-3 pointer-events-none" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
-          <span>🖱️ Drag to pan</span>
-          <span>⌃ Scroll to zoom</span>
+        <div className="absolute bottom-3 left-3 font-mono text-2xs text-fg-muted/30 flex gap-3 pointer-events-none z-10" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+          <span>Drag to pan</span>
+          <span>Ctrl+Scroll to zoom</span>
         </div>
       </div>
     </>

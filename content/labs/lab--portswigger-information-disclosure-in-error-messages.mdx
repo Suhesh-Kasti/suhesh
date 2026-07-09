@@ -1,0 +1,42 @@
+---
+title: Information disclosure in error messages
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - information-disclosure
+  - walkthrough
+excerpt: >-
+  This lab's verbose error messages reveal that it is using a vulnerable version
+  of a third-party framework. To solve the lab, obtain and submit the version
+  number of this framework.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Information disclosure in error messages
+
+## Objective
+This lab's verbose error messages reveal that it is using a vulnerable version of a third-party framework. To solve the lab, obtain and submit the version number of this framework.
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application reveals sensitive information through error messages, debug pages, backup files, or version control history.
+- **Root cause:** These endpoints/files are unintentionally exposed to unauthenticated or unauthorized users.
+- **Exploitation:** Request the vulnerable endpoint to retrieve hidden data.
+- **Key insight:** Information disclosure is rarely the end goal — it is a stepping stone to a bigger attack (e.g., finding credentials, API keys, or internal paths).
+
+## Solution Reconstruction
+- [ ] Step 1: Created a sitemap of entire site 
+- [ ] Step 2: Find productID parameter in products page
+- [ ] Step 3: Takes numbers, using numbers either gives products or gives 404 Not Found
+- [ ] Sending a character *"A"*, breaks something in application and throws 500 Internal Server Error with server's version
+
+## Key Takeaway
+Send weird things in parameters
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*
+
+![](/images/series/information_disclosed_in_error.png)

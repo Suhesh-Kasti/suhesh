@@ -1,0 +1,61 @@
+---
+title: Authentication bypass via information disclosure
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - information-disclosure
+  - walkthrough
+excerpt: >-
+  This lab's administration interface has an authentication bypass
+  vulnerability, but it is impractical to exploit without knowledge of a custom
+  HTTP header used by the front-end.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Authentication bypass via information disclosure
+
+## Objective
+This lab's administration interface has an authentication bypass vulnerability, but it is impractical to exploit without knowledge of a custom HTTP header used by the front-end.
+
+To solve the lab, obtain the header name then use it to bypass the lab's authentication. Access the admin interface and delete the user `carlos`.
+
+You can log in to your own account using the following credentials: `wiener:peter`
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application reveals sensitive information through error messages, debug pages, backup files, or version control history.
+- **Root cause:** These endpoints/files are unintentionally exposed to unauthenticated or unauthorized users.
+- **Exploitation:** Request the vulnerable endpoint to retrieve hidden data.
+- **Key insight:** Information disclosure is rarely the end goal — it is a stepping stone to a bigger attack (e.g., finding credentials, API keys, or internal paths).
+
+## Blind Attempt 
+- **What I tried:** I sent requests as `wiener:peter` and it redirected me to `/login?id=wiener` so I thought this was the magical header so I kept changing this to `/login?id=admin`
+  I then found /admin exists and tried to send requests with `Sec-Fetch-User: ?0/1/2/3/4` thinking this was the header used by frontend to specify the user
+- **Where I got stuck:** I used the *Intercept Response* feature of burpsuite as well to repeat the response with headers I thought would work
+
+## Hint Usage
+- [ ] Used lab hint
+- [x] Watched first 30s of video solution
+- *Resumed blind with a clue. Still stuck*
+
+## Solution Reconstruction
+*After viewing full solution.*
+- [ ] Step 1: The trick was to use a the HTTP method "Trace".
+- [ ] Step 2: In product page I sent the request with **TRACE** method.
+- [ ] Step 3: The page responded with a **"X-Custom-Ip-Authorization: $IP"** header.
+- [ ] Final payload / exploit: Replaying this header with $IP set to 127.0.0.1(localhost) gave access to the admin page in each site. Just had to make sure each request had this header. 
+
+## Key Takeaway
+Try more [HTTP Verbs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)
+
+##### TRACE request method
+
+The **`TRACE`** HTTP method performs a message loop-back test along the path to the target resource.
+
+The final recipient of the request should reflect the message as received (excluding any fields that might include sensitive data) back to the client as the message body of a `200 OK`response with a `Content-Type` of `message/http`. The final recipient is either the origin server or the first server to receive a [`Max-Forwards`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Max-Forwards) value of `0` in the request.
+The client must not send content in the request, or generate headers that might include sensitive data such as user credentials or cookies. 
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

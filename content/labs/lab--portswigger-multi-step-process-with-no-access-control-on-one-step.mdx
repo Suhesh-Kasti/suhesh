@@ -1,0 +1,50 @@
+---
+title: Multi-step process with no access control on one step
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - access-control
+  - walkthrough
+excerpt: "This lab has an admin panel with a flawed multi-step process for changing a user's role. You can familiarize yourself with the admin panel by logging in using the credentials\_`administrator:admin`."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Multi-step process with no access control on one step
+
+## Objective
+This lab has an admin panel with a flawed multi-step process for changing a user's role. You can familiarize yourself with the admin panel by logging in using the credentials `administrator:admin`.
+To solve the lab, log in using the credentials `wiener:peter` and exploit the flawed access controls to promote yourself to become an administrator.
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application fails to enforce proper access controls on administrative or privileged functions.
+- **Root cause:** The server relies on client-side hints (URL, HTTP method, referer header) for access decisions instead of a server-side session check.
+- **Exploitation:** Access the restricted endpoint directly by guessing or finding the URL, changing the HTTP method, or manipulating headers.
+- **Key insight:** Server-side access control must be enforced on every request — never trust client-side indicators.
+
+## Blind Attempt 
+*Try without any hints. Document everything.*
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+- [ ] Step 1: Same as before logged into admin account with provioded `administrator:admin`.
+- [ ] Step 2: `POST /admin-roles` was sent with `username=carlos&action=upgrade` parameters from admin users account to upgrade the user role.  Another confirmation `POST /admin-roles` was sent to server with parameter `action=upgrade&confirmed=true&username=carlos
+- [ ] Step 3: Sent POST request to `/admin-roles` with `wiener` user's cookie and `username=carlos&action=upgrade` parameters,  I got 401 Unauthorized.
+![](/images/series/Multi-step_process_with_no_access_control_1.png)
+- [ ] Step 4: Sent POST request to `/admin-roles` with `wiener` user's cookie and `action=upgrade&confirmed=true&username=carlos` and I got 302 Found.
+![](/images/series/Multi-step_process_with_no_access_control_2.png)
+
+## Key Takeaway
+*Write ONE principle I must remember:*
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

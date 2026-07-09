@@ -1,0 +1,48 @@
+---
+title: Method-based access control can be circumvented
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - access-control
+  - walkthrough
+excerpt: "This lab implements access controls based partly on the HTTP method of requests. You can familiarize yourself with the admin panel by logging in using the credentials\_`administrator:admin`."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Method-based access control can be circumvented
+
+## Objective
+This lab implements access controls based partly on the HTTP method of requests. You can familiarize yourself with the admin panel by logging in using the credentials `administrator:admin`.
+To solve the lab, log in using the credentials `wiener:peter` and exploit the flawed access controls to promote yourself to become an administrator.
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application fails to enforce proper access controls on administrative or privileged functions.
+- **Root cause:** The server relies on client-side hints (URL, HTTP method, referer header) for access decisions instead of a server-side session check.
+- **Exploitation:** Access the restricted endpoint directly by guessing or finding the URL, changing the HTTP method, or manipulating headers.
+- **Key insight:** Server-side access control must be enforced on every request — never trust client-side indicators.
+
+## Blind Attempt (15-20 min max)
+*Try without any hints. Document everything.*
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [x] Watched video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+- [ ] Step 1: Used the given `administrator:admin` to login reach admin panel and change the role of carlos user. 
+- [ ] Step 2: It was happening with POST request and `action:upgrade`
+- [ ] Step 3: Changed the request method to `POST` and sent the request
+![](/images/series/changing_method_to_circumvent_access_control.png)
+
+## Key Takeaway
+In Burpsuite, we can simply change the method by right clicking and selecting `Change Request Method`
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

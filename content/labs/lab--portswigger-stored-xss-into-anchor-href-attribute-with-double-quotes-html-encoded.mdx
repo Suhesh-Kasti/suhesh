@@ -1,0 +1,35 @@
+---
+title: Stored XSS into anchor href attribute with double quotes HTML-encoded
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - xss
+  - walkthrough
+excerpt: "This lab contains a stored cross-site scripting vulnerability in the comment functionality. To solve this lab, submit a comment that calls the alert function when the comment author name is clicked."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Stored XSS into anchor href attribute with double quotes HTML-encoded
+
+## Objective
+This lab contains a stored cross-site scripting vulnerability in the comment functionality. To solve this lab, submit a comment that calls the `alert` function when the comment author name is clicked.
+
+## Why This Works (The Principle)
+- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
+- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
+- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
+- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+
+## Solution Reconstruction
+- [ ] Step 1: The strings in Name, Comment and Link are reflected back in the site
+- [ ] Step 2: In the link section `""` is encoded but `:`, `<>` doesnt seem to be encoded
+- [ ] Step 3: Sending `javascript:alert(1)` in link field adds that link in as `<a href="javascript:alert(1)">`
+## Key Takeaway
+*Write ONE principle I must remember:*
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(wrte the specific step forgotten)*

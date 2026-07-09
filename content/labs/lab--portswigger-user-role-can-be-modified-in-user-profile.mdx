@@ -1,0 +1,40 @@
+---
+title: User role can be modified in user profile
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - access-control
+  - walkthrough
+excerpt: "This lab has an admin panel at\_`/admin`. It's only accessible to logged-in users with a\_`roleid`\_of 2."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: User role can be modified in user profile
+
+## Objective
+This lab has an admin panel at `/admin`. It's only accessible to logged-in users with a `roleid` of 2.
+Solve the lab by accessing the admin panel and using it to delete the user `carlos`.
+You can log in to your own account using the following credentials: `wiener:peter`
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application uses user-supplied input (e.g., `id`, `user_id`, `uid`) to access resources without verifying ownership.
+- **Root cause:** No server-side authorization check — the server trusts the client to provide a valid identifier.
+- **Exploitation:** Modify the identifier to access another user's data.
+- **Key insight:** IDOR is not about bypassing authentication; it is about bypassing authorization. Even authenticated users can exploit IDOR.
+
+## Solution Reconstruction
+- [ ] Step 1: Browsed every page, found change email functionality
+- [ ] Step 2: Changing mail sends a json payload with email key
+- [ ] Step 3: The response has a roleId key. We can replay the request with `roleid:2`. 
+![](/images/series/role_id_changed_access_control.png)
+- [ ] Final payload / exploit: The /admin page can be accessed now to delete `carlos` user
+
+## Key Takeaway
+*Write ONE principle I must remember:*
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

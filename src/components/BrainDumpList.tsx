@@ -6,14 +6,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BrainDumpMeta, ContentType } from "@/lib/braindump";
 import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFire, faBookOpen, faListCheck, faInfinity, faFileCode, faMap } from "@fortawesome/free-solid-svg-icons";
+import { faFire, faBookOpen, faListCheck, faInfinity, faFileCode, faMap, faRoad, faFlask } from "@fortawesome/free-solid-svg-icons";
 
 const TYPE_CONFIG: Record<
   ContentType,
   { label: string; color: string; icon: typeof faFire; order: number }
 > = {
   braindump: { label: "MAP", color: COLORS.pink, icon: faMap, order: 0 },
-  cheatsheet: { label: "Cheatsheets", color: COLORS.green, icon: faBookOpen, order: 2 },
+  series: { label: "Series", color: COLORS.teal, icon: faRoad, order: 1 },
+  lab: { label: "Labs", color: COLORS.orange, icon: faFlask, order: 2 },
+  cheatsheet: { label: "Cheatsheets", color: COLORS.green, icon: faBookOpen, order: 3 },
   checklist: { label: "Checklists", color: COLORS.orange, icon: faListCheck, order: 3 },
   til: { label: "Byte-Sized", color: COLORS.blue, icon: faInfinity, order: 4 },
   blog: { label: "Deep Dives", color: COLORS.purple, icon: faFileCode, order: 5 },
@@ -162,8 +164,25 @@ export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMe
               <FontAwesomeIcon icon={faMap} /> MAP
             </Link>
 
+            {/* ROADMAP link — filters to series type */}
+            <button
+              onClick={() => setActiveType(activeType === "series" ? "all" : "series")}
+              className={`font-mono text-xs uppercase px-3 py-2 border-2 transition-all cursor-pointer inline-flex items-center gap-1 ${
+                activeType === "series"
+                  ? "border-fg bg-fg text-surface"
+                  : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
+              }`}
+              style={{
+                fontFamily: TYPOGRAPHY.fontMono,
+                letterSpacing: TYPOGRAPHY.tracking.mono,
+                borderColor: activeType === "series" ? "var(--color-fg)" : COLORS.teal,
+              }}
+            >
+              <FontAwesomeIcon icon={faRoad} /> ROADMAP
+            </button>
+
             {types
-              .filter((type) => type !== "braindump")
+              .filter((type) => type !== "braindump" && type !== "series")
               .map((type) => {
               const config = TYPE_CONFIG[type];
               return (

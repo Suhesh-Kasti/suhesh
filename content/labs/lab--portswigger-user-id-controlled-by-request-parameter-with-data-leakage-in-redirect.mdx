@@ -1,0 +1,43 @@
+---
+title: User ID controlled by request parameter with data leakage in redirect
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - access-control
+  - walkthrough
+excerpt: >-
+  This lab contains an access control vulnerability where sensitive information
+  is leaked within the body of a redirect response. To solve the lab, obtain the
+  API key for the user carlos and submit it.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+
+# Lab: User ID controlled by request parameter with data leakage in redirect
+
+## Objective
+This lab contains an access control vulnerability where sensitive user information is leaked within the body of a 302 redirect response. To solve the lab, obtain the API key for the user `carlos` and submit it as the solution.
+
+You can log in to your own account using the following credentials: `wiener:peter`
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application redirects the user but still includes sensitive data in the redirect response body.
+- **Root cause:** The server returns data in the response body before issuing a redirect, assuming the client won't read it.
+- **Exploitation:** Intercept the redirect response in BurpSuite to read the leaked data before the browser follows the redirect.
+- **Key insight:** HTTP redirects (301/302) can still contain a response body — don't assume the browser is the only reader.
+
+## Solution Reconstruction
+- [ ] Step 1: Logged in as `wiener:peter` and navigated to the account page
+- [ ] Step 2: Changed the `id` parameter in the URL to `carlos`
+- [ ] Step 3: Intercepted the 302 redirect response in BurpSuite to read the API key leaked in the response body
+- [ ] Final payload / exploit: Submitted `carlos`'s API key
+
+## Key Takeaway
+*Write ONE principle I must remember:*
+
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

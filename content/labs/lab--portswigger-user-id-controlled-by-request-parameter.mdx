@@ -1,0 +1,44 @@
+---
+title: User ID controlled by request parameter
+date: '2025-06-18'
+tags:
+  - PortSwigger
+  - lab
+  - access-control
+  - walkthrough
+excerpt: >-
+  This lab has a horizontal privilege escalation vulnerability on the user
+  account page.
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+difficulty: apprentice
+---
+# Lab: User ID controlled by request parameter
+
+## Objective
+This lab has a horizontal privilege escalation vulnerability on the user account page.
+To solve the lab, obtain the API key for the user `carlos` and submit it as the solution.
+You can log in to your own account using the following credentials: `wiener:peter`
+
+## Why This Works (The Principle)
+- **The vulnerability:** The application uses user-supplied input (e.g., `id`, `user_id`, `uid`) to access resources without verifying ownership.
+- **Root cause:** No server-side authorization check — the server trusts the client to provide a valid identifier.
+- **Exploitation:** Modify the identifier to access another user's data.
+- **Key insight:** IDOR is not about bypassing authentication; it is about bypassing authorization. Even authenticated users can exploit IDOR.
+
+## Blind Attempt
+- **What I tried:** Mistook horizontal for vertical account takeover
+	- **Where I got stuck:** Kept on trying to access admin and administrator page instead of low priv user `carlos`
+## Solution Reconstruction
+*After viewing full solution, close it immediately.*
+- [ ] Step 1: Log into your account
+- [ ] Step 2: The account page is `/myaccount?id=wiener`
+- [ ] Step 3: I just changed the id to `carlos`
+![](/images/series/horizontal_account_takeover_by_req_parameter_change.png)
+
+## Key Takeaway
+You don't always need access to admin's account takeover. Getting into someone else's account is also impactful. 
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*

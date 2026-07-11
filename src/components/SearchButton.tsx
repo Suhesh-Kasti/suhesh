@@ -55,6 +55,8 @@ const TYPE_ICONS: Record<string, typeof faBook> = {
   cheatsheet: faFileCode,
   checklist: faClipboardCheck,
   braindump: faBrain,
+  series: faBook,
+  lab: faBook,
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -80,7 +82,7 @@ export default function SearchButton() {
     return () => clearInterval(interval);
   }, [isOpen]);
 
-  const handleSearch = useCallback(async (q: string) => {
+  const handleSearch = useCallback(async (q: string, withAI = false) => {
     if (!q.trim()) {
       setResults(null);
       return;
@@ -91,7 +93,7 @@ export default function SearchButton() {
       const res = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q.trim() }),
+        body: JSON.stringify({ query: q.trim(), askAI: withAI }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -103,7 +105,6 @@ export default function SearchButton() {
       // fallback
     }
 
-    // Fallback: show empty state with AI queue message
     setResults({ aiAnswer: "Search is warming up. Try again in a moment!", posts: [], projects: [] });
     setLoading(false);
   }, []);
@@ -166,18 +167,18 @@ export default function SearchButton() {
             >
               <div className="w-full max-w-2xl border-2 border-fg bg-surface shadow-brutal-lg">
                 {/* Input bar */}
-                <div className="flex items-center border-b-2 border-fg px-4 relative">
-                  <span className="font-mono text-fg-muted mr-3 text-lg">?</span>
+                <div className="flex items-center border-b-2 border-fg px-3 py-2 relative">
+                  <span className="font-mono text-fg-muted mr-2 text-lg shrink-0">?</span>
                   <div className="flex-1 relative">
                     <input
                       type="text"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") handleSearch(query);
+                        if (e.key === "Enter") handleSearch(query, false);
                       }}
                       placeholder=""
-                      className="w-full bg-transparent text-fg font-sans text-lg py-4 focus:outline-none placeholder:text-transparent relative z-10"
+                      className="w-full bg-transparent text-fg font-sans text-lg py-3 focus:outline-none placeholder:text-transparent relative z-10"
                       style={{ fontFamily: TYPOGRAPHY.fontSans }}
                       autoFocus
                     />
@@ -199,20 +200,35 @@ export default function SearchButton() {
                       </div>
                     )}
                   </div>
-                  <button
-                    onClick={() => handleSearch(query)}
-                    className="font-mono text-xs text-fg hover:text-brutal-pink ml-2 px-3 py-1 border border-fg hover:border-brutal-pink transition-colors cursor-pointer"
-                    aria-label="Search"
-                  >
-                    GO
-                  </button>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="font-mono text-fg-muted hover:text-brutal-pink ml-2 text-sm px-2 py-1 border border-fg-muted hover:border-brutal-pink transition-colors cursor-pointer"
-                    aria-label="Close search"
-                  >
-                    ESC
-                  </button>
+                  <div className="flex items-center gap-1.5 ml-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleSearch(query)}
+                      className="font-mono text-2xs uppercase text-fg-muted hover:text-fg border border-fg-muted/30 hover:border-fg px-2 py-1 transition-colors cursor-pointer"
+                      style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                      aria-label="Search"
+                    >
+                      Go
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSearch(query, true)}
+                      className="font-mono text-2xs uppercase text-fg-muted hover:text-fg border border-fg-muted/30 hover:border-fg px-2 py-1 transition-colors cursor-pointer"
+                      style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                      aria-label="Ask AI"
+                    >
+                      Ask AI
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsOpen(false)}
+                      className="font-mono text-2xs text-fg-muted hover:text-fg border border-fg-muted/30 hover:border-fg px-2 py-1 transition-colors cursor-pointer"
+                      style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                      aria-label="Close search"
+                    >
+                      X
+                    </button>
+                  </div>
                 </div>
 
                 {/* Results */}
@@ -263,7 +279,7 @@ export default function SearchButton() {
                       ].map((suggestion) => (
                         <button
                           key={suggestion}
-                          onClick={() => { setQuery(suggestion); handleSearch(suggestion); }}
+                          onClick={() => { setQuery(suggestion); handleSearch(suggestion, false); }}
                           className="block w-full text-left font-sans text-sm text-fg-muted hover:text-fg border-l-2 border-fg-muted hover:border-brutal-pink pl-3 py-1 transition-all cursor-pointer"
                           style={{ fontFamily: TYPOGRAPHY.fontSans }}
                         >

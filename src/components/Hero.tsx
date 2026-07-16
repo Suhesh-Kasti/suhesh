@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { HERO, TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
+import CVDropdown from "./CVDropdown";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -80,7 +81,7 @@ export default function Hero() {
     return () => ctx.revert();
   }, [isClient]);
 
-  const { title, description, primaryAction, secondaryAction, tertiaryAction } = HERO;
+  const { title, description, primaryAction, secondaryAction, tertiaryAction, cvOptions } = HERO;
 
   return (
     <section ref={sectionRef} className="relative min-h-screen w-full flex flex-col items-center justify-center bg-surface overflow-hidden">
@@ -103,13 +104,11 @@ export default function Hero() {
         <div ref={actionsRef} className="mt-10 flex flex-col sm:flex-row gap-4 flex-wrap justify-center">
           <Link href={primaryAction.href} className="hero-action btn-brutal btn-brutal-accent text-lg px-8 py-4" data-cursor-label={primaryAction.label} style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{primaryAction.label}</Link>
           <Link href={secondaryAction.href} className="hero-action btn-brutal btn-brutal-invert text-lg px-8 py-4" data-cursor-label={secondaryAction.label} style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{secondaryAction.label}</Link>
-          <a
-            href="/Suhesh-Cybersecurity-CV.pdf"
-            download
-            className="hero-action btn-brutal text-lg px-8 py-4"
-            data-cursor-label="Download CV"
-            style={{ fontFamily: TYPOGRAPHY.fontDisplay }}
-          >{tertiaryAction.label}</a>
+          <CVDropdown
+            variant="hero"
+            label={tertiaryAction.label}
+            options={cvOptions}
+          />
         </div>
       </div>
 

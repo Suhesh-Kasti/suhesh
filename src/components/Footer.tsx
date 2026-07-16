@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { TYPOGRAPHY, SOCIAL } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SOCIAL, HERO } from "@/lib/design-tokens";
+import CVDropdown from "./CVDropdown";
 import { motion } from "framer-motion";
 
 const QUOTES = [
@@ -65,7 +66,6 @@ const FOOTER_LINKS = [
   { label: "Cyber Tools", href: "/tools" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
-  { label: "CV Download", href: "/Suhesh-Cybersecurity-CV.pdf" },
 ];
 
 export default function Footer() {
@@ -108,6 +108,13 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li className="mt-2">
+                <CVDropdown
+                  variant="footer"
+                  label="Download CV"
+                  options={HERO.cvOptions}
+                />
+              </li>
             </ul>
           </div>
 

@@ -7,7 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCircle, faGraduationCap, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin, faTelegram } from "@fortawesome/free-brands-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import { SITE, TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
+import { SITE, TYPOGRAPHY, MOTION, COLORS, HERO } from "@/lib/design-tokens";
+import CVDropdown from "./CVDropdown";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -132,15 +133,11 @@ export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
               <p className="mt-2 font-mono text-sm uppercase text-spider-pink tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>{SITE.role}</p>
               <p className="mt-4 text-sm leading-relaxed text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.narrow }}>I&apos;m an application security engineer. I secure applications from notorious hacker people. Right now, I&apos;m learning offensive security and pentesting. You either die a defender or live long enough to become an attacker.</p>
               <p className="mt-3 text-sm leading-relaxed text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.narrow }}>This site is my brain dump — raw, unfiltered research notes, project writeups, and weird experiments.</p>
-              <a
-                href="/Suhesh-Cybersecurity-CV.pdf"
-                download
-                className="about-animate mt-6 inline-flex items-center gap-2 px-6 py-3 border-2 border-fg font-display font-bold uppercase text-sm text-fg hover:bg-fg hover:text-surface transition-all cursor-pointer"
-                style={{ fontFamily: TYPOGRAPHY.fontDisplay, letterSpacing: TYPOGRAPHY.tracking.wide }}
-                data-cursor-label="Download CV"
-              >
-                Download CV [PDF]
-              </a>
+              <CVDropdown
+                variant="about"
+                label="Download CV [PDF]"
+                options={HERO.cvOptions}
+              />
             </div>
 
             {featuredCerts ? (

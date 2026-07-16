@@ -259,6 +259,15 @@
   animation: glitch-shift 3s ease-in-out infinite;
 }
 
+/* ── CV Dropdown label color override ── */
+.cv-label {
+  color: var(--cv-color);
+}
+.group:hover .cv-label,
+.group:focus-within .cv-label {
+  color: var(--surf);
+}
+
 /* ── Spiderverse: Comic / Ben-Day Patterns ── */
 @keyframes dot-drift {
   0% { background-position: 0 0; }

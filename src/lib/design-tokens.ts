@@ -165,6 +165,20 @@ export const HERO = {
   primaryAction: { label: "Explore Work", href: "/projects" },
   secondaryAction: { label: "Brain Dump", href: "/braindump" },
   tertiaryAction: { label: "Download CV", href: "/Suhesh-Cybersecurity-CV.pdf" },
+  cvOptions: [
+    {
+      label: "Offensive Security",
+      href: "/Suhesh-Cybersecurity-CV.pdf",
+      color: COLORS.pink,
+      description: "Pentesting, red team, exploit dev, web security",
+    },
+    {
+      label: "IT & Network Admin",
+      href: "/Suhesh-Kasti-CV-IT-Network.pdf",
+      color: COLORS.blue,
+      description: "F5 BIG-IP, WAF tuning, network ops, system admin",
+    },
+  ] as const,
   scrollTrigger: {
     start: "top top",
     end: "bottom 200px",

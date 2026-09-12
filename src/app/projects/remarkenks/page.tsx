@@ -3,6 +3,7 @@ import ImageGallery from "@/components/ImageGallery";
 import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://suhesh.com.np/projects/remarkenks" },
   title: "remarkEnks — Browser Extension for Automated ISP Remarking",
   description:
     "Chrome/Firefox extension that automated remark writing for Subisu TSC department. One click to generate standardized remarks from contact numbers, problem descriptions, and resolution steps.",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -94,14 +95,42 @@ export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
           <div className="lg:col-span-2">
             <motion.div className="about-animate border-2 border-fg p-1 panel-comic relative overflow-hidden" whileHover={{ boxShadow: "8px 8px 0px var(--color-spider-pink), 12px 12px 0px var(--color-spider-blue)" }} transition={MOTION.snappy}>
               <div className="aspect-square bg-fg/5 dark:bg-fg/10 flex items-center justify-center overflow-hidden relative">
-                {isClient && PHOTOS.map((src, i) => (
+                {/* The primary photo renders on the server as a real <img> so it is
+                    indexable and has alt text; the rotation is a client-side flourish. */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    opacity: !isClient || photoIndex === 0 ? 1 : 0,
+                    transition: "opacity 0.8s ease-in-out",
+                  }}
+                >
+                  <Image
+                    src={PHOTOS[0]}
+                    alt="Suhesh Kasti — application security engineer and offensive security researcher"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 480px"
+                    className="object-cover object-center"
+                  />
+                </div>
+
+                {isClient && PHOTOS.slice(1).map((src, index) => (
                   <motion.div
-                    key={i}
-                    className="absolute inset-0 flex items-center justify-center"
-                    animate={{ opacity: i === photoIndex ? 1 : 0, scale: i === photoIndex ? 1 : 0.95 }}
+                    key={src}
+                    className="absolute inset-0"
+                    initial={false}
+                    animate={{
+                      opacity: photoIndex === index + 1 ? 1 : 0,
+                      scale: photoIndex === index + 1 ? 1 : 0.95,
+                    }}
                     transition={{ duration: 0.8, ease: "easeInOut" }}
                   >
-                    <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${src})` }} />
+                    <Image
+                      src={src}
+                      alt={`Suhesh Kasti — portrait ${index + 2}`}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 480px"
+                      className="object-cover object-center"
+                    />
                   </motion.div>
                 ))}
                 <div className="relative z-10 text-fg-muted font-mono text-sm text-center">

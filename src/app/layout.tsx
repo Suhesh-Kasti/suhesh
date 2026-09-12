@@ -81,7 +81,9 @@ export const metadata: Metadata = {
     apple: "/favicon.png",
     shortcut: "/favicon.ico",
   },
-  alternates: { canonical: BASE_URL },
+  alternates: {
+    types: { "application/rss+xml": `${BASE_URL}/rss.xml` },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -112,9 +114,6 @@ export const metadata: Metadata = {
     "max-video-preview": -1,
     "max-image-preview": "large",
     "max-snippet": -1,
-  },
-  verification: {
-    google: "google-site-verification-code", // placeholder — replace with real code
   },
 };
 

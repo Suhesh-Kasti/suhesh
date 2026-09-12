@@ -54,8 +54,11 @@ export const mdxComponents: MDXComponents = {
   img: BrutalImg,
 
   // Headings
+  // A "# " heading inside an article renders as an h2: the page already owns the
+  // single <h1>, so leaving these as h1 would give 113 articles two competing top-level
+  // headings. Class names are unchanged, so the visual weight stays identical.
   h1: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="font-display text-4xl font-extrabold uppercase text-fg mt-12 mb-6 border-b-2 border-fg pb-2" style={{ fontFamily: "var(--font-clash-display)" }} {...props}>{children}</h1>
+    <h2 className="font-display text-4xl font-extrabold uppercase text-fg mt-12 mb-6 border-b-2 border-fg pb-2" style={{ fontFamily: "var(--font-clash-display)" }} {...props}>{children}</h2>
   ),
   h2: ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>) => {
     const id = slugify(children);

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getPostMetas } from "@/lib/braindump";
 import BrainDumpList from "@/components/BrainDumpList";
+import { ItemListStructuredData } from "@/components/ItemListStructuredData";
 
 export const dynamic = "force-static";
 
@@ -40,8 +41,14 @@ export default function BrainDumpPage() {
 
   return (
     <>
+      <ItemListStructuredData
+        name="SCHIZO Brain Dump"
+        description="Cybersecurity writeups, exploit walkthroughs, CTF solutions, malware analysis and structured learning roadmaps."
+        path="/braindump"
+        items={posts.map((post) => ({ name: post.title, url: `/braindump/${post.slug}` }))}
+      />
       <main className="flex-1 pt-16">
-        <BrainDumpList posts={posts} />
+        <BrainDumpList posts={posts} page={1} />
       </main>
     </>
   );

@@ -41,5 +41,9 @@ export function proxy() {
 }
 
 export const config = {
-  matcher: "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff2?|ttf|pdf)$).*)",
+  // Static assets skip the proxy entirely: there is nothing for it to do to an image, a
+  // font or a machine-readable file like /llms.txt or /rss.xml, and keeping them out of the
+  // request path is cheaper.
+  matcher:
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|woff2?|ttf|otf|pdf|txt|xml|json|webmanifest|map)$).*)",
 };

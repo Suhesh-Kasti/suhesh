@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faBolt, faChevronDown, faChevronUp, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -11,23 +11,7 @@ interface Heading {
   id: string;
 }
 
-function slugify(text: string): string {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
-function parseHeadings(content: string): Heading[] {
-  const parsed: Heading[] = [];
-  for (const line of content.split("\n")) {
-    const h2 = line.match(/^##\s+(.+)$/);
-    const h3 = line.match(/^###\s+(.+)$/);
-    if (h2) parsed.push({ text: h2[1].trim(), level: 2, id: slugify(h2[1]) });
-    else if (h3) parsed.push({ text: h3[1].trim(), level: 3, id: slugify(h3[1]) });
-  }
-  return parsed;
-}
-
-export default function TableOfContents({ content }: { content: string }) {
-  const headings = useMemo(() => parseHeadings(content), [content]);
+export default function TableOfContents({ headings }: { headings: Heading[] }) {
   const [open, setOpen] = useState(false);
   const [activeId, setActiveId] = useState("");
   const [progress, setProgress] = useState(0);

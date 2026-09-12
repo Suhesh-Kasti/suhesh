@@ -1,4 +1,4 @@
-import { CONTENT_ENTRIES, COMPILED_MAP, RAW_CONTENT_MAP } from "./content-registry";
+import { CONTENT_ENTRIES, HEADINGS_MAP, type TocHeading } from "./content-registry";
 
 export type ContentType = "blog" | "til" | "cheatsheet" | "checklist" | "braindump" | "series" | "lab";
 
@@ -22,8 +22,7 @@ export interface BrainDumpMeta {
 
 export interface BrainDumpPost {
   meta: BrainDumpMeta;
-  compiledSource: string;
-  rawContent: string;
+  headings: TocHeading[];
 }
 
 export function getAllSlugs(): string[] {
@@ -33,9 +32,6 @@ export function getAllSlugs(): string[] {
 export function getPostBySlug(slug: string): BrainDumpPost | null {
   const entry = CONTENT_ENTRIES.find((e) => e.slug === slug);
   if (!entry) return null;
-  const compiledSource = COMPILED_MAP[slug];
-  const rawContent = RAW_CONTENT_MAP[slug];
-  if (!compiledSource) return null;
 
   return {
     meta: {
@@ -49,8 +45,7 @@ export function getPostBySlug(slug: string): BrainDumpPost | null {
       image: entry.image,
       steps: entry.steps,
     },
-    compiledSource,
-    rawContent,
+    headings: HEADINGS_MAP[slug] ?? [],
   };
 }
 

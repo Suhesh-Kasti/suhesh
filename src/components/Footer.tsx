@@ -99,7 +99,7 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="font-mono text-2xs uppercase text-fg-muted tracking-label mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Navigate</h4>
+            <h3 className="font-mono text-2xs uppercase text-fg-muted tracking-label mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Navigate</h3>
             <ul className="space-y-1.5">
               {FOOTER_LINKS.map((link) => (
                 <li key={link.href}>
@@ -120,7 +120,7 @@ export default function Footer() {
 
           {/* Social */}
           <div>
-            <h4 className="font-mono text-2xs uppercase text-fg-muted tracking-label mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Connect</h4>
+            <h3 className="font-mono text-2xs uppercase text-fg-muted tracking-label mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Connect</h3>
             <ul className="space-y-1.5">
               {Object.entries(SOCIAL).slice(0, 5).map(([key, social]) => (
                 <li key={key}>

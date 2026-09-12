@@ -1,23 +1,29 @@
+import { SOCIAL } from "@/lib/design-tokens";
+
+const BASE_URL = "https://suhesh.com.np";
+
+/**
+ * Site-wide entity graph. Declaring the Organization and Blog nodes here means the
+ * BlogPosting records on every article can reference them by @id instead of repeating
+ * (and disagreeing about) the same facts.
+ */
 export function StructuredData() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://suhesh.com.np/#person",
+        "@id": `${BASE_URL}/#person`,
         name: "Suhesh Kasti",
         givenName: "Suhesh",
         familyName: "Kasti",
-        url: "https://suhesh.com.np",
+        url: BASE_URL,
         jobTitle: "Application Security Engineer & Offensive Security Researcher",
         description:
           "Application security engineer and offensive security researcher specializing in web security, exploit development, malware analysis, and red team operations.",
-        sameAs: [
-          "https://github.com/suheshkasti",
-          "https://twitter.com/suheshkasti",
-          "https://linkedin.com/in/suheshkasti",
-        ],
-        image: "https://suhesh.com.np/og-image.png",
+        sameAs: [SOCIAL.github.url, SOCIAL.twitter.url, SOCIAL.linkedin.url, SOCIAL.youtube.url],
+        image: `${BASE_URL}/opengraph-image`,
+        worksFor: { "@id": `${BASE_URL}/#organization` },
         knowsAbout: [
           "Application Security",
           "Offensive Security",
@@ -32,14 +38,56 @@ export function StructuredData() {
         ],
       },
       {
+        "@type": "Organization",
+        "@id": `${BASE_URL}/#organization`,
+        name: "SCHIZO",
+        url: BASE_URL,
+        logo: {
+          "@type": "ImageObject",
+          url: `${BASE_URL}/logo-dark.png`,
+        },
+        founder: { "@id": `${BASE_URL}/#person` },
+        sameAs: [SOCIAL.github.url, SOCIAL.twitter.url, SOCIAL.linkedin.url],
+      },
+      {
         "@type": "WebSite",
-        "@id": "https://suhesh.com.np/#website",
-        url: "https://suhesh.com.np",
+        "@id": `${BASE_URL}/#website`,
+        url: BASE_URL,
         name: "SCHIZO",
         description:
-          "A creative space where offensive security meets art. Portfolio, brain dump, and playground — all in one canvas. The ultimate source of truth for practical cybersecurity knowledge.",
-        author: { "@id": "https://suhesh.com.np/#person" },
+          "A creative space where offensive security meets art. Portfolio, brain dump, and playground — all in one canvas. Practical cybersecurity knowledge, written up properly.",
+        publisher: { "@id": `${BASE_URL}/#organization` },
+        author: { "@id": `${BASE_URL}/#person` },
         inLanguage: "en",
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${BASE_URL}/braindump?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "Blog",
+        "@id": `${BASE_URL}/braindump/#blog`,
+        name: "SCHIZO Brain Dump",
+        description:
+          "Long-form security writing: web exploitation, exploit development, malware analysis, CTF walkthroughs, cheatsheets and structured learning roadmaps.",
+        url: `${BASE_URL}/braindump`,
+        inLanguage: "en",
+        publisher: { "@id": `${BASE_URL}/#organization` },
+        author: { "@id": `${BASE_URL}/#person` },
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": `${BASE_URL}/tools/#collection`,
+        name: "Security Tools",
+        description:
+          "Free, browser-based security utilities: payload references, JWT and certificate inspectors, header analyzers, hash identification and reconnaissance helpers.",
+        url: `${BASE_URL}/tools`,
+        isPartOf: { "@id": `${BASE_URL}/#website` },
+        about: { "@id": `${BASE_URL}/#person` },
       },
     ],
   };

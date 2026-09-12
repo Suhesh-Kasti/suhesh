@@ -6,6 +6,7 @@ import { MdxContent } from "@/components/MdxContent";
 import TableOfContents from "@/components/TableOfContents";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
 import SeriesRoadmap from "@/components/SeriesRoadmap";
+import { RelatedPosts } from "@/components/RelatedPosts";
 
 export const dynamic = "force-static";
 export const revalidate = false;
@@ -77,6 +78,8 @@ export default async function BrainDumpPost({ params }: Props) {
         date={post.meta.date}
         slug={slugStr}
         tags={post.meta.tags}
+        section={post.meta.category}
+        image={post.meta.image}
       />
       <main className="flex-1 pt-16">
         {post.meta.type === "series" ? (
@@ -98,13 +101,13 @@ export default async function BrainDumpPost({ params }: Props) {
               <hr className="mt-8 border-0 h-[2px] bg-fg" />
             </header>
 
-            <MdxContent compiledSource={post.compiledSource} />
+            <MdxContent slug={slugStr} />
 
             {post.meta.steps && <SeriesRoadmap steps={post.meta.steps} />}
           </article>
         ) : (
           <article className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
-            <TableOfContents content={post.rawContent} />
+            <TableOfContents headings={post.headings} />
             <header className="mb-12">
               <span className="font-mono text-2xs uppercase tracking-label text-fg-muted" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>
                 {post.meta.date}
@@ -121,9 +124,11 @@ export default async function BrainDumpPost({ params }: Props) {
               </div>
               <hr className="mt-8 border-0 h-[2px] bg-fg" />
             </header>
-            <MdxContent compiledSource={post.compiledSource} />
+            <MdxContent slug={slugStr} />
           </article>
         )}
+
+        <RelatedPosts slug={slugStr} tags={post.meta.tags} />
 
         {post.meta.type !== "series" && (
           <>

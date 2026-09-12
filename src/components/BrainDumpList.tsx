@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import type { BrainDumpMeta, ContentType } from "@/lib/braindump";
+import { POSTS_PER_PAGE, archivePageHref } from "@/lib/pagination";
 import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faBookOpen, faListCheck, faInfinity, faFileCode, faMap, faRoad, faFlask, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -21,11 +22,20 @@ const TYPE_CONFIG: Record<
   blog: { label: "Deep Dives", color: COLORS.purple, icon: faFileCode, order: 5 },
 };
 
-export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMeta[]; filterTag?: string }) {
+export default function BrainDumpList({
+  posts,
+  page = 1,
+  filterTag,
+}: {
+  posts: BrainDumpMeta[];
+  page?: number;
+  filterTag?: string;
+}) {
   const [activeType, setActiveType] = useState<ContentType | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
-  const [page, setPage] = useState(0);
+  // Only used while a client-side filter is active; the unfiltered archive paginates by path.
+  const [clientPage, setClientPage] = useState(0);
 
   // Check URL ?tag= on mount
   useEffect(() => {
@@ -33,7 +43,7 @@ export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMe
     const tag = filterTag ?? params.get("tag");
     if (tag) setActiveTag(tag);
   }, [filterTag]);
-  const PER_PAGE = 9;
+  const PER_PAGE = POSTS_PER_PAGE;
 
   const types = useMemo(() => {
     const typeSet = new Set(posts.map((p) => p.type));
@@ -61,11 +71,17 @@ export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMe
     });
   }, [posts, activeType, searchTerm, activeTag]);
 
-  const totalPages = Math.ceil(filteredPosts.length / PER_PAGE);
-  const pagedPosts = filteredPosts.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  // A client filter changes the result set entirely, so paging falls back to client-side
+  // buttons; the default (unfiltered) archive pages by URL so every page is crawlable.
+  const isFiltering = activeType !== "all" || searchTerm !== "" || activeTag !== null;
+  const archiveTotalPages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
+  const totalPages = isFiltering ? Math.ceil(filteredPosts.length / PER_PAGE) : archiveTotalPages;
+  const visiblePosts = isFiltering
+    ? filteredPosts.slice(clientPage * PER_PAGE, (clientPage + 1) * PER_PAGE)
+    : posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   // Reset page when filters change
-  useEffect(() => { setPage(0); }, [activeType, searchTerm, activeTag]);
+  useEffect(() => { setClientPage(0); }, [activeType, searchTerm, activeTag]);
 
   if (posts.length === 0) {
     return (
@@ -244,14 +260,14 @@ export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMe
         {/* Post grid */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeType + searchTerm}
+            key={`${activeType}-${searchTerm}-${isFiltering ? clientPage : page}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
           >
-            {pagedPosts.map((post) => {
+            {visiblePosts.map((post) => {
               const config = TYPE_CONFIG[post.type];
 
               // Determine URL based on type
@@ -356,27 +372,87 @@ export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMe
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-12">
-            <button
-              onClick={() => setPage(Math.max(0, page - 1))}
-              disabled={page === 0}
-              className="font-mono text-xs uppercase px-4 py-2 border-2 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+          isFiltering ? (
+            <div className="flex items-center justify-center gap-2 mt-12">
+              <button
+                onClick={() => setClientPage(Math.max(0, clientPage - 1))}
+                disabled={clientPage === 0}
+                className="font-mono text-xs uppercase px-4 py-2 border-2 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+              >
+                Prev
+              </button>
+              <span className="font-mono text-xs text-fg-muted px-2" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                {clientPage + 1} / {totalPages}
+              </span>
+              <button
+                onClick={() => setClientPage(Math.min(totalPages - 1, clientPage + 1))}
+                disabled={clientPage >= totalPages - 1}
+                className="font-mono text-xs uppercase px-4 py-2 border-2 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+              >
+                Next
+              </button>
+            </div>
+          ) : (
+            /* Real links, not buttons: every archive page is reachable by following the HTML,
+               which is what lets crawlers walk the whole archive instead of stopping at page 1. */
+            <nav
+              aria-label="Archive pages"
+              className="flex flex-wrap items-center justify-center gap-2 mt-12"
             >
-              Prev
-            </button>
-            <span className="font-mono text-xs text-fg-muted px-2" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
-              {page + 1} / {totalPages}
-            </span>
-            <button
-              onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
-              disabled={page >= totalPages - 1}
-              className="font-mono text-xs uppercase px-4 py-2 border-2 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
-            >
-              Next
-            </button>
-          </div>
+              {page > 1 ? (
+                <Link
+                  href={archivePageHref(page - 1)}
+                  rel="prev"
+                  className="font-mono text-xs uppercase px-4 py-2 border-2 transition-all hover:bg-fg hover:text-surface"
+                  style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+                >
+                  Prev
+                </Link>
+              ) : (
+                <span
+                  className="font-mono text-xs uppercase px-4 py-2 border-2 opacity-30"
+                  style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+                >
+                  Prev
+                </span>
+              )}
+
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+                <Link
+                  key={pageNumber}
+                  href={archivePageHref(pageNumber)}
+                  aria-current={pageNumber === page ? "page" : undefined}
+                  aria-label={`Page ${pageNumber}`}
+                  className={`font-mono text-xs uppercase px-3 py-2 border-2 transition-all ${
+                    pageNumber === page ? "bg-fg text-surface" : "hover:bg-fg hover:text-surface"
+                  }`}
+                  style={{ borderColor: "var(--fg)", color: pageNumber === page ? undefined : "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+                >
+                  {pageNumber}
+                </Link>
+              ))}
+
+              {page < totalPages ? (
+                <Link
+                  href={archivePageHref(page + 1)}
+                  rel="next"
+                  className="font-mono text-xs uppercase px-4 py-2 border-2 transition-all hover:bg-fg hover:text-surface"
+                  style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+                >
+                  Next
+                </Link>
+              ) : (
+                <span
+                  className="font-mono text-xs uppercase px-4 py-2 border-2 opacity-30"
+                  style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
+                >
+                  Next
+                </span>
+              )}
+            </nav>
+          )
         )}
       </div>
     </section>

@@ -1,58 +1,25 @@
-"use client";
-
-import { Fragment, useEffect, useMemo, useState, type ComponentType } from "react";
-import { jsx, jsxs } from "react/jsx-runtime";
-import { useMDXComponents } from "@mdx-js/react";
-import type { MDXComponents } from "mdx/types";
+import { MDX_CONTENT } from "@/generated/mdx-registry.mjs";
 import { mdxComponents } from "@/components/mdx";
 
 interface Props {
-  compiledSource: string;
+  slug: string;
 }
 
-export function MdxContent({ compiledSource }: Props) {
-  const [mounted, setMounted] = useState(false);
+/**
+ * Renders a pre-compiled MDX article. The MDX is compiled to a plain ESM module at
+ * build time (see scripts/generate-content-registry.mjs) instead of being evaluated
+ * in the browser, so it renders during static generation and needs no 'unsafe-eval'.
+ */
+export function MdxContent({ slug }: Props) {
+  const Content = MDX_CONTENT[slug];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Compiling produces the component itself; rendering it happens outside this try/catch,
-  // because React does not render synchronously inside one.
-  const compiled = useMemo(() => {
-    if (!mounted) return { Component: null, error: null };
-    try {
-      const scope = { Fragment, jsx, jsxs, useMDXComponents };
-      const hydrateFn = Reflect.construct(
-        Function as FunctionConstructor,
-        ["scope", compiledSource]
-      );
-      const Content = hydrateFn.call(hydrateFn, scope).default as ComponentType<{ components?: MDXComponents }>;
-      return { Component: Content, error: null };
-    } catch (err) {
-      return { Component: null, error: err instanceof Error ? err.message : "Could not compile this MDX." };
-    }
-  }, [compiledSource, mounted]);
-
-  if (compiled.error) {
+  if (!Content) {
     return (
-      <div className="font-mono text-sm text-red-500 border-2 border-red-500 p-4">
-        Render error: {compiled.error}
+      <div className="border-2 border-red-500 p-4 font-mono text-sm text-red-500">
+        This article could not be rendered.
       </div>
     );
   }
-
-  if (!mounted || !compiled.Component) {
-    return (
-      <div className="animate-pulse space-y-3">
-        <div className="h-4 bg-fg-muted/10 rounded w-3/4" />
-        <div className="h-4 bg-fg-muted/10 rounded w-1/2" />
-        <div className="h-4 bg-fg-muted/10 rounded w-full" />
-      </div>
-    );
-  }
-
-  const { Component } = compiled;
 
   return (
     <div className="
@@ -62,7 +29,7 @@ export function MdxContent({ compiledSource }: Props) {
       [&_thead]:border-b-2 [&_thead]:border-fg
       [&_tbody]:divide-y [&_tbody]:divide-fg-muted/20
     ">
-      <Component components={mdxComponents} />
+      <Content components={mdxComponents} />
     </div>
   );
 }

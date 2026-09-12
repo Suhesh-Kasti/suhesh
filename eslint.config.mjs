@@ -23,6 +23,8 @@ const eslintConfig = defineConfig([
     // Content and vendored vault plugins are data, not app source.
     "content/**",
     "public/**",
+    // Build-time generated MDX modules.
+    "src/generated/**",
   ]),
 ]);
 

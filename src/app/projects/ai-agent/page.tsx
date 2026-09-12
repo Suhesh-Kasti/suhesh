@@ -3,6 +3,7 @@ import ImageGallery from "@/components/ImageGallery";
 import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://suhesh.com.np/projects/ai-agent" },
   title: "Local AI Security Agent — Offline LLM-powered Security Research",
   description:
     "A completely offline AI agent stack for authorized security research. Dual LLMs, RAG with live CVE data, MCP tool integrations, and Telegram bot control — all running locally on a single GPU.",

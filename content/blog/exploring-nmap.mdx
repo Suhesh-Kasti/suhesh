@@ -54,6 +54,22 @@ sudo dnf install nmap    # Fedora`}
 
 ## Your First Scans
 
+<CommandBuilder
+  title="Build your first scan"
+  command="nmap"
+  target="192.168.1.1"
+  color="#00cc55"
+  options={[
+    {"flag":"-sn","label":"Ping sweep only"},
+    {"flag":"-sS","label":"SYN stealth scan","on":true},
+    {"flag":"-sV","label":"Version detection","on":true},
+    {"flag":"-p","label":"Port range","value":"1-1000","placeholder":"1-1000"},
+    {"flag":"-O","label":"OS fingerprint"},
+    {"flag":"-A","label":"Aggressive (all)"},
+    {"flag":"-T4","label":"Fast timing"}
+  ]}
+/>
+
 <Accordion title="Ping sweep — find live hosts" color="#00cc55">
 ```bash
 nmap -sn 192.168.1.0/24

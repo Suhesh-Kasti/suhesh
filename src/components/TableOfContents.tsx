@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUp, faBolt, faChevronDown, faChevronUp, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface Heading {
   text: string;
@@ -20,99 +20,202 @@ function parseHeadings(content: string): Heading[] {
   for (const line of content.split("\n")) {
     const h2 = line.match(/^##\s+(.+)$/);
     const h3 = line.match(/^###\s+(.+)$/);
-    if (h2) parsed.push({ text: h2[1], level: 2, id: slugify(h2[1]) });
-    else if (h3) parsed.push({ text: h3[1], level: 3, id: slugify(h3[1]) });
+    if (h2) parsed.push({ text: h2[1].trim(), level: 2, id: slugify(h2[1]) });
+    else if (h3) parsed.push({ text: h3[1].trim(), level: 3, id: slugify(h3[1]) });
   }
   return parsed;
 }
 
 export default function TableOfContents({ content }: { content: string }) {
-  const headings = parseHeadings(content);
+  const headings = useMemo(() => parseHeadings(content), [content]);
   const [open, setOpen] = useState(false);
+  const [activeId, setActiveId] = useState("");
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (headings.length === 0) return;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      setProgress(max > 0 ? Math.min(1, Math.max(0, doc.scrollTop / max)) : 0);
+
+      let current = headings[0].id;
+      for (const heading of headings) {
+        const el = document.getElementById(heading.id);
+        if (el && el.getBoundingClientRect().top <= 150) current = heading.id;
+      }
+      setActiveId(current);
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [headings]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   const scrollTo = useCallback((id: string) => {
-    // Close the panel first so layout settles, then scroll
     setOpen(false);
+    setActiveId(id);
     let attempts = 0;
     const tryScroll = () => {
       const el = document.getElementById(id);
       if (el) {
         const top = el.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({ top: top - 100, behavior: "smooth" });
+        window.scrollTo({ top: top - 110, behavior: "smooth" });
       } else if (attempts < 10) {
         attempts++;
         setTimeout(tryScroll, 80);
       }
     };
-    // Wait for collapse animation to finish
-    setTimeout(tryScroll, 300);
+    setTimeout(tryScroll, 260);
+  }, []);
+
+  const scrollTop = useCallback(() => {
+    setOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   if (headings.length === 0) return null;
 
+  const activeHeading = headings.find((heading) => heading.id === activeId);
+  const activeIndex = headings.findIndex((heading) => heading.id === activeId);
+  const percent = Math.round(progress * 100);
+
+  const renderList = (compact: boolean) => (
+    <nav className={compact ? "space-y-0.5" : "grid grid-cols-1 gap-1 sm:grid-cols-2"}>
+      {headings.map((heading, index) => {
+        const isH3 = heading.level === 3;
+        const active = heading.id === activeId;
+        return (
+          <button
+            key={heading.id}
+            onClick={() => scrollTo(heading.id)}
+            title={heading.text}
+            className={`flex w-full items-center gap-3 border-l-2 py-2 pr-3 text-left transition-colors ${
+              active
+                ? "border-spider-pink bg-fg/[0.05]"
+                : "border-transparent hover:border-fg-muted/40 hover:bg-fg/[0.03]"
+            }`}
+            style={{ paddingLeft: isH3 ? "1.75rem" : "0.75rem" }}
+          >
+            <span
+              className="font-mono text-2xs tabular-nums"
+              style={{
+                fontFamily: "var(--font-space-mono)",
+                color: active ? "var(--pink)" : "var(--fg-muted)",
+                opacity: isH3 ? 0.6 : 1,
+              }}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span
+              className={`min-w-0 flex-1 truncate text-xs leading-snug ${active ? "font-bold" : ""}`}
+              style={{ fontFamily: "var(--font-space-mono)", color: active ? "var(--pink)" : "var(--fg-muted)" }}
+            >
+              {heading.text}
+            </span>
+            {active && (
+              <span className="h-1.5 w-1.5 shrink-0 rotate-45" style={{ backgroundColor: "var(--pink)" }} aria-hidden />
+            )}
+          </button>
+        );
+      })}
+    </nav>
+  );
+
   return (
     <>
-      {/* ====== STICKY BAR — unified desktop + mobile, relative for dropdown ====== */}
-      <div className="sticky top-16 z-30 border-b-2 border-fg bg-surface">
+      <div className="sticky toc-bar z-30 border-b-2 border-fg bg-surface">
         <button
-          onClick={() => setOpen(!open)}
-          className="w-full flex items-center justify-between px-4 md:px-6 py-2.5 md:py-3 font-mono text-xs uppercase tracking-widest cursor-pointer hover:bg-fg/[0.03] transition-colors"
-          style={{ fontFamily: "var(--font-space-mono)", color: "var(--color-spider-pink)" }}
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-fg/[0.03] md:px-6 md:py-3"
         >
-          <span className="flex items-center gap-2">
-            <FontAwesomeIcon icon={faBolt} /> On this page
+          <FontAwesomeIcon icon={faBolt} className="shrink-0 text-sm" style={{ color: "var(--pink)" }} />
+          <span
+            className="hidden shrink-0 font-mono text-2xs uppercase sm:inline"
+            style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em", color: "var(--pink)" }}
+          >
+            On this page
           </span>
-          <span className="text-fg-muted">{headings.length} sections · {open ? "collapse" : "expand"}</span>
+          <span
+            className="min-w-0 flex-1 truncate font-mono text-xs"
+            style={{ fontFamily: "var(--font-space-mono)", color: "var(--fg)" }}
+          >
+            {activeHeading
+              ? `${String(activeIndex + 1).padStart(2, "0")} / ${activeHeading.text}`
+              : `${headings.length} sections`}
+          </span>
+          <span
+            className="hidden shrink-0 font-mono text-2xs uppercase text-fg-muted sm:inline"
+            style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.1em" }}
+          >
+            {percent}%
+          </span>
+          <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} className="shrink-0 text-xs text-fg-muted" />
         </button>
 
-        {/* Desktop: dropdown grid */}  
+        <div className="h-[3px] w-full" style={{ backgroundColor: "color-mix(in srgb, var(--fg) 12%, transparent)" }}>
+          <div
+            className="h-full"
+            style={{ width: `${percent}%`, backgroundColor: "var(--pink)", transition: "width 140ms linear" }}
+          />
+        </div>
+
         <AnimatePresence>
           {open && (
             <motion.div
-              className="hidden lg:block border-b-2 border-fg bg-surface overflow-hidden"
+              className="hidden border-b-2 border-fg bg-surface lg:block"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              style={{ overflow: "hidden" }}
             >
-              <div className="max-w-5xl mx-auto px-6 py-6">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-2">
-                  {headings.map((h, i) => {
-                    const isH3 = h.level === 3;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => scrollTo(h.id)}
-                        className="text-left py-1.5 cursor-pointer border-l-2 border-transparent hover:border-spider-pink transition-all"
-                        style={{
-                          paddingLeft: isH3 ? "1.5rem" : "0.5rem",
-                          fontFamily: "var(--font-space-mono)",
-                        }}
-                      >
-                        <span className="text-xs leading-snug text-fg-muted hover:text-spider-pink block">
-                          {isH3 && <span className="text-fg-muted/40 mr-1">└</span>}
-                          {h.text}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="mt-4 pt-4 border-t border-fg-muted/20 flex justify-end">
-                  <button
-                    onClick={() => setOpen(false)}
-                    className="font-mono text-xs uppercase text-fg-muted hover:text-fg transition-colors cursor-pointer"
-                    style={{ fontFamily: "var(--font-space-mono)" }}
+              <div className="mx-auto max-w-5xl px-6 py-5">
+                <div className="mb-3 flex items-center justify-between gap-4">
+                  <span
+                    className="min-w-0 truncate font-mono text-2xs uppercase text-fg-muted"
+                    style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}
                   >
-                    collapse ↑
+                    {activeHeading ? `Reading: ${activeHeading.text}` : "Jump to a section"}
+                  </span>
+                  <button
+                    onClick={scrollTop}
+                    className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 border border-fg-muted/40 px-2 py-1 font-mono text-2xs uppercase text-fg-muted transition-colors hover:border-fg hover:text-fg"
+                    style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.1em" }}
+                  >
+                    <FontAwesomeIcon icon={faArrowUp} className="text-[9px]" />
+                    Top
                   </button>
                 </div>
+                {renderList(false)}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* ====== Mobile backdrop + slide-in panel ====== */}
       <AnimatePresence>
         {open && (
           <>
@@ -124,49 +227,52 @@ export default function TableOfContents({ content }: { content: string }) {
               onClick={() => setOpen(false)}
             />
             <motion.div
-              className="fixed inset-y-0 right-0 z-50 w-full max-w-sm border-l-2 border-fg bg-surface shadow-brutal-xl flex flex-col lg:hidden"
+              className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col border-l-2 border-fg bg-surface shadow-brutal-xl lg:hidden"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              <div className="flex items-center justify-between px-5 py-4 border-b-2 border-fg shrink-0">
-                <div className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faBolt} className="text-sm" style={{ color: "var(--color-spider-pink)" }} />
-                  <h2 className="font-display text-lg font-extrabold uppercase text-fg" style={{ fontFamily: "var(--font-clash-display)" }}>On this page</h2>
+              <div className="flex shrink-0 items-center justify-between border-b-2 border-fg px-5 py-4">
+                <div className="flex min-w-0 items-center gap-2">
+                  <FontAwesomeIcon icon={faBolt} className="text-sm" style={{ color: "var(--pink)" }} />
+                  <h2
+                    className="truncate font-display text-lg font-extrabold uppercase text-fg"
+                    style={{ fontFamily: "var(--font-clash-display)" }}
+                  >
+                    On this page
+                  </h2>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="font-mono text-xs uppercase px-3 py-1.5 border-2 border-fg hover:bg-fg hover:text-surface transition-colors cursor-pointer flex items-center gap-1.5"
+                  className="flex shrink-0 cursor-pointer items-center gap-1.5 border-2 border-fg px-3 py-1.5 font-mono text-xs uppercase transition-colors hover:bg-fg hover:text-surface"
                   style={{ fontFamily: "var(--font-space-mono)" }}
                 >
                   <FontAwesomeIcon icon={faXmark} /> Close
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto overscroll-contain p-4">
-                <nav className="space-y-0.5">
-                  {headings.map((h, i) => {
-                    const isH3 = h.level === 3;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => scrollTo(h.id)}
-                        className="block w-full text-left py-2 px-3 transition-all cursor-pointer border-l-2 border-transparent hover:border-fg-muted/30 hover:bg-fg/5"
-                        style={{ paddingLeft: isH3 ? "1.75rem" : "0.75rem", fontFamily: "var(--font-space-mono)" }}
-                      >
-                        <span className="text-xs leading-snug text-fg-muted">
-                          {isH3 && <span className="text-fg-muted/40 mr-1">└</span>}
-                          {h.text}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </nav>
+
+              <div className="h-[3px] w-full shrink-0" style={{ backgroundColor: "color-mix(in srgb, var(--fg) 12%, transparent)" }}>
+                <div className="h-full" style={{ width: `${percent}%`, backgroundColor: "var(--pink)" }} />
               </div>
-              <div className="px-5 py-3 border-t-2 border-fg shrink-0 bg-fg/[0.02]">
-                <span className="font-mono text-2xs uppercase text-fg-muted tracking-label" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>
-                  {headings.length} sections · jump anywhere
+
+              <div className="flex-1 overflow-y-auto overscroll-contain p-4">{renderList(true)}</div>
+
+              <div className="flex shrink-0 items-center justify-between gap-3 border-t-2 border-fg px-5 py-3">
+                <span
+                  className="font-mono text-2xs uppercase text-fg-muted"
+                  style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}
+                >
+                  {percent}% read
                 </span>
+                <button
+                  onClick={scrollTop}
+                  className="inline-flex cursor-pointer items-center gap-1.5 border border-fg-muted/40 px-3 py-1.5 font-mono text-2xs uppercase text-fg-muted transition-colors hover:border-fg hover:text-fg"
+                  style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.1em" }}
+                >
+                  <FontAwesomeIcon icon={faArrowUp} className="text-[9px]" />
+                  Back to top
+                </button>
               </div>
             </motion.div>
           </>

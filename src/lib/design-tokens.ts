@@ -164,19 +164,25 @@ export const HERO = {
     "Exploring application security, pentesting and red teaming. Here documented are braindumps of all my learnings, exploration and mistakes as well.",
   primaryAction: { label: "Explore Work", href: "/projects" },
   secondaryAction: { label: "Brain Dump", href: "/braindump" },
-  tertiaryAction: { label: "Download CV", href: "/Suhesh-Cybersecurity-CV.pdf" },
+  tertiaryAction: { label: "Download CV", href: "/CV/Suhesh-Cybersecurity-CV.pdf" },
   cvOptions: [
     {
       label: "Offensive Security",
-      href: "/Suhesh-Cybersecurity-CV.pdf",
+      href: "/CV/Suhesh-Cybersecurity-CV.pdf",
       color: COLORS.pink,
       description: "Pentesting, red team, exploit dev, web security",
     },
     {
       label: "IT & Network Admin",
-      href: "/Suhesh-Kasti-CV-IT-Network.pdf",
+      href: "/CV/Suhesh-Kasti-CV-IT-Network.pdf",
       color: COLORS.blue,
       description: "F5 BIG-IP, WAF tuning, network ops, system admin",
+    },
+    {
+      label: "DevOps & Platform",
+      href: "/CV/Suhesh-Kasti-CV-DevOps.pdf",
+      color: COLORS.green,
+      description: "CI/CD, containers, cloud infrastructure, automation",
     },
   ] as const,
   scrollTrigger: {

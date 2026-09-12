@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 
-interface QuizQuestion {
+export interface QuizQuestion {
   question: string;
   options: string[];
   correct: number;
@@ -33,11 +33,9 @@ export default function QuizCard({
 
   const question = safeQuestions[currentQ];
 
-  if (total === 0) return null;
-
   const handleSelect = useCallback(
     (index: number) => {
-      if (revealed) return;
+      if (revealed || !question) return;
       setSelectedOption(index);
       setRevealed(true);
       if (index === question.correct) {
@@ -56,6 +54,8 @@ export default function QuizCard({
       setFinished(true);
     }
   }, [currentQ, total]);
+
+  if (total === 0 || !question) return null;
 
   if (finished) {
     return (

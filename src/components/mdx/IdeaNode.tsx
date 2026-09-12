@@ -1,84 +1,98 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, type ReactNode } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleInfo,
+  faCopy,
+  faCheck,
+  faLightbulb,
+  faTriangleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
+import { resolveAccent, tint, useCopy } from "@/lib/mdx-ui";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface IdeaNodeProps {
-  children: string;
+  children: ReactNode;
   color?: string;
+  label?: string;
 }
 
-export default function IdeaNode({ children, color = "#ffdd00" }: IdeaNodeProps) {
-  const [spins, setSpins] = useState(0);
+const VARIANTS = {
+  warning: { icon: faTriangleExclamation, label: "Watch out" },
+  tip: { icon: faLightbulb, label: "Tip" },
+  info: { icon: faCircleInfo, label: "Note" },
+};
+
+function variantFor(accent: string) {
+  if (["#ff2d95", "#ff1144", "#ff5500"].includes(accent)) return VARIANTS.warning;
+  if (["#00dd44", "#ffdd00"].includes(accent)) return VARIANTS.tip;
+  return VARIANTS.info;
+}
+
+export default function IdeaNode({ children, color = "pink", label }: IdeaNodeProps) {
+  const accent = resolveAccent(color);
+  const variant = variantFor(accent);
+  const { copied, copy } = useCopy();
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="relative my-8 not-prose group">
-      <motion.div
-        className="relative max-w-md mx-auto p-5 cursor-pointer font-sans text-sm leading-relaxed transition-shadow hover:shadow-brutal-lg"
-        style={{
-          border: `3px solid ${color}`,
-          boxShadow: `6px 6px 0px ${color}`,
-          backgroundColor: "var(--surf)",
-          fontFamily: TYPOGRAPHY.fontSans,
-          color: "var(--fg)",
-        }}
-        whileTap={{ scale: 0.98, boxShadow: `2px 2px 0px ${color}` }}
-        onClick={() => setSpins((s) => s + 1)}
-        data-cursor-label="Click to spin"
+    <aside className="not-prose relative mx-auto my-10 w-full max-w-2xl sm:-rotate-1">
+      <span
+        className="absolute -top-2 left-8 z-20 h-4 w-4 rounded-full border-2 border-fg"
+        style={{ backgroundColor: accent }}
+        aria-hidden
+      />
+      <span
+        className="absolute -top-1 right-10 z-20 h-3 w-12 -rotate-6 opacity-50"
+        style={{ backgroundColor: accent }}
+        aria-hidden
+      />
+      <span
+        className="absolute -bottom-2 right-6 z-20 h-3 w-10 rotate-3 opacity-30"
+        style={{ backgroundColor: accent }}
+        aria-hidden
+      />
+
+      <div
+        className="relative border-2 border-fg px-5 pb-4 pt-6"
+        style={{ backgroundColor: tint(accent, "14"), boxShadow: `6px 6px 0px ${accent}` }}
       >
-        {/* Pushpin */}
-        <div
-          className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 border-2"
-          style={{ borderColor: color, backgroundColor: color }}
-        />
-        {/* Tape strip */}
-        <div
-          className="absolute -top-1 left-6 w-10 h-2 opacity-30 rotate-[-10deg]"
-          style={{ backgroundColor: color }}
-        />
-        <div
-          className="absolute -top-1 right-6 w-8 h-2 opacity-20 rotate-[8deg]"
-          style={{ backgroundColor: color }}
+        <span
+          aria-hidden
+          className="absolute right-0 top-0 h-4 w-4 border-b-2 border-l-2 border-fg"
+          style={{ background: `linear-gradient(225deg, var(--surf) 48%, ${accent} 52%)` }}
         />
 
-        <div className="mt-2 [&_strong]:font-extrabold [&_strong]:uppercase [&_strong]:block [&_strong]:text-lg [&_strong]:mb-1">
+        <div className="mb-2 flex items-center gap-2">
+          <FontAwesomeIcon icon={variant.icon} className="text-xs" style={{ color: accent }} aria-hidden />
           <span
-            className="absolute left-1 top-0 font-mono text-lg font-bold"
-            style={{ color }}
+            className="font-mono text-2xs font-bold uppercase"
+            style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color: accent }}
           >
-            &gt;
+            {label ?? variant.label}
           </span>
-          <span className="pl-4 block">{children}</span>
+          <span className="flex-1" />
+          <button
+            type="button"
+            onClick={() => copy(bodyRef.current?.textContent ?? "")}
+            aria-label={copied ? "Copied" : "Copy this note"}
+            className="inline-flex shrink-0 cursor-pointer items-center gap-1 font-mono text-2xs uppercase text-fg-muted transition-colors hover:text-fg"
+            style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+          >
+            <FontAwesomeIcon icon={copied ? faCheck : faCopy} className="text-[10px]" aria-hidden />
+            {copied ? "Copied" : "Copy"}
+          </button>
         </div>
 
-        <div className="mt-3 flex gap-1">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="h-1"
-              style={{ backgroundColor: color, opacity: 0.3 + i * 0.1, flex: 1 }}
-            />
-          ))}
+        <div
+          ref={bodyRef}
+          className="font-sans text-sm leading-relaxed text-fg [&_a]:underline [&_code]:border [&_code]:border-fg/30 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_strong]:font-extrabold [&_strong]:uppercase"
+          style={{ fontFamily: TYPOGRAPHY.fontSans }}
+        >
+          {children}
         </div>
-
-        <div className="mt-2 flex items-center justify-between">
-          <span
-            className="font-mono text-2xs uppercase tracking-label group-hover:opacity-100 opacity-50 transition-opacity"
-            style={{ fontFamily: TYPOGRAPHY.fontMono, color: `${color}99` }}
-          >
-            spins: {spins}
-          </span>
-          <motion.span
-            className="font-mono text-2xs uppercase tracking-label"
-            style={{ fontFamily: TYPOGRAPHY.fontMono, color }}
-            animate={{ rotate: spins * 360 }}
-            transition={{ type: "spring", stiffness: 100, damping: 10 }}
-          >
-            ★
-          </motion.span>
-        </div>
-      </motion.div>
-    </div>
+      </div>
+    </aside>
   );
 }

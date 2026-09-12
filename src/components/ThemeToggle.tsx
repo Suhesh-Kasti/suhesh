@@ -1,10 +1,19 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
-import { MOTION, COLORS } from "@/lib/design-tokens";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
+
+const STARS = [
+  { left: "10%", top: "18%", delay: 0, duration: 1.8 },
+  { left: "24%", top: "38%", delay: 0.3, duration: 2.2 },
+  { left: "36%", top: "16%", delay: 0.6, duration: 2.6 },
+  { left: "48%", top: "40%", delay: 0.15, duration: 2.1 },
+  { left: "60%", top: "18%", delay: 0.45, duration: 2.4 },
+  { left: "72%", top: "36%", delay: 0.75, duration: 1.9 },
+];
+
+const RAYS = [0, 45, 90, 135, 180, 225, 270, 315];
 
 export default function ThemeToggle() {
   const { isDark, toggle } = useTheme();
@@ -15,101 +24,51 @@ export default function ThemeToggle() {
       className="relative w-16 h-9 border-2 border-fg bg-surface overflow-hidden cursor-pointer group"
       aria-label={isDark ? "Explode into light" : "Collapse into darkness"}
       data-cursor-label={isDark ? "SUNRISE" : "ECLIPSE"}
-      style={{ transition: "border-color 0.5s ease" }}
     >
-      {/* Background atmosphere */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{
-          background: isDark
-            ? "linear-gradient(180deg, #1a0a2e 0%, #0a0a0a 100%)"
-            : "linear-gradient(180deg, #87CEEB 0%, #fafaf5 100%)",
-        }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-      />
+      {/* Background atmospheres — cross-faded with opacity (compositor only) */}
+      <span aria-hidden className="toggle-sky theme-fade absolute inset-0 opacity-100 dark:opacity-0" />
+      <span aria-hidden className="toggle-night theme-fade absolute inset-0 opacity-0 dark:opacity-100" />
 
-      {/* Stars (visible in dark mode) */}
-      {[0.2, 0.5, 0.35, 0.7, 0.15, 0.6].map((opacity, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-brutal-white"
-          style={{
-            left: `${10 + i * 12}%`,
-            top: `${15 + (i % 3) * 20}%`,
-          }}
-          animate={{
-            opacity: isDark ? opacity : 0,
-            scale: isDark ? [1, 1.3, 1] : 0,
-          }}
-          transition={{
-            opacity: { duration: 0.5 },
-            scale: {
-              repeat: Infinity,
-              duration: 1.5 + i * 0.3,
-              delay: i * 0.2,
-            },
-          }}
-        />
-      ))}
-
-      {/* The celestial body */}
-      <motion.div
-        className="absolute w-5 h-5"
-        animate={{
-          left: isDark ? "calc(100% - 26px)" : "4px",
-          top: "50%",
-          y: "-50%",
-          borderRadius: isDark ? "0%" : "0%",
-          backgroundColor: isDark ? COLORS.white : COLORS.yellow,
-          boxShadow: isDark
-            ? "0 0 4px 2px rgba(255,255,255,0.3)"
-            : "0 0 8px 3px rgba(255,221,0,0.6)",
-          border: "2px solid var(--color-fg)",
-        }}
-        transition={MOTION.snappy}
-      />
-
-      {/* Sun rays (light mode) */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        animate={{ opacity: isDark ? 0 : 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
-          <motion.div
-            key={angle}
-            className="absolute top-1/2 left-4 origin-center h-px bg-brutal-yellow/50"
+      {/* Stars (dark mode) */}
+      <span aria-hidden className="theme-fade absolute inset-0 opacity-0 dark:opacity-100">
+        {STARS.map((star) => (
+          <span
+            key={star.left}
+            className="toggle-star absolute w-1 h-1 bg-[#fafaf5]"
             style={{
-              width: "6px",
-              transform: `translate(-50%, -50%) rotate(${angle}deg) translateX(12px)`,
-            }}
-            animate={{
-              opacity: isDark ? 0 : [0.4, 0.8, 0.4],
-            }}
-            transition={{
-              duration: 1,
-              delay: angle / 360,
-              repeat: Infinity,
+              left: star.left,
+              top: star.top,
+              animationDelay: `${star.delay}s`,
+              animationDuration: `${star.duration}s`,
             }}
           />
         ))}
-      </motion.div>
-      {/* Icon overlay on the slider orb */}
-      <motion.div
-        className="absolute w-5 h-5 flex items-center justify-center pointer-events-none"
-        animate={{
-          left: isDark ? "calc(100% - 26px)" : "4px",
-          top: "50%",
-          y: "-50%",
-        }}
-        transition={MOTION.snappy}
+      </span>
+
+      {/* Sun rays (light mode) */}
+      <span aria-hidden className="theme-fade absolute inset-0 pointer-events-none opacity-100 dark:opacity-0">
+        {RAYS.map((angle) => (
+          <span
+            key={angle}
+            className="toggle-ray absolute top-1/2 left-4 origin-center h-px bg-brutal-yellow/50"
+            style={{
+              width: "6px",
+              transform: `translate(-50%, -50%) rotate(${angle}deg) translateX(12px)`,
+              animationDelay: `${angle / 360}s`,
+            }}
+          />
+        ))}
+      </span>
+
+      {/* Orb + icon as one element: moves via `left` so the View Transition animates
+          it as a real spring slide instead of cross-fading it in place. */}
+      <span
+        aria-hidden
+        className="theme-knob theme-slide absolute top-1/2 left-1 dark:left-9 -translate-y-1/2 w-5 h-5 flex items-center justify-center border-2 border-fg bg-[#ffdd00] dark:bg-[#fafaf5] shadow-[0_0_8px_3px_rgba(255,221,0,0.6)] dark:shadow-[0_0_4px_2px_rgba(255,255,255,0.3)]"
       >
-        <FontAwesomeIcon
-          icon={isDark ? faMoon : faSun}
-          className="text-[10px]"
-          style={{ color: isDark ? "#ffdd00" : "#000" }}
-        />
-      </motion.div>
+        <FontAwesomeIcon icon={faSun} className="theme-fade text-[10px] text-black opacity-100 dark:opacity-0" />
+        <FontAwesomeIcon icon={faMoon} className="theme-fade absolute text-[10px] text-[#ffdd00] opacity-0 dark:opacity-100" />
+      </span>
     </button>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState, type ComponentType } from "react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMDXComponents } from "@mdx-js/react";
+import type { MDXComponents } from "mdx/types";
 import { mdxComponents } from "@/components/mdx";
 
 interface Props {
@@ -11,38 +12,37 @@ interface Props {
 
 export function MdxContent({ compiledSource }: Props) {
   const [mounted, setMounted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const content = useMemo(() => {
-    if (!mounted) return null;
-
+  // Compiling produces the component itself; rendering it happens outside this try/catch,
+  // because React does not render synchronously inside one.
+  const compiled = useMemo(() => {
+    if (!mounted) return { Component: null, error: null };
     try {
       const scope = { Fragment, jsx, jsxs, useMDXComponents };
       const hydrateFn = Reflect.construct(
         Function as FunctionConstructor,
         ["scope", compiledSource]
       );
-      const Content = hydrateFn.call(hydrateFn, scope).default;
-      return <Content components={mdxComponents} />;
-    } catch (err: any) {
-      setError(err.message);
-      return null;
+      const Content = hydrateFn.call(hydrateFn, scope).default as ComponentType<{ components?: MDXComponents }>;
+      return { Component: Content, error: null };
+    } catch (err) {
+      return { Component: null, error: err instanceof Error ? err.message : "Could not compile this MDX." };
     }
   }, [compiledSource, mounted]);
 
-  if (error) {
+  if (compiled.error) {
     return (
       <div className="font-mono text-sm text-red-500 border-2 border-red-500 p-4">
-        Render error: {error}
+        Render error: {compiled.error}
       </div>
     );
   }
 
-  if (!mounted) {
+  if (!mounted || !compiled.Component) {
     return (
       <div className="animate-pulse space-y-3">
         <div className="h-4 bg-fg-muted/10 rounded w-3/4" />
@@ -52,6 +52,8 @@ export function MdxContent({ compiledSource }: Props) {
     );
   }
 
+  const { Component } = compiled;
+
   return (
     <div className="
       [&_table]:w-full [&_table]:border-collapse [&_table]:border-2 [&_table]:border-fg [&_table]:font-mono [&_table]:text-sm [&_table]:my-6 [&_table]:shadow-brutal
@@ -60,7 +62,7 @@ export function MdxContent({ compiledSource }: Props) {
       [&_thead]:border-b-2 [&_thead]:border-fg
       [&_tbody]:divide-y [&_tbody]:divide-fg-muted/20
     ">
-      {content}
+      <Component components={mdxComponents} />
     </div>
   );
 }

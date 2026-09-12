@@ -14,6 +14,13 @@ Run these phases in order. Don't skip host discovery. Don't full-scan before you
 
 <ProgressChecklist checklistId="nmap-host-discovery" />
 
+<Terminal
+  title="expected host discovery output"
+  command="nmap -sn 10.129.2.0/24"
+  output={"Nmap scan report for 10.129.2.1\nHost is up (0.012s latency).\nNmap scan report for 10.129.2.47\nHost is up (0.021s latency).\nNmap scan report for 10.129.2.88\nHost is up (0.018s latency).\nNmap done: 256 IP addresses (3 hosts up) scanned in 2.41 seconds"}
+  color="#00cc55"
+/>
+
 ---
 
 ### Phase 2: Port Scanning

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllSlugs } from "@/lib/braindump";
 import { MdxContent } from "@/components/MdxContent";
@@ -128,9 +129,9 @@ export default async function BrainDumpPost({ params }: Props) {
           <>
             <hr className="mt-16 max-w-5xl mx-auto border-0 h-[2px] bg-fg" />
             <nav className="max-w-5xl mx-auto px-6 md:px-12 mt-8 pb-16 flex justify-between items-center">
-              <a href="/braindump" className="font-mono text-xs uppercase text-fg hover:text-brutal-pink transition-colors" style={{ fontFamily: "var(--font-space-mono)" }}>
+              <Link href="/braindump" className="font-mono text-xs uppercase text-fg hover:text-brutal-pink transition-colors" style={{ fontFamily: "var(--font-space-mono)" }}>
                 ← All Posts
-              </a>
+              </Link>
               <span className="font-mono text-2xs text-fg-muted uppercase" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>
                 SCHIZO Brain Dump
               </span>

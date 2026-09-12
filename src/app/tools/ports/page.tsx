@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
-import DataBar from "@/components/mdx/DataBar";
+import ToolHelp from "@/components/tools/ToolHelp";
+import { useLocalState } from "@/lib/useLocalState";
 
 interface PortEntry {
   port: number;
@@ -120,9 +121,9 @@ const PORTS: PortEntry[] = [
 ];
 
 export default function PortsPage() {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useLocalState("ports-search", "");
   const [expanded, setExpanded] = useState<number | null>(null);
-  const [filter, setFilter] = useState<string | null>(null);
+  const [filter, setFilter] = useLocalState<string | null>("ports-filter", null);
 
   const filtered = useMemo(() => {
     let list = PORTS;
@@ -149,14 +150,6 @@ export default function PortsPage() {
     navigator.clipboard.writeText(list);
   }, [filtered]);
 
-  // Count per category for the DataBar
-  const catData = useMemo(() => {
-    return categories.map(cat => ({
-      label: cat,
-      value: PORTS.filter(p => p.category === cat).length,
-    }));
-  }, [categories]);
-
   return (
     <>
       <main className="flex-1 pt-16 min-h-screen" style={{ backgroundColor: "var(--surf)" }}>
@@ -168,10 +161,33 @@ export default function PortsPage() {
             {PORTS.length} common ports with service info — search or filter by category
           </p>
 
-          {/* DataBar: ports per category */}
-          <div className="mb-8">
-            <DataBar title="Ports by Category" data={catData} />
-          </div>
+          <ToolHelp
+            intro="Ports are doors. This is a reference for the ones you meet most often: what normally listens there, which protocol it speaks, and what it means when your scan shows it open."
+            steps={[
+              "Search by number, service or description, or filter by category.",
+              "Click any row to expand the full description.",
+              "Use Copy ports to drop the current list straight into an nmap -p argument.",
+            ]}
+            terms={[
+              { term: "Well-known port", meaning: "0-1023, reserved for standard services and usually bound by root." },
+              { term: "Registered port", meaning: "1024-49151, used by applications and databases." },
+              { term: "Ephemeral port", meaning: "The short-lived source port your machine picks for an outbound connection." },
+              { term: "TCP vs UDP", meaning: "TCP is a handshake, UDP is fire-and-forget. They are scanned separately." },
+              { term: "Filtered", meaning: "Something dropped the probe — a firewall, not the service. You learn nothing about the port." },
+              { term: "Banner grab", meaning: "Connecting and reading the first bytes, which often names the software and version." },
+            ]}
+            examples={[
+              { label: "22/tcp — SSH", detail: "Remote access. Old versions and reused keys are the interesting part." },
+              { label: "445/tcp — SMB", detail: "File sharing. Historically a rich source of remote code execution." },
+              { label: "3389/tcp — RDP", detail: "Windows remote desktop. Often exposed by accident and brute-forced." },
+              { label: "6379/tcp — Redis", detail: "Frequently unauthenticated. Config writes can become code execution." },
+            ]}
+            notes={[
+              "An open port is not a vulnerability. It is a service to go and fingerprint.",
+              "Always scan UDP too — it is slow, so people skip it, which is why it is worth checking.",
+              "Version detection (-sV) turns a list of open ports into a list of candidate bugs.",
+            ]}
+          />
 
           {/* Search + filter bar */}
           <div className="flex gap-2 mb-4">
@@ -216,13 +232,13 @@ export default function PortsPage() {
 
           {/* Port table */}
           <div className="border-2 border-fg overflow-x-auto">
-            <div className="min-w-[700px]">
+            <div className="min-w-0">
               {/* Header */}
               <div className="flex border-b-2 border-fg bg-fg text-surface font-mono text-2xs uppercase" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
-                <div className="w-16 px-3 py-2 font-bold">Port</div>
-                <div className="w-20 px-3 py-2 font-bold">Proto</div>
-                <div className="flex-1 px-3 py-2 font-bold">Service</div>
-                <div className="w-40 px-3 py-2 font-bold hidden sm:block">Category</div>
+                <div className="w-14 shrink-0 px-3 py-2 font-bold sm:w-16">Port</div>
+                <div className="w-16 shrink-0 px-3 py-2 font-bold sm:w-20">Proto</div>
+                <div className="min-w-0 flex-1 px-3 py-2 font-bold">Service</div>
+                <div className="hidden w-40 shrink-0 px-3 py-2 font-bold sm:block">Category</div>
               </div>
 
               {filtered.map((p) => (
@@ -231,16 +247,16 @@ export default function PortsPage() {
                     onClick={() => setExpanded(expanded === p.port ? null : p.port)}
                     className="flex w-full text-left border-b border-fg-muted/20 hover:bg-brutal-pink/5 transition-colors cursor-pointer"
                   >
-                    <div className="w-16 px-3 py-2 font-mono text-sm font-bold" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "#ff5500" }}>
+                    <div className="w-14 shrink-0 px-3 py-2 font-mono text-sm font-bold sm:w-16" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "#ff5500" }}>
                       {p.port}
                     </div>
-                    <div className="w-20 px-3 py-2 font-mono text-xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                    <div className="w-16 shrink-0 px-3 py-2 font-mono text-xs text-fg-muted sm:w-20" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
                       {p.protocol}
                     </div>
-                    <div className="flex-1 px-3 py-2 font-mono text-xs" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }}>
+                    <div className="min-w-0 flex-1 truncate px-3 py-2 font-mono text-xs" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }}>
                       {p.service}
                     </div>
-                    <div className="w-40 px-3 py-2 font-mono text-2xs text-fg-muted hidden sm:block" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                    <div className="hidden w-40 shrink-0 px-3 py-2 font-mono text-2xs text-fg-muted sm:block" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
                       {p.category}
                     </div>
                   </button>

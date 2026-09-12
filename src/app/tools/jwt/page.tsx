@@ -1,130 +1,106 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faCheck, faUnlock } from "@fortawesome/free-solid-svg-icons";
-import { TYPOGRAPHY, COLORS, MOTION } from "@/lib/design-tokens";
+import JoseTool from "@/components/tools/JoseTool";
+import ToolHelp, { InfoTerm } from "@/components/tools/ToolHelp";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
-interface JwtParts { header: any; payload: any; signature: string; raw: string; }
+const ALGORITHMS = [
+  ["HS256 / 384 / 512", "HMAC", "One shared secret signs and verifies. Simple, but every service that can verify can also forge."],
+  ["RS256 / 384 / 512", "RSA", "Private key signs, public key verifies. Good for many verifiers."],
+  ["PS256 / 384 / 512", "RSA-PSS", "Like RS but with a randomised padding scheme."],
+  ["ES256 / 384 / 512", "ECDSA", "Smaller keys and signatures than RSA, same idea."],
+  ["EdDSA", "Ed25519", "Modern elliptic-curve signatures, fast and compact."],
+  ["none", "No signature", "Danger. Any client can write its own claims. Always reject."],
+];
 
-function parseJwt(token: string): JwtParts | null {
-  try {
-    const [headerB64, payloadB64, sig] = token.split(".");
-    if (!headerB64 || !payloadB64 || !sig) return null;
-    const header = JSON.parse(atob(headerB64.replace(/-/g, "+").replace(/_/g, "/")));
-    const payload = JSON.parse(atob(payloadB64.replace(/-/g, "+").replace(/_/g, "/")));
-    return { header, payload, signature: sig, raw: token };
-  } catch { return null; }
-}
-
-function detectIssues(parts: JwtParts): string[] {
-  const issues: string[] = [];
-  if (parts.header.alg === "none") issues.push("DANGER: 'alg' is 'none' — signature bypass possible");
-  if (parts.header.alg?.startsWith("HS") && parts.header.typ === "JWT") issues.push("INFO: HS algorithm used — asymmetric → symmetric confusion possible");
-  if (parts.payload.exp && Date.now() / 1000 > parts.payload.exp) issues.push("WARN: Token is EXPIRED");
-  if (!parts.payload.exp) issues.push("INFO: No expiration claim — token lives forever");
-  if (!parts.payload.iat) issues.push("INFO: No issued-at claim");
-  if (!parts.payload.sub && !parts.payload.iss) issues.push("INFO: No subject or issuer — token may be anonymous");
-  return issues;
-}
-
-export default function JwtDebugger() {
-  const [token, setToken] = useState("");
-  const [parsed, setParsed] = useState<JwtParts | null>(null);
-  const [error, setError] = useState("");
-  const [showRaw, setShowRaw] = useState(false);
-  const [copiedRaw, setCopiedRaw] = useState(false);
-
-  const handleParse = useCallback(() => {
-    setError("");
-    const result = parseJwt(token.trim());
-    if (result) {
-      setParsed(result);
-    } else {
-      setError("Invalid JWT format. Expected: header.payload.signature");
-      setParsed(null);
-    }
-  }, [token]);
-
-  const issues = parsed ? detectIssues(parsed) : [];
+export default function JwtDebuggerPage() {
+  const mono = { fontFamily: TYPOGRAPHY.fontMono };
 
   return (
     <>
-      <main className="flex-1 pt-16">
-        <section className="relative w-full py-20 md:py-32" style={{ backgroundColor: "var(--surf)" }}>
-          <div className="max-w-4xl mx-auto px-6 md:px-12">
-            <div className="flex items-center gap-4 mb-10">
-              <h1 className="font-display text-3xl md:text-5xl font-extrabold uppercase" style={{ fontFamily: TYPOGRAPHY.fontDisplay, color: "var(--fg)" }}>JWT Debugger</h1>
-              <div className="flex-1 h-1" style={{ backgroundColor: "var(--fg)" }} />
-              <span className="font-mono text-xs uppercase tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color: "var(--fg-muted)" }}>jwt.io eat your heart out</span>
-            </div>
-
-            {/* Chaos background */}
-            <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden opacity-[0.03] dark:opacity-[0.06]">
-              {[...Array(30)].map((_, i) => (
-                <motion.div key={i} className="absolute" style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, width: 4 + Math.random() * 8, height: 4 + Math.random() * 8, backgroundColor: COLORS.pink }}
-                  animate={{ x: [(Math.random() - 0.5) * 100], y: [(Math.random() - 0.5) * 100], opacity: [0.2, 0.6, 0.2] }}
-                  transition={{ repeat: Infinity, duration: 2 + Math.random() * 3, repeatType: "mirror" }} />
-              ))}
-            </div>
-
-            {/* Input */}
-            <div className="border-2 shadow-brutal mb-8" style={{ borderColor: "var(--fg)", backgroundColor: "var(--surf)" }}>
-              <div className="px-4 py-2 border-b-2 flex items-center justify-between" style={{ borderColor: "var(--fg)", backgroundColor: "var(--fg)", color: "var(--surf)" }}>
-                <span className="font-mono text-2xs uppercase tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>paste JWT token</span>
-              </div>
-              <div className="p-4">
-                <textarea value={token} onChange={(e) => setToken(e.target.value)} placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U" className="w-full bg-transparent border-2 font-mono text-sm p-3 min-h-[80px] resize-none focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted" style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }} rows={3} />
-                <button onClick={handleParse} className="mt-3 font-mono text-xs uppercase px-4 py-2 border-2 hover:bg-fg hover:text-surface transition-all cursor-pointer" style={{ borderColor: "var(--fg)", color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}>Decode JWT</button>
-                {error && <p className="mt-2 font-mono text-2xs text-brutal-red" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{error}</p>}
-              </div>
-            </div>
-
-            {/* Results */}
-            <AnimatePresence>
-              {parsed && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                  {/* Security Issues */}
-                  {issues.length > 0 && (
-                    <div className="border-2 p-4" style={{ borderColor: COLORS.red, backgroundColor: `${COLORS.red}10` }}>
-                      <h3 className="font-mono text-xs uppercase font-bold mb-2" style={{ fontFamily: TYPOGRAPHY.fontMono, color: COLORS.red }}>Security Issues</h3>
-                      {issues.map((issue, i) => (
-                        <div key={i} className="font-mono text-2xs py-1" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }}>[!] {issue}</div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Header + Payload side by side */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="border-2 p-4" style={{ borderColor: COLORS.blue }}>
-                      <h3 className="font-mono text-xs uppercase font-bold mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, color: COLORS.blue }}>HEADER</h3>
-                      <pre className="font-mono text-sm whitespace-pre-wrap" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }}>{JSON.stringify(parsed.header, null, 2)}</pre>
-                    </div>
-                    <div className="border-2 p-4" style={{ borderColor: COLORS.green }}>
-                      <h3 className="font-mono text-xs uppercase font-bold mb-3" style={{ fontFamily: TYPOGRAPHY.fontMono, color: COLORS.green }}>PAYLOAD</h3>
-                      <pre className="font-mono text-sm whitespace-pre-wrap" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }}>{JSON.stringify(parsed.payload, null, 2)}</pre>
-                    </div>
-                  </div>
-
-                  {/* Signature */}
-                  <div className="border-2 p-4" style={{ borderColor: COLORS.orange }}>
-                    <h3 className="font-mono text-xs uppercase font-bold mb-2" style={{ fontFamily: TYPOGRAPHY.fontMono, color: COLORS.orange }}>SIGNATURE</h3>
-                    <code className="font-mono text-sm break-all" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }}>{parsed.signature}</code>
-                  </div>
-
-                  {/* Raw toggle */}
-                  <button onClick={() => setShowRaw(!showRaw)} className="font-mono text-2xs uppercase px-3 py-1.5 border cursor-pointer" style={{ borderColor: "var(--fg-muted)", color: "var(--fg-muted)", fontFamily: TYPOGRAPHY.fontMono }}>{showRaw ? "HIDE RAW" : "SHOW RAW TOKEN"}</button>
-                  {showRaw && (
-                    <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} className="border-2 p-4 overflow-hidden" style={{ borderColor: "var(--fg)" }}>
-                      <pre className="font-mono text-xs whitespace-pre-wrap break-all" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }}>{parsed.raw}</pre>
-                      <button onClick={() => { navigator.clipboard.writeText(parsed.raw); setCopiedRaw(true); setTimeout(() => setCopiedRaw(false), 2000); }} className="mt-2 font-mono text-2xs uppercase px-2 py-0.5 border cursor-pointer" style={{ borderColor: "var(--fg-muted)", color: "var(--fg-muted)", fontFamily: TYPOGRAPHY.fontMono }}><FontAwesomeIcon icon={copiedRaw ? faCheck : faCopy} beatFade={copiedRaw} /></button>
-                    </motion.div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
+      <main className="min-h-screen flex-1 pt-16" style={{ backgroundColor: "var(--surf)" }}>
+        <section className="mx-auto max-w-4xl px-6 py-16 md:px-12">
+          <div className="mb-8 flex flex-wrap items-center gap-4">
+            <h1 className="font-display text-3xl font-extrabold uppercase md:text-5xl" style={{ fontFamily: TYPOGRAPHY.fontDisplay, color: "var(--fg)" }}>
+              JWT Debugger
+            </h1>
+            <div className="h-1 flex-1" style={{ backgroundColor: "var(--fg)" }} />
+            <span className="font-mono text-xs uppercase" style={{ ...mono, letterSpacing: TYPOGRAPHY.tracking.label, color: "var(--fg-muted)" }}>
+              decode · verify · decrypt
+            </span>
           </div>
+
+          <p className="mb-8 font-sans text-sm leading-relaxed text-fg" style={{ fontFamily: TYPOGRAPHY.fontSans }}>
+            Paste a <InfoTerm term="JWS" meaning="JSON Web Signature — three parts (header.payload.signature). Anyone can read it; the signature only proves it was not modified.">JWS</InfoTerm> or a{" "}
+            <InfoTerm term="JWE" meaning="JSON Web Encryption — five parts. The payload is encrypted, so you need a key to read it.">JWE</InfoTerm> and inspect it. Decoding needs no key —{" "}
+            <strong className="font-extrabold uppercase">verifying and decrypting</strong> do, and that happens entirely in your browser.
+          </p>
+
+          <JoseTool />
+
+          <ToolHelp
+            intro="A JWT is three base64url chunks joined by dots: header.payload.signature. The header names the algorithm, the payload carries the claims, and the signature proves nobody edited the first two parts. A JWS is signed (readable by anyone), a JWE is encrypted (unreadable until you decrypt it)."
+            steps={[
+              "Paste a token. The tool detects whether it is a JWS (3 segments) or a JWE (5 segments).",
+              "Read the decoded protected header and payload — this needs no key at all.",
+              "For a JWS, pick the key type, paste the secret / public key / JWK, then hit Verify signature.",
+              "For a JWE, paste the matching private key or symmetric secret, then hit Decrypt.",
+              "Watch the What stands out panel for common token mistakes before you trust it.",
+            ]}
+            terms={[
+              { term: "JWT", meaning: "JSON Web Token — a signed or encrypted JSON blob passed between services, usually as a Bearer token." },
+              { term: "JWS", meaning: "JSON Web Signature. Three parts. Integrity only — the contents are not secret." },
+              { term: "JWE", meaning: "JSON Web Encryption. Five parts. Confidentiality — you need a key to read the payload." },
+              { term: "Protected header", meaning: "Base64url JSON that names the algorithm (alg), key id (kid), and content type (typ)." },
+              { term: "Claim", meaning: "A payload field: sub is the subject, iss the issuer, aud the audience, exp the expiry, iat when it was issued, nbf when it becomes valid." },
+              { term: "alg: none", meaning: "Means no signature at all. If a server accepts it, anybody can mint admin tokens." },
+              { term: "kid", meaning: "Key ID. Tells the verifier which key in a JWKS to use, so keys can rotate." },
+              { term: "JWK / JWKS", meaning: "JSON Web Key / Set — keys as JSON, often published at /.well-known/jwks.json." },
+            ]}
+            examples={[
+              { label: "HS256 — shared secret", detail: "Pick key type 'secret' and paste the same string the server signs with." },
+              { label: "RS256 — public key", detail: "Verify with a PEM public key, or fetch the JWKS entry matching the token's kid." },
+              { label: "JWE — RSA-OAEP + A256GCM", value: "eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ....", detail: "Five segments. Paste the PEM private key and decrypt." },
+            ]}
+            notes={[
+              "Decoding is not verifying. A readable payload proves nothing on its own.",
+              "Reject alg: none, and pin the algorithms you accept — otherwise an attacker can swap RS256 for HS256 and sign with your public key as the HMAC secret.",
+              "exp, iat and nbf are Unix seconds, not milliseconds.",
+              "A JWS protects integrity; a JWE also protects confidentiality. They can be combined (nested JWT).",
+            ]}
+          >
+            <div>
+              <span className="font-mono text-2xs uppercase text-fg-muted" style={{ ...mono, letterSpacing: TYPOGRAPHY.tracking.label }}>
+                Algorithm families
+              </span>
+              <div className="mt-2 overflow-x-auto">
+                <table className="w-full border-collapse font-mono text-xs" style={mono}>
+                  <thead>
+                    <tr>
+                      {["alg", "family", "what it means"].map((head) => (
+                        <th key={head} className="border-b-2 border-fg px-2 py-1.5 text-left font-bold uppercase text-2xs text-fg">
+                          {head}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ALGORITHMS.map(([alg, family, meaning]) => (
+                      <tr key={alg}>
+                        <td className="border-b border-fg-muted/15 px-2 py-1.5 text-fg">{alg}</td>
+                        <td className="border-b border-fg-muted/15 px-2 py-1.5" style={{ color: "#00e5ff" }}>
+                          {family}
+                        </td>
+                        <td className="border-b border-fg-muted/15 px-2 py-1.5 font-sans text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans }}>
+                          {meaning}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </ToolHelp>
         </section>
       </main>
     </>

@@ -6,6 +6,7 @@
 
 /* ── CSS Custom Properties (dynamic, theme-aware) ── */
 :root {
+  color-scheme: light;
   --surf: #fafaf5;
   --surf-invert: #0a0a0a;
   --fg: #0a0a0a;
@@ -22,6 +23,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --surf: #111118;
   --surf-invert: #f0f0f8;
   --fg: #f0f0f8;
@@ -167,11 +169,6 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.4s ease, color 0.4s ease;
-  }
-
-  * {
-    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -216,10 +213,10 @@
   }
   .btn-brutal-accent {
     background-color: var(--pink);
-    color: var(--surf);
+    color: #0a0a0a;
     border-color: var(--pink);
     box-shadow: 4px 4px 0px var(--fg);
-    text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+    text-shadow: none;
     font-weight: 800;
   }
   .btn-brutal-accent:hover {
@@ -246,19 +243,6 @@
   }
 }
 
-/* ── Spiderverse: Glitch Animation ── */
-@keyframes glitch-shift {
-  0%, 90%, 100% { transform: translate(0); }
-  92% { transform: translate(-3px, 1px); }
-  94% { transform: translate(3px, -1px); }
-  96% { transform: translate(-1px, -2px); }
-  98% { transform: translate(2px, 1px); }
-}
-
-.glitch-anim {
-  animation: glitch-shift 3s ease-in-out infinite;
-}
-
 /* ── CV Dropdown label color override ── */
 .cv-label {
   color: var(--cv-color);
@@ -266,119 +250,6 @@
 .group:hover .cv-label,
 .group:focus-within .cv-label {
   color: var(--surf);
-}
-
-/* ── Spiderverse: Comic / Ben-Day Patterns ── */
-@keyframes dot-drift {
-  0% { background-position: 0 0; }
-  100% { background-position: 6px 6px; }
-}
-
-.bg-brutal-dots {
-  background-image: radial-gradient(circle, var(--fg) 1px, transparent 1px);
-  background-size: 8px 8px;
-  animation: dot-drift 20s linear infinite;
-}
-
-/* ── Spiderverse: Halftone Gradient ── */
-.bg-brutal-halftone {
-  background-image:
-    radial-gradient(circle at 25% 25%, var(--pink) 1px, transparent 1px),
-    radial-gradient(circle at 75% 75%, var(--blue) 1px, transparent 1px);
-  background-size: 12px 12px;
-}
-
-/* ── Print Distress (edges) ── */
-.distress-bottom {
-  position: relative;
-}
-.distress-bottom::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 4px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--fg) 0px,
-    var(--fg) 8px,
-    transparent 8px,
-    transparent 12px,
-    var(--fg) 12px,
-    var(--fg) 16px,
-    transparent 16px,
-    transparent 24px
-  );
-}
-
-/* ── Glitch text effect ── */
-@keyframes text-glitch {
-  0%, 94%, 100% { clip-path: none; }
-  95% { clip-path: inset(20% 0 60% 0); }
-  96% { clip-path: inset(60% 0 20% 0); }
-  97% { clip-path: inset(40% 0 40% 0); }
-  98% { clip-path: inset(80% 0 5% 0); }
-  99% { clip-path: inset(10% 0 70% 0); }
-}
-
-.glitch-text {
-  position: relative;
-}
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-.glitch-text::before {
-  color: var(--pink);
-  animation: text-glitch 3s infinite;
-  z-index: -1;
-}
-.glitch-text::after {
-  color: var(--blue);
-  animation: text-glitch 2.5s infinite reverse;
-  z-index: -2;
-}
-
-/* ── Matrix rain (for 404 page) ── */
-@keyframes matrix-rain {
-  0% { transform: translateY(-100%); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(100vh); opacity: 0; }
-}
-
-/* ── Press Start 2P Glitch ── */
-@keyframes p2p-glitch {
-  0%, 90%, 100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-  91% { clip-path: polygon(0 15%, 100% 10%, 100% 85%, 0 90%); }
-  93% { clip-path: polygon(0 0, 100% 5%, 100% 95%, 0 100%); }
-  95% { clip-path: polygon(10% 0, 90% 0, 90% 100%, 10% 100%); }
-  97% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-}
-
-.p2p-glitch {
-  animation: p2p-glitch 4s steps(1) infinite;
-}
-
-/* ── IdeaNode pushpin animation ── */
-@keyframes pin-wobble {
-  0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
-  50% { transform: translate(-50%, -50%) rotate(5deg); }
-}
-
-/* ── GlitchBox animation ── */
-@keyframes glitchbox-skew {
-  0%, 92%, 100% { transform: translate(0); clip-path: none; }
-  93% { transform: translate(-2px, 1px); clip-path: inset(20% 0 60% 0); }
-  95% { transform: translate(2px, -1px); clip-path: inset(60% 0 20% 0); }
-  97% { transform: translate(-1px, -2px); clip-path: inset(40% 0 40% 0); }
-  99% { transform: translate(1px, 2px); clip-path: inset(80% 0 5% 0); }
 }
 
 /* ── Brutalist Scrollbars ── */
@@ -422,4 +293,339 @@
   background: var(--surf);
   border-left: 2px solid var(--fg);
   border-top: 2px solid var(--fg);
+}
+
+/* ── Theme Switching ── */
+/*
+ * The light/dark swap is a single compositor-driven View Transition. Previously
+ * `* { transition: background-color, color, border-color }` animated the colors of
+ * every node in the document at once, forcing a full-page repaint each frame and
+ * stuttering on phones and laptops alike.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: ease-in-out;
+}
+
+/* Freeze element transitions for the instant the browser captures the final
+ * colors — the View Transition itself provides the cross-fade. */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
+/* ── Theme Toggle internals (all animation is compositor-friendly) ── */
+.toggle-sky {
+  background-image: linear-gradient(180deg, #87ceeb 0%, #fafaf5 100%);
+}
+.toggle-night {
+  background-image: linear-gradient(180deg, #1a0a2e 0%, #0a0a0a 100%);
+}
+
+.theme-fade {
+  transition: opacity 0.4s ease;
+}
+.theme-slide {
+  transition:
+    left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.45s ease,
+    box-shadow 0.45s ease;
+}
+
+/*
+ * The knob is its own named View Transition. Moving it with `left` (layout) makes
+ * the browser animate the group's geometry from its old box to its new box, so the
+ * orb genuinely slides across — a cross-fading snapshot in place reads as a fade.
+ * The springy easing gives the bounce.
+ */
+.theme-knob {
+  view-transition-name: theme-knob;
+}
+::view-transition-group(theme-knob) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes toggle-twinkle {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.9;
+  }
+}
+.toggle-star {
+  animation: toggle-twinkle 2s ease-in-out infinite;
+}
+
+@keyframes toggle-ray {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+.toggle-ray {
+  animation: toggle-ray 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  .theme-fade,
+  .theme-slide {
+    transition: none;
+  }
+  .toggle-star,
+  .toggle-ray {
+    animation: none;
+  }
+}
+
+/* ── Glitch readout panel ── */
+.glitch-panel {
+  border-color: var(--glitch-accent);
+  background-color: #0a0a0e;
+}
+.glitch-panel-bar {
+  border-bottom: 2px solid var(--glitch-accent);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+.glitch-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--glitch-accent);
+  box-shadow: 0 0 8px var(--glitch-accent);
+  animation: glitch-dot 1.8s steps(1, end) infinite;
+}
+@keyframes glitch-dot {
+  0%, 58%, 100% { opacity: 1; }
+  62%, 92% { opacity: 0.12; }
+}
+.glitch-meter {
+  align-items: flex-end;
+  gap: 2px;
+}
+.glitch-meter span {
+  display: block;
+  width: 3px;
+  background: var(--glitch-accent);
+  opacity: 0.7;
+}
+.glitch-copy {
+  color: var(--glitch-accent);
+  border: 1px solid color-mix(in srgb, var(--glitch-accent) 45%, transparent);
+}
+.glitch-copy:hover {
+  background: color-mix(in srgb, var(--glitch-accent) 20%, transparent);
+}
+.glitch-scanlines {
+  position: relative;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+.glitch-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--glitch-accent) 14%, transparent) 50%,
+    transparent 100%
+  );
+  animation: glitch-sweep 7s linear infinite;
+}
+@keyframes glitch-sweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+.glitch-readout {
+  position: relative;
+  color: #dfe6e0;
+  animation: glitch-jump 5.5s steps(1, end) infinite;
+}
+/* MDX children carry theme text colors (black in light mode) — force them onto
+   the panel's light foreground so the readout stays legible in both themes. */
+.glitch-readout p,
+.glitch-readout li,
+.glitch-readout span,
+.glitch-readout em,
+.glitch-readout h1,
+.glitch-readout h2,
+.glitch-readout h3,
+.glitch-readout h4 {
+  color: inherit;
+  max-width: none;
+}
+.glitch-readout p {
+  margin: 0;
+}
+.glitch-readout p + p {
+  margin-top: 0.75rem;
+}
+.glitch-readout strong {
+  color: var(--glitch-accent);
+}
+.glitch-readout code {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 0 4px;
+  color: #fff;
+}
+.glitch-readout a {
+  color: var(--glitch-accent);
+  text-decoration: underline;
+}
+@keyframes glitch-jump {
+  0%, 84%, 100% { transform: none; clip-path: none; text-shadow: none; }
+  85% { transform: translate(-2px, 1px); clip-path: inset(12% 0 66% 0); }
+  87% { transform: translate(2px, -1px); clip-path: inset(58% 0 18% 0); text-shadow: 2px 0 var(--glitch-accent), -2px 0 #00e5ff; }
+  89% { transform: translate(-1px, 0); clip-path: inset(34% 0 48% 0); }
+  91% { transform: none; clip-path: none; }
+}
+
+/* ── Ticker strip ── */
+.marquee-track p,
+.marquee-track li {
+  display: inline;
+  margin: 0;
+  max-width: none;
+  color: inherit;
+}
+.marquee-track {
+  animation: marquee-scroll var(--marquee-duration, 6s) linear infinite;
+  will-change: transform;
+}
+.marquee-strip:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── Simulated terminal ── */
+.terminal-bar {
+  background-color: #14141b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.terminal-btn {
+  color: var(--term-accent);
+  border-color: color-mix(in srgb, var(--term-accent) 45%, transparent);
+}
+.terminal-btn:hover {
+  background: color-mix(in srgb, var(--term-accent) 20%, transparent);
+}
+.terminal-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  vertical-align: text-bottom;
+  background: var(--term-accent);
+  animation: terminal-blink 1s steps(1, end) infinite;
+}
+@keyframes terminal-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ── Sticky bar that follows the navbar ── */
+.toc-bar {
+  top: 4rem;
+  transition: top 0.3s ease-out;
+}
+html.nav-hidden .toc-bar {
+  top: 0;
+}
+
+/* ── CV versions popover ── */
+@keyframes cv-panel-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Mermaid diagrams ── */
+/* Keep the SVG's own sizing (mermaid sets max-width from the viewBox) and cap
+   the height so a tall chart scrolls inside the box instead of stretching the page. */
+.mermaid-viewport svg {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+.mermaid-viewport[data-full="true"] svg {
+  max-height: 80vh !important;
+}
+
+/* ── 404 page ── */
+.glitch-title {
+  position: relative;
+}
+.glitch-title::before,
+.glitch-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.glitch-title::before {
+  color: #00e5ff;
+  animation: glitch-title-a 3.6s steps(1, end) infinite;
+}
+.glitch-title::after {
+  color: var(--pink);
+  animation: glitch-title-b 2.9s steps(1, end) infinite;
+}
+@keyframes glitch-title-a {
+  0%, 86%, 100% { opacity: 0; transform: none; clip-path: none; }
+  88% { opacity: 0.85; transform: translate(-5px, 2px); clip-path: inset(8% 0 62% 0); }
+  91% { opacity: 0.85; transform: translate(4px, -2px); clip-path: inset(54% 0 18% 0); }
+  94% { opacity: 0; }
+}
+@keyframes glitch-title-b {
+  0%, 82%, 100% { opacity: 0; transform: none; clip-path: none; }
+  84% { opacity: 0.7; transform: translate(5px, -1px); clip-path: inset(62% 0 10% 0); }
+  88% { opacity: 0.7; transform: translate(-3px, 1px); clip-path: inset(20% 0 48% 0); }
+  92% { opacity: 0; }
+}
+.signal-static {
+  background-image: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--fg) 55%, transparent) 0 2px,
+    transparent 2px 5px
+  );
+  animation: signal-shift 0.7s steps(3, end) infinite;
+}
+@keyframes signal-shift {
+  0% { background-position: 0 0; }
+  100% { background-position: 9px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-title::before,
+  .glitch-title::after,
+  .signal-static {
+    animation: none;
+  }
+  .glitch-title::before,
+  .glitch-title::after {
+    opacity: 0;
+  }
 }

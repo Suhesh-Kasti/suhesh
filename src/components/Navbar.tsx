@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { NAVIGATION, MOTION, TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -10,18 +11,51 @@ const STAGGER_DELAY = 0.06;
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolledDown, setScrolledDown] = useState(false);
   const { links, logoText } = NAVIGATION;
 
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const delta = y - lastY;
+      if (Math.abs(delta) < 6) return;
+      lastY = y;
+      setScrolledDown(y > 120 && delta > 0);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  const hidden = scrolledDown && !isOpen;
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("nav-hidden", hidden);
+    return () => document.documentElement.classList.remove("nav-hidden");
+  }, [hidden]);
+
   return (
-    <header className="fixed top-0 left-0 z-50 w-full border-b-2 border-fg bg-surface">
+    <header
+      className="fixed left-0 top-0 z-50 w-full border-b-2 border-fg bg-surface transition-transform duration-300 ease-out"
+      style={{ transform: hidden ? "translateY(-100%)" : "translateY(0)" }}
+    >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link
           href="/"
           className="flex items-center gap-2 text-fg hover:text-brutal-pink transition-colors"
           data-cursor-label="Home"
         >
-          <img src="/logo-dark.png" alt="SCHIZO" className="h-10 w-auto hidden dark:block" />
-          <img src="/logo-white.png" alt="SCHIZO" className="h-10 w-auto block dark:hidden" />
+          <Image src="/logo-dark.png" alt="SCHIZO" width={210} height={129} priority className="hidden h-10 w-auto dark:block" />
+          <Image src="/logo-white.png" alt="SCHIZO" width={210} height={129} priority className="block h-10 w-auto dark:hidden" />
           <span
             className="font-display text-2xl font-extrabold uppercase tracking-tight"
             style={{
@@ -123,19 +157,28 @@ export default function Navbar() {
                 />
               ))}
               {/* Floating squares */}
-              {[...Array(8)].map((_, i) => (
+              {[
+                { size: 18, left: "8%", top: "14%", color: COLORS.pink, duration: 4 },
+                { size: 26, left: "26%", top: "62%", color: COLORS.blue, duration: 4.5 },
+                { size: 14, left: "42%", top: "28%", color: COLORS.pink, duration: 5 },
+                { size: 30, left: "58%", top: "70%", color: COLORS.blue, duration: 5.5 },
+                { size: 22, left: "71%", top: "20%", color: COLORS.pink, duration: 6 },
+                { size: 16, left: "84%", top: "55%", color: COLORS.blue, duration: 6.5 },
+                { size: 28, left: "16%", top: "82%", color: COLORS.blue, duration: 7 },
+                { size: 20, left: "90%", top: "34%", color: COLORS.pink, duration: 7.5 },
+              ].map((square, i) => (
                 <motion.div
                   key={`sq-${i}`}
                   className="absolute border-2 opacity-[0.06]"
                   style={{
-                    width: 12 + Math.random() * 20,
-                    height: 12 + Math.random() * 20,
-                    left: `${5 + Math.random() * 85}%`,
-                    top: `${5 + Math.random() * 85}%`,
-                    borderColor: i % 2 === 0 ? COLORS.pink : COLORS.blue,
+                    width: square.size,
+                    height: square.size,
+                    left: square.left,
+                    top: square.top,
+                    borderColor: square.color,
                   }}
                   animate={{ rotate: [0, 90, 0], scale: [0.8, 1.1, 0.8] }}
-                  transition={{ repeat: Infinity, duration: 4 + i * 0.5, ease: "linear" }}
+                  transition={{ repeat: Infinity, duration: square.duration, ease: "linear" }}
                 />
               ))}
             </motion.div>
@@ -207,7 +250,7 @@ export default function Navbar() {
                 className="font-mono text-2xs uppercase text-fg-muted"
                 style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
               >
-                {logoText} // menu
+                {logoText} · menu
               </span>
               <span
                 className="font-mono text-2xs text-fg-muted/50"

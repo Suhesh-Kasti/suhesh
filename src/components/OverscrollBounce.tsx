@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from "react";
 
-const STIFFNESS = 0.08;
-const DAMPING = 0.82;
-const RESISTANCE = 0.35;
-const MAX_OFFSET = 120;
+const STIFFNESS = 0.09;
+const DAMPING = 0.86;
+const RESISTANCE = 0.18;
+const MAX_OFFSET = 48;
 
 export default function OverscrollBounce({ children }: { children: React.ReactNode }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -14,6 +14,8 @@ export default function OverscrollBounce({ children }: { children: React.ReactNo
   const rafId = useRef(0);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const spring = () => {
       velocity.current += (0 - offset.current) * STIFFNESS;
       velocity.current *= DAMPING;
@@ -46,8 +48,24 @@ export default function OverscrollBounce({ children }: { children: React.ReactNo
     };
 
     const handleWheel = (e: WheelEvent) => {
-      const scrollTop = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+      // Page cannot scroll (fullscreen panes, modals, locked body): never intercept.
+      if (maxScroll <= 0) return;
+
+      // Let any nested scroller handle its own wheel before we consider bouncing.
+      let node = e.target as HTMLElement | null;
+      while (node && node !== document.documentElement) {
+        const overflowY = getComputedStyle(node).overflowY;
+        if (overflowY === "auto" || overflowY === "scroll") {
+          const canScrollDown = node.scrollTop + node.clientHeight < node.scrollHeight - 1;
+          const canScrollUp = node.scrollTop > 0;
+          if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) return;
+        }
+        node = node.parentElement;
+      }
+
+      const scrollTop = window.scrollY;
       const atTop = scrollTop <= 0;
       const atBottom = scrollTop >= maxScroll - 1;
 

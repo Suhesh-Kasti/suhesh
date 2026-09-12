@@ -3,20 +3,136 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { COLORS, TYPOGRAPHY, MOTION } from "@/lib/design-tokens";
+import { COLORS, TYPOGRAPHY } from "@/lib/design-tokens";
 import EncoderTool from "@/components/tools/EncoderTool";
 import PasswordTool from "@/components/tools/PasswordTool";
-import CertDecoder from "@/components/tools/CertDecoder";
+import JoseTool from "@/components/tools/JoseTool";
+import ToolHelp from "@/components/tools/ToolHelp";
+import { CidrTool, MutatorTool, DefangTool, ChmodTool, CronTool } from "@/components/tools/SmallTools";
 
-type Tool = "encoder" | "hash" | "regex" | "nmap-parse" | "multi-encoder" | "password" | "cert" | "timestamp" | "diff" | "json-fmt";
+type Tool = "encoder" | "jose" | "nmap-parse" | "multi-encoder" | "password" | "timestamp" | "diff" | "json-fmt" | "ip" | "mutate" | "defang" | "chmod" | "cron";
+
+const QUICK_HELP: Record<Tool, { intro: string; steps: string[]; terms: { term: string; meaning: string }[] }> = {
+  encoder: {
+    intro: "Base64 turns binary or text into plain ASCII so it survives a text-only channel. It is encoding, not encryption — anyone can decode it.",
+    steps: ["Paste your text or Base64.", "Hit Encode or Decode.", "Copy the result."],
+    terms: [
+      { term: "Base64", meaning: "Represents 3 bytes as 4 ASCII characters. About 33 percent larger than the input." },
+      { term: "Encoding vs encryption", meaning: "Encoding is reversible by anyone; encryption needs a key. Base64 has no key." },
+      { term: "Padding", meaning: "Trailing = characters that fill out the last group of bytes." },
+    ],
+  },
+  jose: {
+    intro: "Inspect a JWT (JWS) or a JWE: decode the header and claims, verify a signature, or decrypt an encrypted token — all locally in your browser.",
+    steps: ["Paste a 3-part JWS or 5-part JWE.", "Read the decoded header and payload.", "Choose the key type, paste the key, then verify or decrypt."],
+    terms: [
+      { term: "JWS", meaning: "Signed token — readable by anyone, tamper-evident." },
+      { term: "JWE", meaning: "Encrypted token — unreadable without the key." },
+      { term: "alg", meaning: "Header field naming the algorithm, e.g. HS256 or RS256." },
+    ],
+  },
+  "nmap-parse": {
+    intro: "Paste raw nmap output and pull the open TCP ports out of it — handy when you want a -p list for a follow-up scan.",
+    steps: ["Paste the nmap output.", "Hit Extract Ports.", "Copy the comma-separated list."],
+    terms: [
+      { term: "Open port", meaning: "A service accepted the connection and is listening." },
+      { term: "Filtered", meaning: "A firewall dropped the probe, so the state is unknown." },
+    ],
+  },
+  "multi-encoder": {
+    intro: "Chain encodings together when one layer is not enough to slip a payload past a filter.",
+    steps: ["Enter your input.", "Stack the encodings you want.", "Copy the chained result."],
+    terms: [
+      { term: "URL encoding", meaning: "Turns reserved characters into %XX so they survive a URL." },
+      { term: "Double encoding", meaning: "Encoding twice defeats filters that only decode once." },
+      { term: "Hex", meaning: "Each byte as two hex characters." },
+    ],
+  },
+  password: {
+    intro: "Estimate how long a password would survive an offline attack, and see which choices actually improve it.",
+    steps: ["Type or paste a password.", "Read the entropy and crack-time estimate.", "Try adding length versus symbols and watch the difference."],
+    terms: [
+      { term: "Entropy", meaning: "Bits of unpredictability. Every extra bit doubles the search space." },
+      { term: "Length beats complexity", meaning: "Adding two characters usually helps more than swapping a letter for a symbol." },
+      { term: "Offline attack", meaning: "The attacker has your hash and guesses at local GPU speed." },
+    ],
+  },
+  timestamp: {
+    intro: "Convert between Unix epoch seconds and human dates, both ways.",
+    steps: ["Paste an epoch number or a date.", "Pick the direction.", "Copy the converted value."],
+    terms: [
+      { term: "Epoch", meaning: "Seconds since 1 January 1970 UTC." },
+      { term: "Milliseconds", meaning: "Some APIs use ms — ten digits is seconds, thirteen is milliseconds." },
+      { term: "UTC vs local", meaning: "Logs are usually UTC; your OS clock is usually local." },
+    ],
+  },
+  diff: {
+    intro: "Compare two blocks of text line by line to see exactly what changed.",
+    steps: ["Paste the original on the left and the modified on the right.", "Hit Compare.", "Read additions and deletions."],
+    terms: [
+      { term: "Added line", meaning: "Present on the right only — highlighted green." },
+      { term: "Deleted line", meaning: "Present on the left only — highlighted red." },
+    ],
+  },
+  "json-fmt": {
+    intro: "Pretty-print or minify JSON, and catch syntax errors before you paste it into a request.",
+    steps: ["Paste JSON.", "Format to read it, or Minify to shrink it.", "Copy the result."],
+    terms: [
+      { term: "Minify", meaning: "Removes whitespace. Same data, smaller payload." },
+      { term: "Trailing comma", meaning: "The most common cause of invalid JSON." },
+    ],
+  },
+  ip: {
+    intro: "IPv4 subnet maths, plus the alternative spellings of an address that WAFs and SSRF filters routinely miss.",
+    steps: ["Enter an address with an optional /prefix.", "Read the network, broadcast and host range.", "Copy a decimal, hex or octal form to slip past a filter."],
+    terms: [
+      { term: "CIDR", meaning: "/24 means the first 24 bits are the network, leaving 8 bits of hosts." },
+      { term: "Decimal IP", meaning: "127.0.0.1 as 2130706433 — the same address to the network stack." },
+      { term: "Wildcard mask", meaning: "The inverse of the netmask, used by ACLs." },
+      { term: "IPv6 mapped", meaning: "::ffff:127.0.0.1 is another way to write the same IPv4 address." },
+    ],
+  },
+  mutate: {
+    intro: "Turn a company name or a known password into a realistic candidate list — the mutations people actually use when they pick a password.",
+    steps: ["Type one or more base words.", "Toggle the mutations you want.", "Copy or download the list and feed it to hashcat or hydra."],
+    terms: [
+      { term: "Leetspeak", meaning: "Replacing letters with lookalike digits: password becomes p4ssw0rd." },
+      { term: "Rule-based attack", meaning: "The same idea baked into hashcat rules." },
+      { term: "Candidate list", meaning: "A wordlist to try, not a guarantee. Size slows the attack." },
+    ],
+  },
+  defang: {
+    intro: "Defanging makes a URL, IP or email safe to paste into a report or chat without anyone accidentally clicking it.",
+    steps: ["Paste the indicator.", "Copy the defanged version into your writeup.", "Refang when you need it clickable again."],
+    terms: [
+      { term: "Defang", meaning: "Breaking the syntax so it cannot be clicked: http becomes hxxp, dots become [.]." },
+      { term: "Indicator (IOC)", meaning: "A URL, IP, domain or hash worth sharing with defenders." },
+    ],
+  },
+  chmod: {
+    intro: "Translate between octal and symbolic file permissions, and spot the special bits that turn a normal binary into a privilege escalation.",
+    steps: ["Enter 3 or 4 octal digits.", "Read the symbolic form and the special bits.", "Copy a ready-to-run chmod command."],
+    terms: [
+      { term: "r w x", meaning: "Read is 4, write is 2, execute is 1. Add them per owner, group and other." },
+      { term: "Setuid", meaning: "Runs as the file owner. On a root-owned binary this is a classic privesc." },
+      { term: "Setgid / sticky", meaning: "Setgid inherits the group; sticky on a directory means only owners can delete their files." },
+    ],
+  },
+  cron: {
+    intro: "Decode a cron expression field by field, and know exactly when a scheduled job will fire — useful when you find a writable script in a root cron.",
+    steps: ["Paste a 5-field cron expression.", "Read the meaning of each field.", "Look for jobs running as root on a file you can write to."],
+    terms: [
+      { term: "Field order", meaning: "minute, hour, day of month, month, day of week." },
+      { term: "*", meaning: "Every value of that field." },
+      { term: "*/n", meaning: "Every nth value, e.g. */5 in minutes is every five minutes." },
+      { term: "1-5", meaning: "A range. In the weekday field, 1 is Monday." },
+    ],
+  },
+};
 
 // ── localStorage helpers ──
 const LS_TOOL = "tool-active";
 const LS_INPUT = "tool-input";
-const LS_HASH = "tool-hash";
-const LS_PATTERN = "tool-regex-pattern";
-const LS_FLAGS = "tool-regex-flags";
-const LS_REGEX_INPUT = "tool-regex-input";
 const LS_TS_INPUT = "tool-ts-input";
 const LS_DIFF_LEFT = "tool-diff-left";
 const LS_DIFF_RIGHT = "tool-diff-right";
@@ -35,11 +151,6 @@ export default function ArtPlayground() {
   const [mounted, setMounted] = useState(false);
   const [input, setInput] = useState(() => load(LS_INPUT, ""));
   const [output, setOutput] = useState("");
-  const [hashType, setHashType] = useState(() => load(LS_HASH, "sha256"));
-  const [regexPattern, setRegexPattern] = useState(() => load(LS_PATTERN, ""));
-  const [regexFlags, setRegexFlags] = useState(() => load(LS_FLAGS, "gi"));
-  const [regexInput, setRegexInput] = useState(() => load(LS_REGEX_INPUT, ""));
-  const [regexMatches, setRegexMatches] = useState<string[]>([]);
   const [tsInput, setTsInput] = useState(() => load(LS_TS_INPUT, ""));
   const [tsResult, setTsResult] = useState("");
   const [diffLeft, setDiffLeft] = useState(() => load(LS_DIFF_LEFT, ""));
@@ -52,10 +163,6 @@ export default function ArtPlayground() {
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => { save(LS_TOOL, tool); }, [tool]);
   useEffect(() => { if (mounted) save(LS_INPUT, input); }, [input, mounted]);
-  useEffect(() => { save(LS_HASH, hashType); }, [hashType]);
-  useEffect(() => { save(LS_PATTERN, regexPattern); }, [regexPattern]);
-  useEffect(() => { save(LS_FLAGS, regexFlags); }, [regexFlags]);
-  useEffect(() => { save(LS_REGEX_INPUT, regexInput); }, [regexInput]);
   useEffect(() => { save(LS_TS_INPUT, tsInput); }, [tsInput]);
   useEffect(() => { save(LS_DIFF_LEFT, diffLeft); }, [diffLeft]);
   useEffect(() => { save(LS_DIFF_RIGHT, diffRight); }, [diffRight]);
@@ -63,25 +170,6 @@ export default function ArtPlayground() {
 
   const handleEncode = useCallback(() => { try { setOutput(btoa(input)); } catch { setOutput("Invalid input for encoding"); } }, [input]);
   const handleDecode = useCallback(() => { try { setOutput(atob(input)); } catch { setOutput("Invalid Base64 input"); } }, [input]);
-
-  const handleHash = useCallback(async () => {
-    try {
-      const data = new TextEncoder().encode(input);
-      let hash: ArrayBuffer;
-      if (hashType === "sha256") hash = await crypto.subtle.digest("SHA-256", data);
-      else if (hashType === "sha1") hash = await crypto.subtle.digest("SHA-1", data);
-      else hash = await crypto.subtle.digest("SHA-512", data);
-      setOutput(Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,"0")).join(""));
-    } catch { setOutput("Error generating hash"); }
-  }, [input, hashType]);
-
-  const handleRegex = useCallback(() => {
-    try {
-      const r = new RegExp(regexPattern, regexFlags);
-      const m = Array.from(regexInput.matchAll(r));
-      setRegexMatches(m.length ? m.map(x => x[0]) : ["No matches found"]);
-    } catch { setRegexMatches(["Invalid regex pattern"]); }
-  }, [regexPattern, regexFlags, regexInput]);
 
   const handleNmapParse = useCallback(() => {
     const ports = input.split("\n").map(l => l.match(/(\d+)\/tcp\s+open/)).filter(Boolean).map(m => m![1]);
@@ -153,30 +241,38 @@ export default function ArtPlayground() {
     catch { setJsonResult("Invalid JSON"); }
   }, [jsonInput]);
 
-  const clearTools = () => { setInput(""); setOutput(""); setRegexMatches([]); setTsResult(""); setDiffResult([]); setJsonResult(""); };
+  const clearTools = () => { setInput(""); setOutput(""); setTsResult(""); setDiffResult([]); setJsonResult(""); };
 
   const quickTools = [
     { id: "encoder" as Tool, label: "Base64 Encoder/Decoder", icon: "b64" },
-    { id: "hash" as Tool, label: "Hash Generator", icon: "#" },
-    { id: "regex" as Tool, label: "Regex Tester", icon: "/re/" },
+    { id: "jose" as Tool, label: "JWT / JWE Inspector", icon: "jwt" },
     { id: "nmap-parse" as Tool, label: "Nmap Port Parser", icon: "nmap" },
     { id: "multi-encoder" as Tool, label: "Multi Encoder", icon: "enc" },
     { id: "password" as Tool, label: "Password Analyzer", icon: "pw" },
-    { id: "cert" as Tool, label: "Cert Decoder", icon: "x509" },
     { id: "timestamp" as Tool, label: "Timestamp", icon: "ts" },
     { id: "diff" as Tool, label: "Text Diff", icon: "<>" },
     { id: "json-fmt" as Tool, label: "JSON Fmt", icon: "{}" },
+    { id: "ip" as Tool, label: "CIDR / IP", icon: "ip" },
+    { id: "mutate" as Tool, label: "Wordlist Mutator", icon: "mut" },
+    { id: "defang" as Tool, label: "Defang / Refang", icon: "ioc" },
+    { id: "chmod" as Tool, label: "Chmod Calculator", icon: "rwx" },
+    { id: "cron" as Tool, label: "Cron Explainer", icon: "cron" },
   ];
 
   const standaloneTools = [
     { label: "JWT Debugger", href: "/tools/jwt", desc: "Decode, inspect, and detect JWT vulnerabilities", color: COLORS.pink },
     { label: "Payload Generator", href: "/tools/payloads", desc: "Reverse shells, XSS, SQLi payloads with variable fill", color: COLORS.blue },
-    { label: "MDX Preview", href: "/tools/mdx-preview", desc: "Live MDX editor — see how your notes will render", color: COLORS.green },
     { label: "Hash Identifier", href: "/tools/hash-id", desc: "Identify hash types — MD5, SHA, bcrypt, NTLM, and more", color: "#ff5500" },
+    { label: "Recon Suite", href: "/tools/recon", desc: "DNS records, SPF/DMARC/DKIM posture and subdomain scanning in one place", color: "#00e5ff" },
     { label: "Header Analyzer", href: "/tools/headers", desc: "Paste or fetch HTTP headers — get a security audit", color: "#ff2d95" },
     { label: "Hex Dump Analyzer", href: "/tools/hexdump", desc: "Parse raw hex: magic bytes, entropy, xxd-style output", color: "#8800ff" },
-    { label: "Subdomain Scanner", href: "/tools/subdomains", desc: "DNS lookup for 50+ common subdomains via Cloudflare DNS", color: "#0055ff" },
     { label: "Port Reference", href: "/tools/ports", desc: "100+ common ports — search, filter by category, copy lists", color: "#00e5ff" },
+    { label: "Reverse Shell Generator", href: "/tools/reverse-shell", desc: "Build bash, python, powershell, netcat payloads with a listener", color: "#00dd44" },
+    { label: "CVSS 3.1 Calculator", href: "/tools/cvss", desc: "Score findings and copy the vector string for your report", color: "#ff1144" },
+    { label: "Regex Lab", href: "/tools/regex", desc: "Colour-coded regex explainer — live matches, groups and a cheat sheet", color: "#ffdd00" },
+    { label: "AI Injection Lab", href: "/tools/ai-injection", desc: "Prompt injection arsenal: extraction, RAG injection, tool abuse and defences", color: "#8800ff" },
+    { label: "Crypto Lab", href: "/tools/crypto", desc: "CTF toolbox: hash cracking, XOR brute force, Caesar and frequency analysis", color: "#00dd44" },
+    { label: "Cert Studio", href: "/tools/cert", desc: "Inspect PEM/DER/PKCS#12 chains, generate a CA, issue server and mTLS certs, sign CSRs", color: "#00e5ff" },
   ];
 
   return (
@@ -241,32 +337,8 @@ export default function ArtPlayground() {
                   {output && <OutputBox output={output} />}
                 </>}
 
-                {/* Hash Generator */}
-                {tool === "hash" && <>
-                  <div className="flex gap-3">
-                    {(["sha256","sha1","sha512"] as const).map(h => (
-                      <button key={h} onClick={() => setHashType(h)} className={`font-mono text-xs uppercase px-3 py-1.5 border-2 cursor-pointer transition-all ${hashType===h?"border-brutal-blue bg-brutal-blue text-surface":"border-fg-muted text-fg-muted hover:border-fg"}`} style={{ fontFamily: TYPOGRAPHY.fontMono }}>{h.toUpperCase()}</button>
-                    ))}
-                  </div>
-                  <textarea value={input} onChange={e => setInput(e.target.value)} placeholder="Enter text to hash..." className="w-full bg-transparent border-2 border-fg font-mono text-sm text-fg p-4 min-h-[80px] resize-none focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }} rows={3} />
-                  <button onClick={handleHash} className="font-mono text-xs uppercase px-4 py-2 border-2 border-fg hover:bg-fg hover:text-surface transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Generate Hash</button>
-                  {output && <OutputBox output={output} />}
-                </>}
-
-                {/* Regex Tester */}
-                {tool === "regex" && <>
-                  <div className="flex gap-3">
-                    <input value={regexPattern} onChange={e => setRegexPattern(e.target.value)} placeholder="/pattern/" className="flex-1 bg-transparent border-2 border-fg font-mono text-sm px-4 py-2 focus:outline-none focus:border-brutal-blue transition-colors placeholder:text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }} />
-                    <input value={regexFlags} onChange={e => setRegexFlags(e.target.value)} placeholder="gi" className="w-16 bg-transparent border-2 border-fg font-mono text-sm px-3 py-2 focus:outline-none focus:border-brutal-blue transition-colors" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }} />
-                  </div>
-                  <textarea value={regexInput} onChange={e => setRegexInput(e.target.value)} placeholder="Text to test regex against..." className="w-full bg-transparent border-2 border-fg font-mono text-sm p-4 min-h-[80px] resize-none focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }} rows={4} />
-                  <button onClick={handleRegex} className="font-mono text-xs uppercase px-4 py-2 border-2 border-fg hover:bg-fg hover:text-surface transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Test Pattern</button>
-                  {regexMatches.length > 0 && (
-                    <div className="border-2 border-fg p-3 space-y-1 max-h-[200px] overflow-y-auto">
-                      {regexMatches.map((m,i) => <div key={i} className="font-mono text-sm text-brutal-green" style={{ fontFamily: TYPOGRAPHY.fontMono }}>[{i+1}] {m}</div>)}
-                    </div>
-                  )}
-                </>}
+                {/* JWT / JWS / JWE */}
+                {tool === "jose" && <JoseTool />}
 
                 {/* Nmap Parser */}
                 {tool === "nmap-parse" && <>
@@ -277,8 +349,6 @@ export default function ArtPlayground() {
 
                 {tool === "multi-encoder" && <EncoderTool />}
                 {tool === "password" && <PasswordTool />}
-                {tool === "cert" && <CertDecoder />}
-
                 {/* Timestamp */}
                 {tool === "timestamp" && <>
                   <input value={tsInput} onChange={e => setTsInput(e.target.value)} onKeyDown={e => { if (e.key==="Enter") handleTimestamp(tsInput.length>10?"to-date":"to-unix"); }} placeholder="1696118400 or 2023-10-01T00:00:00Z..." className="w-full bg-transparent border-2 border-fg font-mono text-sm px-4 py-3 focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }} />
@@ -317,6 +387,14 @@ export default function ArtPlayground() {
                   {jsonResult && <OutputBox output={jsonResult} />}
                 </>}
 
+                {tool === "ip" && <CidrTool />}
+                {tool === "mutate" && <MutatorTool />}
+                {tool === "defang" && <DefangTool />}
+                {tool === "chmod" && <ChmodTool />}
+                {tool === "cron" && <CronTool />}
+
+                <ToolHelp title="What is this?" intro={QUICK_HELP[tool].intro} steps={QUICK_HELP[tool].steps} terms={QUICK_HELP[tool].terms} />
+
               </div>
             </motion.div>
           )}
@@ -335,6 +413,29 @@ export default function ArtPlayground() {
                 <p className="font-mono text-2xs text-fg-muted mt-1" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{t.desc}</p>
               </Link>
             ))}
+          </div>
+        </div>
+
+        {/* ═══════ NOTEBOOK — personal MDX editor, kept separate from the tools ═══════ */}
+        <div className="mt-16 border-2 border-fg p-6" style={{ backgroundColor: "var(--surf)", boxShadow: "8px 8px 0px var(--fg)" }}>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-2xs uppercase tracking-label text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Notebook</span>
+            <div className="flex-1 h-px bg-fg-muted/20" />
+          </div>
+          <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="min-w-0">
+              <h3 className="font-display text-2xl font-extrabold uppercase" style={{ fontFamily: TYPOGRAPHY.fontDisplay, color: "var(--fg)" }}>MDX Preview</h3>
+              <p className="mt-1 max-w-xl font-sans text-sm leading-relaxed text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans }}>
+                My in-browser notes desk: write MDX with the widget snippets, watch it render live, then copy or download the file straight into the repo. Not a security tool — just where the notes get written.
+              </p>
+            </div>
+            <Link
+              href="/tools/mdx-preview"
+              className="inline-flex shrink-0 items-center gap-2 border-2 border-fg bg-brutal-yellow px-6 py-3 font-display text-base font-extrabold uppercase text-[#0a0a0a] shadow-brutal transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutal-sm"
+              style={{ fontFamily: TYPOGRAPHY.fontDisplay }}
+            >
+              Open notebook
+            </Link>
           </div>
         </div>
 

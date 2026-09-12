@@ -377,13 +377,17 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target === canvasRef.current || (e.target as HTMLElement).closest(".map-canvas")) {
       isDragging.current = true;
+      if (canvasRef.current) canvasRef.current.style.cursor = "grabbing";
       dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
     }
   };
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isDragging.current) setPan({ x: e.clientX - dragStart.current.x, y: e.clientY - dragStart.current.y });
   };
-  const handleMouseUp = () => { isDragging.current = false; };
+  const handleMouseUp = () => {
+    isDragging.current = false;
+    if (canvasRef.current) canvasRef.current.style.cursor = "grab";
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -427,7 +431,7 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
         ref={canvasRef}
         className="map-canvas relative flex-1 select-none"
         style={{
-          cursor: isDragging.current ? "grabbing" : "grab",
+          cursor: "grab",
           overflow: "hidden",
         }}
         onMouseDown={handleMouseDown}

@@ -137,7 +137,7 @@ llama-server --models-dir $PATH_TO_PROJECT/models --models-max 1 --port 6969
 
 The router uses an INI file to know what settings to apply when loading each model:
 
-<CopyButton text={`[Qwen3.5-9B-Uncensored-HauhauCS-Aggressive-Q6_K.gguf]
+<CopyButton preview text={`[Qwen3.5-9B-Uncensored-HauhauCS-Aggressive-Q6_K.gguf]
 model        = $PATH_TO_PROJECT/models/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive-Q6_K.gguf
 ctx-size     = 16384
 n-gpu-layers = 999
@@ -206,7 +206,7 @@ sudo systemctl enable --now llama-router
 
 The llama.cpp router picks which model to load based on the `model` field in the request. So I wrote a thin FastAPI proxy that sits on port 7000, looks at the incoming prompt, and injects the right model name before forwarding to port 6969.
 
-<CopyButton text={`# router.py — smart model selection based on prompt complexity
+<CopyButton preview text={`# router.py — smart model selection based on prompt complexity
 import httpx
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse, JSONResponse
@@ -436,7 +436,7 @@ volumes:
 
 The MCP server at `/opt/mcp-searxng/server.py` doesn't exist by default — you have to write it. It's a simple JSON-RPC stdio server that wraps the SearXNG API:
 
-<CopyButton text={`#!/usr/bin/env python3
+<CopyButton preview text={`#!/usr/bin/env python3
 import sys, json, requests, os
 
 SEARXNG_URL = os.getenv("SEARXNG_URL", "http://localhost:4000")
@@ -677,31 +677,27 @@ alias ail="tail -f $SCHIZO/logs/llama/router.log"
 
 ## Final Architecture
 
-```
-Telegram / Open WebUI / SSH terminal
-         │
-         ▼
-  smart router :7000  ←── picks light/heavy based on prompt complexity
-         │
-         ▼
-  llama.cpp router :6969  ←── loads/unloads model on demand (LRU)
-         │
-    ┌────┴────┐
-    │         │
-  27B GPU   9B GPU  (only one in VRAM at a time, ~4-12s swap)
-  ~18GB     ~7GB
-    │
-    ▼
-  Goose agent
-  ├── developer (terminal, 600s timeout)
-  ├── memory (persists to ~/.local/share/goose/memory/)
-  ├── summon (spawn parallel subagents)
-  ├── orchestrator (manage multiple sessions)
-  ├── skills (auto-loads SKILL.md from ~/.config/agents/skills/)
-  ├── qdrant MCP ──► Qdrant :6333 (CVEs, ATT&CK, H1 reports)
-  ├── searxng MCP ─► SearXNG :4000 (live web search, private)
-  └── fetch MCP (web content)
-```
+<Mermaid
+  title="Final Architecture"
+  color="#00e5ff"
+  chart={`flowchart TD
+    U["Telegram / Open WebUI / SSH"] --> R1["smart router :7000"]
+    R1 -->|picks light or heavy| R2["llama.cpp router :6969"]
+    R2 -->|loads on demand, LRU| M27["27B GPU, ~18GB"]
+    R2 --> M9["9B GPU, ~7GB"]
+    R2 --> G["Goose agent"]
+    G --> D["developer (terminal, 600s)"]
+    G --> MEM["memory"]
+    G --> SUM["summon (parallel subagents)"]
+    G --> ORC["orchestrator"]
+    G --> SK["skills (SKILL.md)"]
+    G --> Q["qdrant MCP"]
+    Q --> QD["Qdrant :6333 - CVEs, ATT&CK, H1"]
+    G --> S["searxng MCP"]
+    S --> SX["SearXNG :4000 - private search"]
+    G --> F["fetch MCP"]
+  `}
+/>
 
 ---
 

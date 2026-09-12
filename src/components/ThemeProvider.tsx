@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { flushSync } from "react-dom";
 
 type Theme = "light" | "dark";
 
@@ -16,6 +24,10 @@ const ThemeContext = createContext<ThemeContextValue>({
   isDark: false,
 });
 
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (callback: () => void) => { finished: Promise<void> };
+};
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
@@ -24,27 +36,42 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem("theme") as Theme | null;
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initial = stored ?? (prefersDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", initial === "dark");
     setTheme(initial);
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
-    const root = document.documentElement;
-
-    // Force-apply class directly to HTML element
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
     localStorage.setItem("theme", theme);
   }, [theme, mounted]);
 
   const toggle = useCallback(() => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  }, []);
+    const root = document.documentElement;
+    const next: Theme = theme === "light" ? "dark" : "light";
+
+    const apply = () => {
+      root.classList.toggle("dark", next === "dark");
+      setTheme(next);
+    };
+
+    const startViewTransition = (document as ViewTransitionDocument).startViewTransition;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!startViewTransition || reduceMotion) {
+      apply();
+      return;
+    }
+
+    root.classList.add("theme-switching");
+    const cleanup = () => root.classList.remove("theme-switching");
+
+    const transition = startViewTransition.call(document, () => {
+      flushSync(apply);
+    });
+
+    transition.finished.then(cleanup, cleanup);
+  }, [theme]);
 
   // Prevent flash — render placeholder until mounted
   if (!mounted) {

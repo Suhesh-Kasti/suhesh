@@ -11,6 +11,24 @@ Nmap is the Swiss Army knife of network recon. Every flag here is battle-tested 
 
 <IdeaNode color="green">**Pro tip:** Always start with `-sn` for host discovery, then `-sS` for stealth scan on live hosts. Don't blind-full-scan a /16 subnet.</IdeaNode>
 
+<CommandBuilder
+  title="Recon workbench"
+  command="nmap"
+  target="10.129.2.47"
+  targetLabel="target"
+  color="#00cc55"
+  options={[
+    {"flag":"-sn","label":"Ping sweep"},
+    {"flag":"-Pn","label":"Skip host discovery"},
+    {"flag":"-sS","label":"SYN stealth scan","on":true},
+    {"flag":"-sV","label":"Version detection","on":true},
+    {"flag":"-p","label":"Ports","value":"22,80,443","placeholder":"22,80,443"},
+    {"flag":"-O","label":"OS detection"},
+    {"flag":"-T4","label":"Timing template","value":"4","placeholder":"0-5"},
+    {"flag":"--min-rate","label":"Packets per second","value":"1000","placeholder":"1000"}
+  ]}
+/>
+
 ## Host Discovery
 
 <Accordion title="-sn — Ping scan (no port scan)" color="#00cc55">

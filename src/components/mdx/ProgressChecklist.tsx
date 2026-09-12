@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, ReactNode } from "react";
 import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 import { CHECKLIST_REGISTRY, type ChecklistItem } from "./checklist-data";
 
@@ -154,7 +156,7 @@ export default function ProgressChecklist({
                         animate={{ scale: 1 }}
                         className="font-mono text-xs font-bold"
                       >
-                        ✓
+                        <FontAwesomeIcon icon={faCheck} />
                       </motion.span>
                     )}
                   </motion.div>

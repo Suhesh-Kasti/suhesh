@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 const TITLES = [
   "You look beautiful today ;-)",
-  "Let me hack your heart ❤️",
+  "Let me hack your heart",
   "GET /YOUR_MONEY HTTP/1.1",
   "POST /malware.exe",
   "rm -rf /your-inhibitions",

@@ -138,7 +138,7 @@ export default function SearchButton() {
       {/* Floating search button */}
       <motion.button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 border-2 border-fg bg-brutal-yellow text-brutal-black font-mono text-xl font-bold shadow-brutal hover:shadow-brutal-sm transition-all active:translate-x-1 active:translate-y-1 active:shadow-none cursor-pointer"
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 border-2 border-fg bg-brutal-yellow text-[#0a0a0a] font-mono text-xl font-bold shadow-brutal hover:shadow-brutal-sm transition-all active:translate-x-1 active:translate-y-1 active:shadow-none cursor-pointer"
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
         data-cursor-label="Search"

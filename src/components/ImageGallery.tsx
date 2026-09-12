@@ -14,6 +14,15 @@ interface ImageGalleryProps {
 export default function ImageGallery({ images, color }: ImageGalleryProps) {
   const [fullscreenIndex, setFullscreenIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [sparks] = useState(() =>
+    Array.from({ length: 12 }, () => ({
+      size: 8 + Math.random() * 16,
+      left: 10 + Math.random() * 80,
+      top: 10 + Math.random() * 80,
+      duration: 2 + Math.random() * 3,
+      delay: Math.random(),
+    }))
+  );
 
   if (images.length === 0) return null;
 
@@ -103,16 +112,16 @@ export default function ImageGallery({ images, color }: ImageGalleryProps) {
             </motion.div>
 
             {/* Chaotic decorative elements */}
-            {[...Array(12)].map((_, i) => (
+            {sparks.map((spark, i) => (
               <motion.div
                 key={i}
                 className="absolute pointer-events-none"
                 style={{
-                  width: 8 + Math.random() * 16,
-                  height: 8 + Math.random() * 16,
+                  width: spark.size,
+                  height: spark.size,
                   border: `2px solid ${accent}`,
-                  left: `${10 + Math.random() * 80}%`,
-                  top: `${10 + Math.random() * 80}%`,
+                  left: `${spark.left}%`,
+                  top: `${spark.top}%`,
                   opacity: 0.6,
                 }}
                 animate={{
@@ -121,8 +130,8 @@ export default function ImageGallery({ images, color }: ImageGalleryProps) {
                 }}
                 transition={{
                   repeat: Infinity,
-                  duration: 2 + Math.random() * 3,
-                  delay: Math.random(),
+                  duration: spark.duration,
+                  delay: spark.delay,
                 }}
               />
             ))}

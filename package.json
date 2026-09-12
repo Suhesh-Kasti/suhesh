@@ -7,7 +7,7 @@
     "prebuild": "node scripts/generate-content-registry.mjs",
     "build": "next build",
     "generate-registry": "node scripts/generate-content-registry.mjs",
-    "deploy": "npm install && node scripts/generate-content-registry.mjs && npx @opennextjs/cloudflare build && npx @opennextjs/cloudflare deploy",
+    "deploy": "npm install --include=dev && node scripts/generate-content-registry.mjs && npx @opennextjs/cloudflare build && npx @opennextjs/cloudflare deploy",
     "start": "next start",
     "lint": "eslint"
   },
@@ -19,8 +19,11 @@
     "framer-motion": "^12.40.0",
     "gray-matter": "^4.0.3",
     "gsap": "^3.15.0",
-    "next": "16.2.6",
+    "jose": "^6.2.12",
+    "mermaid": "^12.0.0",
+    "next": "16.3.5",
     "next-mdx-remote": "^6.0.0",
+    "node-forge": "^1.4.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "rehype-raw": "^7.0.0",
@@ -29,15 +32,16 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.19.11",
-    "@tailwindcss/postcss": "^4",
+    "@opennextjs/cloudflare": "^1.20.6",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^20",
+    "@types/node-forge": "^1.3.14",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "esbuild": "^0.25.12",
     "eslint": "^9",
-    "eslint-config-next": "16.2.6",
-    "tailwindcss": "^4",
+    "eslint-config-next": "16.3.5",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5"
   }
 }

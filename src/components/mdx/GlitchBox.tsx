@@ -1,60 +1,72 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useRef, type CSSProperties, type ReactNode } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { resolveAccent, useCopy } from "@/lib/mdx-ui";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface GlitchBoxProps {
-  children: string;
+  children: ReactNode;
   color?: string;
+  label?: string;
+  intensity?: "light" | "heavy";
 }
 
-export default function GlitchBox({ children, color = "#ff2d95" }: GlitchBoxProps) {
-  const [glitching, setGlitching] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const trigger = () => {
-      setOffset({ x: (Math.random() - 0.5) * 6, y: (Math.random() - 0.5) * 4 });
-      setGlitching(true);
-      setTimeout(() => setGlitching(false), 180);
-    };
-    const interval = setInterval(trigger, 2500);
-    return () => clearInterval(interval);
-  }, []);
+export default function GlitchBox({
+  children,
+  color = "#ffdd00",
+  label = "READOUT",
+  intensity = "light",
+}: GlitchBoxProps) {
+  const accent = resolveAccent(color);
+  const { copied, copy } = useCopy();
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="my-6 border-2 p-5 relative overflow-hidden not-prose cursor-pointer" style={{ borderColor: color, backgroundColor: "var(--surf)" }} data-cursor-label="Glitch me">
-      {/* Main text */}
-      <motion.div
-        className="font-mono text-sm leading-relaxed relative z-20"
-        style={{ fontFamily: TYPOGRAPHY.fontMono }}
-        animate={glitching ? { x: offset.x, y: offset.y } : { x: 0, y: 0 }}
-        transition={{ duration: 0.08 }}
-      >
-        {children}
-      </motion.div>
+    <div
+      className="glitch-panel not-prose my-8 overflow-hidden border-2"
+      style={{ "--glitch-accent": accent } as CSSProperties}
+    >
+      <div className="glitch-panel-bar flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2">
+        <span className="glitch-dot" aria-hidden />
+        <span
+          className="font-mono text-2xs font-bold uppercase"
+          style={{
+            fontFamily: TYPOGRAPHY.fontMono,
+            letterSpacing: TYPOGRAPHY.tracking.label,
+            color: accent,
+          }}
+        >
+          {label}
+        </span>
+        <span className="flex-1" />
+        <span className="glitch-meter hidden items-end sm:inline-flex" aria-hidden>
+          {Array.from({ length: intensity === "heavy" ? 7 : 5 }).map((_, i) => (
+            <span key={i} style={{ height: `${4 + ((i * 5) % 12)}px` }} />
+          ))}
+        </span>
+        <button
+          type="button"
+          onClick={() => copy(bodyRef.current?.textContent ?? "")}
+          aria-label={copied ? "Copied" : "Copy readout"}
+          className="glitch-copy inline-flex shrink-0 cursor-pointer items-center gap-1 px-1.5 py-0.5 font-mono text-2xs uppercase"
+          style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+        >
+          <FontAwesomeIcon icon={copied ? faCheck : faCopy} className="text-[10px]" aria-hidden />
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
 
-      {/* Glitch channel overlays */}
-      {glitching && (
-        <>
-          <motion.div
-            className="absolute inset-0 z-10 font-mono text-sm leading-relaxed p-5 pointer-events-none select-none"
-            style={{ fontFamily: TYPOGRAPHY.fontMono, color: color, clipPath: `inset(${30 + Math.random() * 20}% 0 ${40 + Math.random() * 10}% 0)`, transform: `translate(${-offset.x * 3}px, ${-offset.y}px)` }}
-          >
-            {children}
-          </motion.div>
-          <motion.div
-            className="absolute inset-0 z-10 font-mono text-sm leading-relaxed p-5 pointer-events-none select-none"
-            style={{ fontFamily: TYPOGRAPHY.fontMono, color: "#0055ff", clipPath: `inset(${50 + Math.random() * 15}% 0 ${10 + Math.random() * 10}% 0)`, transform: `translate(${offset.x * 3}px, ${offset.y}px)` }}
-          >
-            {children}
-          </motion.div>
-        </>
-      )}
-
-      {/* Scanline indicator */}
-      <div className="absolute top-0 left-0 w-full h-[2px] z-30 pointer-events-none" style={{ backgroundColor: color, opacity: 0.6, transform: glitching ? "translateY(100%)" : "translateY(-100%)", transition: "transform 0.12s ease" }} />
+      <div className="glitch-scanlines">
+        <div
+          ref={bodyRef}
+          className="glitch-readout px-4 py-4 font-mono text-sm leading-relaxed"
+          style={{ fontFamily: TYPOGRAPHY.fontMono }}
+        >
+          {children}
+        </div>
+      </div>
     </div>
   );
 }

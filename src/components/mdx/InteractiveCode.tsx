@@ -54,7 +54,7 @@ export default function InteractiveCode({
     const demoOutputs: Record<string, string> = {
       python: "> Running python3 script.py...\n> Exit code: 0\n> Output:\n[!] VULNERABLE: Token verified with HS256 + public key\n> Execution time: 12ms",
       rust: "> Compiling...\n> Finished dev [unoptimized] in 0.8s\n> Running...\n> Coverage: 847 unique PCs hit\n> Mutations tried: 12482\n> Crashes found: 3\n> Exit code: 0",
-      typescript: "> tsc --noEmit\n> No type errors found\n> Executing with tsx...\n> Build successful ✓\n> Tests: 42 passed, 0 failed",
+      typescript: "> tsc --noEmit\n> No type errors found\n> Executing with tsx...\n> Build successful\n> Tests: 42 passed, 0 failed",
       javascript: "> node script.js\n> Processing...\n> Done in 234ms\n> Exit code: 0",
     };
 

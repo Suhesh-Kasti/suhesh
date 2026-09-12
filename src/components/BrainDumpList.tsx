@@ -3,10 +3,10 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { BrainDumpMeta, ContentType } from "@/lib/braindump";
+import type { BrainDumpMeta, ContentType } from "@/lib/braindump";
 import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFire, faBookOpen, faListCheck, faInfinity, faFileCode, faMap, faRoad, faFlask } from "@fortawesome/free-solid-svg-icons";
+import { faFire, faBookOpen, faListCheck, faInfinity, faFileCode, faMap, faRoad, faFlask, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const TYPE_CONFIG: Record<
   ContentType,
@@ -129,7 +129,7 @@ export default function BrainDumpList({ posts, filterTag }: { posts: BrainDumpMe
                 onClick={() => setSearchTerm("")}
                 className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-fg-muted hover:text-fg px-2"
               >
-                ✕
+                <FontAwesomeIcon icon={faXmark} />
               </button>
             )}
           </div>

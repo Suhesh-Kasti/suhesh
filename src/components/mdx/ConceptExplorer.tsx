@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 
-interface ConceptStep {
+export interface ConceptStep {
   label: string;
   content: string;
   highlight?: string; // key term to emphasise

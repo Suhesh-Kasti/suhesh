@@ -15,7 +15,7 @@ export default function Tabs({ children, color = COLORS.pink }: TabsProps) {
   const tabs = Children.toArray(children)
     .filter((child) => isValidElement(child))
     .map((child) => {
-      const el = child as React.ReactElement<any>;
+      const el = child as React.ReactElement<{ label?: string; "data-label"?: string; children?: ReactNode }>;
       return {
         label: el.props.label ?? el.props["data-label"] ?? "",
         children: el.props.children,

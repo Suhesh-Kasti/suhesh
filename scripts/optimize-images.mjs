@@ -37,7 +37,7 @@ const QUALITY_ADMIN = 78;
 const SCAN_DIRS = ["content", "src"];
 const SCAN_EXTS = new Set([".mdx", ".md", ".ts", ".tsx", ".js", ".mjs", ".json"]);
 const SKIP_DIRS = new Set(["node_modules", ".next", ".open-next", ".git", "generated"]);
-const REF_RE = /\/images\/[A-Za-z0-9_./@%()+-]+\.(?:png|jpe?g|webp|avif|gif)/gi;
+const REF_RE = /\/(?:images\/[A-Za-z0-9_./@%()+-]+|logo-(?:white|dark))\.(?:png|jpe?g|webp|avif|gif)/gi;
 
 function loadSharp() {
   const tries = [join(ROOT, "package.json"), join(ROOT, "node_modules", "next", "package.json")];

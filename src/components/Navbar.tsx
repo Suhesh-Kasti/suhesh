@@ -79,8 +79,8 @@ export default function Navbar() {
           className="flex items-center gap-2 text-fg hover:text-brutal-pink-text transition-colors"
           data-cursor-label="Home"
         >
-          <Image src="/logo-dark.png" alt="SCHIZO" width={210} height={129} priority className="hidden h-10 w-auto dark:block" />
-          <Image src="/logo-white.png" alt="SCHIZO" width={210} height={129} priority className="block h-10 w-auto dark:hidden" />
+          <Image src="/logo-dark.webp" alt="SCHIZO" width={210} height={129} priority className="hidden h-10 w-auto dark:block" />
+          <Image src="/logo-white.webp" alt="SCHIZO" width={210} height={129} priority className="block h-10 w-auto dark:hidden" />
           <span
             className="font-display text-2xl font-extrabold uppercase tracking-tight"
             style={{

@@ -47,7 +47,7 @@ export function StructuredData() {
         url: BASE_URL,
         logo: {
           "@type": "ImageObject",
-          url: `${BASE_URL}/logo-dark.png`,
+          url: `${BASE_URL}/logo-dark.webp`,
         },
         founder: { "@id": `${BASE_URL}/#person` },
         sameAs: [SOCIAL.github.url, SOCIAL.twitter.url, SOCIAL.linkedin.url],

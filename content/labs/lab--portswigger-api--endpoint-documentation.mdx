@@ -1,0 +1,49 @@
+---
+title: Exploiting an API endpoint using documentation
+date: '2026-07-05'
+tags:
+  - PortSwigger
+  - lab
+  - api-testing
+  - walkthrough
+excerpt: "The API ships its own interactive docs at /api, and the exposed DELETE endpoint the UI never calls is how carlos gets removed."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+---
+
+# Lab: Exploiting an API endpoint using documentation
+
+## Objective
+To solve the lab, find the exposed API documentation and delete `carlos`. You can log in to your own account using the following credentials: `wiener:peter`.
+## Why This Works (The Principle)
+- **The vulnerability:** API documentation is often publicly available, particularly if the API is intended for use by external developers. If this is the case, always start your recon by reviewing the documentation..
+- **Root cause:** API documentation may or may not be openly available, we may still be able to access it by browsing applications that use the API.
+- **Exploitation:** Burp Scanner can be used to crawl the API. We can also browse applications manually using browser.
+- **Key insight:** We can interact with API's in ways the developers didn't think
+
+## Blind Attempt (15-20 min max)
+- **What I tried:**  Scoured the application and found that changing the email 
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+*After viewing full solution, close it immediately.*
+- [ ] Step 1: ![Burp Proxy history showing the web app making its own calls to the /api endpoint](/images/content/lab--portswigger-api--endpoint-documentation/api_found_being_used_documentation.png)
+- [ ] Step 2:
+![The exposed API documentation page served at /api, listing every available endpoint](/images/content/lab--portswigger-api--endpoint-documentation/found_exposed_API_docs%20_in_slashAPI.png)
+- [ ] Step 3:
+    ![The DELETE request sent from the exposed API docs that removes the user carlos](/images/content/lab--portswigger-api--endpoint-documentation/api_deleted_user_through_exposed_docs.png)
+- [ ] Final payload / exploit:
+
+## Key Takeaway
+Search for exposed API docs as they might expose all and everything possible to do with API.
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="The app calls its own API docs at {{/api}}. Opening that path in a browser lists every endpoint, and a {{DELETE}} request against the users path removes {{carlos}}." />

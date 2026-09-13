@@ -1,21 +1,23 @@
 ---
 title: DOM XSS in jQuery anchor href attribute sink using location.search source
-date: '2025-06-18'
+date: '2026-07-24'
 tags:
   - PortSwigger
   - lab
   - dom-xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "jQuery writes location.search into the back link's href, so a javascript: URL there fires on click. No server reflection needed at all."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: DOM XSS in jQuery anchor href attribute sink using location.search source
 
 ## Objective
-*What is this lab trying to teach?*
+This lab contains a DOM-based cross-site scripting vulnerability in the submit feedback page. It uses the jQuery library's `$` selector function to find an anchor element, and changes its `href` attribute using data from `location.search`.
+To solve this lab, make the "back" link alert `document.cookie`.
 
 ## Why This Works (The Principle)
 - **The vulnerability:** Client-side JavaScript writes attacker-controlled data to the DOM without sanitization.
@@ -23,26 +25,28 @@ difficulty: apprentice
 - **Exploitation:** Craft a URL with a malicious payload in the fragment or query string. When the victim visits it, client-side code executes the payload.
 - **Key insight:** DOM-based XSS does not require the server to reflect the payload — it lives entirely in the client-side code path.
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+## Blind Attempt 
+- **What I tried:** I kept on trying all kinds of attacks 
+![The submit feedback page where my earlier payloads failed to change the back link](/images/content/lab--portswigger-dom-xss-in-jquery-anchor-href-attribute-sink-using-location-search-source/DOM_XSS_failed_backButton.png)
+- **Where I got stuck:** None of the attacks landed because I was trying to change the DOM but I had to change the functionality of the button 
 
 ## Hint Usage (if needed)
 - [ ] Used lab hint
-- [ ] Watched first 30s of video solution
+- [x] Watched first 30s of video solution
 - *Resume blind with new clue. Still stuck?*
 
 ## Solution Reconstruction
 *After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
-
+- [ ] Step 1: Went to Submit Feedback page
+- [ ] Step 2: Looked at the site's source code... the path where the back button lands was being placed from whatever was sent in the URL parameter
+- [ ] Step 3: Sent `javascript:alert(document.cookie)` and the back button now pointed to that location alerting the cookie
+- [ ] Final payload / exploit: 
+![The back link on the feedback page now pointing at a javascript:alert payload](/images/content/lab--portswigger-dom-xss-in-jquery-anchor-href-attribute-sink-using-location-search-source/DOM-XSS_Back_button_exploited.png)
 ## Key Takeaway
 *Write ONE principle I must remember:*
 
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="jQuery writes location.search into the back link's href, so a {{javascript:}} URL such as javascript:{{alert(document.cookie)}} fires when the link is clicked." />

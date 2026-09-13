@@ -1,0 +1,46 @@
+---
+title: "F5 BIG-IP Web Application Firewall"
+date: '2025-08-05'
+tags: ["f5", "bigip", "WAF", "Web Security", "OWASP"]
+excerpt: "Positive vs negative security models, policy templates, learning mode and attack signatures — how the F5 BIG-IP WAF decides what to block."
+type: blog
+category: "Network Operations"
+---
+
+## Positive security model
+
+1. **Positive:** only allow positive (good) requests and block all others — e.g. allowed file types, allowed URL, allowed parameters, and allowed responses.
+2. **Negative:** allow all traffic except known negative (bad) requests — e.g. attack signatures, malware hidden behind legitimate traffic, Data Guard.
+
+## Policy templates
+
+1. **Rapid**
+   - Minimal configuration
+   - Relies on negative security
+   - Learning mode — Manual
+   - Enforcement mode — Transparent
+2. **Fundamental**
+
+## Security policy
+
+1. **Transparent** — do not block, let traffic pass and learn.
+2. **Blocking** — blocks requests if the policy is attached.
+
+## Signature
+
+1. **Learn** — appears in the traffic learning page.
+2. **Alarm** — appears in the event log if the policy is in transparent. If the security policy is in blocking, the alarm will be generated even if the alarm flag is not ticked.
+3. **Block** — block requests belonging to selected signature sets.
+
+### Signature sets
+
+1. **Staging** — this signature set is learning and will not block anything.
+2. **Enforced** — block traffic from this signature set.
+
+<QuizCard title="WAF policy check" questions={[
+  { question: "Which security model allows only traffic you have explicitly defined?", options: ["Negative", "Positive", "Transparent", "Rapid"], correct: 1, explanation: "The positive model is a whitelist: everything not allowed is blocked." },
+  { question: "A signature set that is still learning and blocks nothing is in which state?", options: ["Enforced", "Staging", "Blocking", "Transparent"], correct: 1, explanation: "Staging signatures are observed but never block; enforced signatures are active." },
+  { question: "What does the Rapid policy template rely on?", options: ["Positive security", "Negative security with automated learning", "Negative security with manual learning in transparent mode", "Hand-written signatures only"], correct: 2, explanation: "Rapid is minimal: negative security, manual learning, and transparent enforcement to start." }
+]} />
+
+<Cloze title="Signature actions" color="#ffdd00" text="A signature can {{learn}} (traffic learning page), {{alarm}} (event log), or {{block}} requests in the selected set." />

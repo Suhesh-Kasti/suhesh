@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,11 +30,11 @@ const PHOTOS = [
   "/images/admin/ULUBULULULU.webp",
 ];
 
-const CERTS = [
-  { name: "CAPT", issuer: "Hackviser", color: COLORS.green, fullName: "Certified Associate Penetration Tester", image: "/images/certificates/0xCAPT.png" },
-  { name: "CWSE", issuer: "Hackviser", color: COLORS.purple, fullName: "Certified Web Security Expert", image: "/images/certificates/0xCWSE.png" },
-  { name: "F5 CTS", issuer: "F5 Networks", color: COLORS.red, fullName: "F5 Certified Technology Specialist", image: "/images/certificates/0xF5CTS.png" },
-  { name: "F5 CA", issuer: "F5 Networks", color: COLORS.pink, fullName: "F5 Certified BIG-IP Administrator", image: "/images/certificates/0xF5CA.png" },
+const CERTS: { name: string; issuer: string; color: string; fullName: string; image: string; verify?: string }[] = [
+  { name: "CAPT", issuer: "Hackviser", color: COLORS.green, fullName: "Certified Associate Penetration Tester", image: "/images/certificates/0xCAPT.png", verify: "https://hackviser.com/verify?id=HV-CAPT-LJ2W1FQ8" },
+  { name: "CWSE", issuer: "Hackviser", color: COLORS.purple, fullName: "Certified Web Security Expert", image: "/images/certificates/0xCWSE.png", verify: "https://hackviser.com/verify?id=HV-CWSE-2U5CIN2G" },
+  { name: "F5 CTS", issuer: "F5 Networks", color: COLORS.red, fullName: "F5 Certified Technology Specialist", image: "/images/certificates/0xF5CTS.png", verify: "https://www.credly.com/badges/09a33e80-8708-460b-8d57-911317aa9d4b/public_url" },
+  { name: "F5 CA", issuer: "F5 Networks", color: COLORS.pink, fullName: "F5 Certified BIG-IP Administrator", image: "/images/certificates/0xF5CA.png", verify: "https://www.credly.com/badges/66d58a6c-b052-4eba-b8bf-f77864684db6/public_url" },
   { name: "Cybersecurity Certificate", issuer: "Google", color: COLORS.yellow, fullName: "Google Cybersecurity Certificate", image: "/images/certificates/0x000G.jpg" },
 ];
 
@@ -42,23 +43,143 @@ const QUALIFICATIONS = [
   { name: "Higher Education", details: "Gyankunj HSS & College", color: COLORS.purple },
 ];
 
-const SKILLS = [
-  { name: "Web Security", level: 75, color: COLORS.pink },
-  { name: "Network Pentesting", level: 70, color: COLORS.green },
-  { name: "Binary Exploitation", level: 10, color: COLORS.blue },
-  { name: "Cryptography", level: 70, color: COLORS.teal },
-  { name: "Reverse Engineering", level: 35, color: COLORS.orange },
-  { name: "Malware Analysis", level: 25, color: COLORS.purple },
-  { name: "Cloud Security", level: 50, color: COLORS.yellow },
-  { name: "Incident Response", level: 55, color: COLORS.red },
+// Four groups, in the order I want them read: offensive first, then the day job, then the
+// foundations. Deliberately no percentages — "85% web exploitation" reads as "better than 85%
+// of people" and says nothing. Time spent and what the skill actually covers say something.
+// Every line is supported by a CV, a cert (CAPT, CWSE, F5 CA, F5 CTS) or a writeup here.
+const SKILL_GROUPS = [
+  {
+    label: "Offensive Security",
+    accent: COLORS.pink,
+    items: [
+      { name: "Web Exploitation", detail: "labs + CAPT / CWSE" },
+      { name: "Burp Suite", detail: "my main testing tool" },
+      { name: "API Security", detail: "REST, auth, Postman" },
+      { name: "PortSwigger Academy", detail: "95 written up, more pending" },
+      { name: "Network Testing", detail: "nmap, metasploit, labs" },
+      { name: "Recon & OSINT", detail: "tooling I built myself" },
+      { name: "Security Research", detail: "3 months · SecurityPal" },
+      { name: "HTB CPTS", detail: "studying now" },
+      { name: "Mobile Pentesting", detail: "learning on the side" },
+    ],
+  },
+  {
+    label: "BIG-IP & Delivery",
+    accent: COLORS.orange,
+    items: [
+      { name: "F5 ASM / AWAF", detail: "2.5 yrs · production" },
+      { name: "WAF Policy Tuning", detail: "daily, false positives included" },
+      { name: "LTM Load Balancing", detail: "pools and virtual servers" },
+      { name: "F5 DNS / GTM", detail: "working knowledge" },
+      { name: "SSL/TLS", detail: "offload, profiles, certs" },
+      { name: "Traffic Analysis", detail: "logs, tcpdump, Wireshark" },
+      { name: "Health Monitors", detail: "tuning, not just adding" },
+      { name: "Troubleshooting", detail: "SSL, DNS, routing, pressure" },
+      { name: "Log Analysis", detail: "from noise to root cause" },
+    ],
+  },
+  {
+    label: "IT & Network Admin",
+    accent: COLORS.blue,
+    items: [
+      { name: "Linux", detail: "3 yrs · RHEL, Debian, Arch" },
+      { name: "Networking", detail: "TCP/IP, NAT, VLANs" },
+      { name: "DNS & BIND", detail: "zones, records, DNSSEC" },
+      { name: "Windows / WSL", detail: "daily at work" },
+      { name: "Packet Capture", detail: "Wireshark, tcpdump" },
+      { name: "Remote Diagnostics", detail: "customer CPE and routers" },
+      { name: "Hardware", detail: "modems, switches, cabling" },
+      { name: "Connectivity", detail: "line faults and link issues" },
+      { name: "VPNs", detail: "remote access and tunnels" },
+    ],
+  },
+  {
+    label: "DevOps & Automation",
+    accent: COLORS.green,
+    items: [
+      { name: "Docker", detail: "daily · comfortable, not an expert" },
+      { name: "Git & GitHub", detail: "daily" },
+      { name: "Bash", detail: "daily shell work" },
+      { name: "Python", detail: "scripts and automation" },
+      { name: "REST APIs", detail: "curl, Postman, JSON" },
+      { name: "Virtualization", detail: "VMware, KVM, Proxmox" },
+      { name: "NGINX", detail: "config and troubleshooting" },
+      { name: "ELK Stack", detail: "deployed it for logs" },
+      { name: "Deployment", detail: "built and shipped this site" },
+    ],
+  },
+  {
+    // Kept as its own group rather than buried in IT: three years of customer and client work
+    // is the part of the CV that most security engineers cannot claim.
+    label: "Clients & Communication",
+    accent: COLORS.teal,
+    items: [
+      { name: "Customer Support", detail: "3+ yrs · ISP to enterprise" },
+      { name: "De-escalation", detail: "annoyed callers, kept calm" },
+      { name: "Ticket Triage", detail: "SLAs, priorities, escalations" },
+      { name: "Plain-English Security", detail: "explaining a blocked request" },
+      { name: "Cross-Team Work", detail: "app teams and clients" },
+      { name: "Documentation", detail: "runbooks and clean notes" },
+      { name: "Remote Sessions", detail: "talking people through fixes" },
+      { name: "Training", detail: "built an app to train recruits" },
+      { name: "Questionnaires", detail: "vendor and compliance work" },
+    ],
+  },
+];
+
+/** Headline numbers. Short, checkable, and one of them is a link to the evidence. */
+const STATS = [
+  { value: "3+ yrs", label: "Customer-facing" },
+  { value: "2.5 yrs", label: "Production WAF" },
+  { value: "5", label: "Certifications" },
+  { value: "95+", label: "Lab writeups", href: "/braindump" },
 ];
 
 export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [isClient, setIsClient] = useState(false);
-  const [animatedSkills, setAnimatedSkills] = useState(false);
+  const [skillSet, setSkillSet] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [zoomedCert, setZoomedCert] = useState<typeof CERTS[number] | null>(null);
+  const activeSkillGroup = SKILL_GROUPS[skillSet];
+  const nextSkillGroup = SKILL_GROUPS[(skillSet + 1) % SKILL_GROUPS.length];
+
+  // The stats row renders in two shapes: tucked into the skills column on the home section,
+  // and as a full-width row on the about page where the columns are taller.
+  const statsRow = (variant: "column" | "wide") => (
+    <div className={`about-animate grid grid-cols-2 gap-2 ${variant === "wide" ? "mt-14 gap-3 sm:grid-cols-4 sm:gap-4" : "sm:grid-cols-2"}`}>
+      {STATS.map((stat) => {
+        const tile = (
+          <motion.div
+            className={`flex h-full flex-col justify-center border-2 border-fg text-center panel-comic ${variant === "wide" ? "p-4 sm:p-5" : "p-2 sm:p-3"}`}
+            whileHover={{ y: -4 }}
+            transition={MOTION.snappy}
+          >
+            <div
+              className={`font-display font-extrabold text-fg whitespace-nowrap ${variant === "wide" ? "text-3xl sm:text-4xl" : "text-base sm:text-xl"}`}
+              style={{ fontFamily: TYPOGRAPHY.fontDisplay }}
+            >
+              {stat.value}
+            </div>
+            <div
+              className="mt-1 font-mono text-2xs uppercase text-fg-muted tracking-label leading-tight"
+              style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+            >
+              {stat.label}
+            </div>
+          </motion.div>
+        );
+
+        return stat.href ? (
+          <Link key={stat.label} href={stat.href} aria-label={`${stat.value} ${stat.label}`} className="block h-full">
+            {tile}
+          </Link>
+        ) : (
+          <div key={stat.label} className="h-full">{tile}</div>
+        );
+      })}
+    </div>
+  );
 
   useEffect(() => { setIsClient(true); }, []);
   
@@ -77,7 +198,6 @@ export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
       els?.forEach((el, i) => {
         gsap.fromTo(el, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, delay: i * 0.08, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" } });
       });
-      ScrollTrigger.create({ trigger: sectionRef.current, start: "top 60%", onEnter: () => setAnimatedSkills(true), once: true });
     }, sectionRef);
     return () => ctx.revert();
   }, [isClient]);
@@ -106,7 +226,7 @@ export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
                 >
                   <Image
                     src={PHOTOS[0]}
-                    alt="Suhesh Kasti — application security engineer and offensive security researcher"
+                    alt="Suhesh Kasti — application security engineer working with F5 BIG-IP and web application firewalls"
                     fill
                     sizes="(max-width: 1024px) 100vw, 480px"
                     className="object-cover object-center"
@@ -259,34 +379,72 @@ export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
             </div>
 
             {/* Skills */}
-            <div className="about-animate space-y-4">
-              <h4 className="font-mono text-xs uppercase text-spider-purple tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Skills</h4>
-              {SKILLS.map((skill) => (
-                <div key={skill.name}>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <span className="font-mono text-xs uppercase text-fg tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>{skill.name}</span>
-                    <span className="font-mono text-2xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{skill.level}%</span>
-                  </div>
-                  <div className="h-3 border-2 border-fg bg-surface">
-                    <motion.div className="h-full" style={{ backgroundColor: skill.color }} initial={{ width: 0 }} animate={animatedSkills ? { width: `${skill.level}%` } : { width: 0 }} transition={{ duration: 1, delay: SKILLS.indexOf(skill) * 0.06, ease: [0.215, 0.61, 0.355, 1] }} />
-                  </div>
+            <div className="about-animate">
+              <div className="mb-4 flex items-baseline justify-between gap-3">
+                <h4 className="font-mono text-xs uppercase text-spider-purple tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Skills</h4>
+
+                {/* Label is the group on screen; the hint under it says what clicking switches to. */}
+                <div className="group relative">
+                  <button
+                    type="button"
+                    onClick={() => setSkillSet((current) => (current + 1) % SKILL_GROUPS.length)}
+                    aria-label={`Show the next group of skills (now showing ${activeSkillGroup.label})`}
+                    className="inline-flex cursor-pointer items-center gap-1.5 font-mono text-2xs uppercase text-fg-muted transition-colors hover:text-fg"
+                    style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+                  >
+                    <span style={{ color: activeSkillGroup.accent }}>{activeSkillGroup.label}</span>
+                    <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5">›</span>
+                  </button>
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute bottom-full right-0 mb-2 whitespace-nowrap border border-fg-muted/30 bg-surface px-2 py-1 font-mono text-2xs uppercase text-fg-muted opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                    style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+                  >
+                    next: {nextSkillGroup.label}
+                  </span>
                 </div>
-              ))}
+              </div>
+
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.ul
+                  key={activeSkillGroup.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  className="space-y-3 sm:space-y-4"
+                >
+                  {activeSkillGroup.items.map((item, index) => (
+                    <motion.li
+                      key={item.name}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.25, delay: index * 0.03, ease: "easeOut" }}
+                      className="flex items-baseline justify-between gap-3 sm:gap-2"
+                    >
+                      <span
+                        className="font-mono text-2xs uppercase text-fg sm:text-xs"
+                        style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+                      >
+                        {item.name}
+                      </span>
+                      <span aria-hidden="true" className="hidden flex-1 border-b border-dotted border-fg-muted/50 sm:block" />
+                      <span className="text-right font-mono text-2xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                        {item.detail}
+                      </span>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </AnimatePresence>
             </div>
 
-            {/* Stats — homepage only */}
-            {featuredCerts && (
-            <div className="about-animate grid grid-cols-3 gap-2 sm:gap-3">
-              {[{ value: "2+", label: "Years in Security" }, { value: "3+", label: "Cyber Certs" }, { value: "∞", label: "Curiosity" }].map((stat) => (
-                <motion.div key={stat.label} className="border-2 border-fg p-2 sm:p-3 text-center panel-comic" whileHover={{ y: -4 }} transition={MOTION.snappy}>
-                  <div className="font-display text-xl sm:text-2xl font-extrabold text-fg" style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{stat.value}</div>
-                  <div className="font-mono text-2xs uppercase text-fg-muted mt-1 tracking-label leading-tight" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
-            )}
+            {/* Stats sit under the skills on the home section, where the column is narrow. */}
+            {featuredCerts && statsRow("column")}
           </div>
         </div>
+
+        {/* On the about page the columns are taller, so the stats get their own full-width row. */}
+        {!featuredCerts && statsRow("wide")}
 
         {/* Full cert section — about page only */}
         {!featuredCerts && (
@@ -361,7 +519,23 @@ function CertCard({ cert, onView }: { cert: typeof CERTS[number]; onView: (c: ty
       </div>
       <div className="border-t-2 px-3 py-2.5" style={{ borderColor: cert.color }}>
         <p className="font-display text-xs font-bold uppercase leading-tight" style={{ fontFamily: TYPOGRAPHY.fontDisplay, color: cert.color }}>{cert.name}</p>
-        <p className="font-mono text-2xs text-fg-muted mt-1 leading-tight" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{cert.issuer}</p>
+        {cert.verify ? (
+          <a
+            href={cert.verify}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+            className="font-mono text-2xs text-fg-muted mt-1 leading-tight inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 hover:text-fg transition-colors"
+            style={{ fontFamily: TYPOGRAPHY.fontMono }}
+            title={`Verify this ${cert.name} credential`}
+          >
+            {cert.issuer}
+            <span aria-hidden="true">↗</span>
+            <span className="sr-only">— verify this certification</span>
+          </a>
+        ) : (
+          <p className="font-mono text-2xs text-fg-muted mt-1 leading-tight" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{cert.issuer}</p>
+        )}
       </div>
     </motion.div>
   );

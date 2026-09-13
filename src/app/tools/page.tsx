@@ -18,20 +18,11 @@ export const metadata: Metadata = {
     description: TOOLS_DESCRIPTION,
     url: `${BASE_URL}/tools`,
     siteName: "SCHIZO",
-    images: [
-      {
-        url: `${BASE_URL}/opengraph-image`,
-        width: 1200,
-        height: 630,
-        alt: "SCHIZO — Suhesh Kasti's cybersecurity portfolio",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: TOOLS_TITLE,
     description: TOOLS_DESCRIPTION,
-    images: [`${BASE_URL}/opengraph-image`],
   },
 };
 

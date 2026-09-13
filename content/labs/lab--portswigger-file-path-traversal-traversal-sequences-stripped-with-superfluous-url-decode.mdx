@@ -1,39 +1,59 @@
 ---
 title: 'File path traversal, traversal sequences stripped with superfluous URL-decode'
-date: '2025-06-18'
+date: '2026-08-01'
 tags:
   - PortSwigger
   - lab
   - path-traversal
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — File path traversal, traversal
-  sequences stripped with superfluous URL-decode. Walkthrough with solution, key
-  takeaways, and blind replay exercise.
+excerpt: "The app strips `../`, then decodes again anyway. Double-encoding pushes the traversal past the filter to that second decode."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: File path traversal, traversal sequences stripped with superfluous URL-decode
 
-## Objective
+I encoded the traversal once, sent it, and got the same rejection as the plain version. That cost me a few minutes. The clue is in the lab name: there is a URL-decode happening that should not be there, and it runs in the wrong place.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Same image endpoint, same `filename` parameter. A normal image loads. A plain `../../../etc/passwd` is stripped. A single-encoded `..%2f..%2f..%2fetc/passwd` is also stripped, which is the unusual part. It means the server is decoding the parameter before it checks it.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The parameter gets URL-decoded when the request is parsed, the result is checked for traversal sequences, and then the value is decoded a second time before it is used on disk. That second decode is superfluous: it does nothing useful for the application, and it hands the attacker a way around the filter.
 
-*Write ONE principle I must remember*
+The filter therefore only ever sees a half-decoded string. Hand it input that holds no traversal at that moment but produces one on the next decode, and it waves the request through.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Confirm the double-decode by sending `..%2f..%2f..%2fetc/passwd` and watching it fail. The first decode already produced `../` for the filter to remove.
+2. Encode every character of `../` twice. A dot becomes `%2e`, then `%25%32%65`. A slash becomes `%2f`, then `%25%32%66`. Three blocks, then the target:
+
+```
+filename=%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66etc/passwd
+```
+
+3. Send it. The response is the contents of `/etc/passwd`.
+
+## Why that payload works
+
+Walk the decodes. The first decode of the payload gives `%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd`. The filter checks that string for `../` and finds none, because the dots and the slashes are each still hiding behind a percent sign. The request passes untouched.
+
+Then the second decode runs, the percent signs resolve, and the value becomes `../../../etc/passwd` after the filter has already finished. Three blocks climb from the image directory to root, and `etc/passwd` follows.
+
+The important point: the filter is not weak because it missed an encoding. It is weak because it inspects a string that is about to change.
+
+## The fix
+
+Decode user input exactly once, then canonicalise the resolved path against the media directory and check that the result is inside it. Do not filter a string that still has a decode queued behind it. Same `realpath` plus prefix check as any traversal fix.
+
+<Cloze title="Double-encoding recall" text="I encode each dot as {{%25%32%65}}, so `../` becomes {{%25%32%65%25%32%65%25%32%66}}. The first decode yields %2e%2e%2f, the filter sees no traversal, and the second decode restores {{../}}." />
+
+<Accordion title="The shorter form people use">
+`%252e%252e%252f` means the same thing, written by encoding only the percent sign of each character instead of every character. It decodes once to `%2e%2e%2f` and again to `../`. Both forms are identical to the server. Pick whichever you can type without making a mistake, because one wrong character here fails silently and looks like the bypass does not work.
+</Accordion>
+
+<FlipCard front={<div>A single-encoded `..%2f` is stripped. Why does double-encoding slip past?</div>} back={<div>The filter runs on a half-decoded string. Double-encoding means the filter sees `%2e%2e%2f`, which contains no `../`, and the second decode turns it into a real traversal after the check is done.</div>} />

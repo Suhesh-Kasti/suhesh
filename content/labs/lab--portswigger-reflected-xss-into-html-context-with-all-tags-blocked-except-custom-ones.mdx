@@ -1,50 +1,59 @@
 ---
 title: Reflected XSS into HTML context with all tags blocked except custom ones
-date: '2025-06-18'
+date: '2026-08-20'
 tags:
   - PortSwigger
   - lab
   - xss
   - walkthrough
-excerpt: This lab blocks all HTML tags except custom ones.
+excerpt: "A reflected XSS lab that blocks every HTML tag except the custom ones, so the payload has to ride in on a tag the allow-list never expected."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 # Lab: Reflected XSS into HTML context with all tags blocked except custom ones
 
-## Objective
-This lab blocks all HTML tags except custom ones.
-To solve the lab, perform a cross-site scripting attack that injects a custom tag and automatically alerts `document.cookie`.
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is blocked but custom html tags are not checked for, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
-## Blind Attempt
-- **What I tried:**
-- **Where I got stuck:**
+A filter that rejects every standard HTML tag and then quietly allows the ones it has never heard of is my favourite kind of broken. It took one detour into the idea that custom elements are somehow safe before I just tried one.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## The setup
 
-## Solution Reconstruction
-- [ ] Step 1: Went and tried custom html tags `<custom-html>`, `<xss>`. These tags weren't being filtered.  
-- [ ] Step 2: Found this [exploit that uses custom tags without user interaction](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet#onfocus(autofocus)) and inserted it to search parameter
-- [ ] Step 3: Voila the browser displayed alert box. Now I need to deliver the exploit to the victim. for this I used the following.
-- [ ] Final payload / exploit:  This payload is excuted as javascript `window.location`. When we send this to victim the payload is executed automagically and user is redirected to the location which consists the XSS  
-```js
-<script>
-location='https://0a6a00c703e6e7a0807f038600290038.web-security-academy.net/?search=%3Cxss+onfocus%3Dalert%28document.cookie%29+autofocus+tabindex%3D1%3E'
-</script>
-```
-## Key Takeaway
-What is `window.location`?
-In JavaScript, **`location`** (shorthand for `window.location`) is a native browser object that contains information about the current URL.
-When you assign a string value to it (like `location = 'https://...'`), you are telling the browser to **immediately redirect and load that new web address**. It behaves exactly as if a user typed that URL into their address bar and hit Enter
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+The search parameter lands in the page unescaped, same as any plain reflected XSS. The difference is the filter: `script`, `img`, `svg`, every common tag returns a 400 or gets stripped out. What survives is any element with a dash in its name, because the developer whitelisted custom elements as harmless.
+
+## How the vulnerability works
+
+Custom elements are just tag names the browser accepts without complaint. They carry no built-in behaviour of their own, which is exactly why the filter trusted them. But global attributes still apply to them. An unknown `<xss>` element can carry `tabindex`, `autofocus`, and `onfocus` like any other element. The browser will focus it, and the focus handler runs. The tag being unknown changed nothing about that.
+
+## Solving it
+
+1. Confirm a normal tag is blocked. Search `<script>alert(1)</script>` and watch the request get rejected.
+2. Confirm a custom tag is allowed. Search for `<xss>` and see it reflect intact.
+3. Give the custom element a way to focus itself and an action to run on focus.
+   ```
+   <xss autofocus tabindex=1 onfocus=alert(document.cookie)></xss>
+   ```
+4. The lab wants no user interaction. `autofocus` makes the element grab focus on load, so `onfocus` fires by itself.
+5. Bounce the victim to the injected URL. Since the payload lives in the query string, the simplest delivery is a redirect from the exploit server:
+   ```html
+   <script>
+   location = 'https://YOUR-LAB-ID.web-security-academy.net/?search=%3Cxss+autofocus+tabindex%3D1+onfocus%3Dalert%28document.cookie%29%3E%3C%2Fxss%3E'
+   </script>
+   ```
+   Store it, then deliver it to the victim.
+
+## Why that payload works
+
+`autofocus` is applied the moment the element enters the DOM, and focusing an element fires `focus`, which the inline `onfocus` catches. The custom tag name slips past a filter that only lists known-dangerous tags, and none of the attribute names are on the block-list either. The unknown tag is doing the work, not some parser quirk.
+
+## The fix
+
+Escape the output for the HTML context so the angle brackets never form an element in the first place. If user markup is truly required, run it through a sanitizer that allow-lists specific tags and attributes. Never treat an unknown tag as safe by default; unknown today is a valid element tomorrow.
+
+<FlipCard
+  front={<div>Custom tag that fires without a click?</div>}
+  back={<div>xss autofocus tabindex=1 onfocus=alert(document.cookie)</div>}
+/>
+
+<Accordion title="Why not use the classic onmouseover?">
+Because the lab forbids user interaction. `onmouseover` needs the victim to move a mouse over the element, and the simulated victim never does. `autofocus` plus `onfocus` is the shortest route to a handler that fires on its own, and it survives a filter that never listed those attributes.
+</Accordion>

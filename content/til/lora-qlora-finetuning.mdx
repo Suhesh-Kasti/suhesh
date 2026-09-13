@@ -1,8 +1,8 @@
 ---
 title: "LoRA and QLoRA — fine-tuning LLMs without a supercomputer"
-date: "2026-05-16T13:30:00+05:45"
+date: '2026-05-29'
 excerpt: "Fine-tuning always sounded like a thing only big companies could do. LoRA changed that. Here's what LoRA and QLoRA actually are and how they let you customize models on consumer hardware."
-tags: []
+tags: ["fine-tuning", "LLM", "LoRA", "QLoRA", "Local AI"]
 category: "AI/ML"
 type: "til"
 ---
@@ -40,6 +40,12 @@ You're training ~0.8% of the weight count of a full fine-tune, while covering th
 
 This is why you see `.safetensors` adapter files that are 300-600MB for a 14GB model — the adapter contains only the LoRA matrices, not the full weights.
 
+<Cloze
+  title="LoRA sizing"
+  color="#ff5500"
+  text="LoRA freezes W and trains two smaller matrices A and B, with rank typically {{4, 8, 16, or 64}}. For a 4096x4096 matrix at rank {{16}} that is about {{131K}} trainable parameters instead of 16M."
+/>
+
 ## QLoRA — making it work on consumer hardware
 
 QLoRA (Quantized LoRA) combines two ideas:
@@ -63,6 +69,14 @@ This let people fine-tune 7B models on a single RTX 3090 (24GB VRAM) and even 13
 **Hardware:** For a 7-9B model: 16-24GB VRAM works fine with QLoRA. For 13B: 24GB with gradient checkpointing. For 27B: you're looking at 40GB+ or need to use CPU offloading tricks (slow).
 
 **Software:** Unsloth is the go-to in 2026. It's faster than HuggingFace PEFT, uses less memory, and has good documentation. Axolotl is the other popular one, more configurable, steeper learning curve.
+
+<DataBar
+  title="Rough VRAM needs (GB)"
+  data={[
+    { "label": "QLoRA 7-9B", "value": 20, "color": "#00dd44" },
+    { "label": "Full fine-tune 27B (optimizer + grads)", "value": 175, "color": "#ff1144" }
+  ]}
+/>
 
 ## A minimal Unsloth QLoRA training example
 
@@ -136,3 +150,38 @@ model.save_pretrained_merged("./my-merged-model", tokenizer)
 
 | | LoRA Fine-tuning | RAG |
 |
+
+<QuizCard
+  title="QLoRA check"
+  color="#8800ff"
+  questions={[
+    {
+      question: "In QLoRA, what is quantized and what stays precise?",
+      options: [
+        "Base weights load in 4-bit NF4; the LoRA adapters train in 16-bit",
+        "Both base weights and adapters are 4-bit",
+        "The adapters are 4-bit and the base stays FP16",
+        "Only the embeddings are quantized"
+      ],
+      correct: 0,
+      explanation: "The frozen base loads in 4-bit NF4 while the LoRA matrices are trained in full precision; gradients flow through both."
+    },
+    {
+      question: "What is catastrophic forgetting in full fine-tuning?",
+      options: [
+        "The model overwrites general knowledge while overfitting on your data",
+        "The model forgets your training set",
+        "Gradients vanish at high rank",
+        "The optimizer states get corrupted"
+      ],
+      correct: 0,
+      explanation: "Updating every weight on a small dataset can overwrite general knowledge, e.g. losing Python knowledge while learning a JSON output format."
+    },
+    {
+      question: "Which LoRA rank is described as the sweet spot for most tasks?",
+      options: ["16", "1", "256", "1024"],
+      correct: 0,
+      explanation: "r=4 is minimal, r=16 is the sweet spot for most tasks, and r=64 is for complex behavior changes."
+    }
+  ]}
+/>

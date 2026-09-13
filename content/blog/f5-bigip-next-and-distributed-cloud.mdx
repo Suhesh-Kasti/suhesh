@@ -1,0 +1,100 @@
+---
+title: "F5 BIG-IP Next and Distributed Cloud"
+date: '2026-01-13'
+tags: ["f5", "bigip", "Distributed Cloud", "API Security", "WAF"]
+excerpt: "Full proxy architecture, User Configuration Sets, and what F5 Distributed Cloud adds — multicloud, API discovery, and shadow vs zombie APIs."
+type: blog
+category: "Network Operations"
+---
+
+# F5 BIG-IP Next and Distributed Cloud
+
+- **traffic-group-local-only:** self IP.
+- **traffic-group-1:** floating IP.
+
+## Full proxy architecture
+
+![A full proxy setup where the load balancer terminates and re-establishes both sides of the connection](/images/content/f5-bigip-next-and-distributed-cloud/full_proxy.png)
+
+1. BigIP can modify various HTTP headers, data, etc.
+2. The connection to BigIP can be secured with SSL and the connection to the server can be unencrypted.
+3. To reduce load on servers, the connection to BigIP can be compressed and the connection to the server can be uncompressed.
+4. Different HTTP versions compatible with the web servers can be used in BigIP.
+
+## BigIP architecture
+
+![The internal architecture of a BIG-IP system](/images/content/f5-bigip-next-and-distributed-cloud/bigIparchi.png)
+
+## BigIP components
+
+![The BIG-IP components and how they relate](/images/content/f5-bigip-next-and-distributed-cloud/bigIpcomponent.png)
+
+**Process:**
+
+![The BIG-IP processing steps](/images/content/f5-bigip-next-and-distributed-cloud/bigIpsteps.png)
+
+## User Configuration Set (UCS)
+
+- Compressed archive.
+- Can be encrypted.
+- Can include or exclude public keys.
+- Can be downloaded.
+- Backups are stored in `/var/local/ucs`.
+- Contains configuration files, licenses, user accounts and passwords, SSL certs and keys.
+
+> We can go to **System > Support > QKView snapshot** for support, and import the file into iHealth.
+
+## F5 Distributed Cloud
+
+![The move from a monolithic application to microservices](/images/content/f5-bigip-next-and-distributed-cloud/monolithic_microservices.png)
+
+Multicloud: use multiple cloud providers as well as on-prem for sensitive stuff.
+
+![The infrastructure of a microservices application](/images/content/f5-bigip-next-and-distributed-cloud/microservices_infra.png)
+
+1. Collaborate across teams with a centralized SaaS console to simplify planning and streamline execution.
+2. Automate network configs and security deployment to reduce effort, errors, and gaps in coverage.
+3. Advanced security filters out bad traffic before it hits customer networks, and stays up to date.
+4. Full-stack observability of network, security, and application performance, cloud-agnostic and exportable.
+
+![The problems F5 Distributed Cloud is solving](/images/content/f5-bigip-next-and-distributed-cloud/what_f5_XC_is_solving.png)
+
+### API security
+
+- **Discover** — continuous detection of new/unknown APIs, schema, characterization of data exposed, authentication status, and API vulnerabilities.
+- **Monitor** — continuous traffic inspection, analysis, and anomaly detection.
+- **Secure** — continuous enforcement of schemas, rate limiting, and blocking of undesirable and malicious traffic.
+
+Customer Edge based solution → the customer has more granular control over their traffic, except metadata (name of WAF policies, name of WAF).
+
+[OWASP API Top 10](https://owasp.org/API-Security/editions/2023/en/0x11-t10/)
+
+| Shadow API | Zombie API |
+|---|---|
+| A shadow API is an unmanaged API that is actively being used. | A zombie API is an API that has been deprecated or abandoned. Maybe used for test purposes. |
+| Shadow APIs are not necessarily APIs that are used for malicious purposes. | Zombie APIs may already be identified and managed by an organization, but they are not actively being used. |
+
+1. Automatically learns the app API surface.
+   - Using AI/ML, models are built to baseline and track API behavior.
+   - For each API leaf, a model is built for errors, latency, and request metrics.
+   - Detect outliers and shadow APIs.
+   - Export swagger to improve API definitions/update inventory.
+2. Discovery and validation of APIs.
+   - Discover and view authentication status, details, and risk scoring for all API endpoints.
+   - Easily create protection rules (e.g. blocking, rate limiting, etc.).
+3. Behavioral analysis of API endpoints.
+   - Monitor and baseline API behavior continuously with a machine learning (ML) engine.
+   - Easily identify anomalies (e.g., spikes in request rates, latency, response size, etc.).
+   - Identify any PII in API communications.
+
+![Bot defense machine learning in F5 Distributed Cloud](/images/content/f5-bigip-next-and-distributed-cloud/Bot_defence_ML_BigIPXC.png)
+
+## WAF
+
+- False positive suppression engine.
+- Cloud scrubbing.
+- Gartner report.
+
+<Cloze title="Shadow or zombie?" color="#ff5500" text="An unmanaged API that is actively being used is a {{shadow}} API. An API that has been deprecated or abandoned is a {{zombie}} API." />
+
+<FlipCard front={<div>Which BIG-IP traffic group holds the floating self IP?</div>} back={<div>traffic-group-1. traffic-group-local-only is the non-floating self IP.</div>} color="#00e5ff" />

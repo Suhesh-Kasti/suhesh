@@ -1,22 +1,62 @@
 ---
 title: "DNS for Dummies: Part 1"
-date: "2025-01-12T10:55:53"
-excerpt: "The journey to mastering DNS starts here. Let's discover why DNS is the internet's backbone and its role in enabling modern-day connectivity."
+date: '2025-01-12'
+excerpt: "What DNS is, why the internet needs it, and the record types worth knowing — a standalone primer, since the rest of that series never got written."
 tags: ['DNS']
 category: "Networking"
+image: "/images/content/dns/thumbnails/dns_series.jpeg"
 type: "blog"
 ---
 
-## Welcome to this [DNS Series ](/tags/dns/)
+## Welcome to the [DNS](/braindump?tag=DNS) Primer
 
-Have you ever wondered what happens when you type a URL like `suhesh.com.np` in your browser and hit Enter? What magic makes it possible for websites, hosted halfway across the globe, to load in seconds? The answer lies in **DNS**—Domain Name System—the _"contacts app"_ of modern Internet.
+Type `suhesh.com.np` into a browser and hit Enter. You never typed an IP address, and you never needed to. DNS turned the name you know into the address the network needs.
 
-Through this blog series we will walk through a exploration of DNS, from its foundational concepts to setting up your own **F5 DNS** solutions learning together along the way. I am aiming this series to:
+The usual analogy holds up: DNS is the contacts app of the internet. You remember "mom", the phone remembers the number. You remember the name, DNS resolves the rest.
 
-- Break down the complexities of DNS in an intuitive and engaging way.
-- Incorporate hands-on lab walk alongs to solidify our understanding.
-- Include quizzes and practical exercises to exercise what we learnt.
-- Make this learning journey fun and rewarding!
+![The local hosts file open in a text editor with a name pointed at an IP address by hand](/images/content/dns101/hosts_file.png)
 
-Let’s begin this adventure by understanding the basics. In the upcoming posts, we’ll dive deeper into DNS records, security (like DNSSEC), tools such as `dig` and `nslookup`, and even scaling DNS using advanced features.
+## What the Series Was Meant to Cover
 
+This was going to be part one of a DNS series, hands-on rather than reading slides. Parts two through four never got written, so this is all there is:
+
+- How a lookup actually happens, step by step
+- The record types that matter, and when each one is used
+- Security, including DNSSEC and why DNS is a favourite attack surface
+- The tools, `dig` and `nslookup`, used properly
+- Scaling DNS, with hands-on work on an F5 DNS setup
+
+## What You Need to Follow Along
+
+A terminal and a bit of curiosity. If you can run `dig`, you can keep up.
+
+If you run your own resolver, the first thing you check is whether the service is up.
+
+![Terminal showing the BIND (named) DNS service reported as active by a status check](/images/content/dns101/bind_status.png)
+
+## Quick Check
+
+<MatchPairs
+  title="DNS record types"
+  color="#0055ff"
+  pairs={[
+    { term: "A", match: "Maps a name to an IPv4 address" },
+    { term: "AAAA", match: "Maps a name to an IPv6 address" },
+    { term: "CNAME", match: "Points one name at another name" },
+    { term: "MX", match: "The mail servers for a domain" },
+    { term: "TXT", match: "Free-form text, often for verification" },
+    { term: "NS", match: "The name servers that own the zone" }
+  ]}
+/>
+
+<Cloze
+  title="DNS in one line"
+  color="#00dd44"
+  text="DNS stands for {{Domain Name System}}. It turns a name like {{suhesh.com.np}} into an IP address a network can route to."
+/>
+
+<FlipCard
+  front={<div>What does DNS actually resolve a name into?</div>}
+  back={<div>An IP address. The name is for humans; every packet on the wire is addressed by IP. DNS is the lookup in between.</div>}
+  color="#ff5500"
+/>

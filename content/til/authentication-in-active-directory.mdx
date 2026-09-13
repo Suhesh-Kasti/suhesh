@@ -1,0 +1,32 @@
+---
+title: "Authentication in Active Directory"
+date: '2026-06-17'
+tags: ["Security", "Active Directory", "NTLM", "Kerberos"]
+excerpt: "NTLM passes a challenge around and proves it, while Kerberos hands out tickets. Two ways Windows proves who you are inside a domain."
+type: til
+category: "Security"
+---
+
+# Authentication in Active Directory
+
+## NTLM authentication
+
+It is a **challenge-response mechanism**:
+
+1. The user sends their username and password to the server.
+2. The server responds with a challenge.
+3. The user responds with the challenge and a response to the challenge.
+4. The server forwards the user-sent challenge and response to the domain controller.
+5. The domain controller verifies the response against a database.
+6. If the response is valid, the domain controller tells the server to allow the user to access the service.
+7. If the response is invalid, the domain controller denies the user's request.
+
+## Kerberos authentication
+
+It is a ticket-based authentication method.
+
+<QuizCard title="AD auth check" questions={[
+  { question: "Which mechanism is challenge-response?", options: ["Kerberos", "NTLM", "LDAP", "RADIUS"], correct: 1, explanation: "NTLM sends a server challenge that the client has to prove it can answer." },
+  { question: "How does Kerberos prove identity?", options: ["By replaying a password hash", "By issuing tickets", "By broadcasting to the domain", "By reusing an NTLM challenge"], correct: 1, explanation: "Kerberos is ticket-based: the domain hands out tickets that grant service access." },
+  { question: "In NTLM, who verifies the client's response?", options: ["The client itself", "The server alone", "The domain controller", "The router"], correct: 2, explanation: "The server forwards the challenge and response to the domain controller, which checks it against its database." }
+]} />

@@ -1,26 +1,14 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { Fragment, useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import type { BrainDumpMeta, ContentType } from "@/lib/braindump";
 import { POSTS_PER_PAGE, archivePageHref } from "@/lib/pagination";
-import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
+import { TYPE_CONFIG } from "@/lib/content-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFire, faBookOpen, faListCheck, faInfinity, faFileCode, faMap, faRoad, faFlask, faXmark } from "@fortawesome/free-solid-svg-icons";
-
-const TYPE_CONFIG: Record<
-  ContentType,
-  { label: string; color: string; icon: typeof faFire; order: number }
-> = {
-  braindump: { label: "MAP", color: COLORS.pink, icon: faMap, order: 0 },
-  series: { label: "Series", color: COLORS.teal, icon: faRoad, order: 1 },
-  lab: { label: "Labs", color: COLORS.orange, icon: faFlask, order: 2 },
-  cheatsheet: { label: "Cheatsheets", color: COLORS.green, icon: faBookOpen, order: 3 },
-  checklist: { label: "Checklists", color: COLORS.orange, icon: faListCheck, order: 3 },
-  til: { label: "Byte-Sized", color: COLORS.blue, icon: faInfinity, order: 4 },
-  blog: { label: "Deep Dives", color: COLORS.purple, icon: faFileCode, order: 5 },
-};
+import { faFileCode, faMap, faRoad, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function BrainDumpList({
   posts,
@@ -37,11 +25,17 @@ export default function BrainDumpList({
   // Only used while a client-side filter is active; the unfiltered archive paginates by path.
   const [clientPage, setClientPage] = useState(0);
 
-  // Check URL ?tag= on mount
+  // Opening the tag panel is tracked so the chips row can animate in below the search bar.
+  const [tagsOpen, setTagsOpen] = useState(false);
+
+  // Check URL ?tag= and ?type= on mount, so a link from elsewhere (a type badge, for example)
+  // lands on the same filtered view you would get by clicking the filter here.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tag = filterTag ?? params.get("tag");
     if (tag) setActiveTag(tag);
+    const type = params.get("type");
+    if (type && type in TYPE_CONFIG) setActiveType(type as ContentType);
   }, [filterTag]);
   const PER_PAGE = POSTS_PER_PAGE;
 
@@ -79,6 +73,16 @@ export default function BrainDumpList({
   const visiblePosts = isFiltering
     ? filteredPosts.slice(clientPage * PER_PAGE, (clientPage + 1) * PER_PAGE)
     : posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  // Page numbers to render: the first, the last, and a small window around the current page.
+  // The rest collapse into an ellipsis. Every page stays reachable — neighbours chain one into
+  // the next and the first/last links reach both ends — so crawlers can still walk the archive.
+  const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1).filter(
+    (pageNumber) =>
+      pageNumber === 1 ||
+      pageNumber === totalPages ||
+      Math.abs(pageNumber - page) <= 2
+  );
 
   // Reset page when filters change
   useEffect(() => { setClientPage(0); }, [activeType, searchTerm, activeTag]);
@@ -129,32 +133,36 @@ export default function BrainDumpList({
         </div>
 
         {/* Search + Filter bar */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-10">
-          {/* Search */}
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search brain dump..."
-              className="w-full bg-surface border-2 border-fg px-4 py-2.5 font-mono text-sm text-fg placeholder:text-fg-muted focus:outline-none focus:border-brutal-pink transition-colors"
-              style={{ fontFamily: TYPOGRAPHY.fontMono }}
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-fg-muted hover:text-fg px-2"
-              >
-                <FontAwesomeIcon icon={faXmark} />
-              </button>
-            )}
-          </div>
+        <div className="flex flex-col gap-3 mb-10">
+          {/* Row 1: a compact search so the type filters can sit on one line beside it on
+              wider screens, and wrap neatly into rows on phones. */}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+            <div className="relative flex w-full items-center sm:w-52 sm:shrink-0 lg:w-60">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search brain dump..."
+                aria-label="Search brain dump"
+                className="w-full bg-surface border-2 border-fg px-4 py-2.5 pr-10 font-mono text-sm text-fg placeholder:text-fg-muted focus:outline-none focus:border-brutal-pink transition-colors"
+                style={{ fontFamily: TYPOGRAPHY.fontMono }}
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  aria-label="Clear search"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer px-2 font-mono text-fg-muted transition-colors hover:text-fg"
+                >
+                  <FontAwesomeIcon icon={faXmark} />
+                </button>
+              )}
+            </div>
 
           {/* Type filters only at top */}
-          <div className="flex gap-1.5 flex-wrap">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5 [&>*]:shrink-0 xl:flex-1">
             <button
               onClick={() => setActiveType("all")}
-              className={`font-mono text-xs uppercase px-3 py-2 border-2 transition-all cursor-pointer inline-flex items-center gap-1 ${
+              className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs ${
                 activeType === "all"
                   ? "border-fg bg-fg text-surface"
                   : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
@@ -170,7 +178,7 @@ export default function BrainDumpList({
             {/* MAP link — always visible */}
             <Link
               href="/map"
-              className="font-mono text-xs uppercase px-3 py-2 border-2 transition-all cursor-pointer inline-flex items-center gap-1 border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
+              className="font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
               style={{
                 fontFamily: TYPOGRAPHY.fontMono,
                 letterSpacing: TYPOGRAPHY.tracking.mono,
@@ -182,30 +190,30 @@ export default function BrainDumpList({
 
             {/* ROADMAP link — filters to series type */}
             <button
-              onClick={() => setActiveType(activeType === "series" ? "all" : "series")}
-              className={`font-mono text-xs uppercase px-3 py-2 border-2 transition-all cursor-pointer inline-flex items-center gap-1 ${
-                activeType === "series"
+              onClick={() => setActiveType(activeType === "roadmap" ? "all" : "roadmap")}
+              className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs ${
+                activeType === "roadmap"
                   ? "border-fg bg-fg text-surface"
                   : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
               }`}
               style={{
                 fontFamily: TYPOGRAPHY.fontMono,
                 letterSpacing: TYPOGRAPHY.tracking.mono,
-                borderColor: activeType === "series" ? "var(--color-fg)" : COLORS.teal,
+                borderColor: activeType === "roadmap" ? "var(--color-fg)" : COLORS.teal,
               }}
             >
               <FontAwesomeIcon icon={faRoad} /> ROADMAP
             </button>
 
             {types
-              .filter((type) => type !== "braindump" && type !== "series")
+              .filter((type) => type !== "braindump" && type !== "roadmap")
               .map((type) => {
               const config = TYPE_CONFIG[type];
               return (
                 <button
                   key={type}
                   onClick={() => setActiveType(type)}
-                  className={`font-mono text-xs uppercase px-3 py-2 border-2 transition-all cursor-pointer inline-flex items-center gap-1 ${
+                  className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs ${
                     activeType === type
                       ? "border-fg bg-fg text-surface"
                       : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
@@ -221,39 +229,65 @@ export default function BrainDumpList({
               );
             })}
           </div>
+          </div>
 
-          {/* Collapsible tag filter — only show when there are tags */}
+          {/* Tag filter lives on its own full-width row, so opening it never squeezes the
+              search field, and the search folds to an icon while it is open. */}
           {allTags.length > 0 && (
-            <details className="mt-2 group">
-              <summary className="font-mono text-2xs uppercase text-fg-muted cursor-pointer hover:text-fg transition-colors inline-block" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+            <div>
+              <button
+                onClick={() => setTagsOpen((open) => !open)}
+                aria-expanded={tagsOpen}
+                className="inline-flex cursor-pointer items-center gap-1.5 font-mono text-2xs uppercase text-fg-muted transition-colors hover:text-fg"
+                style={{ fontFamily: TYPOGRAPHY.fontMono }}
+              >
                 filter by tag ({allTags.length})
-              </summary>
-              <div className="flex gap-1 flex-wrap mt-2 pt-2 border-t border-fg-muted/20">
-                <button
-                  onClick={() => setActiveTag(null)}
-                  className={`font-mono text-2xs uppercase px-2 py-1 border transition-all cursor-pointer ${
-                    !activeTag ? "border-fg bg-fg text-surface" : "border-fg-muted/30 text-fg-muted hover:border-fg"
-                  }`}
-                  style={{ fontFamily: TYPOGRAPHY.fontMono }}
-                >
-                  all
-                </button>
-                {allTags.map(([tag, count]) => (
-                  <button
-                    key={tag}
-                    onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                    className={`font-mono text-2xs uppercase px-2 py-1 border transition-all cursor-pointer ${
-                      activeTag === tag
-                        ? "border-fg bg-fg text-surface"
-                        : "border-fg-muted/30 text-fg-muted hover:border-fg"
-                    }`}
-                    style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                {activeTag && (
+                  <span className="border border-fg bg-fg px-1.5 py-0.5 text-surface">{activeTag}</span>
+                )}
+                <span className={`transition-transform duration-200 ${tagsOpen ? "rotate-180" : ""}`}>▾</span>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {tagsOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="overflow-hidden"
                   >
-                    {tag} ({count})
-                  </button>
-                ))}
-              </div>
-            </details>
+                    <div className="mt-2 flex flex-wrap gap-1 border-t border-fg-muted/20 pt-2 [&>*]:shrink-0">
+                      <button
+                        onClick={() => setActiveTag(null)}
+                        className={`cursor-pointer border px-2 py-1 font-mono text-2xs uppercase transition-all ${
+                          !activeTag
+                            ? "border-fg bg-fg text-surface"
+                            : "border-fg-muted/30 text-fg-muted hover:border-fg"
+                        }`}
+                        style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                      >
+                        all
+                      </button>
+                      {allTags.map(([tag, count]) => (
+                        <button
+                          key={tag}
+                          onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                          className={`cursor-pointer border px-2 py-1 font-mono text-2xs uppercase transition-all ${
+                            activeTag === tag
+                              ? "border-fg bg-fg text-surface"
+                              : "border-fg-muted/30 text-fg-muted hover:border-fg"
+                          }`}
+                          style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                        >
+                          {tag} ({count})
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           )}
         </div>
 
@@ -419,20 +453,37 @@ export default function BrainDumpList({
                 </span>
               )}
 
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-                <Link
-                  key={pageNumber}
-                  href={archivePageHref(pageNumber)}
-                  aria-current={pageNumber === page ? "page" : undefined}
-                  aria-label={`Page ${pageNumber}`}
-                  className={`font-mono text-xs uppercase px-3 py-2 border-2 transition-all ${
-                    pageNumber === page ? "bg-fg text-surface" : "hover:bg-fg hover:text-surface"
-                  }`}
-                  style={{ borderColor: "var(--fg)", color: pageNumber === page ? undefined : "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
-                >
-                  {pageNumber}
-                </Link>
-              ))}
+              {visiblePages.map((pageNumber, index) => {
+                const previous = visiblePages[index - 1];
+                const gap = previous !== undefined && pageNumber - previous > 1;
+                const isCurrent = pageNumber === page;
+                return (
+                  <Fragment key={pageNumber}>
+                    {gap && (
+                      <span
+                        aria-hidden="true"
+                        className="select-none px-1 font-mono text-xs text-fg-muted"
+                        style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                      >
+                        …
+                      </span>
+                    )}
+                    <Link
+                      href={archivePageHref(pageNumber)}
+                      aria-current={isCurrent ? "page" : undefined}
+                      aria-label={`Page ${pageNumber}`}
+                      className={`min-w-9 border-2 text-center font-mono text-xs uppercase transition-all ${
+                        isCurrent
+                          ? "border-fg bg-fg px-3 py-2 text-surface"
+                          : "border-fg-muted/40 px-3 py-2 text-fg-muted hover:border-fg hover:bg-fg hover:text-surface"
+                      }`}
+                      style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                    >
+                      {pageNumber}
+                    </Link>
+                  </Fragment>
+                );
+              })}
 
               {page < totalPages ? (
                 <Link

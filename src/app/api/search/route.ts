@@ -13,21 +13,83 @@ const MAX_QUERY_LENGTH = 200;
 const answerCache = new Map<string, { answer: string; at: number }>();
 const CACHE_TTL_MS = 10 * 60_000;
 const CACHE_MAX = 300;
+const EDGE_CACHE_TTL_S = 6 * 60 * 60;
+const MAX_ANSWER_CHARS = 2000;
 
-function cachedAnswer(query: string): string | undefined {
-  const hit = answerCache.get(query);
+/**
+ * Answers are personalised with the visitor's own progress count, so it has to be part of the
+ * key — otherwise one visitor could be served another visitor's cached reply.
+ */
+function cacheId(query: string, progress: number): string {
+  return `${query}|${progress}`;
+}
+
+function cachedAnswer(id: string): string | undefined {
+  const hit = answerCache.get(id);
   if (!hit) return undefined;
   if (Date.now() - hit.at > CACHE_TTL_MS) {
-    answerCache.delete(query);
+    answerCache.delete(id);
     return undefined;
   }
   return hit.answer;
 }
 
-function rememberAnswer(query: string, answer: string): void {
+function rememberAnswer(id: string, answer: string): void {
   if (!answer || answer.startsWith("**SCHIZO")) return;
   if (answerCache.size >= CACHE_MAX) answerCache.clear();
-  answerCache.set(query, { answer, at: Date.now() });
+  answerCache.set(id, { answer, at: Date.now() });
+}
+
+/** Cloudflare's shared edge cache, when we are actually running on Workers. */
+function edgeCache(): Cache | undefined {
+  const store = (globalThis as { caches?: { default?: Cache } }).caches;
+  return store?.default;
+}
+
+const EDGE_CACHE_ORIGIN = "https://edge-cache.invalid";
+
+/**
+ * Read a previous answer from the edge cache. This is the thing the in-memory Map cannot do:
+ * it survives a cold start and is shared across isolates, so a question asked yesterday by
+ * someone else costs nothing today.
+ */
+async function readCachedAnswer(query: string, progress: number): Promise<string | undefined> {
+  const id = cacheId(query, progress);
+  const memory = cachedAnswer(id);
+  if (memory) return memory;
+
+  const cache = edgeCache();
+  if (!cache) return undefined;
+  try {
+    const hit = await cache.match(new Request(`${EDGE_CACHE_ORIGIN}/ai/${encodeURIComponent(id)}`));
+    if (!hit) return undefined;
+    const text = (await hit.text()).slice(0, MAX_ANSWER_CHARS);
+    if (!text) return undefined;
+    rememberAnswer(id, text);
+    return text;
+  } catch {
+    return undefined;
+  }
+}
+
+async function writeCachedAnswer(query: string, progress: number, answer: string): Promise<void> {
+  if (!answer) return;
+  const id = cacheId(query, progress);
+  rememberAnswer(id, answer);
+
+  const cache = edgeCache();
+  if (!cache) return;
+  try {
+    // Short answers only, with a bounded TTL: this can never grow without limit.
+    await cache.put(
+      new Request(`${EDGE_CACHE_ORIGIN}/ai/${encodeURIComponent(id)}`),
+      new Response(answer.slice(0, MAX_ANSWER_CHARS), {
+        headers: { "Cache-Control": `public, max-age=${EDGE_CACHE_TTL_S}` },
+      })
+    );
+  } catch {
+    /* caching is best-effort */
+  }
 }
 
 export async function POST(request: Request) {
@@ -39,7 +101,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = (await request.json()) as { query?: string; askAI?: boolean };
+    const body = (await request.json()) as { query?: string; askAI?: boolean; progress?: number };
     const q = (body.query ?? "").trim().toLowerCase().slice(0, MAX_QUERY_LENGTH);
     if (!q) return Response.json({ aiAnswer: "", posts: [], projects: [] });
 
@@ -49,12 +111,27 @@ export async function POST(request: Request) {
 
     let aiAnswer = "";
     if (body.askAI) {
-      const cached = cachedAnswer(q);
+      // Clamp the visitor-supplied progress. It only selects which cached answer they get, and
+      // an unbounded value would let one caller mint unlimited distinct cache entries.
+      const progress =
+        typeof body.progress === "number" && Number.isFinite(body.progress)
+          ? Math.max(0, Math.min(9999, Math.floor(body.progress)))
+          : 0;
+
+      // If every word of the query already appears in the top result's title, the visitor is
+      // asking for that page and the card below answers it. No model call needed.
+      const top = posts[0];
+      const isLookup =
+        !!top && words.length > 0 && words.every((w: string) => top.title.toLowerCase().includes(w));
+
+      const cached = await readCachedAnswer(q, progress);
       if (cached) {
         aiAnswer = cached;
+      } else if (isLookup) {
+        aiAnswer = `The page you want is **${top.title}** — it is the first result below.`;
       } else if (rateLimit(clientKey(request, "search-ai"), 5, 60_000) && rateLimit("search-ai-global", 60, 60_000)) {
-        aiAnswer = await tryAI(q, posts, projects);
-        rememberAnswer(q, aiAnswer);
+        aiAnswer = await tryAI(q, posts, projects, progress);
+        await writeCachedAnswer(q, progress, aiAnswer);
       } else {
         aiAnswer =
           "**SCHIZO needs a breather**\n\nThat is a lot of AI questions in a short window. The results below still work — try again in a minute.";
@@ -90,18 +167,33 @@ function getEnv(): Env {
   }
 }
 
-function systemPrompt(postCount: number, projectCount: number): string {
+function systemPrompt(postCount: number, projectCount: number, progress?: number): string {
   const hasContent = postCount > 0 || projectCount > 0;
-  return `You are SCHIZO — Suhesh's witty digital sidekick. He's an AppSec & Offensive Security engineer. Use markdown (bold, lists). 2-4 sentences max. Be fun, unhinged. Roast Suhesh playfully. Never corporate.${
+  return `You are the assistant on Suhesh Kasti's portfolio site. He is an application security engineer; the site holds his writeups, cheatsheets, roadmaps and browser-based tools.
+
+How to answer:
+- Plain and specific. At most 3 short sentences. No hype, no jokes about the author, no persona, no slang.
+- Be genuinely useful: say which page answers the question and what they will find there. A little dry humour is fine, never at the reader's expense.
+- Use only the matching pages given to you. Link the single most relevant one as a markdown link, and never invent a title or URL that is not in the matches.
+- If the matches do not answer the question, say so in one line and point at the closest page instead of guessing.${
     hasContent
-      ? ` Found ${postCount} post(s) and ${projectCount} project(s) — mention briefly.`
-      : " No site matches found."
+      ? `\n- There are ${postCount} matching page(s) and ${projectCount} matching project(s) for this question.`
+      : "\n- Nothing on the site matches this question."
+  }${
+    typeof progress === "number" && progress > 0
+      ? `\n- The visitor has ticked off ${progress} labs in the PortSwigger roadmap (their own browser data, sent only for this question). You may use it to suggest what to do next, and you may mention it once if it fits.`
+      : ""
   }`;
 }
 
-async function tryAI(q: string, posts: PostResult[], projects: ProjectResult[]): Promise<string> {
+async function tryAI(
+  q: string,
+  posts: PostResult[],
+  projects: ProjectResult[],
+  progress?: number
+): Promise<string> {
   const env = getEnv();
-  const sys = systemPrompt(posts.length, projects.length);
+  const sys = systemPrompt(posts.length, projects.length, progress);
 
   if (env.AI && typeof env.AI.run === "function") {
     try {
@@ -133,7 +225,7 @@ async function tryAI(q: string, posts: PostResult[], projects: ProjectResult[]):
 async function runAI(ai: AiBinding, query: string, sys: string): Promise<string> {
   const resp = await ai.run(MODEL, {
     messages: [{ role: "system", content: sys }, { role: "user", content: query }],
-    max_tokens: 200, temperature: 0.85,
+    max_tokens: 200, temperature: 0.4,
   });
   return resp?.response || "";
 }

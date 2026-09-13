@@ -14,21 +14,12 @@ export const metadata: Metadata = {
       "Reach out to Suhesh Kasti for cybersecurity consulting, collaboration, speaking engagements, or just to talk security. Available via email, GitHub, Twitter, and LinkedIn.",
     url: `${BASE_URL}/contact`,
     siteName: "SCHIZO",
-    images: [
-      {
-        url: `${BASE_URL}/opengraph-image`,
-        width: 1200,
-        height: 630,
-        alt: "SCHIZO — Suhesh Kasti's cybersecurity portfolio",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Contact — Get in Touch with Suhesh Kasti",
     description:
       "Reach out to Suhesh Kasti for cybersecurity consulting, collaboration, speaking engagements, or just to talk security. Available via email, GitHub, Twitter, and LinkedIn.",
-    images: [`${BASE_URL}/opengraph-image`],
   },
 };
 

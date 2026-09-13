@@ -1,6 +1,6 @@
 ---
 title: Multi-step process with no access control on one step
-date: '2025-06-18'
+date: '2026-08-13'
 tags:
   - PortSwigger
   - lab
@@ -10,41 +10,55 @@ excerpt: "This lab has an admin panel with a flawed multi-step process for chang
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Multi-step process with no access control on one step
 
-## Objective
-This lab has an admin panel with a flawed multi-step process for changing a user's role. You can familiarize yourself with the admin panel by logging in using the credentials `administrator:admin`.
-To solve the lab, log in using the credentials `wiener:peter` and exploit the flawed access controls to promote yourself to become an administrator.
+The first step of the role change checked who I was. The last step did not. All the protection sat on the doorway and none of it on the switch.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The application fails to enforce proper access controls on administrative or privileged functions.
-- **Root cause:** The server relies on client-side hints (URL, HTTP method, referer header) for access decisions instead of a server-side session check.
-- **Exploitation:** Access the restricted endpoint directly by guessing or finding the URL, changing the HTTP method, or manipulating headers.
-- **Key insight:** Server-side access control must be enforced on every request — never trust client-side indicators.
+## The setup
 
-## Blind Attempt 
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+Log in as `administrator:admin` and promote `carlos`. This time the promotion is a two-step flow. The first request is `POST /admin-roles` with `username=carlos&action=upgrade`, and it does not apply anything, it returns a confirmation form. Confirming sends a second `POST /admin-roles`, this one with `username=carlos&action=upgrade&confirmed=true`, and that is what actually changes the role.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-- [ ] Step 1: Same as before logged into admin account with provioded `administrator:admin`.
-- [ ] Step 2: `POST /admin-roles` was sent with `username=carlos&action=upgrade` parameters from admin users account to upgrade the user role.  Another confirmation `POST /admin-roles` was sent to server with parameter `action=upgrade&confirmed=true&username=carlos
-- [ ] Step 3: Sent POST request to `/admin-roles` with `wiener` user's cookie and `username=carlos&action=upgrade` parameters,  I got 401 Unauthorized.
-![](/images/series/Multi-step_process_with_no_access_control_1.png)
-- [ ] Step 4: Sent POST request to `/admin-roles` with `wiener` user's cookie and `action=upgrade&confirmed=true&username=carlos` and I got 302 Found.
-![](/images/series/Multi-step_process_with_no_access_control_2.png)
+The gate is on step one. The selection request is checked for admin rights, which is why a non-admin hitting it gets a `401`. Step two, the request that commits the change, assumes the earlier step already passed and never repeats the check. It trusts a single parameter, `confirmed=true`, as proof that an authorised user clicked through.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+I can send that commit request myself. My session is wiener's, the request carries `confirmed=true`, and the handler has no reason to doubt it, so the upgrade goes through without any admin ever touching it.
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. As admin, promote `carlos`. The first `POST /admin-roles` returns the confirmation page.
+2. Click yes to confirm and capture the second request, the one with `confirmed=true`. Send it to Repeater.
+3. Log in as `wiener:peter`, copy the session cookie into that second request, and change `username` to `wiener`.
+
+```http
+POST /admin-roles HTTP/1.1
+Host: <lab-id>.web-security-academy.net
+Cookie: session=<wiener-session>
+Content-Type: application/x-www-form-urlencoded
+
+username=wiener&action=upgrade&confirmed=true
+```
+
+4. Send it. A `302` comes back and `wiener` is an administrator now.
+
+For contrast, replaying step one as wiener returns `401`. Same cookie, same handler path, only the missing `confirmed` flag and the step change the outcome.
+
+## Why that payload works
+
+`confirmed=true` is client-supplied state standing in for a server-side fact. The commit handler treats it as evidence that a verified user already approved the change, but nothing binds that flag to my session. The workflow's integrity rested on a value I control, so skipping the protected step costs nothing.
+
+## The fix
+
+Re-check the caller's role in the handler that commits the change, not only in the step that starts it. Tie workflow state to the session on the server, so a confirmation is a recorded server-side fact rather than a flag the client can invent. Every step that changes state gets its own authorization check.
+
+<FlipCard front={<div>Which of the two requests actually changes the role?</div>} back={<div>The confirmation request, the second one with confirmed=true. It carries the commit, and it is also the step with no access check on it.</div>} />
+
+<Sequence title="Two-step promotion" steps={[
+  "Send the selection request: username and action",
+  "Server returns the confirmation form",
+  "Send the commit request with confirmed=true",
+  "Role changes with no admin check on that step"
+]} />

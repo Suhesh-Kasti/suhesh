@@ -1,39 +1,60 @@
 ---
 title: 'File path traversal, traversal sequences blocked with absolute path bypass'
-date: '2025-06-18'
+date: '2026-07-30'
 tags:
   - PortSwigger
   - lab
   - path-traversal
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — File path traversal, traversal
-  sequences blocked with absolute path bypass. Walkthrough with solution, key
-  takeaways, and blind replay exercise.
+excerpt: "Traversal sequences are blocked this time, but absolute paths are not. `filename=/etc/passwd` skips the base directory entirely."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: File path traversal, traversal sequences blocked with absolute path bypass
 
-## Objective
+I spent the first few minutes trying nested sequences, because that is the reflex after the non-recursive lab. It was wasted effort. This app blocks traversal properly, and the way in is the opposite of traversal: an absolute path.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Same image loader, `GET /image?filename=<name>`. A real image filename works. Anything containing `../` is rejected outright, a straight block with no stripping. So the relative route is closed.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+The thing worth noticing is that the endpoint takes a filename and nothing else. There is no visible base directory in the request, which means the base is added server-side. That server-side join is where this breaks.
 
-## Key Takeaway
+## How the vulnerability works
 
-*Write ONE principle I must remember*
+Blocking `../` defends against relative escapes. It does nothing about absolute ones. The server builds the path as a join of the image directory and the filename, and in most languages a second argument that starts with a slash replaces the base completely. The developer guarded one direction of escape and forgot the other.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Capture a normal image request and confirm `../` is blocked, so you know the filter is active rather than returning an error for some other reason.
+2. Put an absolute path straight into the parameter:
+
+```
+filename=/etc/passwd
+```
+
+3. Send it. The response body is the passwd file. No traversal, no encoding, nothing clever.
+
+## Why that payload works
+
+The path starts with a slash, so the operating system treats it as absolute and never consults the directory the app intended to confine you to. In Python, `os.path.join('/var/www/images', '/etc/passwd')` returns `/etc/passwd`: the base argument is discarded the moment the second argument is absolute. Even a naive string join, `'/var/www/images/' + '/etc/passwd'`, produces `//etc/passwd`, and the kernel collapses the double slash to `/etc/passwd`. Either way the base directory is gone, and the blacklist that only knows about `../` never fires.
+
+## The fix
+
+Validate the resolved path, not the input text. Reject absolute paths, canonicalise the join, and require the result to live under the media directory:
+
+```python
+base = "/var/www/images"
+resolved = os.path.realpath(os.path.join(base, filename))
+if not resolved.startswith(base + os.sep):
+    raise Forbidden()
+```
+
+A blacklist of traversal strings will always miss a case. A positive check that the final path is inside the allowed directory covers relative traversal and absolute paths in one test.
+
+<Terminal title="absolute path" command="curl 'https://LAB-ID.web-security-academy.net/image?filename=/etc/passwd'" output={"root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nbin:x:2:2:bin:/bin:/usr/sbin/nologin"} />
+
+<FlipCard front={<div>Traversal is blocked. What single path can you send instead to read a file outside the image directory?</div>} back={<div>An absolute path, e.g. `/etc/passwd`. When the second argument of a path join is absolute, it replaces the base directory, so no traversal is needed.</div>} />

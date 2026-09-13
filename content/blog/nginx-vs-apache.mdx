@@ -1,0 +1,439 @@
+---
+title: "NGINX vs Apache"
+date: '2025-04-08'
+tags: ["nginx", "web server", "devops", "performance"]
+excerpt: "Apache forks a process per request; NGINX handles thousands asynchronously. A walkthrough of how the two servers differ, plus NGINX basics."
+type: blog
+category: "Network Operations"
+---
+
+# NGINX vs Apache
+
+## 1. What are Apache and NGINX?
+
+- **Apache**: a web server that's been around for a long time. It's like a restaurant where each waiter (a process) serves one customer at a time.
+- **NGINX**: a newer web server designed for speed and efficiency. It's like a super-efficient waiter who can juggle multiple customers at once without slowing down.
+
+## 2. How Apache works (prefork mode)
+
+- Apache uses a "prefork" mode by default. This means it creates a fixed number of processes (think of them as workers).
+- Each process can handle **one request** at a time — whether it's a simple image or a complex script.
+- Problem: if you have 10 processes and 11 requests come in, the 11th request has to wait or gets ignored.
+
+## 3. How NGINX works (asynchronous design)
+
+- NGINX is **asynchronous**, meaning one process can handle multiple requests at the same time.
+- It's not limited to "one request per worker." Instead, it depends on how much power (system resources like CPU/memory) your server has.
+- This makes NGINX more efficient because it doesn't need to spawn tons of workers.
+
+## 4. Dynamic content handling
+
+- **Apache**: can run programming languages (like PHP) directly inside its processes. It's like a chef cooking the meal right at your table.
+- **NGINX**: can't run languages like PHP on its own. Instead, it hands off dynamic content requests (e.g., a PHP script) to a separate process (like PHP-FPM), then sends the result back to the client.
+- This separation sounds tricky, but it keeps NGINX lightweight and fast.
+
+## 5. Resource usage
+
+- **Apache**: every request, even for a simple image, carries the "overhead" of being ready to process a script. This uses more resources (memory/CPU).
+- **NGINX**: only uses extra resources (like PHP-FPM) when needed for dynamic content. For static files (images, HTML), it's super lean and quick.
+- Result: NGINX saves system resources, especially when serving a mix of static and dynamic content.
+
+## 6. Performance: what does "faster" mean?
+
+NGINX doesn't make your internet faster, but it:
+
+- Serves static files (like images) quicker because it skips unnecessary steps.
+- Handles **more concurrent requests** (thousands at once) without crashing or rejecting them.
+
+Apache, with its fixed processes, might reject extra requests if it's maxed out. So NGINX is "faster" in terms of handling high traffic efficiently.
+
+## 7. Configuration differences
+
+- **Apache**: focuses on file system locations (e.g., using .htaccess files to tweak settings for specific folders). This flexibility comes with a performance cost.
+- **NGINX**: treats requests as URLs first, not file paths. It doesn't use .htaccess-like overrides, which keeps it faster and simpler.
+- Bonus: NGINX's design lets it do more than just serve web pages — it can balance traffic (load balancer) or handle email.
+
+## 8. Why use NGINX?
+
+- It's efficient, fast, and great for modern websites with lots of traffic or mixed content.
+- The course next shows you how to install and set it up.
+
+---
+
+# FAQ
+
+### 1. What does it mean when Apache can run programming languages inside its processes, but NGINX can't?
+
+- **Apache**: imagine Apache as a worker who has a built-in toolkit (like a Swiss Army knife) that includes programming language interpreters (e.g., for PHP). When a request comes in, the Apache process itself can use this toolkit to execute PHP code directly. Each process is "heavy" because it's always ready to do this, even for simple tasks like serving an image.
+- **NGINX**: NGINX is like a worker without that toolkit. It's lean and focused on delivering files or passing requests along. It can't execute PHP (or other languages) on its own — it needs a separate helper (like PHP-FPM) to do that work.
+
+### 2. What is PHP-FPM, and where does it run? Doesn't it run in NGINX's process?
+
+- **PHP-FPM**: stands for "PHP FastCGI Process Manager." It's a separate program that runs outside of NGINX, not inside its processes. Think of it as a dedicated chef who cooks PHP "meals" (dynamic content) when NGINX asks for them.
+- **Where it runs**: it runs as its own set of processes on the server, independent of NGINX. NGINX sends PHP requests to PHP-FPM via a communication method called FastCGI, gets the result, and sends it back to the client.
+- **Not in NGINX's process**: since PHP-FPM is separate, NGINX's processes stay lightweight — they don't carry the "PHP toolkit" overhead that Apache does.
+
+### 3. How is overhead reduced? Is it just for static files?
+
+- **Overhead in Apache**: every Apache process is ready to run PHP (or other languages), even if the request is just for an image. This readiness uses extra memory and CPU, creating "overhead" for every request.
+- **Overhead in NGINX**: NGINX only involves PHP-FPM when a request needs PHP (dynamic content). For static files (images, HTML), NGINX serves them directly without touching PHP-FPM, so there's no overhead for those requests.
+- **Reduction**: the overhead is reduced specifically for static files, because NGINX skips the PHP processing entirely. For dynamic content, resources are still used (by PHP-FPM), but NGINX itself stays efficient by not embedding that capability.
+
+### 4. How does NGINX handle concurrent requests? Doesn't it also have a fixed number of processes?
+
+- **NGINX's approach**: NGINX uses an **event-driven, asynchronous** model. One process can handle many requests at once by quickly switching between them (like a juggler keeping multiple balls in the air). It doesn't wait for one request to finish before starting another — it manages them concurrently using system resources efficiently.
+- **Fixed processes?**: NGINX typically runs a small, fixed number of worker processes (often one per CPU core), but each process can handle **thousands of connections** at the same time. Apache's prefork mode, by contrast, ties each process to one connection, so you need more processes for more requests.
+- **What's a process?**: a process is like a worker in the operating system. In Apache, each worker serves one client at a time. In NGINX, each worker is a multitasking superstar, serving many clients simultaneously.
+
+### 5. What does "focuses on filesystem locations" (Apache) vs. "focuses on URLs" (NGINX) mean? Why is one flexible and the other performant?
+
+- **Apache (filesystem focus)**: Apache looks at requests in terms of files on the server (e.g., "serve the file at /var/www/html/index.php"). It uses .htaccess files in directories to change settings (e.g., rewrite rules, access control). This is **flexible** because you can tweak settings per folder without restarting the server, but it's slower because Apache checks these files for every request.
+- **NGINX (URL focus)**: NGINX interprets requests as URLs first (e.g., "what does /blog/post1 mean?") and maps them to actions in its config file. It doesn't use .htaccess-like overrides, so it's **performant** — no extra file checks slow it down. Everything is pre-configured and fast.
+- **Why NGINX can balance traffic/email**: NGINX's URL-based design makes it easy to route requests to different servers (load balancing) or handle protocols like email (SMTP/IMAP). Apache's filesystem focus ties it more to serving files, making these extra roles harder to implement efficiently.
+
+### 6. Why can't Apache balance traffic or handle email as easily?
+
+Apache *can* do these things (e.g., with modules), but its design prioritizes serving web content via files, not routing or protocol handling. NGINX's lightweight, URL-driven architecture was built with versatility in mind, making it a natural fit for tasks beyond just web serving.
+
+---
+
+## Refining the answers to the earlier questions
+
+### 1. What's the main difference between how Apache and NGINX handle requests?
+
+- **Answer:** Apache can only handle one request at a time because each process needs to use a server-side programming language as well, but NGINX can serve static stuff without any overhead and perform concurrent processes.
+- **Refined:** Apache (in prefork mode) handles one request per process, and each process is ready to run server-side languages like PHP, adding overhead even for static files. NGINX handles many requests per process asynchronously, serving static files without overhead and passing dynamic requests to a separate process (like PHP-FPM).
+
+### 2. Why does NGINX use fewer resources than Apache when serving a mix of static files and dynamic content?
+
+- **Answer:** because NGINX doesn't need to process a server-side programming language when serving static files, and also uses something called PHP-FPM to process server-side requests — but I didn't understand what PHP-FPM is, or how and why it's used.
+- **Refined:** NGINX uses fewer resources because it serves static files (e.g., images) directly without involving a language processor, unlike Apache, which carries that overhead for every request. For dynamic content (e.g., PHP pages), NGINX delegates the work to PHP-FPM, a separate process that handles PHP execution efficiently. This separation keeps NGINX lightweight, only using extra resources when needed.
+
+### 3. If NGINX can't run PHP directly, how does it handle a request for a PHP webpage? What's the role of PHP-FPM?
+
+- **Answer:** it uses something called PHP-FPM, and I guess its role is to serve as a server-side programming language compiler like XAMPP, but I'm not sure.
+- **Refined:** NGINX handles a PHP request by sending it to PHP-FPM, a separate program that processes PHP code and returns the result (e.g., HTML) to NGINX, which then sends it to the client. PHP-FPM isn't a full suite like XAMPP (which includes Apache, PHP, etc.); it's a specialized manager for running PHP efficiently with FastCGI, keeping NGINX free of that burden.
+
+### 4. Imagine a website gets 1,000 visitors at once. Why might NGINX handle this better than Apache in prefork mode?
+
+- **Answer:** because NGINX can handle concurrent requests in one process, unlike Apache.
+- **Refined:** NGINX can handle 1,000 visitors better because a single NGINX process can manage thousands of concurrent requests asynchronously, efficiently using system resources. Apache in prefork mode assigns one process per request, so with only, say, 100 processes, it would reject or queue the extra 900 requests, slowing down or failing under load.
+
+### 5. Apache uses .htaccess files for directory settings. NGINX doesn't. Why might this make NGINX faster?
+
+- **Answer:** no idea — also, what is .htaccess?
+- **Refined:** .htaccess is a file Apache checks in each directory to apply settings (e.g., redirects, passwords). This flexibility slows Apache down because it reads these files for every request. NGINX skips this by using a single, pre-loaded config file, avoiding extra checks and making it faster.
+
+### 6. If you were setting up a blog with lots of images and some PHP-based comments, how might NGINX's design help you save server resources?
+
+- **Answer:** static files aren't processed by the PHP engine, and only comments are handled by PHP-FPM, and that too concurrently, unlike Apache.
+- **Refined:** NGINX saves resources by serving the blog's images and static pages directly, without involving PHP-FPM, keeping overhead low. For PHP-based comments, it uses PHP-FPM only when needed, and its ability to handle multiple requests concurrently in one process reduces the number of workers needed compared to Apache's one-per-request model.
+
+---
+
+## Phase 1: Absolute Basics — What is NGINX?
+
+### What is NGINX?
+
+- **NGINX** (pronounced "engine-x") is a **high-performance, lightweight web server**.
+- It can also act as a:
+  - **Reverse Proxy**
+  - **Load Balancer**
+  - **HTTP Cache**
+  - **Mail Proxy (less common)**
+
+It's event-driven, non-blocking, and optimized for handling **many concurrent connections**.
+
+### Core components of NGINX
+
+| Component | Description |
+|---|---|
+| `nginx.conf` | Main config file, entry point to all settings |
+| `http` block | Contains configuration related to HTTP traffic |
+| `server` block | Virtual host — handles domain-specific configs |
+| `location` block | Defines behavior based on request paths or patterns |
+| `events` block | Configures how NGINX handles connections (threads, workers) |
+| `upstream` block | Used for reverse proxy and load balancing (later phase) |
+
+### Key directories
+
+| Directory | Purpose |
+|---|---|
+| `/etc/nginx/` | Main NGINX directory |
+| `/etc/nginx/nginx.conf` | Main configuration file |
+| `/etc/nginx/sites-available/` | Store virtual host files (per site/app) |
+| `/etc/nginx/sites-enabled/` | Enabled virtual hosts (symlinked from available) |
+| `/var/www/` | Default document root for serving websites |
+| `/etc/nginx/conf.d/` | Used for modular `.conf` files (in some distros) |
+
+### How NGINX handles a request
+
+1. A request comes in on a port (e.g. port 80).
+2. NGINX checks `nginx.conf`.
+3. Inside `http`, it looks at the right `server` block via `server_name` and `listen`.
+4. Based on the `location` block, it decides what to do with the request:
+   - Serve a static file
+   - Pass it to a proxy
+   - Redirect it
+   - Or return an error
+
+### Verify NGINX is working
+
+```bash
+sudo systemctl status nginx     # Check service status
+curl http://localhost           # Make sure default page loads
+sudo nginx -t                   # Test config syntax
+```
+
+## NGINX jargon glossary (plain English)
+
+### 1. Virtual host
+
+A virtual host is a block of config that serves a **specific domain or subdomain**. Think of it like a **room in a hotel** (the hotel is your NGINX server). Each room (virtual host) serves a different website based on `server_name`.
+
+```nginx
+server {
+    listen 80;
+    server_name mysite.com;
+    root /var/www/mysite;
+}
+```
+
+> This virtual host serves the website `mysite.com`.
+
+### 2. Server block
+
+A `server {}` block is the **configuration for a single virtual host**. Every domain you host will usually have its own `server` block.
+
+### 3. Location block
+
+A `location {}` block defines how to handle specific **URL paths**. Use it to serve static files, reverse proxy, or rewrite URLs. Path-based behavior.
+
+```nginx
+location /images/ {
+    root /var/www/assets;
+}
+```
+
+> Requests to `/images/` will be served from `/var/www/assets/images/`.
+
+### 4. Root vs alias
+
+Both are used to define the **file path** on disk for serving static content.
+
+| Directive | Behavior |
+|---|---|
+| `root` | Appends the URI to the path |
+| `alias` | Replaces the URI entirely |
+
+```nginx
+# URI: /static/logo.png
+location /static/ {
+    root /var/www/site;
+    # => /var/www/site/static/logo.png
+}
+
+location /static/ {
+    alias /var/www/site/;
+    # => /var/www/site/logo.png
+}
+```
+
+### 5. Upstream
+
+A group of **backend servers** NGINX forwards traffic to. Used in **reverse proxy** and **load balancing**. You define a list of servers under an `upstream` block.
+
+### 6. Reverse proxy
+
+NGINX **forwards** a request to another server and returns the response. You don't serve content directly. Commonly used with apps like Node.js, Flask, etc.
+
+```nginx
+location / {
+    proxy_pass http://localhost:3000;
+}
+```
+
+### 7. Listen
+
+The **port** and **protocol** NGINX should use.
+
+```nginx
+listen 80;       # HTTP
+listen 443 ssl;  # HTTPS
+```
+
+### 8. server_name
+
+The **domain name(s)** this server block responds to.
+
+```nginx
+server_name example.com www.example.com;
+```
+
+### 9. try_files
+
+Checks if files exist and serves them, or returns an error/page.
+
+```nginx
+location / {
+    try_files $uri $uri/ =404;
+}
+```
+
+> Tries to serve the exact file (`$uri`), then the directory (`$uri/`), then returns 404 if not found.
+
+### 10. Index
+
+The default file to serve if the URL is a directory.
+
+```nginx
+index index.html index.htm;
+```
+
+### 11. include
+
+Loads external config files into the main config.
+
+```nginx
+include /etc/nginx/sites-enabled/*;
+```
+
+> This loads all enabled site configurations.
+
+### 12. mime.types
+
+Defines the mapping between **file extensions** and **content types** (e.g., `.html` = `text/html`).
+
+### 13. access.log & error.log
+
+Where NGINX logs **requests** and **errors**.
+
+### 14. Reload vs restart
+
+- `reload`: applies new config without dropping connections.
+- `restart`: stops and starts NGINX (can briefly drop connections).
+
+### 15. nginx -t
+
+Tests your NGINX configuration for syntax errors. Always run this before reloading!
+
+```bash
+sudo nginx -t
+```
+
+## Step-by-step NGINX configuration breakdown
+
+### `nginx.conf`: main configuration file
+
+```nginx
+user nginx;
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout 65;
+
+    include /etc/nginx/sites-enabled/*;
+}
+```
+
+| Block | Purpose |
+|---|---|
+| `user nginx;` | Run NGINX as the `nginx` user |
+| `worker_processes auto;` | Use as many workers as CPU cores |
+| `events {}` | Handles connection limits and concurrency |
+| `http {}` | Main block for web config (server, location, etc.) |
+| `include mime.types;` | Load file types like `.html` = `text/html` |
+| `include sites-enabled/*;` | Load all virtual hosts (site configs) |
+
+### Creating your first server block (virtual host)
+
+Save this to `/etc/nginx/sites-available/example.com.conf`:
+
+```nginx
+server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    root /var/www/example.com/html;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+| Directive | Meaning |
+|---|---|
+| `listen 80` | Handle HTTP traffic |
+| `server_name` | Respond only to this domain |
+| `root` | Serve files from this folder |
+| `index` | Default file when URL is a directory |
+| `location /` | Try to serve files, else 404 |
+
+### Enabling the site
+
+```bash
+sudo ln -s /etc/nginx/sites-available/example.com.conf /etc/nginx/sites-enabled/
+```
+
+Then always check config before reloading:
+
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### Testing it
+
+1. Create a folder:
+
+   ```bash
+   sudo mkdir -p /var/www/example.com/html
+   echo "Hello NGINX!" | sudo tee /var/www/example.com/html/index.html
+   ```
+
+2. Add to your `/etc/hosts` file (for local testing):
+
+   ```bash
+   127.0.0.1 example.com
+   ```
+
+3. Test in browser: visit `http://example.com`.
+
+### Optional extras
+
+Add a custom error page:
+
+```nginx
+error_page 404 /404.html;
+
+location = /404.html {
+    root /var/www/example.com/html;
+    internal;
+}
+```
+
+### Summary of files
+
+| File | Purpose |
+|---|---|
+| `/etc/nginx/nginx.conf` | Main config file |
+| `/etc/nginx/sites-available/example.com.conf` | Site-specific config |
+| `/etc/nginx/sites-enabled/` | Symlinked configs to be loaded |
+| `/var/www/example.com/html/` | Your actual website content |
+
+<QuizCard title="NGINX vs Apache check" questions={[
+  { question: "How does Apache prefork tie processes to requests?", options: ["One process handles many requests", "One process handles one request at a time", "No processes at all", "One thread per connection"], correct: 1, explanation: "Prefork spawns a worker per request, so extra requests queue or get rejected." },
+  { question: "What runs PHP for an NGINX server?", options: ["NGINX itself", "PHP-FPM over FastCGI", "mod_php", "The client"], correct: 1, explanation: "NGINX cannot execute PHP; it delegates to the separate PHP-FPM process over FastCGI." },
+  { question: "Which directive replaces the URI instead of appending to it?", options: ["root", "alias", "index", "try_files"], correct: 1, explanation: "root appends the URI to the path; alias replaces the matched location entirely." }
+]} />
+
+<Cloze title="Before you reload" color="#00dd44" text="Always test the config with nginx {{-t}}, then apply it without dropping connections using systemctl {{reload}} nginx." />

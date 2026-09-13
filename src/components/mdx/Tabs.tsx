@@ -4,24 +4,39 @@ import { useState, Children, isValidElement, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 
+interface TabItem {
+  label: string;
+  children?: ReactNode;
+}
+
 interface TabsProps {
   children?: ReactNode;
+  /**
+   * Older articles in this repo pass the tabs as an array instead of as children.
+   * Both shapes are supported, because a `tabs={[...]}` call used to match nothing
+   * and the component silently rendered an empty section.
+   */
+  tabs?: TabItem[];
   color?: string;
 }
 
-export default function Tabs({ children, color = COLORS.pink }: TabsProps) {
+export default function Tabs({ children, tabs: tabsProp, color = COLORS.pink }: TabsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const tabs = Children.toArray(children)
-    .filter((child) => isValidElement(child))
-    .map((child) => {
-      const el = child as React.ReactElement<{ label?: string; "data-label"?: string; children?: ReactNode }>;
-      return {
-        label: el.props.label ?? el.props["data-label"] ?? "",
-        children: el.props.children,
-      };
-    })
-    .filter((tab) => tab.label);
+  const fromProp = (tabsProp ?? []).filter((tab) => tab && tab.label);
+  const tabs: TabItem[] =
+    fromProp.length > 0
+      ? fromProp
+      : Children.toArray(children)
+          .filter((child) => isValidElement(child))
+          .map((child) => {
+            const el = child as React.ReactElement<{ label?: string; "data-label"?: string; children?: ReactNode }>;
+            return {
+              label: el.props.label ?? el.props["data-label"] ?? "",
+              children: el.props.children,
+            };
+          })
+          .filter((tab) => tab.label);
 
   if (tabs.length === 0) return null;
 

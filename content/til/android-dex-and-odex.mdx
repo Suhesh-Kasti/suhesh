@@ -1,0 +1,34 @@
+---
+title: "Android DEX and ODEX"
+date: '2026-06-18'
+tags: ["Android", "Programming", "reverse engineering", "mobile"]
+excerpt: "Java compiles to bytecode, but phones need Dalvik executables. How DEX, ODEX and multidexing fit into the Android app pipeline."
+type: til
+category: "Programming"
+---
+
+# Android DEX and ODEX
+
+## Java
+
+When we compile Java code we get Java bytecode, but that file is much more resource-intensive, so we cannot use it directly on our phones, which use the ARM architecture. So we have to compile it in a way that it becomes a Dalvik executable, which gives us a `.dex` file.
+
+*ODEX* stands for optimized dex.
+
+![The path from Java source through bytecode to a DEX file optimised for Android](/images/content/android-dex-and-odex/android_dex_odex.png)
+
+## Multidexing
+
+A `classes.dex` file can only contain 65535 methods. So if an application contains more methods than that (including frameworks and libraries), the classes file has to be separated into multiple files like `classes.dex`, `classes2.dex`, `classes3.dex`, etc. — which is multidexing.
+
+## classes.dex
+
+We can use tools like **ghex** to get a hexadecimal view of the dex file. But ghex cannot do anything more than that. To do more than that, we need to use **dexdump**.
+
+We can decompile a `classes.dex` file using the program dexdump in the following way, after extracting the apk:
+
+```bash
+dexdump -d
+```
+
+<Cloze title="DEX recall" color="#8800ff" text="Java bytecode is recompiled to a Dalvik executable, the {{.dex}} file. An optimised dex is an {{ODEX}}. A single classes.dex can hold only {{65535}} methods, so larger apps use multidexing. Inspect a dex with {{dexdump}}." />

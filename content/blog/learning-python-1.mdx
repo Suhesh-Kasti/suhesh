@@ -1,53 +1,95 @@
 ---
 title: "Python: Part 1"
-date: "2024-04-02"
+date: '2024-04-02'
 excerpt: "Python is a versatile and high-level language known for its simplicity and readability, widely used in software development, data analysis, web development, and automation tasks."
-tags: []
+tags: ["Python", "Programming", "Beginner"]
 category: "Programming"
 type: "blog"
 ---
 
-# Mastering Python Basics: A Beginner's Guide
+# Python Basics: A Beginner's Guide
 
-Welcome, future Python wizards! Prepare to embark on an exhilarating journey into the world of Python programming. Python, often hailed as the Swiss Army knife of programming languages, awaits your exploration. Fear not, for we shall guide you through the essential concepts with clarity and excitement!
+Python is one of the easiest languages to start with, and one of the most useful to keep. It reads close to English, it runs without a compile step, and the standard library does a lot before you install anything.
 
-## Unraveling Python's Magic
+![A short Python program next to the output it prints when run](/images/content/learning-python-1/python01.jpg)
 
-> "Python is like a magic wand in the hands of a programmer." - Unknown
+## Installing Python
 
-Before we delve into the enchanting realm of Python, let's unravel its magic. Python is a high-level, interpreted language renowned for its simplicity and readability. It serves as the backbone for a myriad of applications, from web development to scientific computing.
+Grab the latest version from [python.org](https://www.python.org/) for Windows, macOS or Linux. On macOS and most Linux distros Python is already there; check with:
 
-## Let's Get Started!
+```bash
+python3 --version
+```
 
-### Installing Python: Your First Spell
+## Your First Program
 
-Embarking on your Python journey begins with installing the Python interpreter. Fear not, for this incantation is simpler than you think!
-
-- **Windows/Mac/Linux**: Journey to the [official Python realm](https://www.python.org/), and there, download the latest version of Python. Follow the instructions provided by the Python wizards to complete your installation.
-
-Once Python has found its abode on your machine, let's summon the Python spirits and cast our very first spell!
-
-### Casting Your First Spell: The Sacred "Hello, Python!"
-
-In the world of Python, even the simplest spells can conjure great wonders. Behold, the sacred "Hello, Python!" incantation:
+Every Python guide starts here, so we will too:
 
 ```python
 print("Hello, Python!")
 ```
 
-Cast this spell within a Python script file, such as `hello.py`, and invoke it using the following command:
+Save it as `hello.py` and run it:
 
 ```bash
 python hello.py
 ```
 
-### Behold the Magic: Exploring Python Basics
+`print` is a function, so the parentheses are not optional. The text in quotes is a string. That is the whole language in one line: call something, give it a value.
 
-With your journey initiated, let us traverse the realms of Python's fundamental concepts, where magic and logic intertwine seamlessly.
+## Variables and Data Types
 
-#### Variables and Data Types: The Potions of Python
+A variable is a name pointing at a value. No keyword, no type declaration.
 
-In the alchemical laboratory of Python, variables and data types are the potions that shape reality. Let us unveil a table of mystical data types:
+```python
+name = "Suhesh"
+age = 25
+height = 5.9
+is_learning = True
+```
 
-| Data Type    | Description                  | Example                       |
-| 
+Python works out the type on its own. The types you'll actually use:
+
+| Data Type | Description | Example |
+|-----------|-------------|---------|
+| `int` | Whole numbers | `42` |
+| `float` | Decimal numbers | `3.14` |
+| `str` | Text | `"hello"` |
+| `bool` | True or False | `True` |
+| `list` | Ordered and changeable | `[1, 2, 3]` |
+| `tuple` | Ordered and unchangeable | `(1, 2, 3)` |
+| `dict` | Key-value pairs | `{"name": "Suhesh"}` |
+| `set` | Unique values, no order | `{1, 2, 3}` |
+| `NoneType` | No value at all | `None` |
+
+<IdeaNode color="orange">Indentation is not decoration in Python. Spaces at the start of a line are what define a block. Mix tabs and spaces and you get `IndentationError`, which is Python saying it can't tell what belongs together.</IdeaNode>
+
+## Quick Check
+
+<MatchPairs
+  title="Match the type"
+  color="#0055ff"
+  pairs={[
+    { term: "int", match: "A whole number, like 42" },
+    { term: "str", match: "Text in quotes, like \"hello\"" },
+    { term: "bool", match: "True or False" },
+    { term: "list", match: "An ordered, changeable collection like [1, 2, 3]" },
+    { term: "dict", match: "Key-value pairs like {\"name\": \"Suhesh\"}" }
+  ]}
+/>
+
+<Cloze
+  title="Recall the syntax"
+  color="#00dd44"
+  text="To print text to the screen, call {{print}}. To run a saved script called hello.py, use {{python hello.py}}."
+/>
+
+<QuizCard
+  title="Python basics"
+  color="#ffdd00"
+  questions={[
+    { question: "What type is 3.14?", options: ["int", "float", "str", "bool"], correct: 1, explanation: "Numbers with a decimal point are floats. Whole numbers are ints." },
+    { question: "What defines a block of code in Python?", options: ["Curly braces {}", "Indentation", "Semicolons", "begin / end"], correct: 1, explanation: "Python uses indentation for blocks. No braces, which is why a stray space breaks everything." },
+    { question: "Which line creates a variable?", options: ["x = 5", "int x = 5", "var x = 5", "x := 5"], correct: 0, explanation: "Just assign it. Python infers the type; you don't declare one." }
+  ]}
+/>

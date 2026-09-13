@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
@@ -38,14 +38,17 @@ interface SeriesRoadmapProps {
 }
 
 export default function SeriesRoadmap({ steps }: SeriesRoadmapProps) {
-  const [completed, setCompleted] = useState<Set<number>>(() => {
-    if (typeof localStorage === "undefined") return new Set<number>();
+  // Starts empty and fills in after mount. Reading localStorage inside the state initialiser
+  // made the first client render disagree with the server's (0 vs the saved count), which is
+  // what triggered the hydration mismatch and made React rebuild the tree.
+  const [completed, setCompleted] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
     try {
       const saved = localStorage.getItem("roadmap-progress");
-      if (saved) return new Set(JSON.parse(saved));
+      if (saved) setCompleted(new Set(JSON.parse(saved)));
     } catch {}
-    return new Set<number>();
-  });
+  }, []);
 
   const toggleStep = (index: number) => {
     setCompleted((prev) => {

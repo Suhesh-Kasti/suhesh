@@ -1,11 +1,13 @@
 ---
 title: "Nmap Command Reference"
-date: "2025-06-15"
+date: '2026-06-03'
 tags: ["nmap", "reconnaissance", "cpts", "htb", "red-team", "port scanning"]
 excerpt: "Nmap scanning techniques, host discovery, service enumeration, and NSE scripting — the definitive recon cheatsheet."
 type: "cheatsheet"
 category: "Reconnaissance"
 ---
+
+# Nmap Command Reference
 
 Nmap is the Swiss Army knife of network recon. Every flag here is battle-tested from real engagements.
 
@@ -166,6 +168,8 @@ nmap --script "default,safe" target
 ```
 <CopyButton text="nmap --script vuln,safe target" label="Copy vuln scan" />
 </Accordion>
+
+<Cloze title="Flag recall" text="Use {{-sV}} to fingerprint service versions, {{-sn}} for host discovery with no port scan, and {{-Pn}} when ICMP is blocked." />
 
 <QuizCard
   title="Nmap Basics"

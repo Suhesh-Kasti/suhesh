@@ -5,31 +5,22 @@ import { WORK, TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 const BASE_URL = "https://suhesh.com.np";
 
 export const metadata: Metadata = {
-  title: "Projects — Security Tools, Exploits & Experiments",
+  title: "Projects — AI Agent, Automation & Web Experiments",
   description:
-    "Explore Suhesh Kasti's cybersecurity projects: local AI security agents, CLI recon frameworks, network intrusion tools, malware analysis labs, and more. Practical offensive security tools and experiments.",
+    "Projects by Suhesh Kasti: a local AI security agent, browser automation, web experiments and desktop tooling — built alongside his work in application security.",
   alternates: { canonical: `${BASE_URL}/projects` },
   openGraph: {
-    title: "Projects — Security Tools, Exploits & Experiments",
+    title: "Projects — AI Agent, Automation & Web Experiments",
     description:
-      "Explore Suhesh Kasti's cybersecurity projects: local AI security agents, CLI recon frameworks, network intrusion tools, malware analysis labs, and more. Practical offensive security tools and experiments.",
+      "Projects by Suhesh Kasti: a local AI security agent, browser automation, web experiments and desktop tooling — built alongside his work in application security.",
     url: `${BASE_URL}/projects`,
     siteName: "SCHIZO",
-    images: [
-      {
-        url: `${BASE_URL}/opengraph-image`,
-        width: 1200,
-        height: 630,
-        alt: "SCHIZO — Suhesh Kasti's cybersecurity portfolio",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Projects — Security Tools, Exploits & Experiments",
     description:
-      "Explore Suhesh Kasti's cybersecurity projects: local AI security agents, CLI recon frameworks, network intrusion tools, malware analysis labs, and more. Practical offensive security tools and experiments.",
-    images: [`${BASE_URL}/opengraph-image`],
+      "Projects by Suhesh Kasti: a local AI security agent, browser automation, web experiments and desktop tooling — built alongside his work in application security.",
   },
 };
 

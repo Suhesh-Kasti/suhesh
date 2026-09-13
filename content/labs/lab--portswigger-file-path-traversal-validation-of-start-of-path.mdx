@@ -1,39 +1,66 @@
 ---
 title: 'File path traversal, validation of start of path'
-date: '2025-06-18'
+date: '2026-08-02'
 tags:
   - PortSwigger
   - lab
   - path-traversal
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — File path traversal, validation of
-  start of path. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The parameter must start with `/var/www/images/`. Satisfy the prefix, then climb straight back out of it with `../`."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: File path traversal, validation of start of path
 
-## Objective
+Of the traversal labs, this is the filter I would actually defend in a code review, because "the path must start with the images directory" sounds airtight. It is not, and the reason is worth remembering: a prefix check validates a string, and the kernel validates a path.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The image endpoint now wants the full path, not a bare filename. A request with just `49.jpg` fails. The accepted shape looks like this:
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+```
+GET /image?filename=/var/www/images/49.jpg HTTP/1.1
+Host: LAB-ID.web-security-academy.net
+```
 
-## Key Takeaway
+So the app checks that the supplied value starts with `/var/www/images/` and rejects it otherwise. That check is genuinely enforced. Try any other prefix and it fails.
 
-*Write ONE principle I must remember*
+## How the vulnerability works
 
-## Next-Day Blind Replay
+A start-of-path check confirms where the string begins. It says nothing about where the path ends up. Traversal characters later in the string are still processed by the filesystem when the file is opened, and they are still permitted by the check.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+So a value that starts with the required prefix can still resolve to something completely outside the images directory.
+
+## Solving it
+
+1. Send a valid request and note the exact prefix the app requires: `/var/www/images/`.
+2. Keep that prefix, then append traversal and the target file:
+
+```
+filename=/var/www/images/../../../etc/passwd
+```
+
+3. Send it. The response is `/etc/passwd`.
+
+The value passes the prefix check because the first characters are exactly what the app demanded. Everything after them is the escape.
+
+## Why that payload works
+
+The validator runs something like `if not filename.startswith('/var/www/images/'): reject()`. The string `/var/www/images/../../../etc/passwd` starts with `/var/www/images/`, so the test passes and the code moves on. The rest of the string, `../../../etc/passwd`, is then resolved by the operating system relative to `/var/www/images/`: three levels up lands at root, and `etc/passwd` is read from there.
+
+Two different parsers looked at the same string. The application checked its first characters. The kernel walked the whole thing.
+
+## The fix
+
+Canonicalise before validating. `os.path.realpath('/var/www/images/../../../etc/passwd')` collapses to `/etc/passwd`, which does not start with the media directory, so it is rejected, correctly this time. Do the check on the resolved path, and reject any input that is not already a safe relative name.
+
+<Sequence title="Order the attack" steps={["Send a valid image request and read the required prefix", "Keep the required /var/www/images/ prefix", "Append ../../../etc/passwd to climb out", "Send and read /etc/passwd from the response"]} />
+
+<QuizCard title="Start-of-path checks" questions={[
+  { question: "What does the start-of-path check actually guarantee?", options: ["That the file is inside the images directory", "That the string begins with the required prefix", "That no traversal is present", "That the file exists"], correct: 1, explanation: "It is a string test on the beginning of the value. It says nothing about how the rest of the string resolves on disk." },
+  { question: "Why does the payload still contain the required prefix?", options: ["Because the app appends it automatically", "Because the check rejects anything that does not start with it", "Because the prefix is required to reach root", "Because the filesystem ignores it"], correct: 1, explanation: "The prefix has to be present or the request is refused, so you include it and then traverse out of it." },
+  { question: "What single change to the code would stop this?", options: ["Escape the dots", "Canonicalise the joined path and check it is inside the base", "Lowercase the filename", "Limit the input length"], correct: 1, explanation: "Resolving the path first and comparing the result against the base directory catches the escape the string check misses." }
+]} />

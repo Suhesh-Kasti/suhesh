@@ -1,92 +1,62 @@
 ---
 title: Reflected XSS in canonical link tag
-date: '2025-06-18'
+date: '2026-08-16'
 tags:
   - PortSwigger
   - lab
   - xss
   - walkthrough
-excerpt: >-
-  This lab reflects user input in a canonical link tag and escapes angle
-  brackets.
+excerpt: "A reflected XSS lab where your input lands in a canonical link tag with angle brackets escaped, so the payload has to break out of the attribute."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 # Lab: Reflected XSS in canonical link tag
 
-## Objective
-This lab reflects user input in a canonical link tag and escapes angle brackets.
-To solve the lab, perform a cross-site scripting attack on the home page that injects an attribute that calls the `alert` function.
-To assist with your exploit, you can assume that the simulated user will press the following key combinations:
-- `ALT+SHIFT+X`
-- `CTRL+ALT+X`
-- `Alt+X`
-Please note that the intended solution to this lab is only possible in Chrome.
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+The angle brackets are escaped, so the obvious move is gone and the payload has to live inside a single attribute. What finally worked was less about XSS and more about remembering that URLs treat tab characters as whitespace.
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+## The setup
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [x] Watched video solution
-- *Resume blind with new clue. Still stuck?*
+The home page has a `<link rel="canonical" href='...'>` tag, and its value is the current request URL reflected back without escaping. Because the reflection sits inside an attribute, escaping `<` and `>` does nothing to stop you from closing the attribute and adding new ones. The lab also tells you the simulated user will press ALT+SHIFT+X and similar combos, which is a very loud hint about which attribute to reach for.
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1: Found that when we send anything in URL its getting reflected back in canonical link
-![](/images/series/stuff_getting_reflected_in_canonical_ref.png)
-- [ ] Step 2: Tried `script` but angled brackets and spaces are being URL encoded. 
-![](/images/series/canonical_link_space_is_encoded.png)
-- [ ] Step 3: Used attributes like `onclick` and `accesskey` which can be injected in the HTML `link` tag itself. When the user clicks accesskey depending in their OS, function inside `onclick` attribute gets executed.
-- [ ] Final payload / exploit: Since the space character was getting URL encoded tried the Horizontal Tab character URL encoded bypassing the filter 
-![](/images/series/canonical_link_tag_final_exploit.png)
-## Key Takeaway
-#### What's a rel="canonical" that says "Hey, the official URL for this page is the exact page you are looking at right now"
-Imagine you run an online clothing store, and you have a page for a blue shirt. To a human, it's just one page. But users (and tracking bots) can arrive at that page using many slightly different URLs:
-- `https://example.com/blue-shirt` (The clean, main link)
-- `https://www.example.com/blue-shirt` (With `www`)
-- `http://example.com/blue-shirt` (Unsecured `http`)    
-- `https://example.com/blue-shirt?size=small` (With a filtering parameter)
-- `https://example.com/blue-shirt?utm_source=twitter` (With a social media tracking code)
-To Google's search bot, **every single one of those URLs is treated as a completely separate webpage.** Without a canonical tag, Google looks at those 5 URLs, sees the exact same blue shirt on all of them, and thinks, _"This website is spamming the internet with 5 copies of the exact same page!"_ As a result, Google might penalize your site's ranking, or split your search engine juice (SEO value) across all 5 separate links instead of concentrating it on one.
-To fix this, developers put a canonical tag on the page that points to the **clean, master version** of the URL.
-- If a user (or Google) lands on the messy tracking URL: `https://example.com/blue-shirt?utm_source=twitter`
-- The code hidden in the background says: `<link rel="canonical" href="https://example.com/blue-shirt" />`
-This tells Google: _"Hey, I know you found me through a messy Twitter tracking link, but please don't index this messy URL. The official, master version is just `https://example.com/blue-shirt`. Put all our SEO credit there."_
-Even when viewing the clean page (`https://example.com/blue-shirt`), developers still include that tag pointing to itself as a **preventative shield**.
-They don't always know _how_ a user or a rogue bot might alter the URL in the future (by adding tracking codes, session IDs, or search parameters). By having the page permanently shout, _"No matter what extra text gets added to the end of this URL, this exact clean address is the master copy,"_ they protect the website's Google ranking from getting messed up.
+## How the vulnerability works
 
-#### Accesskey HTML attribute
-The `accesskey` attribute in HTML is a global attribute that allows you to assign a custom keyboard shortcut to an element on a webpage. When a user presses a specific combination of keys (which varies depending on their operating system and browser) along with the assigned `accesskey`, the browser brings focus to or activates that element.
+The canonical link exists to tell search engines the master URL for a page, so the site reflects the current URL into its `href`. That value is user-controlled. The attribute is single-quoted, so a single quote in the path closes it and lets you inject fresh attributes. The key-combo hint points at `accesskey`, a global attribute that binds a keyboard shortcut to an element, and `onclick` to run when it is activated. Neither needs a new tag, which is why the angle-bracket filter is irrelevant here.
 
-Historically, the `accesskey` attribute was introduced with two main goals in mind:
-- **Accessibility:** To help users who rely on keyboard navigation or assistive technologies (like screen readers) navigate a website more efficiently without needing a mouse.
-- **Efficiency:** To allow "power users" to quickly trigger frequent actions, such as jumping to a search bar, clicking a "Submit" button, or returning to the home page.
+## Solving it
 
-You simply add the attribute to an HTML tag and assign it a single character.
-``` html
-<a href="/home" accesskey="h">Home</a>
+1. View the page source and find the canonical link. Confirm your input lands in the `href` unescaped.
+2. Break out of the attribute with a single quote, then add `accesskey` and `onclick`.
+   ```
+   'accesskey='x' onclick='alert(1)
+   ```
+3. The space between the attributes gets URL-encoded, which kills the injection. Replace each space with a literal tab, sent as `%09`. The final URL looks like:
+   ```
+   https://YOUR-LAB-ID.web-security-academy.net/?%27accesskey=%27x%27%09onclick=%27alert(1)
+   ```
+4. Load it and press the access key for your OS. In Chrome that is ALT+SHIFT+X.
+5. Deliver the same URL to the victim, who presses the combo.
 
-<input type="text" placeholder="Search..." accesskey="s">
+## Why that payload works
 
-<button type="submit" accesskey="c">Submit Form</button>
-```
-To trigger these shortcuts, the user has to press a combination of modifier keys alongside the character you assigned. This is where it gets a bit complicated, because the modifiers change depending on the user's setup:
-- **Windows / Chrome & Edge:** `Alt` + `key`    
-- **Windows / Firefox:** `Alt` + `Shift` + `key`
-- **Mac / Chrome, Safari, & Firefox:** `Control` + `Option` + `key`
+The leading quote closes the `href` value. `accesskey='x'` assigns the shortcut character, and `onclick='alert(1)'` gets closed by the tag's own trailing quote, so the markup stays balanced. The tab is the whole trick: a tab is whitespace to the HTML parser, but the filter only URL-encodes spaces, so `%09` walks past it and still separates the two attributes.
 
-> **Note:** Sometimes if a certain character is URL encoded we can bypass [url encoding](https://www.w3schools.com/tags/ref_urlencode.ASP) using TABs and LINE FEEDs.
-![](/images/series/URL_encoding_applied_to_bypass_encoded_space.png)
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## The fix
+
+Run the reflected URL through `htmlspecialchars` with `ENT_QUOTES` before it touches the attribute, so the single quote becomes an entity and cannot close the value. Building the canonical URL from the validated path only is cleaner still.
+
+<MatchPairs
+  title="Canonical link vocabulary"
+  pairs={[
+    { term: "rel=canonical", match: "declares the master URL for a page" },
+    { term: "accesskey", match: "binds a keyboard shortcut to an element" },
+    { term: "onclick", match: "handler that runs when the element is activated" },
+    { term: "%09", match: "URL-encoded horizontal tab used in place of a space" }
+  ]}
+/>
+
+<FlipCard
+  front={<div>Why did the spaces in the payload break it?</div>}
+  back={<div>The filter URL-encodes spaces, so the attribute separation is lost and the injection collapses. Use a tab (%09) instead, which is still whitespace to the HTML parser.</div>}
+/>

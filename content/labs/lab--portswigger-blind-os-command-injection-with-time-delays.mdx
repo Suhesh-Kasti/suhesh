@@ -1,38 +1,68 @@
 ---
 title: Blind OS command injection with time delays
-date: '2025-06-18'
+date: '2026-07-13'
 tags:
   - PortSwigger
   - lab
   - command-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind OS command injection with time
-  delays. Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The feedback form runs my input through a shell, and the response never shows it. A ten-second ping is the only proof I get."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind OS command injection with time delays
 
-## Objective
+The first command injection lab teaches one thing: when there is no output, the clock becomes your output. Everything here is about turning a silent command into a measurable delay.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The contact form posts to `/feedback/submit` with `name`, `email`, `subject`, `message`, and a CSRF token. The response is always the same confirmation page, whatever you send, so the `email` field gives nothing back visually.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+Under the hood the field is dropped into a shell command, most likely a mail or notification call. That is not visible from outside. The only reason to suspect it is that this is a command injection lab, and `email` is the free-text field that looks least like a filename.
 
-## Key Takeaway
+## How the vulnerability works
 
-*Write ONE principle I must remember*
+The value is concatenated into a string the server passes to a shell. Shell metacharacters in the value stop being data and start being syntax. A semicolon, a pipe, `||`, backticks, or `$()` all break out of the intended command and let you start your own.
 
-## Next-Day Blind Replay
+Because the command output is discarded, a direct read is impossible. The available signal is a side effect: time, network traffic, or a file. This lab wants the first one.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. Submit the form with Burp running and capture the `POST /feedback/submit` request. The injection point is the `email` parameter.
+2. Append a delay. Use `||` so your command runs whether or not the original one succeeds:
+
+```
+email=x||ping -c 10 127.0.0.1||
+```
+
+3. Send the request and watch the timer in Burp's response pane. The reply lands about ten seconds later, which no legitimate input would cause.
+
+## Why that payload works
+
+The shell reads `||` as "run the right-hand command only if the left-hand command fails". Whatever the app assembles around your value, the `x` we prepended makes the left side fail, so the right side is guaranteed to run. `ping -c 10 127.0.0.1` sends ten packets to loopback one second apart, which is a dependable ten-second block.
+
+The delay is the proof. It is also the template for every blind injection that follows: find a side effect the attacker can measure, and put it where the command output would have been.
+
+## The fix
+
+Never build a shell command from user input. Use an API that takes arguments as a list and does not go through a shell, so metacharacters are never interpreted:
+
+```python
+subprocess.run(["mail", "-s", subject, address], shell=False)
+```
+
+Validate the field against what it should be, an email address. Run the service as an unprivileged user so that even a successful injection cannot do much.
+
+<Accordion title="ping or sleep">
+`email=x||sleep 10||` works on most targets and is shorter. `ping -c 10 127.0.0.1` is a safer default when you are not sure `sleep` exists, because it uses a fixed packet count rather than a duration flag, and its timing is easy to verify across repeated requests. If one behaves oddly, try the other before doubting the injection.
+</Accordion>
+
+<Cloze title="Blind timing recall" text="With no output to read, I inject a {{time}} delay. The `||` operator runs my command only when the base command fails, and a ten-count {{ping -c 10 127.0.0.1}} blocks the response for about {{10}} seconds." />
+
+<QuizCard title="Signal hunting" questions={[
+  { question: "Why use `||` rather than a semicolon here?", options: ["It is faster", "It runs the second command only if the first fails, so it still triggers when the original command errors", "It bypasses the CSRF token", "It escapes spaces"], correct: 1, explanation: "A semicolon needs the left side to parse cleanly. `||` fires when the left side fails, which is the common situation when you are appending to an unknown command." },
+  { question: "What is the actual evidence the injection worked?", options: ["The response body", "The response header", "The response taking roughly ten seconds longer than usual", "The status code"], correct: 2, explanation: "The body never changes. The only observable effect of the injected command is the time it adds." }
+]} />

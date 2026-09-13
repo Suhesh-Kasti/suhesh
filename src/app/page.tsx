@@ -7,7 +7,7 @@ import ContactSection from "@/components/ContactSection";
 
 const BASE_URL = "https://suhesh.com.np";
 const HOME_DESCRIPTION =
-  "Suhesh Kasti — application security engineer and offensive security researcher. Penetration testing, exploit development, malware analysis and CTF writeups, plus a brain dump of practical web security guides and free browser-based security tools.";
+  "Suhesh Kasti — application security engineer working with F5 BIG-IP and web application firewalls. Writing on web security, penetration testing, DNS and Linux, plus free browser-based security tools.";
 
 export const metadata: Metadata = {
   description: HOME_DESCRIPTION,

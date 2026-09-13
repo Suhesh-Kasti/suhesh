@@ -1,38 +1,51 @@
 ---
 title: Visible error-based SQL injection
-date: '2025-06-18'
+date: '2026-09-05'
 tags:
   - PortSwigger
   - lab
   - sql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Visible error-based SQL injection.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The app prints raw database errors, so I CAST a subquery to int and read the admin password straight out of the type error."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Visible error-based SQL injection
 
 ## Objective
+*What is this lab trying to teach?*
 
-*Describe the labs objective here*
+## Why This Works (The Principle)
+- **The vulnerability:** User input is concatenated into a SQL query without parameterization.
+- **Root cause:** The application builds SQL statements by joining strings with user input.
+- **Exploitation:** Break out of the query context (using `'`, `"`, or `)`) and inject SQL syntax to modify the query logic.
+- **Key insight:** SQL injection is about changing the structure of a query, not just selecting extra data — it can subvert WHERE clauses, UNION in extra results, or exfiltrate data blind.
+
+## Blind Attempt (15-20 min max)
+*Try without any hints. Document everything.*
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
 
 ## Solution Reconstruction
-
+*After viewing full solution, close it immediately.*
 - [ ] Step 1:
 - [ ] Step 2:
 - [ ] Step 3:
 - [ ] Final payload / exploit:
 
 ## Key Takeaway
-
-*Write ONE principle I must remember*
+*Write ONE principle I must remember:*
 
 ## Next-Day Blind Replay
-
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="The app prints raw database errors, so {{CAST}} a subquery to {{int}} and read the admin password straight out of the type error." />

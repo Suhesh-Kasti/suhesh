@@ -1,39 +1,59 @@
 ---
 title: 'File path traversal, validation of file extension with null byte bypass'
-date: '2025-06-18'
+date: '2026-08-01'
 tags:
   - PortSwigger
   - lab
   - path-traversal
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — File path traversal, validation of file
-  extension with null byte bypass. Walkthrough with solution, key takeaways, and
-  blind replay exercise.
+excerpt: "The app wants a `.png` ending. A null byte ends the string for the filesystem, so `/etc/passwd%00.png` passes both checks."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: File path traversal, validation of file extension with null byte bypass
 
-## Objective
+This is the only traversal lab where part of the old exploit is already closed by the language, which makes it a history lesson as much as a bug. The mechanism is a real mismatch between how the app checks the string and how the filesystem reads it.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The image loader requires the filename to end in `.png`, so it only serves things that look like images. A plain `../../../etc/passwd` is rejected for the wrong extension, and a plain file without `.png` is rejected too. The extension check is enforced.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+The traversal itself is not blocked. Hand it a path that ends in `.png` and it will happily try to open it.
 
-## Key Takeaway
+## How the vulnerability works
 
-*Write ONE principle I must remember*
+The application validates in a language that treats strings as length-delimited: it looks at the last four characters, sees `.png`, and approves. The actual file open goes down into a C library, where strings are null-terminated and everything after the first null byte is invisible.
 
-## Next-Day Blind Replay
+Put a null byte before the `.png` and the two layers disagree about where the string ends. The validator sees a filename ending in `.png`. The file call opens the path that comes before the null.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+This only lands when the runtime passes the null byte through to a C file function. Old PHP did, and some Java and older .NET paths did. Current PHP rejects null bytes in filesystem functions, and Java throws on embedded nulls, so on a modern stack this payload errors instead of reading the file. The lesson survives even when the exploit does not.
+
+## Solving it
+
+1. Confirm the extension is required: request a real image, then request `../../../etc/passwd` and watch it get refused for the extension.
+2. Traverse to the target, then append a null byte and the accepted extension:
+
+```
+filename=../../../etc/passwd%00.png
+```
+
+3. Send it. The response is the contents of `/etc/passwd`.
+
+`%00` is the URL encoding of a null byte. The parameter decoder turns it into a literal 0x00 before the string reaches the application.
+
+## Why that payload works
+
+The validator reads the whole string and checks the tail: `.png`, accepted. The same string is then handed to a null-terminated API, and the first null byte it encounters is the one you injected. Everything past it, the `.png`, is not part of the path any more. So the application approved `something.png` while the operating system opened `something`, and `something` here is `../../../etc/passwd`.
+
+## The fix
+
+Reject any filename containing a null byte or other control characters before it goes anywhere near a path API. Validate the extension against the canonicalised resolved path, and make sure the validation and the file open use the identical string. The durable fix is the same as the other labs: serve by opaque id, not by user-supplied path.
+
+<Cloze title="Null byte recall" text="To satisfy the `.png` check I append {{%00}} and then {{.png}}. The validator sees the extension, but the C file call stops at the {{null byte}}." />
+
+<FlipCard front={<div>The app requires a `.png` ending. What do you append after the traversal to pass the check and still read the file?</div>} back={<div>`%00.png`. The null byte ends the string for the null-terminated file API, so the `.png` is ignored there, but the validator still sees it.</div>} />
+
+<IdeaNode color="#00dd44" label="Tip">Modern PHP and Java reject embedded null bytes in path functions, so this payload errors rather than reads. When a null-byte bypass does not work, check the runtime before assuming your encoding is wrong.</IdeaNode>

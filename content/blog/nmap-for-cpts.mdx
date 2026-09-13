@@ -1,13 +1,97 @@
 ---
 title: "CPTS: Network Enumeration with Nmap"
-date: "2026-03-15T12:00:00"
+date: '2026-03-15'
 excerpt: "Comprehensive guide to mastering Nmap for Hack The Box CPTS. Covers Host Discovery, UDP scanning headaches, NSE scripting, Firewall/IDS evasion, and custom ZSH automation for extracting ports."
 tags: ['Red Team', 'Hack The Box', 'Nmap', 'Evasion', 'CPTS']
 category: "Penetration Testing"
 type: "blog"
 ---
 
-## 1. The Philosophy of Enumeration
+# Network Enumeration with Nmap
+
+## The Philosophy of Enumeration
 
 Scanning is the process of sending a specific probe (a packet with certain flags) and observing the response. The "State" Nmap reports is simply an interpretation of that response based on RFC standards. If a firewall sits in the middle, it "lies" or "silences" the conversation, which is why Nmap has complex states like `open|filtered`.
 
+![An Nmap scan running in a terminal, printing the ports it finds as it works through the target](/images/content/nmap-for-cpts/nmapscan.png)
+
+## Host Discovery
+
+Before ports, you find hosts. Nmap mixes several probes, not just ping:
+
+| Probe | Flag | Notes |
+|-------|------|-------|
+| ICMP echo | part of `-sn` | Often blocked outright |
+| TCP SYN to 443 | `-PS443` | Works when ping is filtered |
+| TCP ACK to 80 | `-PA80` | Slips past some filters |
+| ICMP timestamp | part of `-sn` | Old, frequently dropped |
+
+`nmap -sn 10.0.0.0/24` runs those defaults across the subnet. On a local network Nmap uses ARP instead, which is far more reliable. If you already know the host is up, skip discovery entirely with `-Pn`.
+
+![Nmap host discovery where the target answers, so the host is reported as up](/images/content/nmap-for-cpts/targetup.png)
+
+![Nmap host discovery where the target stays silent, so the host is reported as down](/images/content/nmap-for-cpts/targetdown.png)
+
+## Port States
+
+Every port ends up in one of a few buckets:
+
+| State | Meaning |
+|-------|---------|
+| open | Something is listening |
+| closed | Reachable, but nothing is listening |
+| filtered | A firewall dropped the probe, no answer at all |
+| open&#124;filtered | No response either way, so Nmap can't tell |
+| closed&#124;filtered | Only seen with UDP or an ACK scan |
+
+The fuzzy ones are the point. `open|filtered` is Nmap admitting it doesn't know, and it means more work for you before you move on.
+
+## UDP, the Headache
+
+UDP has no handshake. No reply could mean the port is open and ignoring you, or that a firewall ate the packet. So a silent UDP port gets reported as `open|filtered` and you're left guessing.
+
+Scans are slow and rate-limited for the same reason. `nmap -sU --top-ports 50 <host>` is usually enough. `-p-` over UDP can run for hours and still tell you very little.
+
+<Accordion title="NSE scripts worth knowing" color="#00cc55">
+
+The Nmap Scripting Engine ships with hundreds of scripts, grouped by category. The ones you'll reach for:
+
+- `--script default` runs the safe default set; it's already on for `-sC`.
+- `--script safe` adds non-intrusive checks, good on production targets.
+- `--script vuln` looks for known issues, but it is loud and can knock things over.
+- `--script "http-*"` runs every HTTP-related script.
+
+Run one script by name when you want a specific answer instead of a pile of output.
+
+</Accordion>
+
+<Accordion title="Getting past a firewall or IDS" color="#ff5500">
+
+A few levers, from least to most obvious:
+
+- Fragment packets with `-f` or `--mtu 8` so the probe is split across frames.
+- Slow down with `-T2` or `-T1`. Timing templates go `-T0` (paranoid) to `-T5` (insane).
+- Spoof decoys with `-D RND:10` so the target sees ten other source IPs.
+- Source a specific port or interface when the rules allow it.
+
+On the CPTS labs the honest answer is often that evasion changes nothing and you just move to the next host.
+
+</Accordion>
+
+## Quick Check
+
+<Cloze
+  title="State recall"
+  color="#00e5ff"
+  text="Nmap reports a service that is listening as {{open}}, and one a firewall dropped as {{filtered}}. If you already know the host is up, skip discovery with {{-Pn}}."
+/>
+
+<QuizCard
+  title="Host discovery and states"
+  color="#ffdd00"
+  questions={[
+    { question: "Which flag skips host discovery entirely?", options: ["-sn", "-Pn", "-sV", "-O"], correct: 1, explanation: "-Pn treats every target as up and scans it directly, which is what you want when ICMP is blocked." },
+    { question: "Why is UDP scanning so slow?", options: ["The kernel throttles it", "There is no handshake, so silence is ambiguous", "UDP ports are random", "Nmap uses one packet per second"], correct: 1, explanation: "With no handshake a non-reply can't be read as open or filtered, so Nmap waits and reports open|filtered." },
+    { question: "Which timing template is the slowest and quietest?", options: ["-T0", "-T2", "-T4", "-T5"], correct: 0, explanation: "-T0 is paranoid and barely sends anything. -T5 is insane and will be seen instantly." }
+  ]}
+/>

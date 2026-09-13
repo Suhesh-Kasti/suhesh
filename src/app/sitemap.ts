@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getPostMetas } from "@/lib/braindump";
+import { CONTENT_ENTRIES } from "@/lib/content-registry";
 import { POSTS_PER_PAGE } from "@/lib/pagination";
 import { INDEXABLE_TOOL_META } from "@/lib/tool-metadata";
 import { WORK } from "@/lib/design-tokens";
@@ -24,18 +24,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route.priority,
   }));
 
-  const posts = getPostMetas();
-
   // Real publication dates, not build time, so search engines can tell what is new.
-  const postEntries = posts.map((post) => ({
-    url: `${BASE_URL}/braindump/${post.slug}`,
-    lastModified: post.date ? new Date(post.date) : undefined,
+  // Every screenshot in an article is declared here, which is what gets those images
+  // into Google and Bing image search rather than only the page itself.
+  const postEntries = CONTENT_ENTRIES.map((entry) => ({
+    url: `${BASE_URL}/braindump/${entry.slug}`,
+    lastModified: entry.date ? new Date(entry.date) : undefined,
     changeFrequency: "monthly" as const,
     priority: 0.7,
+    ...(entry.images.length ? { images: entry.images.map((image) => `${BASE_URL}${image}`) } : {}),
   }));
 
   // The archive pages are linked from one another, but listing them makes discovery certain.
-  const totalArchivePages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  const totalArchivePages = Math.ceil(CONTENT_ENTRIES.length / POSTS_PER_PAGE);
   const archiveEntries = Array.from({ length: Math.max(0, totalArchivePages - 1) }, (_, index) => ({
     url: `${BASE_URL}/braindump/page/${index + 2}`,
     changeFrequency: "weekly" as const,

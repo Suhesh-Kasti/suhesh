@@ -1,0 +1,42 @@
+---
+title: "AWS IAM"
+date: '2026-06-22'
+tags: ["AWS", "Cloud", "IAM", "Security", "access control"]
+excerpt: "Identity and Access Management is a global service — users, groups, and the JSON policies that decide what each of them is allowed to do."
+type: til
+category: "Cloud"
+---
+
+# AWS IAM
+
+- It's a global service.
+- The root account is created by default — it shouldn't be shared or used.
+- If we're not going to use it, what then? Create users.
+
+## Users
+
+- Users can be grouped.
+- A group can contain users but not other groups.
+- Users don't need to be in a group.
+- One user can be in multiple groups.
+
+![AWS users and groups, with a user belonging to more than one group](/images/content/aws-iam/AWS-users_and_groups.png)
+
+### IAM policies
+
+Users and groups can be assigned JSON documents, i.e. policies.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::example-bucket"
+    }
+  ]
+}
+```
+
+<Cloze title="IAM recall" color="#ff9900" text="IAM is a {{global}} service. Groups can contain users but not other {{groups}}, and a user may belong to {{multiple}} groups. Permissions are attached as {{JSON}} policy documents." />

@@ -2,40 +2,73 @@
 title: >-
   Server-side template injection with information disclosure via user-supplied
   objects
-date: '2025-06-18'
+date: '2026-08-24'
 tags:
   - PortSwigger
   - lab
   - ssti
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Server-side template injection with
-  information disclosure via user-supplied objects. Walkthrough with solution,
-  key takeaways, and blind replay exercise.
+excerpt: "The template editor runs Django, and a debug tag listed every object in scope. settings.SECRET_KEY was one of them."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Server-side template injection with information disclosure via user-supplied objects
 
-## Objective
+The content-manager account lets me edit product templates, which is already a strange amount of power. Those templates render on the server, and that is where this gets interesting.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `content-manager:C0nt3ntM4n4g3r` and open a product description template. You can put template expressions in the text and watch them evaluate when the page renders. That is the injection point. The real question is which engine sits underneath, and which objects the template can reach.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+A template engine renders placeholders and tags on the server before the HTML is sent. If user input is compiled as a template, the user can call whatever the engine exposes. Here an object with sensitive attributes is passed into the template context, so the template can read it. The engine is Django, and Django ships a built-in `debug` tag that dumps every variable and object available in the current context. That tag is the reconnaissance step.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Log in and edit a product template. Break it on purpose to make the engine complain:
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```
+${<%[%'"}}%\
+```
+
+The error output names the framework, which is Django.
+
+2. Now ask Django to list what is in scope:
+
+```
+{% debug %}
+```
+
+Save the template. The output lists the context: variables, filters and objects. The one that matters is `settings`.
+
+3. Django's `settings` object holds framework configuration, including `SECRET_KEY`. Read it directly:
+
+```
+{{settings.SECRET_KEY}}
+```
+
+4. Save the template. The rendered page prints the key. Click Submit solution and paste it in. The value differs per instance, so take it from your own output.
+
+## Why that payload works
+
+Once input is compiled as a template, any tag or filter the engine exposes is callable. The `debug` tag is not a vulnerability on its own; it is a normal debugging helper that leaks the context when it runs in production. That context includes the `settings` object, and `SECRET_KEY` is a plain attribute read. No code execution is needed, which is the point of the lab: information disclosure through object access, not a full remote code execution chain.
+
+## The fix
+
+Never render user-supplied strings as templates. Treat them as data and pass them into a fixed template, or use an engine that cannot reach framework objects. Switch off debugging helpers like the `debug` tag in production. And keep `SECRET_KEY` out of any context object a template can touch, since the key signs sessions and tokens.
+
+<QuizCard title="SSTI check" questions={[
+  { question: "What reveals which template engine is running?", options: ["The admin panel", "An intentionally broken expression and its error", "The login page", "A cookie"], correct: 1, explanation: "Saving invalid template syntax produces an error that names the framework." },
+  { question: "What does the debug tag give you?", options: ["The source code", "The database password", "The objects and variables in the template context", "A shell"], correct: 2, explanation: "In Django, the debug tag lists what the current template can access, including settings." },
+  { question: "How do you read the secret key?", options: ["{{settings.SECRET_KEY}}", "{% exec 'env' %}", "${SECRET_KEY}", "{{ secret_key() }}"], correct: 0, explanation: "settings is in the context, and SECRET_KEY is a plain attribute on it." }
+]} />
+
+<Cloze title="Django recall" text="The engine is {{Django}}. Its built-in {{debug}} tag lists the template context, and the {{settings}} object exposes SECRET_KEY as an attribute." />
+
+<Accordion title="Why the error matters">
+A fuzz string like the broken expression in step 1 is not a payload. It is a question. Different engines fail in different ways, and the error text usually names the framework outright. Knowing it is Django is what tells you the debug tag and the settings object exist at all.
+</Accordion>

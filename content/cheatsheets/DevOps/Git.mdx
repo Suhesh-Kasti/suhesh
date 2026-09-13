@@ -1,247 +1,202 @@
 ---
 title: "Git"
-excerpt: "is a distributed version control system for tracking changes in code and coordinating work among multiple developers."
-tags: []
+date: '2026-05-25'
+excerpt: "Git commands I actually reach for — clone, commit, branch, stash, and how to undo a mistake with reset and revert."
+tags: ["Git", "devops", "Version Control"]
 category: "DevOps"
 type: "cheatsheet"
 ---
 
-#### 1. Clone
+# Git
 
-<Accordion title="git clone: Clone a repository into a new directory">
-Clone a Git repository from a remote source to your local machine.
-<br />
+Commands grouped by what you're trying to do. Everything below assumes you're inside the repo directory.
 
-```bash
-git clone repository_url
-```
+## Setup and clones
 
-</Accordion>
+### git init
 
-#### 2. Init
-
-<Accordion title="git init: Create an empty Git repository or reinitialize an existing one">
-Initialize a new Git repository for a project or reinitialize an existing one.
-<br />
+Start tracking the current folder as a new repository.
 
 ```bash
 git init
 ```
 
-</Accordion>
+### git clone
 
-#### 3. Add
-
-<Accordion title="git add: Add file contents to the index for the next commit">
-Stage changes for the next commit by adding modified or new files.
-<br />
+Copy a remote repository to your machine.
 
 ```bash
-git add file_name
+git clone repository_url
 ```
 
-</Accordion>
+### git remote
 
-#### 4. Commit
-
-<Accordion title="git commit: Record changes to the repository">
-Save staged changes to the local repository with a descriptive commit message.
-<br />
-
-```bash
-git commit -m "Your commit message"
-```
-
-</Accordion>
-
-#### 5. Status
-
-<Accordion title="git status: Show the working tree status">
-View the status of your working directory and see changes that need to be committed.
-<br />
-
-```bash
-git status
-```
-
-</Accordion>
-
-#### 6. Diff
-
-<Accordion title="git diff: Show changes between commits, commit and working tree, etc">
-Display the differences between various states, such as commits and the working tree.
-<br />
-
-```bash
-git diff
-```
-
-</Accordion>
-
-#### 7. Log
-
-<Accordion title="git log: Show the commit logs">
-View a chronological log of commits with their hashes, authors, dates, and messages.
-<br />
-
-```bash
-git log
-```
-
-</Accordion>
-
-#### 8. Branch
-
-<Accordion title="git branch: List, create, or delete branches">
-Manage branches in your Git repository - list, create, or delete branches.
-<br />
-
-```bash
-git branch branch_name
-```
-
-</Accordion>
-
-#### 9. Checkout
-
-<Accordion title="git checkout: Switch branches or restore working tree files">
-Move between branches or restore files to a previous state.
-<br />
-
-```bash
-git checkout branch_name
-```
-
-</Accordion>
-
-#### 10. Merge
-
-<Accordion title="git merge: Join two or more development histories together">
-Combine changes from different branches into the current branch.
-<br />
-
-```bash
-git merge branch_name
-```
-
-</Accordion>
-
-#### 11. Remote
-
-<Accordion title="git remote: Manage set of tracked repositories">
-Configure connections to remote repositories where your code is stored.
-<br />
+Point a local repo at a remote.
 
 ```bash
 git remote add origin repository_url
 ```
 
-</Accordion>
+## Staging and committing
 
-#### 12. Fetch
+### git status
 
-<Accordion title="git fetch: Download objects and refs from another repository">
-Retrieve changes from a remote repository without merging them into your working directory.
-<br />
+See what's changed and what's already staged.
+
+```bash
+git status
+```
+
+### git add
+
+Stage files for the next commit.
+
+```bash
+git add file_name   # one file
+git add .           # everything under the current directory
+```
+
+### git commit
+
+Record the staged changes with a message.
+
+```bash
+git commit -m "Your commit message"
+```
+
+### git diff
+
+Show unstaged changes line by line. Add `--staged` to see what's about to be committed.
+
+```bash
+git diff
+git diff --staged
+```
+
+## Branches
+
+### git branch
+
+List branches. Give it a name to create one, or `-d` to delete.
+
+```bash
+git branch branch_name
+```
+
+### git checkout
+
+Switch branches, or restore a file to an earlier state.
+
+```bash
+git checkout branch_name
+git checkout -b new_branch   # create and switch in one step
+```
+
+### git merge
+
+Fold another branch into the current one.
+
+```bash
+git merge branch_name
+```
+
+## Remotes
+
+### git fetch
+
+Download new commits and refs without touching your working tree.
 
 ```bash
 git fetch origin
 ```
 
-</Accordion>
+### git pull
 
-#### 13. Pull
-
-<Accordion title="git pull: Fetch from and integrate with another repository or a local branch">
-Fetch changes from a remote repository and integrate them into your current branch.
-<br />
+Fetch and merge in one step.
 
 ```bash
 git pull origin branch_name
 ```
 
-</Accordion>
+### git push
 
-#### 14. Push
-
-<Accordion title="git push: Update remote refs along with associated objects">
-Send your committed changes to a remote repository.
-<br />
+Send your commits to the remote.
 
 ```bash
 git push origin branch_name
 ```
 
-</Accordion>
+## Undo and history
 
-#### 15. Reset
+### git log
 
-<Accordion title="git reset: Reset current HEAD to the specified state">
-Unstage changes or move the current branch to a specific commit.
-<br />
+Walk the commit history. `--oneline --graph` keeps it readable.
 
 ```bash
-git reset commit_hash
+git log
+git log --oneline --graph
 ```
 
-</Accordion>
+### git reset
 
-#### 16. Revert
+Move HEAD. `--soft` keeps your changes staged, `--mixed` unstages them, `--hard` throws them away.
 
-<Accordion title="git revert: Create new commit that undoes changes to the previous commit">
-Reverse the changes introduced by a specific commit by creating a new commit.
-<br />
+```bash
+git reset --soft commit_hash
+git reset --hard commit_hash
+```
+
+### git revert
+
+Make a new commit that reverses an old one. Safe on branches other people already have.
 
 ```bash
 git revert commit_hash
 ```
 
-</Accordion>
+### git stash
 
-#### 17. Tag
+Park uncommitted work and get a clean tree back.
 
-<Accordion title="git tag: Create, list, delete, or verify a tag object signed with GPG">
-Mark specific commits as releases by creating lightweight or annotated tags.
-<br />
+```bash
+git stash push -m "work in progress"
+git stash pop
+```
+
+<Accordion title="Tags, cherry-pick, and help">
+
+### git tag
+
+Mark a specific commit as a release.
 
 ```bash
 git tag -a v1.0 -m "Release version 1.0"
 ```
 
-</Accordion>
+### git cherry-pick
 
-#### 18. Cherry-Pick
-
-<Accordion title="git cherry-pick: Apply the changes introduced by some existing commits">
-Select and apply specific commits from one branch to another.
-<br />
+Apply one commit from another branch onto the current one.
 
 ```bash
 git cherry-pick commit_hash
 ```
 
-</Accordion>
+### git help
 
-#### 19. Stash
-
-<Accordion title="git stash: Stash the changes in a dirty working directory away">
-Temporarily save changes that are not ready to be committed.
-<br />
-
-```bash
-git stash save "Your stash message"
-```
-
-</Accordion>
-
-#### 20. Help
-
-<Accordion title="git help: Display help information">
-Access Git's built-in documentation to get information about Git commands.
-<br />
+Open the manual for any command.
 
 ```bash
 git help command_name
 ```
 
 </Accordion>
+
+<Cloze title="Undo recall" text="To move the branch but keep the changes, use git reset {{--soft}}. To throw the changes away, use git reset {{--hard}}." />
+
+<MatchPairs title="Command to job" color="#7700ff" pairs={[
+  { term: "git fetch", match: "Download new commits, don't merge" },
+  { term: "git pull", match: "Download and merge" },
+  { term: "git stash", match: "Park uncommitted changes" },
+  { term: "git revert", match: "Undo an old commit with a new one" },
+  { term: "git cherry-pick", match: "Copy one commit onto another branch" }
+]} />

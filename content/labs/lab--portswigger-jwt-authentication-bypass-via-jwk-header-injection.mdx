@@ -1,39 +1,61 @@
 ---
 title: JWT authentication bypass via jwk header injection
-date: '2025-06-18'
+date: '2026-08-09'
 tags:
   - PortSwigger
   - lab
   - jwt
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — JWT authentication bypass via jwk
-  header injection. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The server trusts the key embedded in the token's jwk header, so I inject my own RSA key and sign as administrator."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: JWT authentication bypass via jwk header injection
 
-## Objective
+After all that key recovery, this one feels like cheating. The server takes the verification key straight out of a header field called `jwk`, so I just hand it a key I generated and sign with its private half. I never need the server's key at all. It is a shorter lab than the last two and it teaches a cleaner lesson.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `wiener:peter` and look at the JWT. The header here carries an embedded key:
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+```json
+{"kid": "<some-kid>", "jwk": {"kty": "RSA", "n": "...", "e": "AQAB"}}
+```
 
-## Key Takeaway
+The `jwk` field is meant as a convenience. The token self-describes which key signed it. That is safe only if the verifier checks that this embedded key is one it already trusts, which is the whole question here.
 
-*Write ONE principle I must remember*
+## How the vulnerability works
 
-## Next-Day Blind Replay
+A JWK is just a JSON description of a key. JWT Editor can generate a fresh RSA keypair and paste the public half into the header as `jwk`. When the server reads the token, it extracts that public key and uses it to verify the signature. If it never asks whether the key is one of its own, it is verifying the token with a key the attacker chose, which is no verification at all.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+The endpoint here only accepts RSA, which is why the injected key has to be an RSA key rather than a symmetric one.
+
+## Solving it
+
+1. Log in as `wiener:peter` and capture the JWT.
+2. In JWT Editor generate a new RSA key. The extension holds it as the active signing key.
+3. Open the token in the JWT tab and set the payload `sub` to `administrator`.
+4. Use Attack, then "Embedded JWK", and confirm the injected key. JWT Editor rewrites the header with your public key in `jwk` and re-signs the token with the matching private half it holds.
+5. Send the request, browse to `/admin`, and delete `carlos`.
+
+## Why that payload works
+
+The verifier consults the token to find out how to verify the token. My `jwk` says "use this RSA key", the signature was made with that key's private half, and the check passes. There is no trust anchor anywhere on the path, because the same header the attacker controls supplies both the algorithm and the key. The `kid` is a label pointing at a key the app already has. `jwk` stabs at supplying the key itself, and that is the difference between them.
+
+## The fix
+
+Do not accept a key from the token unless it matches one the server already holds, and ideally do not accept embedded JWKs at all. Keep the verification key set fixed server-side, resolve `kid` inside that trusted set, and reject any token that carries its own key material.
+
+<IdeaNode color="#ff5500" label="Watch out">The endpoint only accepts RSA here. If you leave the generated key as a symmetric one, the injected jwk is ignored and the token bounces.</IdeaNode>
+
+<Cloze
+  title="Attack recall"
+  text="The server reads the verification key from the {{jwk}} header, so I generate my own {{RSA}} keypair, embed the public half, and sign with the {{private}} half."
+/>
+
+<Accordion title="Why the kid value still matters">
+The header also keeps a `kid`. In a sane app that value selects one entry from a fixed server-side key set, and an unknown `kid` is rejected. Here the `jwk` short-circuits that lookup, so the `kid` is along for the ride. When a header carries both, test which one the server actually honours.
+</Accordion>

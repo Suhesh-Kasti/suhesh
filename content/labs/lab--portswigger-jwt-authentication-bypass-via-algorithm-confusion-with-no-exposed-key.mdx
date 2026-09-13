@@ -1,51 +1,89 @@
 ---
 title: JWT authentication bypass via algorithm confusion with no exposed key
-date: '2025-06-18'
+date: '2026-08-07'
 tags:
   - PortSwigger
   - lab
   - jwt
   - walkthrough
-excerpt: >-
-  This lab uses JWT-based sessions and supports the none algorithm. Solve the
-  lab by forging a JWT with algorithm confusion to access the admin panel and
-  delete carlos.
+excerpt: "No public key is published, so I recover the RSA modulus from two JWTs, then sign HS256 with the derived public key."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: expert
 ---
+
 # Lab: JWT authentication bypass via algorithm confusion with no exposed key
 
-## Objective
-*What is this lab trying to teach?*
+This is the previous confusion lab with one new obstacle in front of it: the public key is not published anywhere. It is the hardest of the set for me, mostly because the recovery step uses a tool I had never touched. Once the key is out, the rest is copy-paste from the last lab.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The server trusts the JWT without verifying its signature, uses a weak secret, or misconfigures the algorithm.
-- **Root cause:** The JWT library/implementation has a flaw — algorithm confusion (`alg: none`), weak HMAC secret, or signing key injection (`jwk`, `jku`, `kid`).
-- **Exploitation:** Forge a valid JWT by either setting `alg: none`, cracking the secret, or injecting a crafted key into the header.
-- **Key insight:** A JWT is only as secure as its verification logic. If the server trusts the header's algorithm choice, it can be subverted.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+Log in as `wiener:peter`. The header is `RS256` again, but this time there is no `/jwks.json` and no key served to the browser, so the fetch step from before comes up empty. The server still holds the key and still signs tokens with it, deterministically. That is the crack in the door: I can get two different messages signed under the same key.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+RSA signatures carry a structure you can exploit once you hold two of them from the same key. With the modulus `n` and exponent `e` unknown, two signatures over known messages and their padding give enough algebra to solve for `n`. That is the whole idea behind the `rsa_sign2n` recipe and its `sig2n` tool. It is not breaking RSA, it is recovering the public parameters from public signatures.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+Once I have `n` and `e` I can build the public key. And once I have the public key, the confusion from the previous lab applies unchanged: ask the server to verify HS256 and use those public bytes as the HMAC secret.
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. Log in and grab two JWTs for the same account. Take one, then force a fresh one so a claim like `exp` differs. Differing payloads are what the recovery needs.
+2. Run the key-recovery tool over the two tokens:
+
+```bash
+docker run --rm -it portswigger/sig2n <token1> <token2>
+```
+
+3. It prints candidate values for `n` and `e`. Try the first candidate against the target; if the token is rejected, try the next one, because the tool cannot be sure which candidate is the real modulus.
+4. Build the RSA public key from the recovered values in JWT Editor and convert it to PEM.
+5. Change the payload `sub` to `administrator`, set the header to `HS256`, and sign with the public key as the HMAC secret.
+6. Send, open `/admin`, and delete `carlos`.
+
+## Why that payload works
+
+Two signatures under one key leak the modulus, because the algebra ties them together through the padding scheme. Reconstruct that modulus and the public key is no longer secret even though nobody published it. From there it is the same flaw as before: the server reads the algorithm from the token and, told HS256, uses its RSA public key as a shared HMAC secret.
+
+## The fix
+
+Fix the algorithm server-side and refuse tokens that name a different one, which defeats both this and the exposed-key version. Keep asymmetric and symmetric keys strictly separate. Publishing the public key is normal; what is fatal is letting it double as an HMAC secret.
+
+<Sequence
+  title="Order of operations"
+  steps={[
+    "Collect two valid JWTs signed by the same key",
+    "Recover the RSA modulus with sig2n",
+    "Build the public key and export it as PEM",
+    "Set sub to administrator and alg to HS256",
+    "Sign with the public key and delete carlos"
+  ]}
+/>
+
+<QuizCard
+  title="Recovery check"
+  questions={[
+    {
+      question: "Why do two JWTs help here?",
+      options: [
+        "Two signatures under one key let you solve for the RSA modulus",
+        "The second token leaks the private key",
+        "Two tokens are needed to crack a password",
+        "The server rotates keys every request"
+      ],
+      correct: 0,
+      explanation: "The signatures are tied together by the padding and modulus, so two known messages and tags give enough equations to recover n."
+    },
+    {
+      question: "Is this lab breaking RSA?",
+      options: [
+        "No, it recovers public parameters from public signatures",
+        "Yes, it factors the private key",
+        "Yes, it finds a collision in SHA-256",
+        "No, it just cracks a weak password"
+      ],
+      correct: 0,
+      explanation: "Nothing secret is being broken. The public key is derived from data the server handed out, then reused as an HMAC secret."
+    }
+  ]}
+/>

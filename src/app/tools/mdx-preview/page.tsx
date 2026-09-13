@@ -138,6 +138,19 @@ A completely serious document about absolutely nothing in particular.
   ]}
 />
 
+## The estimation table
+
+Markdown tables work here too, which starts to matter the moment you have more than two things to compare.
+
+| Task | Time I said | Time it took | Time it felt like |
+| --- | --- | --- | --- |
+| Rename one variable | 5 minutes | 2 hours | 3 days |
+| Add a single field to a form | 10 minutes | 4 hours | a week |
+| "Just a quick CSS fix" | 2 minutes | 90 minutes | a season |
+| Read the documentation | later | never | ongoing |
+
+The moral: never say the number out loud.
+
 ## Fill in the blanks
 
 <Cloze
@@ -549,9 +562,9 @@ function parseMdxPreview(raw: string): React.ReactNode[] {
         const rows = tableLines.slice(2).map(r => r.split("|").filter(Boolean).map(c => c.trim()));
         nodes.push(
           <div key={key++} className="my-4 overflow-x-auto">
-            <table className="w-full border-collapse border-2 border-fg font-mono text-xs shadow-brutal-sm" style={{ fontFamily: "var(--font-space-mono)" }}>
-              <thead><tr>{headers.map((h, hi) => <th key={hi} className="border-2 border-fg px-3 py-1.5 text-left font-bold uppercase text-2xs" style={{ backgroundColor: "var(--fg)", color: "var(--surf)", fontFamily: "var(--font-space-mono)", letterSpacing: "0.1em" }}>{h}</th>)}</tr></thead>
-              <tbody>{rows.map((row, ri) => <tr key={ri}>{row.map((cell, ci) => <td key={ci} className="border-2 border-fg px-3 py-1.5" style={{ fontFamily: "var(--font-space-mono)" }}>{cell}</td>)}</tr>)}</tbody>
+            <table className="w-full border-collapse border-2 border-fg font-mono text-xs shadow-brutal-sm [&_tbody_tr:nth-child(even)]:bg-fg/[0.035] [&_tbody_tr:hover]:bg-fg/[0.06]" style={{ fontFamily: "var(--font-space-mono)" }}>
+              <thead><tr>{headers.map((h, hi) => <th key={hi} className="whitespace-nowrap border-2 border-fg px-3 py-1.5 text-left align-bottom font-bold uppercase text-2xs" style={{ backgroundColor: "var(--fg)", color: "var(--surf)", fontFamily: "var(--font-space-mono)", letterSpacing: "0.1em" }}>{h}</th>)}</tr></thead>
+              <tbody>{rows.map((row, ri) => <tr key={ri}>{row.map((cell, ci) => <td key={ci} className="border-2 border-fg px-3 py-1.5 align-top" style={{ fontFamily: "var(--font-space-mono)" }}>{cell}</td>)}</tr>)}</tbody>
             </table>
           </div>
         );

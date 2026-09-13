@@ -1,8 +1,8 @@
 ---
 title: "Abliteration — what HauhauCS and Heretic models actually are"
-date: "2026-05-16T14:00:00+05:45"
+date: '2026-06-04'
 excerpt: "What abliteration does to a model, why uncensored variants exist, what HauhauCS-Aggressive and Heretic model families are, and the actual tradeoffs of using them"
-tags: []
+tags: ["LLM", "Local AI", "Qwen", "fine-tuning", "Abliteration"]
 category: "AI/ML"
 type: "til"
 ---
@@ -31,6 +31,17 @@ It's less like "deleting the safety system" and more like removing a specific co
 
 The original public implementation was done by mlabonne on HuggingFace. The technique was documented and the code open-sourced, which is why community model variants using it proliferated quickly.
 
+<Sequence
+  title="Order the abliteration steps"
+  color="#ff5500"
+  steps={[
+    "Run the model on harmful and harmless examples",
+    "Find the activation direction that separates refused from non-refused",
+    "Orthogonalize the weights against that direction",
+    "The model loses the refusal reflex along that dimension"
+  ]}
+/>
+
 ## HauhauCS and Heretic — what these model families are
 
 **HauhauCS** models are a series of community fine-tunes that combine abliteration (removing refusal behavior) with additional fine-tuning for more direct, assertive responses. The "Aggressive" suffix means it's been tuned to respond without hedging, without disclaimers, and without the constant "please note that..." padding that safety-tuned models add. For security research prompts, this is genuinely better — you want the model to just analyze the thing, not spend half the response warning you about it.
@@ -49,6 +60,46 @@ Both families layer on top of base models (Qwen, LLaMA, Mistral) and the quality
 
 **Factual accuracy:** Unchanged. Abliteration doesn't affect the model's knowledge or reasoning — just its willingness to apply that reasoning to certain topics.
 
+<QuizCard
+  title="Abliteration check"
+  color="#ff2d95"
+  questions={[
+    {
+      question: "What does abliteration actually remove?",
+      options: [
+        "The learned refusal direction in activation space",
+        "The whole fine-tuning stage",
+        "The tokenizer",
+        "Only the system prompt"
+      ],
+      correct: 0,
+      explanation: "It projects out one direction so the model loses the refusal reflex and behaves like the pre-RLHF base model."
+    },
+    {
+      question: "How does abliteration affect factual accuracy?",
+      options: [
+        "Unchanged — only the willingness to apply reasoning changes",
+        "It roughly halves it",
+        "It improves it",
+        "It only affects non-English languages"
+      ],
+      correct: 0,
+      explanation: "Knowledge and reasoning are untouched; what changes is whether the model will engage on certain topics."
+    },
+    {
+      question: "What does the 'Aggressive' suffix on a HauhauCS model mean?",
+      options: [
+        "Tuned for direct answers with no hedging or disclaimers",
+        "The abliteration was done carelessly",
+        "It only runs on GPUs",
+        "It has a larger context window"
+      ],
+      correct: 0,
+      explanation: "Aggressive targets direct responses without the constant 'please note that...' padding."
+    }
+  ]}
+/>
+
 ## Why this matters for the project
 
 Running a standard safety-tuned model for security research is genuinely painful. Asking it to analyze a CVE reproduction PoC gets a refusal. Asking it to generate a nuclei template for a known vulnerability gets hedged responses with warnings. Asking it to think through an exploit chain gets "I'm not able to assist with potentially harmful activities."
@@ -60,3 +111,9 @@ The ethics of this are: it's your machine, your model, your responsibility for h
 ## One more thing — the mmproj file
 
 The models I used came with an mmproj (multimodal projector) file — that's the vision encoder adapter. This is a separate fine-tuned component that maps image embeddings into the same space as text tokens, allowing the model to "see" images. Super useful for security research: screenshot a web app's response headers, feed it to the model, get analysis without copy-pasting. Standard llama.cpp loads it with `--mmproj path/to/mmproj.gguf`.
+
+<Cloze
+  title="Loading the vision adapter"
+  color="#0055ff"
+  text="The mmproj file is the multimodal projector, or vision encoder, adapter. Standard llama.cpp loads it with the {{--mmproj}} flag followed by the path to the file."
+/>

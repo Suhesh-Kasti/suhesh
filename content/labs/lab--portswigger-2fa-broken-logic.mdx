@@ -1,38 +1,65 @@
 ---
 title: 2FA broken logic
-date: '2025-06-18'
+date: '2026-07-03'
 tags:
   - PortSwigger
   - lab
   - authentication
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — 2FA broken logic. Walkthrough with
-  solution, key takeaways, and blind replay exercise.
+excerpt: "The 2FA check keys off a user-controlled verify parameter, so I can point it at Carlos and brute-force his 4-digit code."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: 2FA broken logic
 
-## Objective
+The login has two steps, and the second one trusts a value I can edit. I spent a while assuming the code was bound to my session. The code is bound to whatever sits in the `verify` parameter, which means I can ask the server to check a code for somebody else.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in with `wiener:peter` and the app asks for a 4-digit security code before it opens the account. The code shows up in an email client. The interesting part is in step two: the request carries a `verify` parameter that names which account is being finished. When I log in as wiener, `verify=wiener`. The server mints a code for whoever is named there, then checks the submitted code against that same name.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+A sane 2FA flow keeps the half-logged-in state on the server, keyed to the session. This one keeps it in a request parameter. So the decision of whose code we are checking is attacker-controlled.
 
-*Write ONE principle I must remember*
+That lets me split the two halves. I can make the server generate a code for Carlos without holding a session as Carlos, and I can submit guesses for that code from my own session. Carlos never logs in, and his code still exists.
 
-## Next-Day Blind Replay
+The code is 4 digits, so 10,000 numbers. There is no lockout on the second step. That is the whole game.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. Log in as `wiener:peter` and complete the 2FA once with the code from the email client, so you have seen the flow and the requests.
+2. Log out.
+3. Find the `GET /login2` request and send it to Repeater. Change `verify=wiener` to `verify=carlos` and send it. This forces the server to create a fresh code for Carlos.
+
+```http
+GET /login2?verify=carlos HTTP/2
+Cookie: verify=carlos; session=YOUR-SESSION
+```
+
+4. In the browser, log in as wiener again and submit a wrong 2FA code. Now you have a `POST /login2` request to reuse.
+5. Send that `POST /login2` to Intruder. Set `verify=carlos` and put a payload position on `mfa-code`. Brute-force `0000` through `9999`.
+
+```http
+POST /login2 HTTP/2
+Cookie: verify=carlos; session=YOUR-SESSION
+
+mfa-code=§0000§
+```
+
+6. One response returns `302`. Load it in the browser, then click My account.
+
+## Why that payload works
+
+The `verify` parameter is the only thing step two uses to decide which account it is finishing. Setting it to `carlos` makes every generated code and every check about Carlos, even though the session cookie still belongs to wiener. The app never ties the session to the name, so I do not need either of them to match. And 4 digits is small enough to walk through quickly.
+
+## The fix
+
+Keep the pending-user state on the server, keyed to the session, and never read it from a request parameter. Rate-limit and lock the second step the way you lock the password step, because 10,000 guesses is nothing. Expire a generated code after a few minutes and after a few failed tries.
+
+<Cloze title="Parameter recall" text="The second step trusts the {{verify}} parameter, so setting it to {{carlos}} makes the app check a code for his account instead of mine." />
+
+<FlipCard front={<div>Which value decides whose 2FA code is generated and checked?</div>} back={<div>The verify parameter on the login2 request. The session does not need to belong to that user.</div>} />

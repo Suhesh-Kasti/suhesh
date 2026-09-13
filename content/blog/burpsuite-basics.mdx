@@ -1,6 +1,6 @@
 ---
 title: "BurpSuite Basics"
-date: "2024-03-12"
+date: '2024-03-12'
 tags: ["BurpSuite", "Web App Security", "Penetration Testing", "Proxy", "Scanner"]
 excerpt: "BurpSuite is the industry standard for web app testing. Here's what it does, how to set it up, and why every pentester needs it."
 type: "blog"
@@ -8,6 +8,8 @@ category: "Web Security"
 ---
 
 BurpSuite is a proxy that sits between your browser and the target. Every request passes through it. You inspect, modify, replay, and automate. It's the central nervous system of web app pentesting.
+
+![Burp Suite Community Edition interface with the Proxy, Repeater, Intruder and Decoder tool tabs](/images/content/burpsuite/burpsuiteui.png)
 
 <IdeaNode color="blue">**Free (Community) vs Pro:** Community has Proxy, Repeater, Intruder (throttled), Decoder. Pro adds Scanner (automated vuln detection). For most work, Community is enough.</IdeaNode>
 
@@ -93,6 +95,24 @@ Base64, URL encoding, HTML entities, hex, etc. Right-click any selected text in 
     }
   ]}
   color="#0055ff"
+/>
+
+<MatchPairs
+  title="Tool to job"
+  color="#0055ff"
+  pairs={[
+    { term: "Proxy", match: "Sits between browser and server, logs and lets you edit every request" },
+    { term: "Repeater", match: "Send the same request again and again, changing one thing each time" },
+    { term: "Intruder", match: "Fuzz marked positions in a request with a payload list" },
+    { term: "Decoder", match: "Encode or decode base64, URL, HTML entities and hex" },
+    { term: "Scanner", match: "Automated vulnerability detection, Pro only" }
+  ]}
+/>
+
+<Cloze
+  title="Setup recall"
+  color="#00cc55"
+  text="Point the browser at the proxy on {{127.0.0.1:8080}}, then install Burp's CA certificate by visiting {{http://burpsuite}} in the proxied browser."
 />
 
 <BrutalButton color="#ffdd00">Start with Proxy. Master Repeater. Everything else follows.</BrutalButton>

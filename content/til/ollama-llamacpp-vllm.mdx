@@ -1,8 +1,8 @@
 ---
 title: "Ollama vs llama.cpp vs vLLM — picking your LLM serving layer"
-date: "2026-05-16T12:00:00+05:45"
+date: '2026-05-27'
 excerpt: "Three different ways to run LLMs locally and when each one makes sense. I tried all three approaches and ended up on llama.cpp for reasons that only became obvious after a lot of pain."
-tags: []
+tags: ["LLM", "llama.cpp", "Ollama", "vLLM", "Local AI"]
 category: "AI/ML"
 type: "til"
 ---
@@ -47,6 +47,12 @@ But for custom workflows — HauhauCS fine-tuned models with vision support, per
 
 vLLM is built for serving LLMs at scale. Its main innovation is **PagedAttention** — a memory management technique that handles KV cache like OS virtual memory, allowing much higher throughput when serving many concurrent requests.
 
+<Cloze
+  title="vLLM's trick"
+  color="#0055ff"
+  text="vLLM's main innovation is {{PagedAttention}}, which manages the {{KV cache}} like OS virtual memory for many concurrent requests. It does not load {{GGUF}} files natively; it wants HuggingFace safetensors."
+/>
+
 Where llama.cpp optimizes for single-user latency (fast time-to-first-token, fast streaming), vLLM optimizes for throughput (serve 100 requests efficiently by batching KV cache pages).
 
 It also has excellent FP8 support, which matters for data center GPUs like the L4. On an L4, FP8 roughly doubles throughput compared to FP16 because the L4's tensor cores are specifically good at INT8/FP8 operations.
@@ -61,7 +67,53 @@ I tried vLLM early on and hit the vision encoder OOM on my L4. For a model witho
 
 **Use vLLM when:** You're serving multiple users concurrently, you have multi-GPU hardware, you want FP8 optimization on supported GPUs, or you're building production inference infrastructure.
 
+<MatchPairs
+  title="Serving layer → its strength"
+  color="#ff5500"
+  pairs={[
+    { term: "Ollama", match: "polished wrapper, near-zero config" },
+    { term: "llama.cpp", match: "full control, loads GGUF directly" },
+    { term: "vLLM", match: "high throughput for concurrent requests" },
+    { term: "PagedAttention", match: "KV cache managed like OS virtual memory" }
+  ]}
+/>
+
 ## The summary
 
 | | Ollama | llama.cpp | vLLM |
 |
+
+<QuizCard
+  title="Serving layer check"
+  color="#00dd44"
+  questions={[
+    {
+      question: "Which engine can't natively load GGUF files?",
+      options: ["vLLM", "llama.cpp", "Ollama", "None of them"],
+      correct: 0,
+      explanation: "vLLM wants HuggingFace safetensors, not GGUF."
+    },
+    {
+      question: "Why did vLLM OOM on the L4 with a vision model?",
+      options: [
+        "The vision encoder stays resident in VRAM even when unused",
+        "FP8 needs too much memory",
+        "PagedAttention fragments the cache",
+        "The KV cache doubles every layer"
+      ],
+      correct: 0,
+      explanation: "On a single GPU the vision encoder stays in VRAM, which pushed it over the limit."
+    },
+    {
+      question: "Which layer optimizes single-user latency vs concurrent throughput?",
+      options: [
+        "llama.cpp targets latency; vLLM targets throughput",
+        "Ollama targets throughput; llama.cpp latency",
+        "vLLM targets latency; Ollama throughput",
+        "All three target throughput"
+      ],
+      correct: 0,
+      explanation: "llama.cpp favours fast time-to-first-token and streaming; vLLM batches to serve many requests efficiently."
+    }
+  ]}
+/>

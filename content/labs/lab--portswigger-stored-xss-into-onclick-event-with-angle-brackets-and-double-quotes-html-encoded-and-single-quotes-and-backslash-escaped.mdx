@@ -1,23 +1,23 @@
 ---
-title: >-
-  Stored XSS into onclick event with angle brackets and double quotes
-  HTML-encoded and single quotes and backslash escaped
-date: '2025-06-18'
+title: Stored XSS into onclick event with angle brackets and double quotes HTML-encoded and single quotes and backslash escaped
+date: '2026-08-31'
 tags:
   - PortSwigger
   - lab
   - xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "Quotes and backslashes are escaped inside the stored onclick handler, so I smuggle the quote in as an HTML entity the browser decodes."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Stored XSS into onclick event with angle brackets and double quotes HTML-encoded and single quotes and backslash escaped
 
 ## Objective
-*What is this lab trying to teach?*
+This lab contains a stored cross-site scripting vulnerability in the comment functionality.
+To solve this lab, submit a comment that calls the `alert` function when the comment author name is clicked.
 
 ## Why This Works (The Principle)
 - **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
@@ -36,15 +36,29 @@ difficulty: apprentice
 - *Resume blind with new clue. Still stuck?*
 
 ## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
+- [ ] Step 1:  The following onclick function has to be exploited
+```html
+<a id="author" href="https://test" onclick="var tracker={track(){}};tracker.track('https://test');">
+```
+- [ ] Step 2: Seems like when we send HTML encoded version of `'` ie `&apos;` it is reflected back as `'` 
+- [ ] Step 3:  We have to create this. Why? See below
+```js
+onclick="var tracker={track(){}};tracker.track('https://suhesh.com.np'-alert(1)-'');">
+```
 - [ ] Final payload / exploit:
-
+![The onclick handler where the HTML-encoded quote is decoded into a working JavaScript payload](/images/content/lab--portswigger-stored-xss-into-onclick-event-with-angle-brackets-and-double-quotes-html-encoded-and-single-quotes-and-backslash-escaped/HTML_encoded_elements_gets_decoded.png)
 ## Key Takeaway
-*Write ONE principle I must remember:*
-
+_How does an alert trigger if it's supposed to be inside a string being passed to a function?_ It works because of JavaScript's **Order of Evaluation** and **Type Coercion**. JavaScript reads the expression from left to right and attempts to perform mathematical subtraction (the `-` signs) on strings and functions like:
+- **Step 1:** The engine sees a math problem involving subtraction operators: `[Value A] - [Value B] - [Value C]`.   
+- **Step 2:** It evaluates the first value: `'https://suhesh.com.np'` (a string).
+- **Step 3:** It moves to evaluate the second value so it can perform the subtraction. The second value is `alert(1)`.
+- **Step 4:** **The alert executes.** To figure out what mathematical value `alert(1)` represents, the JavaScript engine _must_ run the function. The pop-up box appears on the screen.
+- **Step 5:** When you close the alert box, the `alert()` function finishes and returns `undefined`.
+- **Step 6:** The JavaScript engine tries to do the math: `'https://test' - undefined`. Because you can't subtract `undefined` from a word, the result becomes `NaN` (Not-A-Number).
+- **Step 7:** It subtracts the final value (the empty string `''`): `NaN - ''` which remains `NaN`.
+- **Step 8:** Finally, it passes that result to the function. The actual code that gets executed at the very end is just `tracker.track(NaN);`.
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="Quotes and backslashes are escaped, but the HTML entity {{&amp;apos;}} is decoded by the browser; the payload uses {{-alert(1)-}} so the engine evaluates the alert before the subtraction." />

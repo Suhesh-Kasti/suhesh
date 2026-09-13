@@ -1,6 +1,6 @@
 ---
 title: Reflected XSS into attribute with angle brackets HTML-encoded
-date: '2025-06-18'
+date: '2026-08-19'
 tags:
   - PortSwigger
   - lab
@@ -12,36 +12,45 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: Reflected XSS into attribute with angle brackets HTML-encoded
 
-## Objective
-This lab contains a reflected cross-site scripting vulnerability in the search blog functionality where angle brackets are HTML-encoded. To solve this lab, perform a cross-site scripting attack that injects an attribute and calls the `alert` function.
+My first thought on this one was that encoded angle brackets meant XSS was off the table, which is wrong in a way that keeps catching me out. The value is reflected inside an attribute, and attribute context has its own escape character: the double quote. That one is left wide open.
 
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## The setup
 
-## Blind Attempt (15-20 min max)
-- **What I tried:** I tried to do the same thing but was trying other functions  
-- **Where I got stuck:**
+The search box reflects your term in two places, once in an `<h1>` and once inside the `value="..."` attribute of the search `<input>`. A quick `<script>alert(1)</script>` comes back as `&lt;script&gt;`, so the angle brackets are handled. Send a single `"` on its own, though, and it survives untouched. You have fallen out of the attribute.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [x] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1: The string in search was being reflected back in two places 
-- [ ] Step 2: Since it was being reflected in `<input>`, we used onmouseover function
-- [ ] Step 3: We had to made the exploit in a way it didn't break no javascript
-![](/images/series/URL_encoded_HTML_tags_reflected_XSS.png)
+Encoding `<` and `>` stops you creating new tags, but it does nothing about the quote that delimits the attribute you are already inside. If `"` is not encoded, you close `value` early and start adding your own attributes to the existing `<input>` element. You are not building a new tag. You are decorating the one the developer already made, which is why the angle-bracket filter never sees anything to block.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+The second problem is triggering execution without a click. An injected `onmouseover` needs a human to move the mouse. Adding `autofocus` to the input makes the browser focus it on load, and `onfocus` fires by itself.
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. Search for a random string and view the response, then note the reflection inside `value="..."`.
+2. Confirm that a lone double quote is not encoded.
+3. Enter this into the search box:
+
+```html
+" autofocus onfocus=alert(1) x="
+```
+
+The leading `"` closes `value="`, `autofocus` plus `onfocus` runs the alert on load, and the trailing `x="` swallows the server's own closing quote so the tag stays valid.
+
+## Why that payload works
+
+Walk through the parser. Your first `"` terminates the `value` attribute. The browser then reads `autofocus` and `onfocus=alert(1)` as new attributes of the same `<input>`. `autofocus` tells it to place focus on that field as soon as the document loads, and focusing fires `onfocus`, so the code runs with no user action. The final `x="` ate the quote the page appends, leaving a tidy `x=""` behind instead of a dangling half-tag.
+
+## The fix
+
+Encode quotes as `&quot;` whenever data lands inside an attribute value, and preferably attribute-encode the whole value. A template engine with contextual auto-escaping handles this. On top of that, a Content-Security-Policy that forbids inline event handlers means an injected `onfocus=` never runs, even if the quote slips through.
+
+<Cloze title="Breakout recall" text="Inside the attribute I close the value with {{&quot;}}, then add {{autofocus onfocus=alert(1)}} and a dummy attribute to absorb the server's trailing quote." />
+
+<FlipCard front={<div>Angle brackets are HTML-encoded. What single character still lets you add a new attribute?</div>} back={<div>The double quote. It ends the value attribute, so you can append your own attributes to the existing tag.</div>} />
+
+<Accordion title="Why autofocus instead of onmouseover">
+An injected `onmouseover=alert(1)` is valid and breaks out the same way, but it needs the victim to hover the field. `autofocus` plus `onfocus` fires the moment the page loads, which is what the lab wants. When both are available, take the one that needs no interaction.
+</Accordion>

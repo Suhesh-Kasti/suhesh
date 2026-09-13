@@ -1,38 +1,71 @@
 ---
 title: Blind SQL injection with time delays
-date: '2025-06-18'
+date: '2026-07-17'
 tags:
   - PortSwigger
   - lab
   - sql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind SQL injection with time delays.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "One request, one clock: PostgreSQL pg_sleep(10) spliced into the tracking cookie with || and a comment, and the ten-second wait is the entire signal."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind SQL injection with time delays
 
-## Objective
+The whole lab is one request and one number. You send a cookie, you count seconds, it is done. I overcomplicated the first attempt by refreshing the page hunting for an error message, which is the wrong instinct here.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The shop sets a `TrackingId` cookie and drops it into an analytics query on every request. No form, no search box, no visible parameter. The cookie is the entire attack surface.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+The response never changes. Same HTML, same status code, whether the query matches zero rows, one row, or throws an error. There is no error text to mine and no boolean difference on the page. The only thing the app cannot hide is how long it takes to answer.
 
-## Key Takeaway
+## How the vulnerability works
 
-*Write ONE principle I must remember*
+The database is PostgreSQL, and it ships a function called `pg_sleep()`. Hand it a number and the current query blocks for that many seconds.
 
-## Next-Day Blind Replay
+The query string is assembled by concatenation, roughly `... WHERE TrackingId = '<your cookie>'`. A single quote in my cookie closes that literal early and hands the rest of the statement back to me.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+PostgreSQL uses `||` to join strings, so I can splice an expression into the existing literal while keeping the query syntactically valid. Because the query runs synchronously, the whole response waits on the sleep. Ten seconds of nothing is the signal.
+
+## Solving it
+
+1. Browse the shop through Burp Proxy so the `TrackingId` cookie shows up in a request.
+2. Send that request to Repeater and find the `Cookie` header.
+3. Replace the cookie value with a payload that closes the string, concatenates a sleep, and comments out the remainder:
+
+```
+TrackingId=x'||pg_sleep(10)--
+```
+
+4. Send it and time the response. The `--` comments out the closing quote the app appends after your value, so the statement stays valid.
+
+If the request takes around ten seconds, the lab is solved.
+
+## Why that payload works
+
+The `'` closes the string literal the developer opened. The `||` is PostgreSQL string concatenation. `pg_sleep(10)` returns void, which PostgreSQL renders as an empty string, so `'x' || pg_sleep(10)` is still a text expression and the shape of the query never breaks. The `--` swallows the leftover quote and anything after it. Nothing in the output changes. Only the clock does.
+
+## The fix
+
+Build the query with a placeholder and bind the cookie as a value, not as text: `... WHERE trackingId = $1`. Stop concatenating. Give the analytics database user the least privilege it needs, and keep long-running queries off the thread that a user request is waiting on, because the sleep trick only works when the server will actually wait.
+
+<Terminal
+  title="repeater"
+  prompt="burp"
+  command={"GET / HTTP/1.1\nCookie: TrackingId=x'||pg_sleep(10)--"}
+  output={"HTTP/1.1 200 OK\n\n... response received in 10041 ms"}
+/>
+
+<FlipCard
+  front={<div>What single TrackingId value forces a 10 second delay here?</div>}
+  back={<div><code>x'||pg_sleep(10)--</code></div>}
+/>
+
+<Cloze
+  title="Payload recall"
+  text="To append a sleep to the tracking cookie: close the string with {{'}}, concatenate with {{||}}, then call {{pg_sleep(10)}}."
+/>

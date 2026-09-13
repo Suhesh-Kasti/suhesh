@@ -2,49 +2,54 @@
 title: >-
   DOM XSS in document.write sink using source location.search inside a select
   element
-date: '2025-06-18'
+date: '2026-07-22'
 tags:
   - PortSwigger
   - lab
   - dom-xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "Same document.write sink, except the reflection lands inside a select element, so you break out of the option list first."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 # Lab: DOM XSS in document.write sink using source location.search inside a select element
 
-## Objective
-*What is this lab trying to teach?*
+The reflection is not in a search box at all. It is in the `storeId` parameter of a product page, written into a `select` you never fill in by hand. I hunted the search parameter for a while before I read the source properly.
 
-## Why This Works (The Principle)
-- **The vulnerability:** Client-side JavaScript writes attacker-controlled data to the DOM without sanitization.
-- **Root cause:** The application uses a dangerous sink (e.g., `document.write`, `innerHTML`, jQuery selector) with user-controllable source (e.g., `location.search`, `location.hash`).
-- **Exploitation:** Craft a URL with a malicious payload in the fragment or query string. When the victim visits it, client-side code executes the payload.
-- **Key insight:** DOM-based XSS does not require the server to reflect the payload — it lives entirely in the client-side code path.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+A product page reads `productId` and `storeId` from the query string. A script pulls `storeId` out of `location.search` and `document.write`s it as the selected option inside a `select` element. So the injection point sits between the opening and closing select tags, as the content of an option, not inside a quoted attribute.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+Same shape as any DOM XSS: `location.search` is the source, `document.write` is the sink, and the value is concatenated into markup with no encoding. What changes is the position. You are not inside a quoted attribute this time, you are inside the document body between `select` and its closing tag. That changes the escape sequence. You do not need a closing quote, you need to close the `select` element first, because a browser drops most markup placed inside a select down to its options and nothing else.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+## Solving it
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. View the source of a product page and find the script using `storeId` from `location.search`.
+2. Note the context. The value is written as the content of an option inside a select.
+3. Close the option and the select, then inject an image with an error handler.
+4. Load the product page with both parameters:
+   ```
+   https://YOUR-LAB-ID.web-security-academy.net/product?productId=1&storeId="></select><img src=1 onerror=alert(1)>
+   ```
+5. The image fails to load, `onerror` fires, and the alert runs.
+
+## Why that payload works
+
+The value goes into the body of the page, so the `"></select>` part closes the current option and the surrounding select. Once you are outside the select, the browser will happily parse an `img`. The `src=1` is not a real image, so the load fails and `onerror` executes. You need the select closed because browsers discard most markup inside a select; escaping it is what lets the new element survive.
+
+## The fix
+
+Take the store id, validate it against the known list of stores, and set the selection through the DOM instead of building HTML from a string. Encoding alone is not the right answer here, because the value is supposed to be an id, not markup; validate the shape and reject anything that is not one.
+
+<Accordion title="Why the same source and sink need a different payload here">
+This lab and the plain document.write lab both use the source `location.search` and the sink `document.write`, yet the escape differs. One value sits in a quoted `src` attribute, so you break out with a quote and a greater-than. This one sits between select tags, so you only need to close the select. Always read the context before you choose a payload, even when the source and sink look identical.
+</Accordion>
+
+<Cloze
+  title="Recall the escape"
+  text="Here the source is {{location.search}} and the sink is {{document.write}}, but the value sits inside a {{select}} element. A browser drops most markup there, so the payload first closes it with {{</select>}} and then adds an img whose {{onerror}} runs when the fake image fails to load."
+/>

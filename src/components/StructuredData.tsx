@@ -1,3 +1,4 @@
+import { jsonLdScript } from "@/lib/json-ld";
 import { SOCIAL } from "@/lib/design-tokens";
 
 const BASE_URL = "https://suhesh.com.np";
@@ -18,23 +19,25 @@ export function StructuredData() {
         givenName: "Suhesh",
         familyName: "Kasti",
         url: BASE_URL,
-        jobTitle: "Application Security Engineer & Offensive Security Researcher",
+        jobTitle: "Application Security Engineer",
         description:
-          "Application security engineer and offensive security researcher specializing in web security, exploit development, malware analysis, and red team operations.",
+          "Application security engineer working with F5 BIG-IP (LTM, DNS/GTM, ASM/Advanced WAF) for application delivery and protection, with a background in penetration testing, networking and Linux systems administration.",
         sameAs: [SOCIAL.github.url, SOCIAL.twitter.url, SOCIAL.linkedin.url, SOCIAL.youtube.url],
         image: `${BASE_URL}/opengraph-image`,
         worksFor: { "@id": `${BASE_URL}/#organization` },
         knowsAbout: [
           "Application Security",
-          "Offensive Security",
+          "F5 BIG-IP",
+          "Web Application Firewall",
+          "Application Delivery",
+          "Load Balancing",
+          "Network Security",
           "Penetration Testing",
-          "Exploit Development",
-          "Malware Analysis",
-          "Reverse Engineering",
           "Web Security",
-          "Red Teaming",
-          "Capture The Flag",
-          "Vulnerability Research",
+          "DNS",
+          "Linux Administration",
+          "Docker",
+          "SIEM",
         ],
       },
       {
@@ -73,7 +76,7 @@ export function StructuredData() {
         "@id": `${BASE_URL}/braindump/#blog`,
         name: "SCHIZO Brain Dump",
         description:
-          "Long-form security writing: web exploitation, exploit development, malware analysis, CTF walkthroughs, cheatsheets and structured learning roadmaps.",
+          "Long-form security writing: web exploitation, penetration testing, DNS and Linux administration, CTF walkthroughs, cheatsheets and structured learning roadmaps.",
         url: `${BASE_URL}/braindump`,
         inLanguage: "en",
         publisher: { "@id": `${BASE_URL}/#organization` },
@@ -95,7 +98,7 @@ export function StructuredData() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
     />
   );
 }

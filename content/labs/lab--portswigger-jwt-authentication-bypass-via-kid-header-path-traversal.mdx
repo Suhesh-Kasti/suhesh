@@ -1,39 +1,68 @@
 ---
 title: JWT authentication bypass via kid header path traversal
-date: '2025-06-18'
+date: '2026-08-10'
 tags:
   - PortSwigger
   - lab
   - jwt
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — JWT authentication bypass via kid
-  header path traversal. Walkthrough with solution, key takeaways, and blind
-  replay exercise.
+excerpt: "The kid header is pasted into a key file path, so I traverse to /dev/null and sign the token with an empty key."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: JWT authentication bypass via kid header path traversal
 
-## Objective
+The last lab in the set takes the key reference and turns it into a filesystem path. Instead of abusing which key I get, I make the app read a file that happens to be empty, then sign with nothing. An empty string is a valid HMAC secret, which is the joke at the bottom of this whole series.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `wiener:peter` and inspect the header:
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+```json
+{"kid": "<some-kid>", "alg": "HS256"}
+```
 
-## Key Takeaway
+On its own, the `kid`, key id, is harmless. It is just a label. But this app resolves it by dropping it into a path and reading that file as the key, something like `keys/<kid>` on disk. The label is going into a file read, and that is the seam.
 
-*Write ONE principle I must remember*
+## How the vulnerability works
 
-## Next-Day Blind Replay
+Because `kid` is joined into a path and never validated, I can put `../` sequences in it. That lets me steer the read almost anywhere, but I do not want a secret file. I want a predictable one, and `/dev/null` is exactly that: it always reads back as an empty string.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+An empty HMAC secret is still a secret the server will use. I know it is empty, so I can sign my forged token with an empty key and the tag will match.
+
+## Solving it
+
+1. Log in as `wiener:peter` and capture the JWT.
+2. Change the payload `sub` to `administrator`.
+3. Set `kid` to a traversal that lands on null:
+
+```json
+{"kid": "../../../../../../../dev/null", "alg": "HS256"}
+```
+
+4. In JWT Editor, create a new symmetric key and set its value to an empty string.
+5. Sign the token with that empty key using HS256.
+6. Send the request, browse to `/admin`, and delete `carlos`.
+
+## Why that payload works
+
+The server takes my `kid`, walks the path, and reads `/dev/null`, which yields zero bytes. Those zero bytes become the verification key. My token was signed with an empty HMAC key, so the computed tag matches and the check passes. The traversal is the delivery mechanism, the empty key is the payload. Adding more `../` than the depth of the key directory is the safe move, since extra traversal just stays at the root.
+
+## The fix
+
+Never build a filesystem path from a token header. Look up `kid` in a fixed in-memory map of known key ids to keys, and reject anything that is not an exact match. As defence in depth, refuse any `kid` containing path separators or traversal sequences. A key file that reads back empty should also be a hard error, not a usable secret.
+
+<Cloze
+  title="Recall"
+  text="I point {{kid}} at /dev/null with traversal sequences, so the server reads an {{empty}} string as the key, then I sign with an {{empty|random|public}} key too."
+/>
+
+<FlipCard
+  front={<div>Why target /dev/null instead of a real key file?</div>}
+  back={<div>It reads back as an empty string, which I can predict and reproduce as an HMAC key. A real file would give me a key I do not know.</div>}
+/>
+
+<IdeaNode color="#ff5500" label="Watch out">Add more traversal than you think you need. If the app prepends a deep base path, a short `../` may not reach the root and the file read simply fails.</IdeaNode>

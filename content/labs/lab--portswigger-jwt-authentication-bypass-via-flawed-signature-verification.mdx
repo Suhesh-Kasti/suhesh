@@ -1,15 +1,12 @@
 ---
 title: JWT authentication bypass via flawed signature verification
-date: '2025-06-18'
+date: '2026-08-08'
 tags:
   - PortSwigger
   - lab
   - jwt
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — JWT authentication bypass via flawed
-  signature verification. Walkthrough with solution, key takeaways, and blind
-  replay exercise.
+excerpt: "The server accepts the none algorithm, so I strip the signature entirely and sign in as administrator with an unsigned token."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
@@ -19,21 +16,39 @@ difficulty: apprentice
 # Lab: JWT authentication bypass via flawed signature verification
 
 ## Objective
+This lab uses a JWT-based mechanism for handling sessions. The server is insecurely configured to accept unsigned JWTs.
+To solve the lab, modify your session token to gain access to the admin panel at `/admin`, then delete the user `carlos`.
+You can log in to your own account using the following credentials: `wiener:peter`
 
-*Describe the labs objective here*
+## Why This Works (The Principle)
+- **The vulnerability:** The server trusts the JWT without verifying its signature, uses a weak secret, or misconfigures the algorithm.
+- **Root cause:** The JWT library/implementation has a flaw — algorithm confusion (`alg: none`), weak HMAC secret, or signing key injection (`jwk`, `jku`, `kid`).
+- **Exploitation:** Forge a valid JWT by either setting `alg: none`, cracking the secret, or injecting a crafted key into the header.
+- **Key insight:** A JWT is only as secure as its verification logic. If the server trusts the header's algorithm choice, it can be subverted.
+
+## Blind Attempt (15-20 min max)
+*Try without any hints. Document everything.*
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [x] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
 
 ## Solution Reconstruction
-
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
+*After viewing full solution, close it immediately.*
+- [ ] Step 1: Sent a request without the signature but I could not log in as administrator so the JWT signature was being checked
+- [ ] Step 2: Sent a request by removing the signature and changing the `"alg"` to `"none"` and I was logged in as the admin user
+![JWT request with the signature removed and the alg header set to none](/images/content/lab--portswigger-jwt-authentication-bypass-via-flawed-signature-verification/jwt_sent_with_none_algo.png)
+- [ ] Step 3: Used the cookie to log in as user in browser
 - [ ] Final payload / exploit:
 
 ## Key Takeaway
-
-*Write ONE principle I must remember*
+*Write ONE principle I must remember:*
 
 ## Next-Day Blind Replay
-
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="The server accepts the {{none}} algorithm, so removing the {{signature}} and setting the alg header to none logs you in as {{administrator}}." />

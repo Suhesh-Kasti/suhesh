@@ -1,21 +1,23 @@
 ---
 title: DOM XSS in jQuery selector sink using a hashchange event
-date: '2025-06-18'
+date: '2026-07-25'
 tags:
   - PortSwigger
   - lab
   - dom-xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "jQuery parses a hashchange value as HTML when it is used as a selector, so the hash has to look like a tag and print() runs."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: DOM XSS in jQuery selector sink using a hashchange event
 
 ## Objective
-*What is this lab trying to teach?*
+This lab contains a DOM-based cross-site scripting vulnerability on the home page. It uses jQuery's `$()` selector function to auto-scroll to a given post, whose title is passed via the `location.hash` property.
+To solve the lab, deliver an exploit to the victim that calls the `print()` function in their browser.
 
 ## Why This Works (The Principle)
 - **The vulnerability:** Client-side JavaScript writes attacker-controlled data to the DOM without sanitization.
@@ -24,7 +26,6 @@ difficulty: apprentice
 - **Key insight:** DOM-based XSS does not require the server to reflect the payload — it lives entirely in the client-side code path.
 
 ## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
 - **What I tried:**
 - **Where I got stuck:**
 
@@ -35,14 +36,32 @@ difficulty: apprentice
 
 ## Solution Reconstruction
 *After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
+- [ ] Step 1: The site contains js code that when user sets a hash fragment it splits and checks each heading and the string after the hash and if it matches it scrolls to that respective title![The page's JavaScript scrolling to a heading that matches the value in the hash fragment](/images/content/lab--portswigger-dom-xss-in-jquery-selector-sink-using-a-hashchange-event/DOM_XSS_hashpointer_autoscrolls.png)
+- [ ] Step 2:  When I inserted an `<img>` tag it processed it as hash fragment and invoked the function inside the event `onerror` but this is a self XSS meaning 
+![The print dialog appearing after the img onerror payload fired as a self-XSS](/images/content/lab--portswigger-dom-xss-in-jquery-selector-sink-using-a-hashchange-event/DOM_XSS-self-print-func-invoked.png)
 - [ ] Step 3:
 - [ ] Final payload / exploit:
 
 ## Key Takeaway
-*Write ONE principle I must remember:*
+##### Dismantling the Payload
+`<iframe src=[https://target.net/#](https://target.net/#) onload="this.src+='<img src=x onerror=print()>'"></iframe>`
+### 1. `src="[https://target.net/#](https://target.net/#)"` (The Initial Load)
+
+- **Why it's there:** You open an `<iframe>` loading the target site with a blank hash (`#`).
+- **What happens:** The target site loads completely in the victim's browser. The application sets up its JavaScript listener: `$(window).on('hashchange', ...)`.
+### 2. `onload="..."` (The Automation Trigger)
+- **Why it's there:** You need the victim's browser to perform an action _after_ the page finishes loading.
+- **What happens:** The instant the target page finishes loading inside the `<iframe>`, the browser automatically executes the JavaScript inside `onload`.
+### 3. `this.src += ...` (The `hashchange` Exploit)
+- **Why it's there:** `this` refers to the `<iframe>`. Updating `this.src` changes the iframe's URL.
+- **What happens:** The URL changes from `[https://target.net/#](https://target.net/#)` to `[https://target.net/#](https://target.net/#)<img src=x onerror=print()>`.
+- Because the URL changed _after_ the page loaded, the browser fires the **`hashchange`** event!
+### 4. `'<img src=x onerror=print()>'` (The jQuery Payload)
+- **Why it's there:** The target's `hashchange` script takes `location.hash` and passes it directly to `$(location.hash)`.
+- **What happens:** Older versions of jQuery see `<img...>` and think, _"Oh, the developer wants me to create a new image element!"_ It creates the `<img>` tag, tries to load image `x`, fails, and immediately executes `onerror=print()`.
 
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="A hashchange hands the hash to jQuery's {{$()}} selector, which parses tag-like input as HTML; the delivered iframe adds an img with an {{onerror=print()}} handler." />

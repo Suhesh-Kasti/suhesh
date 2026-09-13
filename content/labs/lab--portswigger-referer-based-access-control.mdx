@@ -1,6 +1,6 @@
 ---
 title: Referer-based access control
-date: '2025-06-18'
+date: '2026-08-15'
 tags:
   - PortSwigger
   - lab
@@ -10,39 +10,49 @@ excerpt: "This lab controls access to certain admin functionality based on the R
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Referer-based access control
 
-## Objective
-This lab controls access to certain admin functionality based on the Referer header. You can familiarize yourself with the admin panel by logging in using the credentials `administrator:admin`.
-To solve the lab, log in using the credentials `wiener:peter` and exploit the flawed access controls to promote yourself to become an administrator.
+The server decided I was an administrator by reading a header my browser writes for me. That is a strange sentence to type, but here we are.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The application fails to enforce proper access controls on administrative or privileged functions.
-- **Root cause:** The server relies on client-side hints (URL, HTTP method, referer header) for access decisions instead of a server-side session check.
-- **Exploitation:** Access the restricted endpoint directly by guessing or finding the URL, changing the HTTP method, or manipulating headers.
-- **Key insight:** Server-side access control must be enforced on every request — never trust client-side indicators.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+The endpoint `/admin-roles?username=carlos&action=upgrade` performs the promotion. When a real admin clicks the button on the admin panel, the browser attaches `Referer: https://<lab-id>.web-security-academy.net/admin`, because that is the page the request came from. As `wiener:peter`, if I browse straight to that URL, my browser sends no Referer and the request is treated as unauthorized.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-- [ ] Step 1: Logged into administrator account using the given creds
-- [ ] Step 2: In the admin's role change request it was using `Referer:  https://hello.web-security-academy.net/admin` to change roles
-- [ ] Step 3: Replayed the request as normal user in `/admin-roles` with same `Referer:  https://hello.web-security-academy.net/admin` header and got a 302 Redirect
-![](/images/series/Referer_based_access_control.png)
+The access rule is one line: if the Referer contains `/admin`, allow the request. There is no session role check behind it. The Referer header is set by the browser from wherever you navigated from, and in a proxy like Burp I can set it to any value I like. So the "proof" that I came from the admin page is a string I fully control.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+It is worse than forgeable. Referer is not even sent when you type a URL, and privacy settings can strip it. The control manages to be both spoofable and unreliable in normal use.
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. As admin, promote `carlos` and send the request to Repeater. Note `Referer: .../admin` in the request.
+2. Log in as `wiener:peter`, and browse to `/admin-roles?username=carlos&action=upgrade`. It is rejected, because no Referer went with it.
+3. Copy wiener's session cookie into the captured admin request, change `username` to `wiener`, and keep the `Referer: .../admin` header.
+
+```http
+GET /admin-roles?username=wiener&action=upgrade HTTP/1.1
+Host: <lab-id>.web-security-academy.net
+Cookie: session=<wiener-session>
+Referer: https://<lab-id>.web-security-academy.net/admin
+```
+
+4. Replay it. A `302` comes back and `wiener` is now an administrator.
+
+## Why that payload works
+
+The check asks where the request appeared to come from, and a header answers that question. Since headers are written by the client, I supply the answer the server wants. The backend then performs the promotion because the condition it tested for was satisfied, even though no admin and no admin password was involved.
+
+## The fix
+
+Authorise on the session's role, server-side, on the request that changes the role. Never use the Referer header as an access decision, it is attacker-controlled and absent more often than people expect. If the concern is cross-site request forgery, that is a real problem, but the answer is a CSRF token bound to the session, not a header the attacker can set.
+
+<QuizCard title="Referer reality check" questions={[
+  { "question": "What makes Referer useless as an access control?", "options": ["It is set by the client and can be forged", "It is encrypted", "It is only sent over HTTPS", "It is too long"], "correct": 0, "explanation": "The browser writes Referer and a proxy can rewrite it, so an attacker fully controls the value the server is trusting." },
+  { "question": "Where does the authorization check belong?", "options": ["In the Referer header", "On the session's role, server-side", "In a client-side script", "In the page title"], "correct": 1, "explanation": "The server must decide from the session's own role, not from a header the caller can set. That is the only value the attacker cannot influence." }
+]} />
+
+<Cloze title="Recall the header" text="The server allowed the promotion because the {{Referer}} header ended in /admin. As wiener I set that header myself and replayed the request with my own {{session cookie}}." />

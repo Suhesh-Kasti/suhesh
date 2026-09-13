@@ -1,0 +1,50 @@
+---
+title: "Cisco Packet Tracer Basics"
+date: '2024-12-03'
+tags: ["network", "Cisco", "packet tracer", "lab", "CCNA"]
+excerpt: "Building a simple network in Packet Tracer, getting the physical view, and simulating ICMP, ARP and HTTP traffic between your devices."
+type: blog
+category: "Networking"
+---
+
+# Cisco Packet Tracer Basics
+
+## 1. Building a simple network
+
+1. Drag and drop a PC, an access layer switch, core switches, and a router.
+2. Connect them using the "Automatically connect" option ⚡️.
+3. Click on multilayered switches and drag and drop the power supply.
+4. Configuring the router using the CLI:
+   - Enable privilege level 15 mode using the command: `enable 15`
+   - Turn on configuration mode on the current terminal with the command: `configure terminal`
+   - Go to a specific interface using the command: `interface $INTERFACE`, e.g. `interface gig 0/0`
+   - Activate the interface using the command `no shutdown`
+
+![A basic Packet Tracer topology with a PC, switches and a router connected together](/images/content/cisco-packet-tracer-basics/packettracer-basic.png)
+
+## 2. Getting the physical view
+
+1. Click on the physical tab.
+2. Click on the compass and select the view you want, then select "jump to selected location", or click on the home icon to access the rack.
+
+![The Packet Tracer physical view showing a rack of devices](/images/content/cisco-packet-tracer-basics/packettracer-rack.png)
+
+## 3. Simulating traffic
+
+1. Assign an IP address to the interface of the router using the command: `ip address $IP_ADDRESS $NETMASK`.
+   > We can check the interfaces using the command `show ip interface brief`.
+2. Configure the endpoint device IP and subnet mask.
+   > We can ping the router from the device using the command prompt.
+3. We can use the 'SIMULATION' tab to simulate individual traffic.
+4. Simulating requests:
+   - **ICMP request:** click on the envelope ✉️ icon, then choose the source and destination device to simulate an ICMP echo request.
+   - **ARP:** use the command prompt to send a ping to a host that doesn't exist, and inspect the packet.
+   - **HTTP:**
+     - Add a web server, then connect it using fast ethernet.
+     - Enable web services in the server.
+     - Browse the website from the host endpoint.
+     - Inspect the packet.
+
+<Cloze title="Packet Tracer CLI recall" color="#00cc55" text="Enter privileged mode with {{enable 15}}, open global configuration with {{configure terminal}}, select an interface with {{interface}}, and bring it up with {{no shutdown}}. Check addresses with {{show ip interface brief}}." />
+
+<FlipCard front={<div>Which Packet Tracer tab lets you watch a single packet hop device by device?</div>} back={<div>The SIMULATION tab. Click the envelope, choose source and destination, then step the ICMP echo through the topology.</div>} color="#ffdd00" />

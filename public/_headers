@@ -5,3 +5,24 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Build output is fingerprinted, so it can be cached for a year.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Portfolio images and CVs keep their filenames, so cache them for a week rather than a year.
+/images/*
+  Cache-Control: public, max-age=604800
+
+/CV/*
+  Cache-Control: public, max-age=604800
+
+# Machine-readable files change whenever content is published.
+/llms.txt
+  Cache-Control: public, max-age=86400
+
+/llms-full.txt
+  Cache-Control: public, max-age=86400
+
+/rss.xml
+  Cache-Control: public, max-age=3600

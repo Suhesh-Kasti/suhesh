@@ -1,39 +1,130 @@
 ---
 title: Blind SQL injection with time delays and information retrieval
-date: '2025-06-18'
+date: '2026-07-16'
 tags:
   - PortSwigger
   - lab
   - sql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind SQL injection with time delays
-  and information retrieval. Walkthrough with solution, key takeaways, and blind
-  replay exercise.
+excerpt: "PostgreSQL pg_sleep(10) hidden behind a CASE and stacked onto the cookie with a semicolon. A ten-second reply is the yes, and SUBSTRING walks the password out."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind SQL injection with time delays and information retrieval
 
-## Objective
+Blind timing turns a stopwatch into your debugger. The idea is simple and the execution is tedious, and this lab is where the tedium shows up.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Same shop, same `TrackingId` cookie, same analytics query on every request. The database is PostgreSQL. Results are never returned and errors do not change the response either, so there is nothing in the page to read.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+What is different is the goal. There is a `users` table with `username` and `password` columns, and I have to recover the `administrator` password and log in with it. One boolean question per request, one second of patience per question.
 
-## Key Takeaway
+## How the vulnerability works
 
-*Write ONE principle I must remember*
+An unconditional `pg_sleep(10)` proves the injection but tells me nothing else. To extract data I need the delay to depend on a condition I choose.
 
-## Next-Day Blind Replay
+`CASE WHEN <condition> THEN pg_sleep(10) ELSE pg_sleep(0) END` gives exactly that. When the condition is true the response crawls; when it is false it returns at once. That turns the clock into a yes/no oracle I can point at any comparison.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+On this lab the cookie value can start a fresh statement, so I can stack my own `SELECT` against `users` instead of squeezing it into the original query.
+
+## Solving it
+
+1. Confirm the injection with a condition that is always true, then always false:
+
+```
+TrackingId=x';SELECT CASE WHEN (1=1) THEN pg_sleep(10) ELSE pg_sleep(0) END--
+TrackingId=x';SELECT CASE WHEN (1=2) THEN pg_sleep(10) ELSE pg_sleep(0) END--
+```
+
+The first sleeps for ten seconds, the second returns immediately.
+
+2. Confirm the target row exists:
+
+```
+TrackingId=x';SELECT CASE WHEN (username='administrator') THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users--
+```
+
+3. Find the password length by raising the bound until the delay stops:
+
+```
+TrackingId=x';SELECT CASE WHEN (username='administrator' AND LENGTH(password)>1) THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users--
+```
+
+The password turns out to be 20 characters long.
+
+4. Send the request to Intruder and put a payload marker around the comparison character, using a single-threaded resource pool so overlapping requests do not blur the timing:
+
+```
+TrackingId=x';SELECT CASE WHEN (username='administrator' AND SUBSTRING(password,1,1)='§a§') THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users--
+```
+
+Payloads are `a` to `z` and `0` to `9`. In the results, the row showing roughly 10,000 ms in the "Response received" column is the correct character.
+
+5. Move the `SUBSTRING` offset from 1 to 2, then 3, and so on to 20, reading one character each round. Then log in as `administrator`.
+
+## Why that payload works
+
+The `;` ends the original statement and starts a new one, which is why this payload looks heavier than the plain `||pg_sleep(10)` from the previous lab. `CASE WHEN` returns one of two branches, and only the true branch calls `pg_sleep(10)`. The `ELSE pg_sleep(0)` keeps the false path instant, so the gap between the two cases is unambiguous. `FROM users` scopes the subquery to the table holding the password.
+
+## The fix
+
+Parameterise the analytics query so the cookie is bound as a value. Then turn off stacked or multi-statement execution at the driver, so a single quote cannot start a second statement. Least privilege on the database user limits what an oracle like this can even reach, and a request timeout caps how long one injected sleep can hold a thread.
+
+<Cloze
+  title="Conditional delay"
+  text="Timing is only useful when it is conditional: {{CASE WHEN}} (username='administrator') THEN {{pg_sleep(10)}} ELSE {{pg_sleep(0)}} END."
+/>
+
+<QuizCard
+  title="Timing checks"
+  questions={[
+    {
+      question: "Why wrap the sleep in CASE WHEN instead of just calling pg_sleep?",
+      options: [
+        "So a true condition draws the time-out and a false one returns instantly",
+        "Because pg_sleep has no synchronous variant",
+        "To stop the database throwing a syntax error",
+        "To make the request smaller"
+      ],
+      correct: 0,
+      explanation: "An unconditional sleep always fires. A conditional one turns the clock into a yes/no answer about whatever condition you attach."
+    },
+    {
+      question: "Why run the Intruder attack single-threaded?",
+      options: [
+        "So overlapping requests do not blur the timing signal",
+        "Because Intruder cannot send parallel requests",
+        "To keep the session alive",
+        "To stay under a rate limit"
+      ],
+      correct: 0,
+      explanation: "Concurrent requests overlap in time, so a 10 second response is hard to spot. One thread keeps the gap obvious."
+    },
+    {
+      question: "Which function pulls a single character from the password?",
+      options: [
+        "SUBSTRING(password,1,1)",
+        "LENGTH(password)",
+        "CHAR_AT(password,1)",
+        "LEFT(password,1)"
+      ],
+      correct: 0,
+      explanation: "SUBSTRING(password, offset, 1) returns one character, which you compare against each candidate value."
+    }
+  ]}
+/>
+
+<Sequence
+  title="Order of extraction"
+  steps={[
+    "Confirm a fixed true sleeps and a fixed false does not",
+    "Confirm the administrator row exists",
+    "Find the password length",
+    "Brute-force one character per position",
+    "Log in as administrator"
+  ]}
+/>

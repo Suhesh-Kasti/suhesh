@@ -1,39 +1,110 @@
 ---
 title: Blind SQL injection with conditional responses
-date: '2025-06-18'
+date: '2026-07-14'
 tags:
   - PortSwigger
   - lab
   - sql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind SQL injection with conditional
-  responses. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "A Welcome back line is the only bit each request gives me. I flip it with an AND condition and pull the admin password out one character at a time."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind SQL injection with conditional responses
 
-## Objective
+The first blind lab I did gave me exactly one bit per request: a `Welcome back` line that is either there or not. No rows, no version banner, no error text. You build the password one character at a time and learn to trust a very small signal.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+A `TrackingId` cookie again, run through a query on every request. Nothing from that query is printed. But the page shows `Welcome back` only when the query returns at least one row. So a condition I can flip true or false becomes a one-bit oracle.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The cookie is concatenated into a quoted string in the query. I close the string and add my own boolean condition with `AND`. When the condition is true the query returns a row, so `Welcome back` renders. When it is false the row set is empty and the text disappears. That is a boolean oracle, and a boolean oracle plus patience equals data. Nothing about the result is shown, but the truth value of my condition leaks all the same.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Confirm the oracle. True keeps the message, false removes it:
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+   ```
+   TrackingId=xyz' AND '1'='1
+   TrackingId=xyz' AND '1'='2
+   ```
+
+2. Confirm the table and user exist by making a condition that only holds when a row can be selected:
+
+   ```
+   TrackingId=xyz' AND (SELECT 'a' FROM users WHERE username='administrator')='a
+   ```
+
+3. Find the password length. Raise the number until the message vanishes:
+
+   ```
+   TrackingId=xyz' AND (SELECT 'a' FROM users WHERE username='administrator' AND LENGTH(password)>1)='a
+   ```
+
+   It turns out to be 20, but measure it rather than trust it.
+
+4. Extract each character. Send the request to Intruder, mark the final `a`, run the payloads a-z and 0-9, and grep-match `Welcome back`:
+
+   ```
+   TrackingId=xyz' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='a
+   ```
+
+5. The payload on the row that still shows `Welcome back` is the character. Move the offset from 1 to 2, 3 and on until the password is complete.
+
+6. Log in as `administrator`.
+
+## Why that payload works
+
+The condition steers the query between two states that look totally different to the page: rows returned, or none. `SUBSTRING(password,1,1)` slices out a single character, and I test it against one candidate. The candidate is the only thing that changes between requests, so the response flips exactly when I guess right. The `'1'='1` and `LENGTH` checks are the same idea applied to a constant and a length. Every request here is just a yes-or-no question put to the database.
+
+## The fix
+
+Bind the cookie so the quote closes nothing. The deeper point is that a boolean oracle leaks data even when no data is returned, so any path where injected input changes whether rows come back has to be closed the same way. Parameterise it and the oracle disappears.
+
+<QuizCard
+  title="Blind responses check"
+  questions={[
+    {
+      question: "What tells you the condition was true in this lab?",
+      options: [
+        "The Welcome back text appears in the page",
+        "The HTTP status changes to 500",
+        "A database error is printed",
+        "The response time increases"
+      ],
+      correct: 0,
+      explanation: "The query result is never shown and no error is displayed. The only visible change is the Welcome back message, which appears when the query returns a row."
+    },
+    {
+      question: "Which function pulls a single character out of the password?",
+      options: ["SUBSTRING()", "LENGTH()", "CAST()", "TO_CHAR()"],
+      correct: 0,
+      explanation: "SUBSTRING(password,1,1) slices one character at an offset. You cycle the offset and the candidate value until the Welcome back text returns."
+    },
+    {
+      question: "What does a false condition do to the response?",
+      options: [
+        "Removes the Welcome back text, because no rows come back",
+        "Changes the status code to 500",
+        "Prints a database error",
+        "Returns a different product list"
+      ],
+      correct: 0,
+      explanation: "With no rows returned the page simply omits the message. That absence is the only bit you get per request."
+    }
+  ]}
+/>
+
+<Cloze
+  title="Payload recall"
+  text="I measure the password with {{LENGTH}} and slice one character at a time with {{SUBSTRING}}."
+/>
+
+<Accordion title="Where the signal lives">
+The message is the obvious tell, but the response length moves with it, and length is easier to sort on. In Intruder I grep-match `Welcome back` instead of reading bodies by eye. One row keeps the string and the rest lose it. If the two states ever look identical, the condition is not actually reaching the query.
+</Accordion>

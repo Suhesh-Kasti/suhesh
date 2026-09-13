@@ -2,49 +2,61 @@
 title: >-
   Reflected XSS into a template literal with angle brackets, single, double
   quotes, backslash and backticks Unicode-escaped
-date: '2025-06-18'
+date: '2026-08-19'
 tags:
   - PortSwigger
   - lab
   - xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "Nothing escapes out of a template literal, but the ${...} interpolation inside it was never filtered."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Reflected XSS into a template literal with angle brackets, single, double quotes, backslash and backticks Unicode-escaped
 
-## Objective
-*What is this lab trying to teach?*
+This lab looks like the most locked-down one in the set: quotes, backslashes, backticks and angle brackets are all escaped. The escape hatch is that it is not a plain string. It is a template literal, and template literals evaluate code inside themselves.
 
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+Search, and the term comes back inside a template literal. The server builds something like this:
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+```javascript
+var message = `0 search results for 'test'`;
+```
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+Probe the dangerous characters and they come back Unicode-escaped: `<` becomes `\u003c`, `'` becomes `\u0027`, `"` becomes `\u0022`, `\` becomes `\u005c`, and the backtick becomes `\u0060`. Every character you would use to close the string or start a tag is neutralised.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+## How the vulnerability works
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+The context is a template string, not a plain one. Template literals support interpolation: anything between `${` and `}` is evaluated as JavaScript and spliced into the string. The filter escaped the characters needed to break out of the literal, plus the HTML characters. It did not escape `${` and `}`, which are not dangerous syntax for a plain string. In a template literal, they are the injection point.
+
+## Solving it
+
+1. Search a test string and confirm the reflection sits inside the backtick-delimited template literal.
+2. Do not try to close the literal. Use the interpolation instead.
+3. Send this as the search term:
+
+```javascript
+${alert(1)}
+```
+
+The response becomes `` var message = `0 search results for '${alert(1)}'`; `` and the expression evaluates when that line runs.
+
+## Why that payload works
+
+When the JavaScript engine reaches `${`, it stops treating the template as literal text, evaluates the expression, and inserts the result. `alert(1)` runs at that moment. The escaped quotes stay harmless, because you never left the literal. The expression ran from inside the string, which a broken-out string or an injected tag cannot do.
+
+## The fix
+
+Escaping a fixed list of characters is whack-a-mole. If user input must reach a template literal, escape the interpolation characters too: `$` becomes `\u0024`. The sturdier fix is to stop building JavaScript from strings. Serialise the data with `JSON.stringify`, put it in a `data-` attribute or a `<script type="application/json">` block, and read it from there. Keep a CSP so inline scripts cannot run.
+
+<QuizCard title="Template literal check" questions={[
+  { question: "What is the injection point inside a template literal?", options: ["The ${...} interpolation", "A closing script tag", "The double quote", "A line break"], correct: 0, explanation: "Template literals evaluate any expression between the braces, so that is the code position you are looking for." },
+  { question: "Why did escaping quotes and backticks fail here?", options: ["They are not the characters that start interpolation", "The filter ran too late", "The browser re-decodes them", "They were double-escaped"], correct: 0, explanation: "The app escaped the characters needed to leave the literal but not the interpolation syntax needed to inject an expression inside it." },
+  { question: "Which input characters were left unescaped?", options: ["The dollar sign and the curly braces", "Quote marks", "Backslashes", "Angle brackets"], correct: 0, explanation: "Everything looked dangerous except the interpolation delimiters, which are precisely the ones that matter." }
+]} />
+
+<Sequence title="How the payload evaluates" steps={["Your term is placed inside a backtick template literal", "The filter escapes quotes, backticks, backslash and angle brackets", "You supply the interpolation which contains none of those", "The JS engine evaluates the expression between the braces", "alert(1) runs and its result is spliced into the string"]} />

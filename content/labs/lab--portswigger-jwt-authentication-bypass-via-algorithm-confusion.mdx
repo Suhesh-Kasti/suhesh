@@ -1,39 +1,76 @@
 ---
 title: JWT authentication bypass via algorithm confusion
-date: '2025-06-18'
+date: '2026-08-07'
 tags:
   - PortSwigger
   - lab
   - jwt
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — JWT authentication bypass via algorithm
-  confusion. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The server exposes its RS256 public key and also trusts HS256, so I sign a token with the public key as the HMAC secret."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: expert
 ---
 
 # Lab: JWT authentication bypass via algorithm confusion
 
-## Objective
+This is the lab where the idea finally clicked for me. It is the first one in the set where the developer did almost everything right. The signing key is strong and asymmetric, so there is nothing to crack. The bug is that the verifier will also accept an HMAC token if the header asks, and the HMAC key it would then use is the RSA public key, which is public on purpose.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `wiener:peter`. The JWT header shows RS256 this time:
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+```json
+{"alg": "RS256", "typ": "JWT"}
+```
 
-## Key Takeaway
+RS256 is asymmetric. A private key signs and a public key verifies. The verify key is meant to be shareable, so the app publishes it at `/jwks.json`. Fetch it in JWT Editor with "Fetch JWKS", or just view that path in the browser.
 
-*Write ONE principle I must remember*
+## How the vulnerability works
 
-## Next-Day Blind Replay
+A verifier should be pinned to one algorithm family. This one is not. It reads `alg` from the header and, when that says HS256, it performs an HMAC verification. Here is the trap: the key it reaches for is the same one it uses for RS256, the public key. Under HMAC there is no public and private, only a shared secret, so the public key becomes that secret.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+And I already have the public key. It is published. So I can compute the HMAC myself using a key the server considers its own but the whole world can read.
+
+## Solving it
+
+1. Log in and capture the JWT. Confirm the header is `RS256`.
+2. Fetch the public key from `/jwks.json` and load it into JWT Editor as an RSA key.
+3. Convert it to PEM. JWT Editor's "Copy Public Key as PEM" gives the form the attack needs, and the base64 body of that PEM is the HMAC secret.
+4. Change the payload:
+
+```json
+{"iss": "portswigger", "sub": "administrator", "exp": 1234567890}
+```
+
+5. Change the header to HS256 and sign the token using the public key as the symmetric secret:
+
+```json
+{"alg": "HS256", "typ": "JWT"}
+```
+
+6. Send the request to `/admin` and delete `carlos`.
+
+## Why that payload works
+
+The server trusted the header to choose the verification routine. When I say HS256, it stops treating the key as an RSA public key and starts treating the very same bytes as an HMAC secret. Since the RS256 public key is legitimately public, I know it, so I can produce a signature the server will accept on its own terms. The signature is valid in the server's logic. The confusion is entirely in which algorithm the key is being used for.
+
+## The fix
+
+Pin the expected algorithm to server configuration and reject any token whose header disagrees, in particular never verify an asymmetric-keyed token with a symmetric algorithm. Keep the key type fixed per endpoint. That single rule kills this lab and the next one together.
+
+<MatchPairs
+  title="JWT vocabulary"
+  pairs={[
+    { term: "RS256", match: "private key signs, public key verifies" },
+    { term: "HS256", match: "one shared secret signs and verifies" },
+    { term: "jwks.json", match: "endpoint publishing the public key" },
+    { term: "alg confusion", match: "verifying an RSA token as HMAC using the public key" }
+  ]}
+/>
+
+<Cloze
+  title="The trick"
+  text="I switch the header from {{RS256}} to {{HS256}} and sign using the {{public key}} as the HMAC secret, which the server treats as its shared key."
+/>

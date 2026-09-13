@@ -1,120 +1,123 @@
 ---
 title: "OWASP Top 10"
+date: '2026-06-15'
 excerpt: "The OWASP Top 10 is a standard awareness document for developers and web application security teams. It represents a broad consensus about the most critical security risks to web applications."
-tags: []
+tags: ["OWASP", "Web Security", "Web App Security", "Penetration Testing"]
 category: "General"
 type: "cheatsheet"
 ---
 
-#### 1. Broken Access Control
+# OWASP Top 10
 
-<Accordion title="Horizontal Priv-esc">
-Access control enforces policy such that users cannot act outside of their intended permissions. Failure of access control typically leads to unauthorized information disclosure, modification, or destruction of all data or performing a business function outside the user's limits.
+The ten risk categories from the 2021 list, A01 to A10. Each one gets a two-line summary and, where it helps, a snippet of the broken code that causes it.
 
+## A01: Broken Access Control
+
+Access control checks are missing or easy to bypass, so a user reaches data that isn't theirs. The usual shape is an ID in the request that nobody validates.
+
+<Accordion title="Insecure code — horizontal privilege escalation">
 ```php
-// Insecure code allowing horizontal privilege escalation
 $user_id = $_GET['user_id'];
 $query = "SELECT * FROM users WHERE id = $user_id";
 $result = $conn->query($query);
 ```
-
+The query trusts `user_id` from the URL, so any logged-in user can read any account.
 </Accordion>
 
-#### 2. Cryptographic Failures
+## A02: Cryptographic Failures
 
-<Accordion title="Not so secure excryption">
-Many web applications and APIs do not properly protect sensitive data, such as financial, healthcare, and PII. Attackers may steal or modify such weakly protected data to conduct credit card fraud, identity theft, or other crimes. Sensitive data may be compromised without extra protection, such as encryption at rest or in transit, and requires special precautions when exchanged with the browser.
+Sensitive data is stored or moved without proper encryption: weak algorithms, wrong modes, missing TLS.
 
+<Accordion title="Insecure code — ECB mode">
 ```java
-// Insecure code using ECB mode for encryption
 Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 byte[] cipherText = cipher.doFinal(plainText);
 ```
-
+ECB encrypts identical blocks to identical output, so it leaks the structure of the plaintext.
 </Accordion>
 
-#### 3. Injection
+## A03: Injection
 
-<Accordion title="Injecting code to run scripts">
-Injection flaws, such as SQL, NoSQL, OS, and LDAP injection, occur when untrusted data is sent to an interpreter as part of a command or query. The attacker's hostile data can trick the interpreter into executing unintended commands or accessing data without proper authorization. XSS flaws occur whenever an application includes untrusted data in a new web page without proper validation or escaping, or updates an existing web page with user-supplied data using a browser API that can create HTML or JavaScript. XSS allows attackers to execute scripts in the victim's browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.
+Untrusted input reaches an interpreter — SQL, NoSQL, OS, LDAP — or reaches the browser as XSS, and gets run as code.
 
+<Accordion title="Insecure code — SQL injection">
 ```python
-# Insecure code vulnerable to SQL injection
 user_input = request.args.get('user_input')
 query = f"SELECT * FROM users WHERE name = '{user_input}'"
 result = db.execute(query)
 ```
-
+The f-string drops user input straight into the query string.
 </Accordion>
 
-#### 4. Insecure Design
+## A04: Insecure Design
 
-<Accordion title="Description">
-Insecure design represents different weaknesses, expressed as "missing or ineffective control design". Secure design is a culture and methodology that constantly evaluates threats and ensures that code is robustly designed and tested to prevent known attack methods. Threat modeling should be integrated into refinement sessions or similar activities.
-</Accordion>
+The flaw is in the design rather than the code. Missing threat modeling, missing rate limits, missing business-logic controls.
 
-#### 5. Security Misconfiguration
+## A05: Security Misconfiguration
 
-<Accordion title="Misconfigured entity">
-Security misconfiguration is the most commonly seen issue. This is commonly a result of insecure default configurations, incomplete or ad hoc configurations, open cloud storage, misconfigured HTTP headers, and verbose error messages containing sensitive information. Not only must all operating systems, frameworks, libraries, and applications be securely configured, but they must be patched and upgraded in a timely fashion.
+Default credentials, verbose errors, open cloud storage, missing headers, unpatched defaults. The most common finding by volume.
 
+<Accordion title="Insecure config — XXE enabled">
 ```xml
-<!-- Insecure configuration allowing XXE attacks -->
 <?xml version="1.0"?>
 <!DOCTYPE root [
 <!ENTITY xxe SYSTEM "file:///etc/passwd">
 ]>
 <root>&xxe;</root>
 ```
-
+The XML parser resolves external entities, so the attacker reads local files through the request body.
 </Accordion>
 
-#### 6. Vulnerable and Outdated Components
+## A06: Vulnerable and Outdated Components
 
-<Accordion title="Description">
-Components, such as libraries, frameworks, and other software modules, run with the same privileges as the application. If a vulnerable component is exploited, such an attack can facilitate serious data loss or server takeover. Applications and APIs using components with known vulnerabilities may undermine application defenses and enable various attacks and impacts.
-</Accordion>
+You run a library, framework, or OS build with a known CVE. The app is only as strong as its dependencies.
 
-#### 7. Identification and Authentication Failures
+## A07: Identification and Authentication Failures
 
-<Accordion title="Session hijacking">
-Application functions related to authentication and session management are often implemented incorrectly, allowing attackers to compromise passwords, keys, or session tokens, or to exploit other implementation flaws to assume other user's identities temporarily or permanently.
+Weak login, broken session handling, credential stuffing, session fixation — anything that lets someone else become the user.
 
+<Accordion title="Insecure code — session fixation">
 ```javascript
-// Insecure code vulnerable to session fixation
 function createSession() {
   const sessionId = req.cookies.sessionId || uuid.v4();
   res.cookie("sessionId", sessionId);
-  sessions[sessionId] = {
-    /* session data */
-  };
+  sessions[sessionId] = {};
 }
 ```
-
+The server keeps a client-supplied session id instead of issuing a fresh one after login.
 </Accordion>
 
-#### 8. Software and Data Integrity Failures
+## A08: Software and Data Integrity Failures
 
-<Accordion title="Description">
-Software and data integrity failures relate to code and infrastructure that does not protect against integrity violations. For example, an application relies upon plugins, libraries, or modules from untrusted sources, repositories, and content delivery networks (CDNs). An insecure CI/CD pipeline can introduce the potential for unauthorized access, malicious code, or system compromise. Lastly, many applications now include auto-update functionality, where updates are downloaded without sufficient integrity verification and applied to the previously trusted application. Attackers could potentially upload their own updates to be distributed and run on all installations. Another example is where objects or data are encoded or serialized into a structure that an attacker can see and modify is vulnerable to insecure deserialization.
-</Accordion>
+Code or data is trusted without checking integrity: unsigned updates, an insecure CI/CD pipeline, unsafe deserialization.
 
-#### 9. Security Logging and Monitoring Failures
+## A09: Security Logging and Monitoring Failures
 
-<Accordion title="Description">
-Security logging and monitoring failures coupled with missing or ineffective integration with incident response, allow attackers to further attack systems, maintain persistence, pivot to more systems, and tamper, extract, or destroy data. Most breach studies show time to detect a breach is over 200 days, typically detected by external parties rather than internal processes or monitoring.
-</Accordion>
+Breaches go undetected because nothing useful is logged and nobody watches the logs. Detection often comes from outside the org.
 
-#### 10. Server-Side Request Forgery (SSRF)
+## A10: Server-Side Request Forgery (SSRF)
 
-<Accordion title="Insecure backend">
-SSRF flaws occur whenever a web application is fetching a remote resource without validating the user-supplied URL. It allows an attacker to coerce the application to send a crafted request to an unexpected destination, even when protected by a firewall, VPN, or another type of network Access Control List (ACL).
+The app fetches a user-supplied URL and will happily hit internal services sitting behind the firewall.
 
+<Accordion title="Insecure code — SSRF">
 ```ruby
-# Insecure code vulnerable to SSRF
 url = params[:url]
 response = Net::HTTP.get_response(URI(url))
 ```
-
+No allow-list, so `url` can point at `http://169.254.169.254/` or any internal host.
 </Accordion>
+
+<MatchPairs title="A0x to what it means" color="#ff5500" pairs={[
+  { term: "A01", match: "Broken access control" },
+  { term: "A02", match: "Cryptographic failures" },
+  { term: "A03", match: "Injection" },
+  { term: "A05", match: "Security misconfiguration" },
+  { term: "A07", match: "Auth and session failures" },
+  { term: "A10", match: "Server-side request forgery" }
+]} />
+
+<QuizCard title="Which category?" color="#ff5500" questions={[
+  { question: "A product page takes an id from the URL and returns whatever row it points at, with no ownership check.", options: ["A01 Broken Access Control", "A03 Injection", "A05 Misconfiguration", "A09 Logging Failures"], correct: 0, explanation: "The user controls which record they fetch and nothing verifies ownership. Classic IDOR under Broken Access Control." },
+  { question: "The server fetches a URL you supply and reaches the cloud metadata endpoint at 169.254.169.254.", options: ["A10 SSRF", "A07 Auth Failures", "A08 Integrity Failures", "A02 Cryptographic Failures"], correct: 0, explanation: "The server makes the request, so it can reach addresses the internet-facing app can't. That is SSRF." }
+]} />

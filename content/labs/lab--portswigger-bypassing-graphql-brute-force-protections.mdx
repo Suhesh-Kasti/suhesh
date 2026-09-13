@@ -1,39 +1,63 @@
 ---
 title: Bypassing GraphQL brute force protections
-date: '2025-06-18'
+date: '2026-07-21'
 tags:
   - PortSwigger
   - lab
   - graphql
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Bypassing GraphQL brute force
-  protections. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The login rate limiter counts HTTP requests, not login attempts. Aliases packed every candidate password into one mutation."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Bypassing GraphQL brute force protections
 
-## Objective
+The rate limiter on this login is real, and I hit it fast trying passwords one at a time. My mistake was assuming it protected the login. It protects the number of HTTP requests, and those are two different things.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The login form talks to a GraphQL API. Send a few wrong passwords in Repeater and the API starts returning a rate limit error. Same IP, same endpoint, too many requests in a short window. Logins one by one are walled off. The lab points you at the standard authentication password list, so the target account is `carlos`.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+GraphQL lets you give a field an alias, and you can repeat the same field many times in one operation as long as every copy has a different alias. The rate limiter sits in front of the endpoint and counts requests, so it sees one request. The resolver behind it still runs every aliased mutation, so all the login attempts execute inside that single request. The protection is measuring the wrong unit.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Log in badly once and find the login mutation in your proxy history. Send it to Repeater.
+2. Confirm the limiter exists by sending a few more failures until you hit "too many requests".
+3. Rewrite the body so it is one mutation with an alias per password. Delete the `operationName` and the variables dictionary first.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```
+mutation {
+  a0: login(input: { username: "carlos", password: "123456" }) { token success }
+  a1: login(input: { username: "carlos", password: "password" }) { token success }
+  a2: login(input: { username: "carlos", password: "12345678" }) { token success }
+}
+```
+
+One alias per candidate from the password list, all inside the same `mutation { }`.
+
+4. Send it. The response lists every alias and its `success` value. Search the response for `true` to find which one landed, then read the password used by that alias.
+5. Log in as `carlos` with the working password.
+
+## Why that payload works
+
+The limiter wraps the HTTP request, so counting happens per request, not per resolver call. GraphQL has no rule against calling the same mutation many times in one document, and aliases keep the response fields distinct. This is why anything that throttles by request rate is weak against GraphQL: the caller controls how much work one request contains.
+
+## The fix
+
+Move rate limiting inside the resolver so it counts attempts, not packets. Key it on the account being targeted and on the source, and slow or lock the account after a small number of failures regardless of how they were batched. Also cap how many aliases or operations a single document may hold. And stop letting a login mutation return a boolean that tells the attacker exactly which password worked.
+
+<FlipCard front={<div>Why does putting every password in one request defeat the limiter?</div>} back={<div>The limiter counts HTTP requests. One request runs every aliased login mutation, so all the attempts happen inside a single counted request.</div>} />
+
+<QuizCard title="Alias check" questions={[
+  { question: "What must each repeated login field have so the response stays readable?", options: ["Its own request", "A unique alias", "A unique username", "A unique endpoint"], correct: 1, explanation: "An alias gives every duplicate login its own response key, so you can tell them apart." },
+  { question: "What should you remove from the request before sending the batch?", options: ["The Content-Type header", "The session cookie", "The operationName and variables dictionary", "The query keyword"], correct: 2, explanation: "The single hardcoded mutation does not use the named operation or its variables." },
+  { question: "Which response field marks the winning attempt?", options: ["token", "success", "id", "email"], correct: 1, explanation: "The aliased login returns success, and the true one marks the working password." }
+]} />
+
+<Cloze title="One request, many tries" text="Give each login field a different {{alias}} and wrap them all in a single {{mutation}} so the request-counting limiter only sees one request." />

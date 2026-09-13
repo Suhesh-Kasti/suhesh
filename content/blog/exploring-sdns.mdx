@@ -1,0 +1,122 @@
+---
+title: "Software Defined Networking"
+date: '2024-10-22'
+excerpt: "SDN moves the control plane out of every switch and into one controller, so you manage a network as software instead of logging into boxes one at a time."
+tags: ["network", "SDN", "CCNA", "Network automation"]
+category: "Networking"
+type: "blog"
+image: "/images/content/networking/sdn.webp"
+---
+
+# Software Defined Networking
+
+![Software-defined networking, where the control plane is pulled out of the devices and handed to a central controller](/images/content/networking/sdn.webp)
+
+If you learned networking the normal way, SDN rearranges it. The pieces stay the same. What changes is where they live.
+
+Software Defined Networking (SDN) separates the control plane from the data plane. Instead of every device deciding for itself, one controller decides for all of them. You manage the network in software, from one place, and the hardware just forwards.
+
+To see why that matters, you need the planes first.
+
+## Planes
+
+Every network device is doing three jobs at once. They get split into planes.
+
+**Management plane** — how you reach the device. Telnet, SSH, SNMP, an API. This is you, logging in and typing commands.
+
+**Control plane** — the brain. It decides how traffic should move. Routing protocols like OSPF, NAT, ACLs, STP, CDP, VTP, QoS, and the MAC address table all sit here.
+
+**Data plane** — the muscle. It does what the control plane decided. Encapsulation and decapsulation, matching frames against the MAC table, dropping traffic that breaks the rules.
+
+Control plane decides. Data plane moves. Hold onto that, because everything below follows from pulling those two apart.
+
+![The data, control and management planes that split up the work inside a network device](/images/content/networking/notThumb/Data_Control_Management_Planes.png)
+
+The three names ran together in my head at first. Management is you, control is the brain, data is the muscle. That is the whole trick to keeping them straight.
+
+<Cloze
+  title="Plane recall"
+  color="#ffdd00"
+  text="The {{management}} plane is how you talk to the device, over SSH or SNMP. The {{control}} plane decides how traffic moves. The {{data}} plane does the actual forwarding."
+/>
+
+## Distributed vs controller-based
+
+A normal network runs a distributed control plane. Every router and switch has its own brain and makes its own calls. They cooperate through routing protocols, but no single device is in charge. Kill one box and the others route around it.
+
+![A distributed control plane, where every router and switch makes its own forwarding decisions](/images/content/networking/notThumb/Distributed_Control_Plane.png)
+
+SDN lifts that brain out of every device and drops it into one controller. The devices keep the data plane and lose the arguments. They forward what they're told, and the thinking happens in one place.
+
+![Controller-based networking, where the devices give up their own control planes and follow one central SDN controller](/images/content/networking/notThumb/Controller_Based_Networking_Zombie.png)
+
+The trade is easy to see. You get one place to change the network and one place to break it. Central control is also central failure, which is why controllers run as a cluster.
+
+## Interfaces
+
+The controller sits in the middle and needs two ways to talk. Down to the devices, and up to you.
+
+**Southbound Interface (SBI)** — down to the switches and routers. This is how the controller programs them. A few protocols do the job:
+
+- **OpenFlow** — one of the first. The controller gets direct access to the forwarding table and writes the rules itself.
+- **OpFlex** — looser. The controller sends a policy and the device works out how to apply it. Cisco ACI leans on this.
+- **CLI / SNMP** — the old manual way, still there when nothing else fits.
+- **NETCONF** — XML config pushed over SSH. Built for automation, not for humans.
+
+**Northbound Interface (NBI)** — up to you or your apps. Usually a REST API or a GUI. This is the side automation actually touches.
+
+<MatchPairs
+  title="Southbound protocols"
+  color="#0055ff"
+  pairs={[
+    { term: "OpenFlow", match: "controller writes the rules straight into the forwarding table" },
+    { term: "OpFlex", match: "controller sends a policy, the device enforces it" },
+    { term: "NETCONF", match: "XML configuration pushed over SSH" },
+    { term: "CLI / SNMP", match: "the old manual way of managing a device" }
+  ]}
+/>
+
+The NBI is where SDN pays off. You describe what you want the network to do and the controller works out the rules. That is intent-based networking.
+
+## Software defined architecture
+
+An SDN fabric runs Layer 3 almost everywhere. Every link runs a routing protocol like OSPF, so any link can fail and traffic reroutes around it. That physical network is the underlay.
+
+The overlay is a virtual network on top of it. It doesn't care where the hardware sits. VXLAN is the usual tool: it tunnels Layer 2 over Layer 3, so two servers at opposite ends of the data centre act like they're one hop apart. Each tenant gets its own overlay, isolated from the others.
+
+Underlay, overlay, and every device that runs them together are the fabric.
+
+## Application Centric Infrastructure (ACI)
+
+ACI is Cisco's version of all this for the data centre. Everything connects over Layer 3 in a spine-leaf layout. Leaf switches hang off the servers, spine switches connect the leaves, and every leaf reaches every spine.
+
+![Spine-leaf data center topology, with leaf switches connecting the servers up to spine switches](/images/content/networking/notThumb/Spine_Leaf_in_data_center.png)
+
+The controller is the APIC (Application Policy Infrastructure Controller). It manages the underlay and the overlay together, and you run the whole data centre through it.
+
+In ACI you stop configuring devices one at a time. You put servers into endpoint groups — a set of web servers, a set of database servers — and describe how those groups should talk. The APIC turns that into configuration. A normal data centre app is three tiers, web, app and database, and each tier gets its own endpoint group with policy between them.
+
+<QuizCard
+  title="SDN check"
+  color="#00dd44"
+  questions={[
+    {
+      question: "What does SDN actually separate?",
+      options: ["The control plane from the data plane", "IPv4 from IPv6", "Routing from switching", "The underlay from the fabric"],
+      correct: 0,
+      explanation: "The controller holds the control plane. The devices keep doing the data plane."
+    },
+    {
+      question: "The controller programs the switches over which interface?",
+      options: ["Northbound (NBI)", "Southbound (SBI)", "The management plane", "The overlay"],
+      correct: 1,
+      explanation: "SBI goes down to the devices. The NBI is how you or your apps talk up to the controller."
+    },
+    {
+      question: "In VXLAN, what does the overlay ride on top of?",
+      options: ["A Layer 3 underlay", "A separate cable per tenant", "The MAC address table", "The management plane"],
+      correct: 0,
+      explanation: "VXLAN tunnels Layer 2 over a Layer 3 underlay, so distant hosts look one hop apart."
+    }
+  ]}
+/>

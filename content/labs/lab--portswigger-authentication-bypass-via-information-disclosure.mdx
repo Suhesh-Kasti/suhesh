@@ -1,6 +1,6 @@
 ---
 title: Authentication bypass via information disclosure
-date: '2025-06-18'
+date: '2026-07-09'
 tags:
   - PortSwigger
   - lab
@@ -15,47 +15,57 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: Authentication bypass via information disclosure
 
-## Objective
-This lab's administration interface has an authentication bypass vulnerability, but it is impractical to exploit without knowledge of a custom HTTP header used by the front-end.
+I went down a wrong path on this one for a good while. I kept trying to guess the front-end header and kept missing it, when the server was willing to hand it over the whole time.
 
-To solve the lab, obtain the header name then use it to bypass the lab's authentication. Access the admin interface and delete the user `carlos`.
+## The setup
 
-You can log in to your own account using the following credentials: `wiener:peter`
+The admin panel lives at `/admin`. Visit it and you get a message saying the panel is only for administrators, or for requests coming from a local IP. That second half is unusual and worth remembering. The product page is where the header shows up, and it is the piece that makes the bypass work.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The application reveals sensitive information through error messages, debug pages, backup files, or version control history.
-- **Root cause:** These endpoints/files are unintentionally exposed to unauthenticated or unauthorized users.
-- **Exploitation:** Request the vulnerable endpoint to retrieve hidden data.
-- **Key insight:** Information disclosure is rarely the end goal — it is a stepping stone to a bigger attack (e.g., finding credentials, API keys, or internal paths).
+## How the vulnerability works
 
-## Blind Attempt 
-- **What I tried:** I sent requests as `wiener:peter` and it redirected me to `/login?id=wiener` so I thought this was the magical header so I kept changing this to `/login?id=admin`
-  I then found /admin exists and tried to send requests with `Sec-Fetch-User: ?0/1/2/3/4` thinking this was the header used by frontend to specify the user
-- **Where I got stuck:** I used the *Intercept Response* feature of burpsuite as well to repeat the response with headers I thought would work
+A front-end proxy often stamps every request with the client's IP address so the back end can trust it. Here that header is `X-Custom-IP-Authorization`, and the back end has decided that any request carrying `127.0.0.1` came from the machine itself. The flaw is that the header is trusted as-is: if a client can set it, the client controls the "local IP" decision. The server also reflects request headers, which is how you learn the name in the first place.
 
-## Hint Usage
-- [ ] Used lab hint
-- [x] Watched first 30s of video solution
-- *Resumed blind with a clue. Still stuck*
+## Solving it
 
-## Solution Reconstruction
-*After viewing full solution.*
-- [ ] Step 1: The trick was to use a the HTTP method "Trace".
-- [ ] Step 2: In product page I sent the request with **TRACE** method.
-- [ ] Step 3: The page responded with a **"X-Custom-Ip-Authorization: $IP"** header.
-- [ ] Final payload / exploit: Replaying this header with $IP set to 127.0.0.1(localhost) gave access to the admin page in each site. Just had to make sure each request had this header. 
+1. Browse to `/admin` and note the message: administrators only, or a local IP. You now know the bypass is IP-based.
+2. The `TRACE` method echoes the request back. Send it against the product page:
 
-## Key Takeaway
-Try more [HTTP Verbs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods)
+```
+TRACE /product?productId=1 HTTP/1.1
+Host: LAB
+```
 
-##### TRACE request method
+The response includes an `X-Custom-IP-Authorization` header carrying your own IP. That is the header the front end adds.
 
-The **`TRACE`** HTTP method performs a message loop-back test along the path to the target resource.
+3. Add that header to your requests, claiming to be local:
 
-The final recipient of the request should reflect the message as received (excluding any fields that might include sensitive data) back to the client as the message body of a `200 OK`response with a `Content-Type` of `message/http`. The final recipient is either the origin server or the first server to receive a [`Max-Forwards`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Max-Forwards) value of `0` in the request.
-The client must not send content in the request, or generate headers that might include sensitive data such as user credentials or cookies. 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```
+X-Custom-IP-Authorization: 127.0.0.1
+```
+
+In Burp, add a Match and Replace rule of the request-header type so every request gets it automatically. A single manual request works too, but the admin panel loads several resources, so the rule saves effort.
+
+4. Reload the site and open the admin panel. Delete `carlos`.
+
+## Why that payload works
+
+The back end looks for the header and compares its value to `127.0.0.1`. It never checks that the header came from the proxy rather than the client. Reusing `TRACE` is what turns the lab from guesswork into a lookup, because the server reflects the header back and names it for you. Once you know the name and the value the back end trusts, the bypass is trivial.
+
+## The fix
+
+The back end should not trust a client-controllable header for an IP check. If a proxy must pass the real IP, strip any client-supplied copy of that header at the edge and only accept the proxy's own addition. Better still, do not gate authorization on source IP at all; check the session and the user's role on the server. Turn `TRACE` off in production.
+
+<QuizCard title="Bypass check" questions={[
+  { question: "What does the /admin page tell you that points at the bug?", options: ["That you need a cookie", "That access is allowed from a local IP", "That the panel was removed", "That you need a header"], correct: 1, explanation: "The local-IP condition is the clue: the back end trusts something that says where the request came from." },
+  { question: "Which method reveals the trusted header?", options: ["OPTIONS", "TRACE", "HEAD", "PUT"], correct: 1, explanation: "TRACE echoes the request, including the header the front end adds." },
+  { question: "What header and value bypass the check?", options: ["X-Forwarded-For: 10.0.0.1", "X-Custom-IP-Authorization: 127.0.0.1", "Host: localhost", "Authorization: admin"], correct: 1, explanation: "The back end trusts X-Custom-IP-Authorization set to 127.0.0.1 as the local address." }
+]} />
+
+<Terminal title="TRACE echo" command="TRACE /product?productId=1 HTTP/1.1" output="TRACE /product?productId=1 HTTP/1.1
+Host: LAB
+X-Custom-IP-Authorization: <your IP>   <- added by the front end" />
+
+<IdeaNode color="#ff5500">The header is reflected, not secret. The whole lab is about noticing that the server is describing its own trust model in the reply.</IdeaNode>

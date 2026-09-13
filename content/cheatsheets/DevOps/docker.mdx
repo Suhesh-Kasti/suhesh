@@ -1,11 +1,13 @@
 ---
 title: "Docker Command Reference"
-date: "2025-06-10"
+date: '2026-05-28'
 tags: ["docker", "containers", "devops", "images", "volumes"]
 excerpt: "Essential Docker commands for building, running, and managing containers — from hello-world to production deployments."
 type: "cheatsheet"
 category: "DevOps"
 ---
+
+# Docker Command Reference
 
 Every Docker command you need, organized by operation. Copy buttons included so you never type a command twice.
 
@@ -134,7 +136,7 @@ docker compose logs -f
 ```bash
 docker system prune -a --volumes
 ```
-<CopyButton text="docker system prune -a --volumes" label="Copy" /> ⚠️ Destroys everything not in use!
+<CopyButton text="docker system prune -a --volumes" label="Copy" /> Destroys everything not in use.
 </Accordion>
 
 <QuizCard
@@ -160,3 +162,12 @@ docker system prune -a --volumes
     }
   ]}
 />
+
+<MatchPairs title="docker run flags" color="#0055ff" pairs={[
+  { term: "-d", match: "Run detached in the background" },
+  { term: "-p", match: "Publish a container port to the host" },
+  { term: "-v", match: "Mount a volume" },
+  { term: "-it", match: "Attach an interactive terminal" },
+  { term: "--name", match: "Give the container a name" },
+  { term: "--rm", match: "Delete the container on exit" }
+]} />

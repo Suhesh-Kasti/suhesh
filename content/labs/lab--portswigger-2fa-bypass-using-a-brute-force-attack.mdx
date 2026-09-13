@@ -1,38 +1,72 @@
 ---
 title: 2FA bypass using a brute-force attack
-date: '2025-06-18'
+date: '2026-07-03'
 tags:
   - PortSwigger
   - lab
   - authentication
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — 2FA bypass using a brute-force attack.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "A 4-digit MFA code with no real throttle. Two wrong tries log me out, so Burp has to log me back in before every guess."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: expert
 ---
 
 # Lab: 2FA bypass using a brute-force attack
 
-## Objective
+They hand you Carlos's password in this one, so the password is not the problem. The 4-digit code is. Two wrong guesses throw you back to the login page, which kills a plain Intruder run, so the fix is to make Burp log you back in between every single guess.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `carlos:montoya` and you land on a page asking for a 4-digit security code. There is no email here. The code is generated fresh and you cannot see it. Two failed codes and the session is gone, so the third request needs a brand-new login.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+Four digits is 10,000 possibilities. That is small. Anywhere that lets you try thousands of values against a short code with no account lockout is brute-forceable, no cleverness required.
 
-*Write ONE principle I must remember*
+The only defence is the two-strikes logout, and it is weak. It is tied to the session, not to the account. Log in again and you get a new session with a fresh budget of two tries. So the block never actually stops anyone, it just costs one extra request per guess.
 
-## Next-Day Blind Replay
+The code also regenerates while you work. When a new code is minted it may already be a number your run has passed, which is why the attack sometimes has to be repeated.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. Log in as `carlos:montoya` and reach the 2FA page. Confirm that two wrong codes kick you out.
+2. In Burp, open Settings > Sessions > Session Handling Rules and add a rule scoped to all URLs.
+3. Add a rule action: Run a macro. Record a macro with three requests:
+
+```http
+GET /login
+POST /login
+GET /login2
+```
+
+Test the macro. If the final response is the 4-digit code page, it works.
+4. Send `POST /login2` to Intruder and put a payload position on `mfa-code`.
+
+```http
+POST /login2 HTTP/2
+Cookie: session=YOUR-SESSION
+
+mfa-code=§0000§
+```
+
+5. Payload type Numbers, range `0`-`9999`, step `1`, 4 digits.
+6. Put the attack in a resource pool with maximum concurrent requests set to `1`, so guesses stay ordered and the macro stays clean.
+7. Start it. The request that is not a `200` is the win. Show it in the browser and click My account.
+
+## Why that payload works
+
+Two pieces click together. The macro gives every guess a fresh session, so the two-strike logout never survives to the request that matters. The number payload walks the whole 4-digit space. Neither half is clever, but together they turn a locked door into a 10,000-step loop with an automatic doorman.
+
+## The fix
+
+Lock the account after a small number of failed second-step attempts, and count those attempts server-side per account, not per session. Make a code valid for one attempt and expire it after a few minutes. A 4-digit code with per-account throttling locks out long before 10,000 guesses are worth trying.
+
+<IdeaNode color="#ff5500">If the run does not land, do not assume the macro broke. The code can regenerate to a number you already passed. Run the attack again.</IdeaNode>
+
+<QuizCard title="Why the macro matters" questions={[
+  { question: "Why does a plain Intruder run fail?", options: ["The code is too long", "Two wrong codes end the session", "There is a CAPTCHA", "Requests are limited per second"], correct: 1, explanation: "The app logs you out after two failed codes, so a normal run dies on the third request. The macro logs back in before each guess." },
+  { question: "What does the session handling macro do before every request?", options: ["Changes the payload", "Logs in again for a fresh session", "Rotates the IP", "Decodes the code"], correct: 1, explanation: "Re-running GET /login, POST /login, GET /login2 produces a new session and a fresh budget of two tries for each guess." },
+  { question: "Why set maximum concurrent requests to 1?", options: ["To dodge a rate limit", "To keep guesses ordered and the macro clean", "To avoid the lockout", "To speed it up"], correct: 1, explanation: "Single-threaded requests keep the re-login and the guess in the right sequence and stop the macro from scrambling the session." }
+]} />

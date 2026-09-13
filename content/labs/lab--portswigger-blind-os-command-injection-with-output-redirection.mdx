@@ -1,39 +1,64 @@
 ---
 title: Blind OS command injection with output redirection
-date: '2025-06-18'
+date: '2026-07-12'
 tags:
   - PortSwigger
   - lab
   - command-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind OS command injection with output
-  redirection. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The command output is lost, but the web server serves a writable directory. Redirect the output into a file there and fetch it."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind OS command injection with output redirection
 
-## Objective
+Time delays tell you a command ran. This lab is the step where you finally read what it said, and it does it without any external infrastructure. Just a file write into a directory the web server already exposes.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Same feedback form, same `email` field, same `/feedback/submit` endpoint, same useless confirmation page. What is new is the pair of facts you can see from outside: the app serves product images from a directory on disk through `GET /image?filename=<name>`, and that directory is writable by the account the web app runs as.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The shell that runs your injected command can redirect standard output to any file it can write. If a directory it can write to is also served by the web server, the command output becomes an HTTP response. No blind channel needed, because the server will hand you back the file it just wrote.
 
-*Write ONE principle I must remember*
+The shape is: run the command, send its output to a path under the web root, then request that path as though it were an image.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Capture the `POST /feedback/submit` request in Burp. The injection point is `email`.
+2. Inject a command with a redirection into the images directory:
+
+```
+email=x||whoami > /var/www/images/output.txt||
+```
+
+3. Send it. This writes the result of `whoami`, the user the app runs as, into a file under the web root.
+4. Request that file through the image endpoint:
+
+```
+GET /image?filename=output.txt
+```
+
+5. Read the response body. It is the command output, retrieved as a normal image request.
+
+`whoami` is just a convenient probe. Any command whose output you want works the same way.
+
+## Why that payload works
+
+The `>` operator truncates the file and writes standard output to the path you name. Because the path is inside `/var/www/images/`, the same directory the image endpoint resolves against, the file is immediately reachable over HTTP with no traversal at all. The `||` again guarantees the base command fails so your command runs, and the trailing `||` closes the construction cleanly.
+
+The cosmetic detail that matters: the file has no image extension, and this image endpoint does not require one, so `filename=output.txt` is served directly.
+
+## The fix
+
+The root cause is unchanged: user input reaching a shell. On top of fixing that, do not serve a directory the application process can write to, and run the process as an unprivileged user with no write access to any web-served path. Least privilege turns a command injection from "read and write anything" into "read and write almost nothing".
+
+<Sequence title="Order the exfiltration" steps={["Capture the feedback POST in Burp", "Inject a redirect into the email field", "Send it to write output.txt under the web root", "Fetch output.txt through the image endpoint", "Read the command output from the response"]} />
+
+<Cloze title="Redirect recall" text="I redirect the command output with the {{&gt;}} operator into {{/var/www/images/output.txt}}, a directory the server serves, then fetch it via the image endpoint." />
+
+<FlipCard front={<div>The command output is discarded. Where do you write it so the server will hand it back to you?</div>} back={<div>The directory the image endpoint serves, e.g. `/var/www/images/`. Write the output there, then request it by name as though it were an image.</div>} />

@@ -1,0 +1,35 @@
+---
+title: "Getting and Decompiling an APK"
+date: '2026-06-20'
+tags: ["Android", "apktool", "reverse engineering", "adb"]
+excerpt: "Pull an installed APK off an Android device with adb, then decompile it back to resources and smali with apktool — and rebuild it afterwards."
+type: til
+category: "Programming"
+---
+
+# Getting and Decompiling an APK
+
+## Getting the apk
+
+Before decompiling an application we first need to get the application. For that we use the following commands:
+
+```bash
+adb shell
+pm list packages
+pm path
+adb pull <PATH>
+```
+
+## Decompiling
+
+We can use an application like apktool to decompile an application:
+
+```bash
+# Decompile an application
+apktool d <APK>
+
+# Build the application
+apktool b <APK_PATH>
+```
+
+<Cloze title="APK workflow recall" color="#00cc55" text="List installed packages with pm {{list packages}}, find a path with pm {{path}}, and copy the APK off the device with adb {{pull}}. Decompile it with apktool {{d}} and rebuild with apktool {{b}}." />

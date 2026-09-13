@@ -1,39 +1,51 @@
 ---
 title: Web shell upload via extension blacklist bypass
-date: '2025-06-18'
+date: '2026-09-05'
 tags:
   - PortSwigger
   - lab
   - file-upload
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Web shell upload via extension
-  blacklist bypass. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "Apache reads a .htaccess file straight from the upload folder, so a locked-down extension blacklist still turns into code execution."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Web shell upload via extension blacklist bypass
 
 ## Objective
+*What is this lab trying to teach?*
 
-*Describe the labs objective here*
+## Why This Works (The Principle)
+- **The vulnerability:** The application allows file uploads but does not properly validate file type, content, or destination.
+- **Root cause:** Server-side checks rely on extension, Content-Type, or client-side validation — all of which are trivially bypassable.
+- **Exploitation:** Upload a web shell with a valid extension (`.php`, `.jsp`, `.war`) inside an image or via path traversal in the filename.
+- **Key insight:** The goal of file upload exploitation is code execution — find where the file lands and access it via a browser.
+
+## Blind Attempt (15-20 min max)
+*Try without any hints. Document everything.*
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
 
 ## Solution Reconstruction
-
+*After viewing full solution, close it immediately.*
 - [ ] Step 1:
 - [ ] Step 2:
 - [ ] Step 3:
 - [ ] Final payload / exploit:
 
 ## Key Takeaway
-
-*Write ONE principle I must remember*
+*Write ONE principle I must remember:*
 
 ## Next-Day Blind Replay
-
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="Apache reads a {{.htaccess}} straight from the upload folder, so mapping a permitted extension to the PHP handler executes the shell despite the blacklist." />

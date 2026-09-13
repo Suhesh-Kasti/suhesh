@@ -1,0 +1,54 @@
+---
+title: Server side parameter pollution in query string
+date: '2026-07-08'
+tags:
+  - PortSwigger
+  - lab
+  - api-testing
+  - walkthrough
+excerpt: "The forgot-password form injects my username into a backend query string, so an encoded hash truncates it and unhides a hidden field parameter."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+---
+
+# Lab: Server side parameter pollution in query string
+
+## Objective
+To solve the lab, log in as the `administrator` and delete `carlos`.
+## Why This Works (The Principle)
+- Server-side parameter pollution occurs when a website embeds user input in a server-side request to an internal API without adequate encoding. This means that an attacker may be able to manipulate or inject parameters.
+## Blind Attempt (15-20 min max)
+- **What I tried:** 
+- **Where I got stuck:**
+## Hint Usage (if needed)
+- [x] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+*After viewing full solution, close it immediately.*
+- [ ] Step 1:  Found a /forgot-password endpoint which takes in a POST req and grabs me the email of the user
+- [ ] Step 2:  Here when i sent url encoded `&(%26)`, we get parameter not supported which means `a` is being treated as parameter by the server
+![Error response proving the injected parameter is being parsed by the backend](/images/content/shared/api-parameter-pollution-something-is-being-processed.png)
+- [ ] Step 4: Trying to comment out everything after the parameter `username` by sending `#(%23)` we receive an error that states something called *field* is not set
+![Error message stating that the field parameter is not set](/images/content/shared/api-parameter-pollution-field-not-specified.png)
+- [ ] Step 5:  Setting it with some arbitrary value it says *invalid field* which means the server doesn't like the value for field parameter. Let's try to make it like it.........
+![Error message stating that the supplied value for the field parameter is invalid](/images/content/shared/api-parameter-pollution-invalid-field.png)
+- [ ] Step 6:  Used intruder to fuzz various server side variable names to see if any land on the parameter named `field` and commenting out the rest of the code. 
+![Intruder results showing the fuzzed server-side field name that returns a 200 response](/images/content/shared/Pasted%20image%2020260819154228.png)
+	Email gives `200OK`. We must be able to do something with this
+- [ ] Step 7: I had noticed burp had found a password-reset.js in sitemap and inside there is this codeblock for forget password which asks for a `reset_token`. 
+![The password-reset JavaScript revealing that a reset_token field is required](/images/content/shared/api-reset-token-required-js-code.png)
+- [ ] When used `reset_token` for it says it doesnt have reset password token for that user for admin user but for carlos it sent reset_token which i must be able to use. Maybe as query parameter in forget-password page
+![Response saying no reset token exists for the requested user](/images/content/shared/api-parameter-pollution-no-reset-token.png)
+![Response returning a valid reset token for the user carlos](/images/content/shared/api-parameter-pollution-carlos-reset_token.png)
+- [ ] Step 8:  Using that reset token I can change the password for the user![Changing the user's password by supplying the leaked reset token](/images/content/shared/api-parameter-pollution-change-password-using-reset_token.png)
+> Here I had used the carlos user's username in the forget password tab so I could only get into his account and for admin user I was getting no reset_token. I did the entire thing again asked for admin's reset_token and I was able to change his password
+## Key Takeaway
+Search for exposed API docs as they might expose all and everything possible to do with API.
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="An encoded ampersand ({{%26}}) proves the backend parses the username as a parameter, and an encoded hash ({{%23}}) comments out the rest to expose a hidden {{field}} parameter." />

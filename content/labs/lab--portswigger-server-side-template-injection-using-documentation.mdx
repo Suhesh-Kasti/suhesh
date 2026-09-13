@@ -1,39 +1,59 @@
 ---
 title: Server-side template injection using documentation
-date: '2025-06-18'
+date: '2026-08-24'
 tags:
   - PortSwigger
   - lab
   - ssti
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Server-side template injection using
-  documentation. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "Editing a product description with ${foobar} reveals the FreeMarker engine, whose new() built-in can build an Execute object that runs commands."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Server-side template injection using documentation
 
-## Objective
+The content editor lets you edit product descriptions, and they contain syntax I did not recognise: `${something}`. Rather than guess the engine, I broke it on purpose and let the error introduce itself. Ten seconds later I had a name and a documentation page.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `content-manager:C0nt3ntM4n4g3r`. On a product page the description is a template; it is full of placeholder expressions like `${productName}` that get filled in when the page renders. You can edit that source and save it. So you are writing code the server will run.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+Because you control template source, you control what the server executes. To identify the engine, submit a reference to a variable that does not exist, `${foobar}`. The error that comes back names FreeMarker and shows a Java stack trace. FreeMarker's documentation is honest about a sharp edge: the `new()` built-in can instantiate arbitrary Java classes that implement the `TemplateModel` interface. One of those classes, `freemarker.template.utility.Execute`, runs shell commands. That is a documented footgun, not a clever guess.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Log in with the content-manager credentials and open a product's description template.
+2. Replace a placeholder with `${foobar}` and save. Read the error: FreeMarker on the JVM.
+3. In the FreeMarker docs, find the FAQ about user-supplied templates and the `new()` entry, then follow it to the `TemplateModel` JavaDoc and the `Execute` class.
+4. Write the exploit. This is @albinowax's known payload:
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```
+<#assign ex="freemarker.template.utility.Execute"?new()> ${ ex("rm /home/carlos/morale.txt") }
+```
+
+5. Remove the `${foobar}` you left earlier, save the template with this in its place, and view the product page. The command runs.
+
+## Why that payload works
+
+`?new()` builds an object from the class name it is given, so the string `freemarker.template.utility.Execute` becomes a live `Execute` instance bound to `ex`. Calling `ex("...")` invokes its command execution with the string you pass. `${ ... }` then interpolates the result into the page, which is why the expression is evaluated at all. You are not running `Runtime.exec` directly, because FreeMarker will not let you name that class; you are using the one class it will build for you.
+
+## The fix
+
+Never render user-editable content as a template. If authors need placeholders, restrict them to a small set of known variables and a safe subset of the language. Configure FreeMarker without the object-creation built-ins, and treat a template editor as a privileged, non-public feature.
+
+<Cloze title="FreeMarker recall" text="A broken reference like {{${foobar}}} names the engine; its {{new()}} built-in can create a {{freemarker.template.utility.Execute}} object that runs shell commands." />
+
+<QuizCard title="Documentation hunt" questions={[
+  { question: "What identifies the engine?", options: ["The ${...} syntax on its own", "Submitting ${foobar} and reading the error", "A response header", "The login page"], correct: 1, explanation: "The syntax narrows it down; the error names FreeMarker and shows a JVM stack." },
+  { question: "Which built-in is the documented danger?", options: ["render()", "new()", "import()", "eval()"], correct: 1, explanation: "new() can instantiate Java classes that implement TemplateModel." },
+  { question: "Which class runs commands in the exploit?", options: ["java.lang.Runtime", "freemarker.template.utility.Execute", "TemplateModel itself", "java.io.File"], correct: 1, explanation: "Execute implements TemplateModel, so new() can build it and call it." }
+]} />
+
+<Accordion title="Why not Runtime.exec">
+You cannot just type `java.lang.Runtime.getRuntime().exec(...)` into a FreeMarker template; the engine will not resolve that class. `new()` only builds classes that implement `TemplateModel`, which is why the path runs through `Execute` instead. The documentation is what points you there.
+</Accordion>

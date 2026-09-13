@@ -1,14 +1,14 @@
 ---
 title: "PortSwigger Web Security Academy — Complete Roadmap"
-date: "2026-07-09"
+date: '2026-09-11'
 tags:
   - PortSwigger
   - Web Security
   - Roadmap
   - Labs
   - Beginner
-excerpt: "Complete 95-lab roadmap through PortSwigger Web Security Academy. Covers every major vulnerability category: Information Disclosure, Access Control, XSS, DOM XSS, Authentication, SQL Injection, SSRF, Command Injection, Path Traversal, File Upload, SSTI, JWT, NoSQL, GraphQL, and API Testing."
-type: "series"
+excerpt: "A 95-lab walkthrough of the PortSwigger Web Security Academy, ordered from information disclosure and access control to JWT, GraphQL and API testing."
+type: "roadmap"
 category: "PortSwigger Academy"
 steps:
   - title: "Information disclosure in error messages"
@@ -282,19 +282,19 @@ steps:
     slug: "lab--portswigger-bypassing-graphql-brute-force-protections"
     description: "Rate limiting on individual queries. Bypass with batched aliases."
   - title: "Exploiting an API endpoint using documentation"
-    slug: "lab--portswigger-exploiting-an-api-endpoint-using-documentation"
+    slug: "lab--portswigger-api--endpoint-documentation"
     description: "OpenAPI/Swagger docs exposed. Find hidden endpoints and exploit."
   - title: "Exploiting server-side parameter pollution in a query string"
-    slug: "lab--portswigger-exploiting-server-side-parameter-pollution-in-a-query-string"
+    slug: "lab--portswigger-api--server-side-parameter-pollution-query-string"
     description: "Duplicate parameters. Internal systems parse differently than front-end."
   - title: "Finding and exploiting an unused API endpoint"
-    slug: "lab--portswigger-finding-and-exploiting-an-unused-api-endpoint"
+    slug: "lab--portswigger-api--find-exploit-unused-api"
     description: "Discover deprecated API endpoints through JS source code analysis."
   - title: "Exploiting a mass assignment vulnerability"
-    slug: "lab--portswigger-exploiting-a-mass-assignment-vulnerability"
+    slug: "lab--portswigger-api--mass-assignment-vuln"
     description: "API blindly binds request fields. Add isAdmin:true to the JSON body."
   - title: "Exploiting server-side parameter pollution in a REST URL"
-    slug: "lab--portswigger-exploiting-server-side-parameter-pollution-in-a-rest-url"
+    slug: "lab--portswigger-api--server-side-parameter-pollution-rest-url"
     description: "Inject # or ? into URL path parameters. Different parsers disagree."
 ---
 
@@ -308,3 +308,109 @@ steps:
 2. **For each lab:** Study the walkthrough → do the lab → attempt the Next-Day Blind Replay to cement it.
 3. **Track progress** in the checklist below — saves to browser localStorage.
 4. **No walkthrough yet?** The skeleton is there — fill in your notes as you go.
+
+## The Path, In Order
+
+Fifteen families, one direction. If you can put them back in order without looking, you know the shape of the course.
+
+<Sequence title="Order the families" color="#ff2d95" steps={[
+  "Information Disclosure",
+  "Access Control and IDOR",
+  "Cross-Site Scripting",
+  "DOM-Based XSS",
+  "Authentication and Brute Force",
+  "SQL Injection",
+  "SSRF",
+  "Command Injection",
+  "Path Traversal",
+  "File Upload",
+  "Server-Side Template Injection",
+  "JWT Attacks",
+  "NoSQL Injection",
+  "GraphQL",
+  "API Testing"
+]} />
+
+## The Families
+
+Six arcs. Open one when you start it. Each note says what the family is really testing and the tool you will live in.
+
+<Accordion title="Arc 1 — Information disclosure and access control (labs 1-13)" color="#ff2d95">
+
+**Information disclosure** is the app telling you more than it means to: a verbose error, a debug page, a `.bak` file, an exposed `.git`. You learn to fuzz a parameter until it breaks and to read what falls out.
+
+**Access control** is the highest-yield family on real targets. Change `?id=wiener` to `?id=carlos`, flip `roleid`, spoof `X-Original-URL` or `Referer`, then send step two of a flow directly.
+
+For every request, ask: what happens as another user, another role, or another method?
+
+</Accordion>
+
+<Accordion title="Arc 2 — Cross-site scripting (labs 14-30)" color="#00a2ff">
+
+Stored and reflected XSS come first. Then the encoding fights: attribute breakouts, `javascript:` in an `href`, JS string breakouts, blocklists that let one tag through, and SVG.
+
+**DOM XSS is a different problem.** The sink lives in the page's own JavaScript — `document.write`, `innerHTML`, a jQuery `href` or selector — and the source is `location.search` or the hash. Nothing you type reaches the server.
+
+Read the lab title before you pick a payload. "angle brackets HTML-encoded" and "single quotes escaped" are different puzzles. Burp's DOM Invader does the DOM half.
+
+</Accordion>
+
+<Accordion title="Arc 3 — Authentication and brute force (labs 31-40)" color="#00dd44">
+
+Enumerate usernames by response timing, by a lock message, by anything that differs between a real and a fake user. Then brute force past the defences: rotate credentials to reset the counter, pitchfork valid logins between guesses, one request per connection.
+
+The rest is 2FA with broken logic, a stay-logged-in cookie you crack offline, password reset poisoning, and login through the password-change form. Burp Intruder (pitchfork) for the online part, hashcat or john for the offline.
+
+</Accordion>
+
+<Accordion title="Arc 4 — SQL injection and SSRF (labs 41-55)" color="#ff5500">
+
+**SQLi** runs from a UNION dump on Oracle down to fully blind: conditional responses, conditional errors, time delays, and out-of-band over DNS. Decide which oracle you have before you write the payload — that decision is the lab.
+
+**SSRF** is blacklist and whitelist bypasses, chaining an open redirect, and triggering Shellshock through a header the server forwards.
+
+Burp Collaborator carries every out-of-band variant. Hackvertor handles the XML-encoding WAF bypass.
+
+</Accordion>
+
+<Accordion title="Arc 5 — Command, traversal, upload, templates (labs 56-74)" color="#ffdd00">
+
+**OS command injection** goes blind with time delays, with output redirected into the webroot, then out-of-band with DNS exfiltration.
+
+**Path traversal** is one filter per lab: absolute path, non-recursive strip, URL-decode, start-of-path validation, null byte.
+
+**File upload** is the same game in the filename: traversal, extension blacklist, obfuscated extension, a polyglot, and a race between upload and check.
+
+**SSTI** starts at `{{7*7}}`, then identify the engine (ERB, Jinja2, Twig) and read its docs for the RCE. Burp for the intercepts, Turbo Intruder for the race.
+
+</Accordion>
+
+<Accordion title="Arc 6 — JWT, NoSQL, GraphQL, APIs (labs 75-95)" color="#8800ff">
+
+**JWT** climbs from an unverified signature through `none` and flawed verification, a weak HMAC secret, header injection (`jwk`, `jku`), `kid` path traversal, and algorithm confusion with and without an exposed key.
+
+**NoSQL** is detect operators, bypass auth with `{$ne: ""}`, then blind-extract with `$regex`. **GraphQL** is introspection to find hidden fields and endpoints, plus batched aliases to beat brute-force limits. **API testing** is docs-driven exploitation, server-side parameter pollution in a query string and a REST URL, unused endpoints, and mass assignment.
+
+JWT Editor for the token family. InQL for GraphQL. The site's own Swagger or OpenAPI docs for the API labs.
+
+</Accordion>
+
+## Before You Start
+
+<QuizCard title="What to do first" questions={[
+  { question: "What is the loop for every lab?", options: ["Read the solution, type it, move on", "Do the lab cold, then read the solution", "Study the walkthrough, do the lab, then blind-replay it", "Skip to the next family if it looks hard"], correct: 2, explanation: "Walkthrough, then your own attempt, then the Next-Day Blind Replay. The replay is where it sticks." },
+  { question: "How many labs does the roadmap cover?", options: ["40", "64", "95", "120"], correct: 2, explanation: "95 labs, fifteen families. The counter below tracks them." },
+  { question: "Which family comes immediately after SQL injection?", options: ["SSRF", "JWT attacks", "GraphQL", "Cross-site scripting"], correct: 0, explanation: "SQL injection (labs 41-50) is followed by SSRF (labs 51-55)." },
+  { question: "When do you move to the next lab?", options: ["As soon as it passes", "After the Next-Day Blind Replay", "After re-reading the solution", "When the writeup says so"], correct: 1, explanation: "Passing once is not learning it. Replay it blind the next day first." }
+]} />
+
+<Cloze title="The method" text="Work in {{order}} — each lab introduces a concept the next one assumes. After the walkthrough and your own attempt, do a {{Next-Day Blind Replay}} before moving on. Progress is saved in your browser via {{localStorage}}." />
+
+<MatchPairs title="Family and tool" pairs={[
+  { term: "SQL injection", match: "sqlmap, and Hackvertor for the XML-encoding lab" },
+  { term: "Cross-site scripting", match: "Burp's DOM Invader" },
+  { term: "SSRF", match: "Burp Collaborator" },
+  { term: "JWT attacks", match: "JWT Editor" },
+  { term: "GraphQL", match: "InQL introspection" },
+  { term: "Server-side template injection", match: "tplmap, or the engine's own docs" }
+]} />

@@ -1,11 +1,13 @@
 ---
 title: "SQLMap Command Reference"
-date: "2025-06-20"
+date: '2026-06-24'
 tags: ["sqlmap", "sql injection", "pentesting", "database", "enumeration"]
 excerpt: "SQLMap from basic scans to full database takeover — flags, techniques, and real engagement examples."
 type: "cheatsheet"
 category: "Web Security"
 ---
+
+# SQLMap Command Reference
 
 SQLMap automates SQL injection detection and exploitation. Every pentester's best friend and every developer's worst nightmare.
 
@@ -125,6 +127,8 @@ sqlmap -r request.txt
 ```
 <CopyButton text="sqlmap -r request.txt" label="Copy" /> Save a Burp request to file, feed it directly to SQLMap
 </Accordion>
+
+<Cloze title="Flag recall" text="List databases with {{--dbs}}, then pull a table with -D db -T table {{--dump}}. Slow things down with {{--delay=2}}." />
 
 <QuizCard
   title="SQLMap Basics"

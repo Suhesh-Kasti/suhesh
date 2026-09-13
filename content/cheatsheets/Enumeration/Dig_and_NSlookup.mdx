@@ -1,95 +1,141 @@
 ---
 title: "Dig and NSlookup"
-excerpt: "are used to query nameservers."
-tags: []
+date: '2026-05-30'
+excerpt: "dig and nslookup for DNS recon — record lookups, reverse lookups, custom resolvers, and zone transfer attempts."
+tags: ["DNS", "recon", "dig", "nslookup"]
 category: "Reconnaissance"
 type: "cheatsheet"
 ---
 
-# Dig
-#### 1. General lookup for all record types
+# Dig and NSlookup
+
+Two DNS query tools. `dig` is the Linux default; `nslookup` ships on Windows and is what you use when you only have a Windows shell.
+
+## dig
+
+### All record types
+
+Ask for everything the server is willing to hand over.
 
 ```bash
 dig target.com ANY
 ```
 
-#### 2. Look for TXT records (SPF, DMARC, Domain Verifications)
+### TXT records
+
+SPF, DMARC, and domain-verification strings live here.
+
 ```bash
 dig target.com TXT
 ```
 
+### MX records
 
-#### 3. Look for Mail Exchange servers (Email infrastructure)
+Mail infrastructure — where email for the domain is delivered.
+
 ```bash
 dig target.com MX
 ```
 
-#### 4. Query a specific Name Server directly
+### Query a specific nameserver
+
+Point the query at one server instead of your resolver.
+
 ```bash
 dig target.com @ns1.target.com
 ```
 
-#### 5. Attempt a Zone Transfer (AXFR) - Pulls the entire DNS database if misconfigured
+### Zone transfer (AXFR)
+
+Pull the whole DNS database if the server allows it. Most don't.
+
 ```bash
 dig axfr target.com @ns1.target.com
 ```
 
-#### 6. Short output (clean IP addresses only for automation)
+### Short output
+
+Just the answer, no header. Handy in a loop.
+
 ```bash
 dig target.com +short
 ```
 
-# NSlookup
+## nslookup (non-interactive)
 
-While `dig` is preferred on Linux, `nslookup` is pre-installed on every Windows machine and is essential for pivoting or when you only have access to a Windows shell.
+### Basic lookup
 
-## Non-Interactive 
+Resolve a name to an address.
 
-#### 1. Basic IP lookup
 ```bash
 nslookup target.com
 ```
 
-#### 2. Reverse lookup (Who owns this IP?)
+### Reverse lookup
+
+Turn an IP back into a hostname.
+
 ```bash
 nslookup 1.1.1.1
 ```
 
-#### 3. Query a specific record type (MX, TXT, NS, ANY)
+### Specific record type
+
+Same as `dig MX`, `dig TXT`, and so on.
+
 ```bash
 nslookup -type=mx target.com
 ```
 
-#### 4. Query using a specific DNS server (e.g., Google's 8.8.8.8)
+### Specific DNS server
+
+Query Google's resolver directly.
+
 ```bash
 nslookup target.com 8.8.8.8
 ```
 
-## Interactive Mode (The Professional Way)
+## nslookup (interactive)
 
-Type `nslookup` and hit enter to stay in the prompt. This allows for faster, repeated queries.
+Run `nslookup` with no arguments to stay in the prompt and fire off queries without retyping the tool name.
 
-#### 1. Change your current DNS server
+### Change the resolver
+
 ```bash
-server 8.8.8.8        
+server 8.8.8.8
 ```
 
-#### 2. Set all following queries to TXT records
+### Pin the record type
+
 ```bash
 set type=txt
 ```
 
-#### 3. Perform the query
+### Query
+
 ```bash
-target.com 
+target.com
 ```
 
-#### 4. Enable verbose output (shows full packet details)
+### Verbose packet output
+
 ```bash
-set debug 
+set debug
 ```
 
-#### 5. Attempt Zone Transfer (Windows-specific nslookup command)
+### Zone transfer (Windows)
+
 ```bash
-ls -d target.com       
+ls -d target.com
 ```
+
+<MatchPairs title="Record type to purpose" color="#00e5ff" pairs={[
+  { term: "A", match: "IPv4 address" },
+  { term: "MX", match: "Mail servers" },
+  { term: "TXT", match: "SPF, DMARC, verification" },
+  { term: "NS", match: "Authoritative nameservers" },
+  { term: "AXFR", match: "Full zone transfer" },
+  { term: "PTR", match: "Reverse lookup" }
+]} />
+
+<Cloze title="Flag recall" text="Use dig target.com {{+short}} for a bare answer, and dig axfr target.com @{{ns1.target.com}} to attempt a zone transfer." />

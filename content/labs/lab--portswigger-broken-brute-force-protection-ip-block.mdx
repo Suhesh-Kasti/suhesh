@@ -1,38 +1,66 @@
 ---
 title: 'Broken brute-force protection, IP block'
-date: '2025-06-18'
+date: '2026-07-19'
 tags:
   - PortSwigger
   - lab
   - authentication
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Broken brute-force protection, IP
-  block. Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "Three failed logins block my IP, but a successful login resets the counter, so I alternate my own account with Carlos's guesses."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Broken brute-force protection, IP block
 
-## Objective
+The word "IP block" makes you reach for an `X-Forwarded-For` header and an address rotation. That is a real bypass for some rate limiters. The documented route here is lower-tech: keep the failed-attempt counter under three by logging in as myself every other try.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The login page blocks your IP after three wrong passwords in a row. You get a message about too many incorrect attempts, then a timer. You have your own credentials `wiener:peter`, and you want the password for `carlos`.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The block counts failures from one IP, which sounds fine. The flaw is what resets that count: any successful login from the same IP clears it back to zero.
 
-*Write ONE principle I must remember*
+So the rule is not "three failures per IP". It is "three failures in a row per IP". Slip one good login into the run and you start again with a clean slate. My own account is the reset button, and the app hands it to me for free.
 
-## Next-Day Blind Replay
+That is why the counter, not the source address, is the thing to attack. The block only matters if failures are allowed to pile up, and I control whether they do.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. Send `POST /login` to Intruder and pick a Pitchfork attack, with payload positions on both `username` and `password`.
+2. In the resource pool, set maximum concurrent requests to `1`. Order matters: the requests must go out one at a time so a success lands between failures.
+
+```text
+username payloads: wiener,  carlos, wiener,  carlos, wiener,  carlos, ...
+password payloads: peter,   a1,     peter,   a2,     peter,   a3,     ...
+```
+
+3. Build the username list so it alternates, with your username first and `carlos` repeated at least a hundred times.
+4. Build the password list the same way: your real password before every candidate, kept aligned with the usernames.
+5. Start the attack. When it finishes, hide the `200` responses and look for the single `302` on a `carlos` request.
+
+```http
+POST /login HTTP/2
+
+username=carlos&password=WINNING-CANDIDATE
+```
+
+6. Take that password, log in as Carlos, and open his account page.
+
+## Why that payload works
+
+Pitchfork advances both lists together, so request one is `wiener:peter` (a real login, counter reset) and request two is `carlos:<candidate>` (a guess). The pattern is guess, reset, guess, reset. The failure count never reaches three, so the IP ban never triggers, and the whole candidate list gets tested. Sending one request at a time is what keeps each reset and the next guess in the right order.
+
+## The fix
+
+Rate-limit and lock per account, not per IP, and do not let a success from a shared address wipe the count for a different account. Count failures against the account being targeted and add a delay that grows with the count. If you must block by IP, read the address from the connection rather than from a client-supplied header.
+
+<Sequence title="Order of operations" steps={["Send POST /login to Intruder", "Pick a pitchfork attack", "Build the alternating username list", "Align the password list with the resets", "Set the resource pool to one request", "Look for the single 302 on carlos"]} />
+
+<Accordion title="First instinct: rotate the IP">
+An "IP block" invites you to add an `X-Forwarded-For` header and spoof a new address on each request. That works against implementations that trust the header, and it is worth trying on other targets. PortSwigger's intended path for this lab is the counter reset, which is what the steps above use.
+</Accordion>

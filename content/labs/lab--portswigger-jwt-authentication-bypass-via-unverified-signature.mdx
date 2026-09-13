@@ -1,15 +1,12 @@
 ---
 title: JWT authentication bypass via unverified signature
-date: '2025-06-18'
+date: '2026-08-11'
 tags:
   - PortSwigger
   - lab
   - jwt
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — JWT authentication bypass via
-  unverified signature. Walkthrough with solution, key takeaways, and blind
-  replay exercise.
+excerpt: "The server never checks the JWT signature at all, so I edit the sub claim to administrator and keep the original signature."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
@@ -19,21 +16,41 @@ difficulty: apprentice
 # Lab: JWT authentication bypass via unverified signature
 
 ## Objective
+This lab uses a JWT-based mechanism for handling sessions. Due to implementation flaws, the server doesn't verify the signature of any JWTs that it receives.
+To solve the lab, modify your session token to gain access to the admin panel at `/admin`, then delete the user `carlos`.
+You can log in to your own account using the following credentials: `wiener:peter`
 
-*Describe the labs objective here*
+## Why This Works (The Principle)
+- **The vulnerability:** The server trusts the JWT without verifying its signature, uses a weak secret, or misconfigures the algorithm.
+- **Root cause:** The JWT library/implementation has a flaw — algorithm confusion (`alg: none`), weak HMAC secret, or signing key injection (`jwk`, `jku`, `kid`).
+- **Exploitation:** Forge a valid JWT by either setting `alg: none`, cracking the secret, or injecting a crafted key into the header.
+- **Key insight:** A JWT is only as secure as its verification logic. If the server trusts the header's algorithm choice, it can be subverted.
+
+## Blind Attempt 
+*Try without any hints. Document everything.*
+- **What I tried:**
+- **Where I got stuck:**
+
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
 
 ## Solution Reconstruction
-
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
+*After viewing full solution, close it immediately.*
+- [ ] Step 1: Sent the traffic without signature and still got response back meaning signature isnt being verified.
+![Request sent with the JWT signature stripped that still returns a valid response](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/jwt_without_signature_nosig_verify.png)
+- [ ] Step 2: I changed the page to `/admininistrator` and  replayed the request and the app thought I was administrator.
+![The admin panel reached after changing the request path to the administrator page](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/nosig_verify_admin_page.png)
+- [ ] Step 3: The jwt was being sent through cookie so replaced the cookie in browser and I was able to identify as admin
+![The unsigned JWT cookie being replayed from the browser to authenticate as admin](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/jwt_authentication_sent_without_sign.png)
 - [ ] Final payload / exploit:
 
 ## Key Takeaway
-
-*Write ONE principle I must remember*
+*Write ONE principle I must remember:*
 
 ## Next-Day Blind Replay
-
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="The server never verifies the signature, so the original {{cookie}} with the JWT still works after pointing the request at /{{administrator}}." />

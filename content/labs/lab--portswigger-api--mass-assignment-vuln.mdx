@@ -1,0 +1,44 @@
+---
+title: Exploiting a mass assignment vulnerability
+date: '2026-07-07'
+tags:
+  - PortSwigger
+  - lab
+  - api-testing
+  - walkthrough
+excerpt: "The checkout API quietly accepts a chosen_discount field the UI never sends, so setting the percentage to 100 buys the jacket."
+type: lab
+category: PortSwigger Academy
+platform: PortSwigger
+---
+
+# Lab: Exploiting a mass assignment vulnerability
+
+## Objective
+To solve the lab, find and exploit a mass assignment vulnerability to buy a **Lightweight l33t Leather Jacket**. You can log in to your own account using the following credentials: `wiener:peter`.
+## Why This Works (The Principle)
+- Mass assignment (also known as auto-binding) can inadvertently create hidden parameters. It occurs when software frameworks automatically bind request parameters to fields on an internal object.
+- Since mass assignment creates parameters from object fields, you can often identify these hidden parameters by manually examining objects returned by the API.
+> **EXAMPLE**: If the `isAdmin` value in the request is bound to the user object without adequate validation and sanitization, the user `wiener` may be incorrectly granted admin privileges. To determine whether this is the case, browse the application as `wiener` to see whether you can access admin functionality.
+## Blind Attempt (15-20 min max)
+- **What I tried:**  Went to /api and found API docs. While the app was only doing GET request to /api/checkout we could also do some POST request
+![The /api documentation showing the checkout endpoint and its GET and POST methods](/images/content/lab--portswigger-api--mass-assignment-vuln/api-mass-assign-api-doc.png)
+- **Where I got stuck:**
+## Hint Usage (if needed)
+- [ ] Used lab hint
+- [ ] Watched first 30s of video solution
+- *Resume blind with new clue. Still stuck?*
+
+## Solution Reconstruction
+*After viewing full solution, close it immediately.*
+- [ ] Step 1:  Logged in as weiner
+- [ ] Step 2:  Went to /api and got the docs found out we can do a POST req in /api/checkput endpoint
+- [ ] Step 3:  Made this post request according to the documentation![POST request to /api/checkout carrying the chosen_discount field the UI never sends](/images/content/lab--portswigger-api--mass-assignment-vuln/api-mass-assignment-assigned-discount.png)
+- [ ] Final payload / exploit: This created a discount of 100% for the jacket of which I could buy.
+## Key Takeaway
+Search for exposed API docs as they might expose all and everything possible to do with API.
+## Next-Day Blind Replay
+- [ ] Solved entirely from memory
+- [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="The checkout API binds a hidden {{chosen_discount}} field, so adding it to the POST body with a value of {{100}} grants a full discount." />

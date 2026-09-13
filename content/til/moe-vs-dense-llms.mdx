@@ -1,8 +1,8 @@
 ---
 title: "MoE vs Dense — why a 27B model beat a 122B model on my hardware"
-date: "2026-05-16T12:30:00+05:45"
+date: '2026-05-26'
 excerpt: "Mixture of Experts sounds impressive and the parameter count looks better on paper. But I spent a week learning the hard way that bigger numbers don't always mean better results."
-tags: []
+tags: ["LLM", "Local AI", "Qwen", "Mixture of Experts", "NVIDIA L4"]
 category: "AI/ML"
 type: "til"
 ---
@@ -28,6 +28,12 @@ So in Qwen3.5-122B-A10B:
 In theory: you get the "knowledge capacity" of a 122B model (lots of experts covering different domains) with the compute cost of a 10B model. Smart!
 
 In practice: it depends heavily on your hardware.
+
+<Cloze
+  title="MoE numbers"
+  color="#ff5500"
+  text="In Qwen3.5-122B-{{A10B}}, 122B parameters are total but only {{10}}B are active per token. At Q4 the full model is about {{60}}GB, far more than 24GB of VRAM."
+/>
 
 ## Why MoE failed on my setup
 
@@ -64,6 +70,14 @@ For coding and reasoning tasks specifically, Qwen3.6-27B consistently outperform
 
 SWE-bench Verified (coding benchmark): Qwen3.6-27B scored 77.2%, while Qwen3.5-122B scored around 72%. The "smaller" model wins here.
 
+<DataBar
+  title="SWE-bench Verified (%)"
+  data={[
+    { "label": "Qwen3.6-27B (dense)", "value": 77.2, "color": "#00dd44" },
+    { "label": "Qwen3.5-122B (MoE)", "value": 72, "color": "#ff2d95" }
+  ]}
+/>
+
 ## The mental model
 
 Think of MoE like a hospital with 50 specialist doctors vs. a dense model like one extremely good generalist surgeon. For any given problem, the specialist might be better — but if the hospital's logistics (PCIe, RAM bandwidth) are slow, getting the right specialist to the operating room takes too long, and the generalist who's already there wins on pure throughput.
@@ -85,3 +99,43 @@ watch -n0.5 nvidia-smi --query-gpu=memory.used --format=csv,noheader
 ```
 
 If VRAM stays flat during inference and GPU utilization is high, the model is fully on GPU and you're in good shape. If VRAM is suspiciously low and the GPU is sitting at 9% utilization like mine was — something's wrong.
+
+<QuizCard
+  title="MoE vs dense"
+  color="#0055ff"
+  questions={[
+    {
+      question: "Why did the 122B MoE run at 3.4 tok/s on a 24GB GPU?",
+      options: [
+        "Inactive experts sat in RAM, so each token paid a PCIe transfer",
+        "The model was too small",
+        "CUDA had no tensor cores",
+        "The router picked the wrong expert once"
+      ],
+      correct: 0,
+      explanation: "A ~60GB model on 24GB VRAM means constant RAM-to-VRAM expert swapping, and PCIe became the chokepoint."
+    },
+    {
+      question: "When does a MoE model actually win?",
+      options: [
+        "When the whole model fits in VRAM, so no expert ever crosses PCIe",
+        "Whenever the parameter count is larger",
+        "On any single consumer GPU",
+        "Only for image models"
+      ],
+      correct: 0,
+      explanation: "With enough VRAM (say 80GB) all experts stay resident, giving a big model's knowledge at a small model's compute cost."
+    },
+    {
+      question: "How do the two architectures use parameters per token?",
+      options: [
+        "Dense uses all parameters; MoE routes each token to a subset of experts",
+        "Both use all parameters",
+        "Dense routes to experts; MoE uses all",
+        "Neither uses parameters at inference"
+      ],
+      correct: 0,
+      explanation: "A dense model runs all layers for every token; a MoE router activates only some experts per token."
+    }
+  ]}
+/>

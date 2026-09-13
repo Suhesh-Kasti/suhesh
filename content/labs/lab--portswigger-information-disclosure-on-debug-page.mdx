@@ -1,6 +1,6 @@
 ---
 title: Information disclosure on debug page
-date: '2025-06-18'
+date: '2026-08-05'
 tags:
   - PortSwigger
   - lab
@@ -18,24 +18,45 @@ difficulty: apprentice
 
 # Lab: Information disclosure on debug page
 
-## Objective
-This lab contains an information disclosure vulnerability on a debug page that exposes sensitive information. To solve the lab, obtain and submit the `SECRET_KEY` environment variable.
+This one is nearly all recon. The debug page is not linked in the visible UI anywhere, but a developer left a pointer to it in an HTML comment on the home page. Read the source, follow the breadcrumb, grab the secret.
 
-## Why This Works (The Principle)
-- **The vulnerability:** Debug endpoints or pages are left exposed in production, revealing sensitive configuration data.
-- **Root cause:** Development/debug features are not removed or restricted before deployment to production.
-- **Exploitation:** Locate and access the debug page to retrieve leaked credentials or configuration values.
-- **Key insight:** Always check for common debug paths (`/debug`, `/phpinfo.php`, `/console`, `.env`) during recon.
+## The setup
 
-## Solution Reconstruction
-- [ ] Step 1: Accessed the target website and browsed through the application normally
-- [ ] Step 2: Discovered a debug page exposing environment variables
-- [ ] Step 3: Extracted the `SECRET_KEY` from the debug output
-- [ ] Final payload / exploit: Submit the extracted `SECRET_KEY` to solve the lab
+The home page loads normally and looks clean. Buried in its markup is an HTML comment, though, and that comment carries a link to a file that should never have survived deployment.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+## How the vulnerability works
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+A `phpinfo()` page was left reachable after the site went live. It prints the environment the web process runs in, which includes application settings and secrets such as `SECRET_KEY`. The page is a development convenience, and nothing removed it or blocked it once the app was in production.
+
+## Solving it
+
+1. Load the home page and view the source, or use Burp's site map and its "Find comments" tool.
+2. Find the comment pointing at the debug file:
+
+```html
+<!-- <a href="/cgi-bin/phpinfo.php">Debug</a> -->
+```
+
+3. Request that path directly:
+
+```http
+GET /cgi-bin/phpinfo.php HTTP/1.1
+Host: LAB-ID.web-security-academy.net
+```
+
+4. Search the returned page for `SECRET_KEY` and copy the value.
+5. Submit the value in the lab's solution box.
+
+## Why that payload works
+
+The comment itself is harmless, but it advertises a path that survived deployment. The server runs the PHP file and renders every environment variable into a tidy table, so the secret is printed in plain text. Nothing restricted the endpoint, so the information is public by default.
+
+## The fix
+
+Strip debug files and `phpinfo()` calls from production builds, and block `/cgi-bin/phpinfo.php` at the edge in case one ships anyway. Keep secrets in a dedicated store rather than in the web process environment, and inject only what the app needs, so a page that dumps the environment has less to dump.
+
+<FlipCard front={<div>The debug file is not linked anywhere visible. Where do you find it?</div>} back={<div>In an HTML comment on the home page. View source, or run Burp's Find comments, and it points at /cgi-bin/phpinfo.php.</div>} />
+
+<Accordion title="Finding it without a wordlist">
+Content discovery would eventually guess a `phpinfo.php`, but you do not need a wordlist here. The developer left the link in the page source, which is faster. Right-click the top-level site in Burp's site map, pick Engagement tools, then Find comments, and read every comment the app ships.
+</Accordion>

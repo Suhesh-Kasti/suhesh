@@ -1,14 +1,12 @@
 ---
 title: Detecting NoSQL injection
-date: '2025-06-18'
+date: '2026-07-22'
 tags:
   - PortSwigger
   - lab
   - nosql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Detecting NoSQL injection. Walkthrough
-  with solution, key takeaways, and blind replay exercise.
+excerpt: "MongoDB runs my category through a JavaScript $where predicate, so a quote throws a JS error and '||1||' returns every document, unreleased products included."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
@@ -17,22 +15,71 @@ difficulty: apprentice
 
 # Lab: Detecting NoSQL injection
 
-## Objective
+The first time I hit a NoSQL backend I kept waiting for a SQL syntax error that was never coming. This lab is about noticing the different shape of the failure, before you waste a session on the wrong database.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+The product list has a category filter. Choosing one sends `GET /filter?category=Gifts` and the page shows matching products. Behind it is MongoDB, not a relational database.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+The interesting part is what the server does with the value. It is not wrapped in a SQL string; it is evaluated as part of a JavaScript predicate against each document. That one detail changes everything about how the injection looks.
 
-## Key Takeaway
+## How the vulnerability works
 
-*Write ONE principle I must remember*
+MongoDB can run a predicate through the `$where` operator. A lot of small apps build that predicate by string concatenation, roughly `this.category == '<input>'`. Whatever you type lands inside JavaScript source.
 
-## Next-Day Blind Replay
+Two consequences follow. A bare apostrophe now produces a syntax error rather than a SQL error, because you broke a string in JavaScript. And a balanced payload using `&&` and `||` is evaluated as logic, so you can steer which documents match.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+There are no hidden columns to fish out. The predicate just decides, per document, whether that document passes your test. That makes it a boolean filter, and a boolean filter is enough to reveal rows the shop never meant to list.
+
+## Solving it
+
+1. Send a single quote in the category and watch the failure mode:
+
+```
+GET /filter?category=Gifts'
+```
+
+A JavaScript syntax error here says the input is not sanitised.
+
+2. Send a balanced payload. `Gifts'+'` is valid JavaScript and still returns the Gifts, so the value really is being executed.
+
+3. Prove you control the logic with a false and a true branch:
+
+```
+GET /filter?category=Gifts' && 0 && 'x
+GET /filter?category=Gifts' && 1 && 'x
+```
+
+The first returns no products, the second returns the usual Gifts.
+
+4. Make the condition always true, so every document matches, including unreleased ones:
+
+```
+GET /filter?category=Gifts'||1||'
+```
+
+URL-encode each payload before sending. The page now lists unreleased products and the lab is solved.
+
+## Why that payload works
+
+The `'` closes the string the app opened after `this.category == `. In the false case, `&& 0 && 'x` chains a false value onto the comparison, so the whole predicate is false and nothing matches. In the true case, `&& 1` is truthy, so the normal equality still decides the match. The final `||1||` is an OR that short-circuits to true for every document, which is why the filter stops filtering and returns the whole collection. All of this is JavaScript, so the bare `1` is truthy without quotes around it.
+
+## The fix
+
+Never build a `$where` predicate from user input. Query by field value instead, `{ category: requestedCategory }`, so the input stays a value and is never parsed as code. Validate the category against a known allow-list and reject anything that is not one of the real categories.
+
+<Terminal
+  title="repeater"
+  prompt="burp"
+  command={"GET /filter?category=Gifts'"}
+  output={"HTTP/1.1 500 Internal Server Error\n\nSyntaxError: unterminated string literal"}
+/>
+
+<Cloze
+  title="Boolean probes"
+  text="A false condition is {{Gifts' && 0 && 'x}}; a true one is {{Gifts' && 1 && 'x}}; the always-true version that dumps everything is {{Gifts'||1||'}}."
+/>
+
+<Accordion title="Field query vs $where">
+The vulnerable version evaluates input as JavaScript, usually inside a `$where` predicate. MongoDB also supports a plain field query, `{ category: value }`, where the value is compared as data. That second form cannot be injected, because the input is never copied into a program. If you find yourself escaping quotes to fix a Mongo query, the query is the bug.
+</Accordion>

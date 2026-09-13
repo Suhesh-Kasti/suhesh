@@ -1,21 +1,23 @@
 ---
 title: DOM XSS in document.write sink using source location.search
-date: '2025-06-18'
+date: '2026-07-23'
 tags:
   - PortSwigger
   - lab
   - dom-xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "The search term goes straight into the page through document.write, so a crafted query string is all it takes to run my JavaScript."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: DOM XSS in document.write sink using source location.search
 
 ## Objective
-*What is this lab trying to teach?*
+This lab contains a DOM-based cross-site scripting vulnerability in the search query tracking functionality. It uses the JavaScript `document.write` function, which writes data out to the page. The `document.write` function is called with data from `location.search`, which you can control using the website URL.
+To solve this lab, perform a cross-site scripting attack that calls the `alert` function.
 
 ## Why This Works (The Principle)
 - **The vulnerability:** Client-side JavaScript writes attacker-controlled data to the DOM without sanitization.
@@ -24,8 +26,7 @@ difficulty: apprentice
 - **Key insight:** DOM-based XSS does not require the server to reflect the payload — it lives entirely in the client-side code path.
 
 ## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
+- **What I tried:** 
 - **Where I got stuck:**
 
 ## Hint Usage (if needed)
@@ -34,11 +35,10 @@ difficulty: apprentice
 - *Resume blind with new clue. Still stuck?*
 
 ## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+1. Enter a random alphanumeric string into the search box.
+2. Right-click and inspect the element, and observe that your random string has been placed inside an `img src` attribute.
+3. Break out of the `img` attribute by searching for:
+    `"><svg onload=alert(1)>`
 
 ## Key Takeaway
 *Write ONE principle I must remember:*
@@ -46,3 +46,5 @@ difficulty: apprentice
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="The search term is written into an img src through {{document.write}}, so the payload escapes the attribute and drops in an SVG {{onload}} handler." />

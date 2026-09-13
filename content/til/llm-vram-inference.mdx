@@ -1,8 +1,8 @@
 ---
 title: "Why LLMs eat VRAM and what actually happens during inference"
-date: "2026-05-16T10:00:00+05:45"
+date: '2026-05-23'
 excerpt: "Finally understood what inference actually means, why GPU VRAM is the bottleneck, and why my 64GB of RAM did almost nothing to help when the model was too big"
-tags: []
+tags: ["LLM", "Local AI", "GPU", "NVIDIA L4", "Inference"]
 category: "AI/ML"
 type: "til"
 ---
@@ -25,6 +25,12 @@ If it all fits in VRAM, every token is fast. If some of it is in RAM, every toke
 
 The frustrating discovery I made: I had 14.5GB of VRAM sitting idle while my model ran at 3.4 tokens per second. Turned out my config was pushing all the computational work to CPU even though the GPU had room. The GPU was just computing attention layers while the CPU did all the heavy lifting. Felt like having a sports car and only using it to carry groceries.
 
+<Cloze
+  title="Where the weights live"
+  color="#0055ff"
+  text="The GPU can only do fast math on data inside {{VRAM}}. Weights stuck in system RAM have to cross {{PCIe}} for every token. A 27B model at 4-bit is roughly {{14-18}}GB of weights."
+/>
+
 ## What "inference" actually means
 
 Inference = using a trained model to generate output. As opposed to training, which is teaching the model. When you run `llama-server` and hit it with a request, that's inference.
@@ -41,6 +47,14 @@ During inference, you're reading billions of weights from memory once per token.
 
 Quick math: 27B model at 4-bit = ~14GB. At 300 GB/s bandwidth: 14GB / 300 GB/s ≈ 0.047 seconds per token = ~21 tokens/second theoretical max. In practice I got 15-18, which is reasonable. If I had a 4090, that same model would do 60+ tokens/second.
 
+<DataBar
+  title="Memory bandwidth (GB/s)"
+  data={[
+    { "label": "NVIDIA L4", "value": 300, "color": "#ff5500" },
+    { "label": "RTX 4090", "value": 1000, "color": "#00dd44" }
+  ]}
+/>
+
 ## The takeaway
 
 - Model weights need to live in VRAM for fast inference
@@ -48,3 +62,43 @@ Quick math: 27B model at 4-bit = ~14GB. At 300 GB/s bandwidth: 14GB / 300 GB/s �
 - Context window adds KV cache on top of model weight memory
 - System RAM is a fallback, not a solution — you pay a heavy PCIe penalty for every token
 - For my L4 with 24GB VRAM, a 27B model at Q4 (~14-18GB) left just enough room for context and was the sweet spot
+
+<QuizCard
+  title="Inference check"
+  color="#00dd44"
+  questions={[
+    {
+      question: "What primarily limits tokens-per-second during inference?",
+      options: [
+        "Memory bandwidth, not compute",
+        "CPU clock speed",
+        "PCIe version only",
+        "Total RAM capacity"
+      ],
+      correct: 0,
+      explanation: "You read billions of weights per token, so the limit is how fast you can read memory: the L4's 300 GB/s vs a 4090's ~1000 GB/s."
+    },
+    {
+      question: "Why doesn't 64GB of system RAM rescue a too-big model?",
+      options: [
+        "Weights in RAM must cross PCIe for every token, so it stays slow",
+        "RAM is only 2x slower than VRAM",
+        "CUDA cannot see system RAM at all",
+        "The tokenizer needs RAM first"
+      ],
+      correct: 0,
+      explanation: "The GPU needs the weights in VRAM; falling back to RAM adds a PCIe transfer per token."
+    },
+    {
+      question: "What does the KV cache add on top of the model weights?",
+      options: [
+        "Memory that grows with context length",
+        "A second copy of the weights",
+        "The tokenizer vocabulary",
+        "Nothing measurable"
+      ],
+      correct: 0,
+      explanation: "The KV cache stores K and V for every token in context, so longer context needs more VRAM."
+    }
+  ]}
+/>

@@ -1,75 +1,106 @@
 ---
 title: "Subdomain Enum Tools"
-excerpt: "are used to enumerate subdomains."
-tags: []
+date: '2026-06-02'
+excerpt: "Passive subdomain and cloud-asset enumeration with subfinder, amass, bbot, assetfinder, and s3scanner."
+tags: ["recon", "subdomain", "Enumeration", "osint"]
 category: "Reconnaissance"
 type: "cheatsheet"
 ---
 
-# Subfinder 
-The fastest passive aggregator. It doesn't scan; it just asks other databases what they know.
+# Subdomain Enum Tools
 
-#### 1. Basic passive discovery 
+Each tool with the flag you actually run. Passive tools ask third-party databases; active tools resolve and brute-force, so they touch the target.
+
+## subfinder
+
+Fastest passive aggregator. It doesn't scan; it asks other sources what they already know.
+
+### Basic passive discovery
+
 ```bash
-subfinder -d target.com -silent 
+subfinder -d target.com -silent
 ```
 
-#### 2. Discovery using wordlist
+### Save results to a file
+
 ```bash
 subfinder -d target.com -o subdomains.txt
 ```
 
-#### 3. Aggregate from all sources and save to file 
+### Query every source
+
 ```bash
 subfinder -d target.com -all -o subdomains.txt
 ```
 
-# Amass 
-It uses a graph database to map relationships between IPs, domains, and ASNs for deep passive mapping.
+## amass
 
-#### 1. Passive mode (stealthy)
+Builds a graph of IPs, domains, and ASNs. Slower than subfinder, but deeper passive mapping.
+
+### Passive mode
+
 ```bash
 amass enum -passive -d target.com
 ```
 
-#### 2. Active mode (brute forcing and resolving) 
+### Active mode with brute force
+
 ```bash
 amass enum -active -d target.com -brute -w /path/to/wordlist.txt
 ```
 
-# BBOT (BBN-OSINT)
-It intelligently correlates data rather than just listing it.
+## bbot
 
-#### 1. Deep subdomain enumeration with passive flags
+Correlates findings across modules instead of printing a flat list of names.
+
+### Passive subdomain enumeration
+
 ```bash
 bbot -t target.com -p subdomain-enum -rf passive
 ```
 
-# Assetfinder 
-Go-based passive subdomain scraper
+## assetfinder
+
+Small Go scraper. Good for a quick pass when subfinder is overkill.
+
 ```bash
 assetfinder --subs-only target.com > subdomains.txt
 ```
 
-# CloudBrute
+## Cloud assets
 
-Used to find company infrastructure across AWS, Azure, and Google Cloud.
+### CloudBrute
 
-#### 1. Search for buckets, apps, and storage belonging to a company
+Searches AWS, Azure, and GCP for buckets, apps, and storage tied to a company keyword.
+
 ```bash
 cloudbrute -d target.com -k keyword_list.txt
 ```
 
-# S3Scanner
+### S3Scanner
 
-Specifically targets misconfigured Amazon storage buckets.
-#### 1. Scan a list of potential bucket names
+Checks a list of bucket names for public access.
+
 ```bash
 s3scanner scan --bucket-file buckets.txt
 ```
 
-# Dump contents of an open bucket
+### Dump an open bucket
+
 ```bash
 s3scanner dump --bucket target-backup-2026
 ```
 
+<MatchPairs title="Tool to job" color="#00dd44" pairs={[
+  { term: "subfinder", match: "Fast passive subdomain aggregation" },
+  { term: "amass", match: "Graph of IPs, domains, ASNs" },
+  { term: "bbot", match: "Correlates modules in one run" },
+  { term: "assetfinder", match: "Quick Go subdomain scrape" },
+  { term: "cloudbrute", match: "Cloud buckets and apps" },
+  { term: "s3scanner", match: "Misconfigured S3 buckets" }
+]} />
+
+<QuizCard title="Which tool?" color="#00dd44" questions={[
+  { question: "You want subdomains from every public source, fast, without touching the target.", options: ["subfinder -d target.com -all", "amass enum -active -d target.com -brute", "s3scanner scan --bucket-file buckets.txt", "nmap -sV target.com"], correct: 0, explanation: "subfinder is a passive aggregator — it queries third-party databases and never sends a packet to the target." },
+  { question: "You want to check whether a company has open S3 buckets.", options: ["cloudbrute or s3scanner", "subfinder", "amass", "assetfinder"], correct: 0, explanation: "cloudbrute enumerates cloud infrastructure; s3scanner checks the discovered bucket names for public access." }
+]} />

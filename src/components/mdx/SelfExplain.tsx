@@ -18,6 +18,17 @@ function countWords(value: string): number {
   return trimmed ? trimmed.split(/\s+/).length : 0;
 }
 
+/**
+ * Ruled paper. One rule per line box, parked at the BOTTOM of the line so the writing sits on
+ * it instead of being struck through, and `local` so the rules scroll with the text.
+ *
+ * The textarea deliberately has no top padding: the background grid starts at the padding box
+ * top, so any top padding would offset every rule by that amount. The spacing above the field
+ * comes from the wrapper instead, which does not touch the background origin.
+ */
+const LINE_HEIGHT = 28;
+const RULE_COLOR = "color-mix(in srgb, var(--fg) 16%, transparent)";
+
 export default function SelfExplain({ prompt, model, color = "#ffdd00", title = "Explain it back" }: SelfExplainProps) {
   const accent = resolveAccent(color);
   const [answer, setAnswer] = useState("");
@@ -73,11 +84,15 @@ export default function SelfExplain({ prompt, model, color = "#ffdd00", title = 
           spellCheck={false}
           rows={5}
           placeholder="Your explanation..."
-          className="w-full resize-y border-2 border-fg bg-surface p-3 font-sans text-sm leading-relaxed text-fg focus:outline-none"
+          className="w-full resize-y border-2 border-fg bg-surface px-3 font-sans text-sm text-fg focus:outline-none"
           style={{
             fontFamily: TYPOGRAPHY.fontSans,
-            backgroundImage: `repeating-linear-gradient(transparent, transparent 27px, color-mix(in srgb, var(--fg) 10%, transparent) 27px, color-mix(in srgb, var(--fg) 10%, transparent) 28px)`,
-            lineHeight: "28px",
+            lineHeight: `${LINE_HEIGHT}px`,
+            paddingTop: 0,
+            paddingBottom: 12,
+            backgroundImage: `linear-gradient(to bottom, transparent ${LINE_HEIGHT - 1}px, ${RULE_COLOR} ${LINE_HEIGHT - 1}px, ${RULE_COLOR} ${LINE_HEIGHT}px)`,
+            backgroundSize: `100% ${LINE_HEIGHT}px`,
+            backgroundAttachment: "local",
           }}
         />
       </div>

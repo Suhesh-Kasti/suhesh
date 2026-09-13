@@ -1,0 +1,93 @@
+---
+title: "Creating SSL Certificates with OpenSSL"
+date: '2026-05-24'
+tags: ["OpenSSL", "TLS", "certificates", "Security"]
+excerpt: "Generate a private key, a CSR and a self-signed certificate with OpenSSL — plus the request you send to a CA when you need it properly signed."
+type: cheatsheet
+category: "Security"
+---
+
+# Creating SSL Certificates with OpenSSL
+
+## 1. Create a self-signed certificate
+
+### Step 1: Generate the private key
+
+```bash
+openssl genpkey -algorithm RSA -out privatekey.key -pkeyopt rsa_keygen_bits:2048
+```
+
+- `openssl`: calls the OpenSSL command-line tool.
+- `genpkey`: this command generates a private key.
+- `-algorithm RSA`: specifies that the RSA algorithm will be used for key generation.
+- `-out privatekey.key`: specifies the output file name for the private key, `privatekey.key`.
+- `-pkeyopt rsa_keygen_bits:2048`: defines the length of the key in bits, in this case 2048 bits.
+
+This command generates a 2048-bit RSA private key and saves it as `privatekey.key`.
+
+### Step 2: Create the Certificate Signing Request (CSR)
+
+```bash
+openssl req -new -key privatekey.key -out request.csr
+```
+
+- `req`: tells OpenSSL to generate or process a certificate request (CSR).
+- `-new`: indicates that a new CSR is being created.
+- `-key privatekey.key`: uses the private key (`privatekey.key`) that was generated in step 1.
+- `-out request.csr`: specifies the output file for the CSR (`request.csr`).
+
+During this step, OpenSSL will prompt you for information such as Country, State, Organization, Common Name (FQDN), etc. This data will be included in the CSR.
+
+### Step 3: Generate a self-signed certificate
+
+```bash
+openssl req -x509 -nodes -days 365 -key privatekey.key -in request.csr -out certificate.crt
+```
+
+- `req`: again, this indicates the request-processing operation.
+- `-x509`: specifies that a self-signed certificate (X.509) will be created instead of a regular CSR.
+- `-nodes`: ensures that the private key will not be encrypted.
+- `-days 365`: defines the validity of the certificate, in this case 365 days.
+- `-key privatekey.key`: uses the private key generated earlier.
+- `-in request.csr`: uses the CSR that was created in step 2.
+- `-out certificate.crt`: the final self-signed certificate will be output to `certificate.crt`.
+
+This command generates a self-signed certificate (`certificate.crt`) that is valid for 365 days.
+
+## 2. Create a CSR for a CA-signed certificate
+
+### Step 1: Generate the private key
+
+```bash
+openssl genpkey -algorithm RSA -out privatekey.key -pkeyopt rsa_keygen_bits:2048
+```
+
+Same as in the self-signed certificate process. This creates a private key named `privatekey.key`.
+
+### Step 2: Create the Certificate Signing Request (CSR)
+
+```bash
+openssl req -new -key privatekey.key -out request.csr
+```
+
+Same as in the self-signed certificate process. This generates a CSR (`request.csr`).
+
+### Step 3: Submit the CSR to a Certificate Authority (CA)
+
+After creating the CSR, you would send `request.csr` to a CA (e.g., Let's Encrypt, DigiCert). The CA will sign the CSR and issue a certificate, which you'll typically receive as a `.crt` or `.pem` file.
+
+### Optional step 4: Verify the CSR
+
+You can inspect the contents of the CSR to verify the details:
+
+```bash
+openssl req -noout -text -in request.csr
+```
+
+- `-noout`: suppresses the output of the encoded CSR.
+- `-text`: displays the CSR in human-readable format.
+- `-in request.csr`: specifies the CSR file to inspect.
+
+This will display the details of the CSR you generated, like the Subject (organization, FQDN), public key information, and extensions.
+
+<Cloze title="OpenSSL recall" color="#00cc55" text="Generate a 2048-bit key with openssl {{genpkey}} -algorithm RSA. Build a CSR with openssl {{req}} -new -key privatekey.key -out {{request.csr}}. Self-sign it by adding the {{-x509}} flag." />

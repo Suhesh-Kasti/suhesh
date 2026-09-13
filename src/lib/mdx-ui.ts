@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export const ACCENT_HEX: Record<string, string> = {
+const ACCENT_HEX: Record<string, string> = {
   pink: "#ff2d95",
   red: "#ff1144",
   orange: "#ff5500",

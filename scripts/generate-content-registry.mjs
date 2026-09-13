@@ -16,7 +16,7 @@ const CONTENT_DIRS = [
   { dir: "cheatsheets", type: "cheatsheet" },
   { dir: "checklists", type: "checklist" },
   { dir: "braindump", type: "braindump" },
-  { dir: "series", type: "series" },
+  { dir: "series", type: "roadmap" },
   { dir: "labs", type: "lab" },
 ];
 
@@ -143,6 +143,14 @@ for (const { dir, type } of CONTENT_DIRS) {
       console.error(`Failed to compile ${slug}: ${err.message}`);
     }
 
+    // Screenshots referenced from the body, cover first and deduped. The sitemap lists
+    // these so article images are eligible for image search, not just the page.
+    const bodyImages = Array.from(
+      content.matchAll(/(?:!\[[^\]]*\]\(|src=")(\/images\/[^)"\s]+)/g),
+      (match) => decodeURIComponent(match[1])
+    );
+    const images = Array.from(new Set([data.image, ...bodyImages].filter(Boolean)));
+
     allEntries.push({
       slug,
       title: data.title ?? slug.replace(/-/g, " "),
@@ -152,6 +160,7 @@ for (const { dir, type } of CONTENT_DIRS) {
       type,
       category: data.category ?? data.categories?.[0] ?? "",
       image: data.image ?? "",
+      images,
       steps: Array.isArray(data.steps) ? data.steps : [],
       platform: data.platform ?? "",
       difficulty: data.difficulty ?? "",
@@ -212,6 +221,7 @@ export interface RegistryEntry {
   type: string;
   category: string;
   image: string;
+  images: string[];
   steps?: { title: string; slug: string; description: string }[];
   platform?: string;
   difficulty?: string;
@@ -226,8 +236,6 @@ export interface TocHeading {
 export const CONTENT_ENTRIES: RegistryEntry[] = ${JSON.stringify(allEntries)};
 
 export const HEADINGS_MAP: Record<string, TocHeading[]> = ${JSON.stringify(headingsMap)};
-
-export const TOTAL_POSTS = ${allEntries.length};
 `);
 
 console.log(`Content registry written (${allEntries.length} posts, ${generatedModules.length} MDX modules)`);

@@ -1,0 +1,107 @@
+---
+title: "F5 BIG-IP Next: Architecture and Migration"
+date: '2025-10-14'
+tags: ["f5", "bigip", "kubernetes", "migration", "architecture"]
+excerpt: "Training notes on BIG-IP Next — microservices, Central Manager, Kubernetes flavours, AS3 automation and migrating classic BIG-IP configs across."
+type: blog
+category: "Network Operations"
+---
+
+# F5 BIG-IP Next: Architecture and Migration
+
+## Three-tier web architecture
+
+Web > App > DB.
+
+VIP > Frontend (UI/UX) > Backend (application + database).
+
+- Application logic.
+- Database — MySQL, MariaDB (data).
+
+Challenge: no changes on the fly, bringing the entire frontend down, business impact, `502` maintenance.
+
+## Modern architecture
+
+- Microservices
+- Containerization
+
+## BIG-IP Next
+
+- Classic BIG-IP (traditional) + BIG-IP Next (newer).
+- k3s → lighter Kubernetes (R-series and VE).
+- k8s → heavier Kubernetes (Velos → chassis-based).
+- F5OS.
+- ATSE (Application Traffic Service Engine).
+- 5000 series has dedicated data and management planes.
+
+BIG-IP Next:
+
+- Changed from monolithic architecture to microservices architecture.
+- API-based communication between modules.
+- Decoupled control and data plane.
+
+### Automation
+
+1. **Declarative** — telling BIG-IP the things I want you to do, step by step.
+2. **Imperative** — telling it just the base, and Ansible and Terraform automate the rest.
+
+### Central Manager
+
+- BIG-IP Next Central Manager is the BIG-IQ modern replacement.
+- Onboarding, migration.
+- DCD (Data Collection Devices)? No longer used.
+- Logs: 3M log cap; sending logs in real time is available, other options in the future.
+- HA: a minimum of 3 nodes is required for HA.
+- Central management is free.
+- For hardware SSL acceleration, new models have a dedicated accelerator card; VE lacks this (Intel QAT and SmartNIC have it, so if we buy this we can use it).
+- Hardware and VE version parity.
+- In CM we cannot have unlimited tenants — it depends on resources allocated and modules added.
+- Fast F5 application.
+- iApp works on the defined template, to avoid unnecessary changes for central management.
+- iRule versioning.
+
+## Migrations
+
+1. Download UCS.
+2. Upload UCS to the migration tool.
+3. Deploy the migrated application to BIG-IP Next.
+
+![Downloading a UCS backup and uploading it to the BIG-IP Next migration tool](/images/content/f5-bigip-next-architecture-and-migration/migrating-to-bigIPNext.png)
+
+![The migration tool analysing an uploaded configuration](/images/content/f5-bigip-next-architecture-and-migration/migration-BigIPNext-analyze.png)
+
+- Per-application migration.
+- Right now only LTM and ASM are supported by BIG-IP Next.
+
+![The supported migration paths from classic BIG-IP to BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/migration-path-BigIPNext.png)
+
+## BIG-IP Next UI
+
+![The BIG-IP Next user interface](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-UI-1.png)
+
+This is real-time latency, but it cannot display interval-based latency as of now, as it is in beta.
+
+![An alert shown in the BIG-IP Next interface](/images/content/f5-bigip-next-architecture-and-migration/alert-in-BigIPNext.png)
+
+![A new security template being created in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-new-security-template.png)
+
+![Low-touch policy management in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-lowtouchpolicymanagement.png)
+
+Low-touch policy management is used for reducing time from learning to blocking. It is not customizable — ratings 1, 2, 3 (alarm log) and 4, 5 (block log). Around 7k attack signatures form the base of negative security, with no granular control. Yes, it impacts resources. Used where clients do not have a lot of time to move from learning to blocking.
+
+![Violation-based policies in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-violationbased.png)
+
+- False positive suppression engine.
+- Signature tuning.
+
+> [Journeys tool](https://github.com/f5devcentral/f5-journeys) can help with migration from BigIP to BIG-IP Next, BigIP to BigIP VE, and vice-versa — but we cannot migrate BIG-IQ.
+
+## Lab
+
+![The BIG-IP Next Central Manager](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-CM.png)
+
+<QuizCard title="BIG-IP Next recall" questions={[
+  { question: "Which Kubernetes flavour runs on the lighter R-series and VE?", options: ["k8s", "k3s", "F5OS", "OpenShift"], correct: 1, explanation: "k3s is the lighter distribution for R-series and VE; k8s is the heavier one used on chassis platforms." },
+  { question: "Which application modules does the migration tool support today?", options: ["LTM and ASM", "DNS and GTM", "APM and AFM", "Every module"], correct: 0, explanation: "Migration is per-application and currently limited to LTM and ASM." },
+  { question: "What does BIG-IP Next Central Manager replace?", options: ["The data plane", "BIG-IQ", "iRules", "F5OS"], correct: 1, explanation: "Central Manager is the modern replacement for BIG-IQ, handling onboarding and migration." }
+]} />

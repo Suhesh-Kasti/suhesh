@@ -1,3 +1,4 @@
+import { jsonLdScript } from "@/lib/json-ld";
 import { getToolMeta } from "@/lib/tool-metadata";
 
 const BASE_URL = "https://suhesh.com.np";
@@ -50,7 +51,7 @@ export function ToolStructuredData({ slug }: { slug: string }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
     />
   );
 }

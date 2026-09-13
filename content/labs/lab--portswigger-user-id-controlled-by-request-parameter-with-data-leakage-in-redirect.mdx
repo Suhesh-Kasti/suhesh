@@ -1,15 +1,12 @@
 ---
 title: User ID controlled by request parameter with data leakage in redirect
-date: '2025-06-18'
+date: '2026-09-01'
 tags:
   - PortSwigger
   - lab
   - access-control
   - walkthrough
-excerpt: >-
-  This lab contains an access control vulnerability where sensitive information
-  is leaked within the body of a redirect response. To solve the lab, obtain the
-  API key for the user carlos and submit it.
+excerpt: "Changing my id to carlos bounces me with a 302, but the redirect body still leaks his API key before the browser follows it."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
@@ -19,21 +16,19 @@ difficulty: apprentice
 # Lab: User ID controlled by request parameter with data leakage in redirect
 
 ## Objective
-This lab contains an access control vulnerability where sensitive user information is leaked within the body of a 302 redirect response. To solve the lab, obtain the API key for the user `carlos` and submit it as the solution.
-
-You can log in to your own account using the following credentials: `wiener:peter`
+This lab contains an access control vulnerability where sensitive information is leaked in the body of a redirect response.
+To solve the lab, obtain the API key for the user `carlos` and submit it as the solution.
+You can log in to your own account using the following credentials: `wiener:peter`
 
 ## Why This Works (The Principle)
-- **The vulnerability:** The application redirects the user but still includes sensitive data in the redirect response body.
-- **Root cause:** The server returns data in the response body before issuing a redirect, assuming the client won't read it.
-- **Exploitation:** Intercept the redirect response in BurpSuite to read the leaked data before the browser follows the redirect.
-- **Key insight:** HTTP redirects (301/302) can still contain a response body — don't assume the browser is the only reader.
+- **The vulnerability:** The application uses user-supplied input (e.g., `id`, `user_id`, `uid`) to access resources without verifying ownership.
+- **Root cause:** No server-side authorization check — the server trusts the client to provide a valid identifier.
+- **Exploitation:** Modify the identifier to access another user's data.
+- **Key insight:** IDOR is not about bypassing authentication; it is about bypassing authorization. Even authenticated users can exploit IDOR.
 
 ## Solution Reconstruction
-- [ ] Step 1: Logged in as `wiener:peter` and navigated to the account page
-- [ ] Step 2: Changed the `id` parameter in the URL to `carlos`
-- [ ] Step 3: Intercepted the 302 redirect response in BurpSuite to read the API key leaked in the response body
-- [ ] Final payload / exploit: Submitted `carlos`'s API key
+- [ ] Step 1: Simple changed the id from my user to carlos 
+![The body of the 302 redirect response leaking carlos's API key before the redirect is followed](/images/content/lab--portswigger-user-id-controlled-by-request-parameter-with-data-leakage-in-redirect/information_exposed_in_302_redirection_found.png)
 
 ## Key Takeaway
 *Write ONE principle I must remember:*
@@ -41,3 +36,5 @@ You can log in to your own account using the following credentials: `wiener:pete
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="Changing the id to carlos returns a {{302}}, but carlos's API key is still in the {{body}} of the redirect before the browser follows it." />

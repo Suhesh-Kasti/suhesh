@@ -1,0 +1,65 @@
+---
+title: "Configuring DNSSEC on F5 BIG-IP DNS"
+date: '2026-06-17'
+tags: ["f5", "bigip", "DNSSEC", "DNS", "Security"]
+excerpt: "A step-through for signing a zone with DNSSEC on BIG-IP DNS — generating the ZSK and KSK, creating the zone, and building the chain of trust."
+type: checklist
+category: "Network Operations"
+---
+
+# Configuring DNSSEC on F5 BIG-IP DNS
+
+## DNSSEC refresher
+
+DNSSEC stands for Domain Name System Security Extensions. It is a security protocol used to protect the Domain Name System (DNS) from attacks such as DNS cache poisoning and man-in-the-middle attacks. DNSSEC uses a system of digital signatures and public key cryptography to verify the authenticity of DNS responses. When a domain is signed with DNSSEC, it publishes a digital signature along with its DNS records. When a user requests a DNS record from a DNSSEC-enabled domain, the server responds with the digitally signed record and a public key. The user can then verify the authenticity of the record by using the public key to check the digital signature.
+
+In summary, DNSSEC is an important security protocol that ensures the integrity of DNS responses and helps prevent DNS-based attacks.
+
+### DNSSEC record types
+
+1. **DNSKEY:** this record contains the public keys (KSK/ZSK) used to verify DNS signatures.
+2. **DS:** this record is used to securely delegate a DNS zone to a child zone. It stores the hash value of the DNSKEY record containing the public Key Signing Key (KSK) from the child zone. This record is important in forming the chain of trust.
+3. **RRSIG:** this record contains the digital signature for a specific DNS record and the public key of the signing zone. Note that the RRset (which contains DNS records like A records) is the one which gets signed, not individual DNS records.
+4. **NSEC:** this record is used to provide authenticated denial of existence for DNS records.
+5. **NSEC3:** this record is similar to the NSEC record, but also includes a hash of the previous and next domain names in the zone. This provides additional protection against zone enumeration attacks.
+
+### DNSSEC keys
+
+DNSSEC works by digitally signing DNS records with cryptographic keys. These keys are used to validate the authenticity and integrity of DNS records, ensuring that they have not been tampered with or modified.
+
+There are two types of DNSSEC keys:
+
+- Zone Signing Keys (ZSKs)
+- Key Signing Keys (KSKs)
+
+ZSKs are used to sign the DNS records for a particular zone, while KSKs are used to sign the ZSKs themselves. This creates a chain of trust, where the validity of the ZSKs can be traced back to the KSKs.
+
+DNSSEC keys are typically stored in a secure location and accessed only by authorized personnel. They must be periodically changed and updated to maintain the security of the DNS system.
+
+On F5 BIG-IP DNS you can use the automatic key management feature to generate and periodically change the keys. The feature uses an automatic key rollover process that uses overlapping generation of a key to ensure that BIG-IP DNS can always respond to queries with DNSSEC-compliant responses. The keys are stored securely on the BIG-IP system itself.
+
+*Note: for KSK rollover, it requires interaction with the parent zone. Therefore, the end user's DNS administrator must update the DS record on the parent zone timely, during the rollover period. This has to be highlighted to the end user.*
+
+### Overview of keys
+
+![The relationship between zone signing keys and key signing keys in DNSSEC](/images/content/configuring-dnssec-on-big-ip-dns/DNSSEC_keys.png)
+
+## The procedure
+
+<ProgressChecklist
+  checklistId="bigip-dnssec"
+  title="DNSSEC on BIG-IP DNS"
+  items={[
+    { id: "values", label: "Decide the rollover, expiration and TTL values", detail: "The rollover period must be greater than half the expiration period, and less than the expiration period. The difference between rollover and expiration must be more than the TTL." },
+    { id: "zsk", label: "Generate the Zone Signing Key (ZSK)", detail: "DNS > Delivery > Keys > DNSSEC Key List > Create. Type = Zone Signing Key, HSM = None, Key Management = Automatic, Bit Width = 1024, TTL = 86400, Rollover = 21 days, Expiration = 30 days." },
+    { id: "ksk", label: "Generate the Key Signing Key (KSK)", detail: "Same steps, but Type = Key Signing Key, Bit Width = 2048, Rollover = 340 days, Expiration = 365 days. KSK rollover is not as frequent as ZSK." },
+    { id: "standby", label: "Create a standby key for emergency rollover", detail: "Repeat the above using a similar name and select Disabled from the State list." },
+    { id: "zone", label: "Create the DNSSEC zone", detail: "DNS > Zones > DNSSEC Zones > Create. Set State = Enabled and assign at least one enabled ZSK and one enabled KSK." },
+    { id: "verify-online", label: "Verify the zone is online", detail: "Even if State is Enabled, if there is not at least one zone-signing and one key-signing key in the Active column, the zone status changes to offline." },
+    { id: "copy-ds", label: "Copy the DS record from BIG-IP DNS", detail: "DNS > Zones > DNSSEC Zones, click the zone, open the SEP Records tab and copy the value in the DS Record section." },
+    { id: "parent-ds", label: "Upload the DS record to the parent zone", detail: "Usually performed by the end user's DNS administrator. In a lab you can host the parent zone on Route 53 and create the DS record there." },
+    { id: "chain", label: "Confirm the chain of trust reaches the root", detail: "The parent zone must establish trust with its own parent, and so on to the root. If any part of the chain is broken, DNSSEC validation fails." }
+  ]}
+/>
+
+If any part of the chain of trust is broken, DNSSEC validation fails. In our scope, we only need to establish trust with our immediate parent zone; the chain after that is handled by the respective zone owners.

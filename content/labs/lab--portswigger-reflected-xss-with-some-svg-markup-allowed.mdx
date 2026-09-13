@@ -1,6 +1,6 @@
 ---
 title: Reflected XSS with some SVG markup allowed
-date: '2025-06-18'
+date: '2026-08-21'
 tags:
   - PortSwigger
   - lab
@@ -12,41 +12,57 @@ excerpt: >-
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 # Lab: Reflected XSS with some SVG markup allowed
 
-## Objective
-This lab has a simple reflected XSS vulnerability. The site is blocking common tags but misses some SVG tags and events.
-To solve the lab, perform a cross-site scripting attack that calls the `alert()` function.
+The WAF blocks the usual suspects but has clearly never read the SVG spec. I tried a bare `<svg>` on its own and got nowhere, then used Intruder to find which SVG element and which event were still breathing.
 
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:** Tried  `<svg>` and using intruder tried events
-- **Where I got stuck:** Found this payload was working but had no idea how to  use it. `<svg><discard onbegin=alert(1)>`
+The search box reflects your input with no escaping, and a block-list sits in front of it. Common HTML tags such as `img`, `script`, and `body` are rejected, and so are common events. The lab summary says some SVG markup is allowed, so the real task is finding which piece, because throwing `<svg>` alone does nothing on its own.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [x] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-- [ ] Step 1: In the search field tried all the tags and found out [svg animate transform](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet#onbegin) was also passing through.  
-- [ ] Step 2: Simply threw the payload below in search field and the attack was successful
-![](/images/series/svg_markup_animatetransform_allowed.png)
-- [ ] Final payload / exploit: 
-``` html
-<svg><animatetransform onbegin=alert(1) attributeName=transform>
-```
+SVG has its own element and event sets, separate from the HTML ones. `animatetransform` is an SVG element, and `onbegin` is an SVG animation event that fires when the animation starts. A block-list tuned for HTML tags and HTML events tends to miss both, because nobody writing the list thought about SMIL animation. The event fires on its own as soon as the animation begins, which also satisfies the no-interaction rule.
 
-## Key Takeaway
-Try all tags instead of throwing `<svg>` and just trying out events  
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+## Solving it
+
+1. Confirm `<svg>` reflects. Send a search term of `<svg>` and check the response.
+2. Fuzz elements. Put the payload position inside the tags and run a list of SVG element names.
+   ```
+   <svg><§tag§>
+   ```
+   `animatetransform` comes back unblocked.
+3. Fuzz events on that element.
+   ```
+   <svg><animatetransform §onbegin§=alert(1)>
+   ```
+   `onbegin` passes the filter.
+4. Put it together as the final search term.
+   ```
+   <svg><animatetransform onbegin=alert(1) attributeName=transform>
+   ```
+5. Load the URL with the term URL-encoded, and the alert fires as the animation starts.
+
+## Why that payload works
+
+`onbegin` runs when the SMIL animation starts, so it needs no user input. `animatetransform` is a valid animation target, and naming `attributeName=transform` gives it an attribute to animate, so the animation genuinely begins instead of sitting idle. The block-list simply never included those SVG-only names.
+
+## The fix
+
+HTML-encode the reflected input so the angle brackets cannot open an element. A deny-list spanning both HTML and SVG is an endless chore with an obvious ceiling; correct output encoding removes the whole class of bug without needing to know every tag name.
+
+<Cloze
+  title="Tag and event recall"
+  text="The WAF blocks common tags, but the SVG element {{animatetransform}} slips through. Its matching event is {{onbegin}}, which fires when the SMIL animation starts. Naming the attribute to animate with {{attributeName}} gives the animation something to do."
+/>
+
+<QuizCard
+  title="SVG sink check"
+  questions={[
+    { question: "Why does a bare svg tag not fire anything?", options: ["It is blocked by the WAF", "An element alone has no event to trigger", "SVG cannot run scripts", "The reflection is escaped"], correct: 1, explanation: "You need both an allowed element and an allowed event that fires by itself. The element on its own does nothing." },
+    { question: "Which event fires when a SMIL animation starts?", options: ["onload", "onbegin", "onfocus", "onerror"], correct: 1, explanation: "onbegin is the SVG animation event that fires at the start of a SMIL animation, so it needs no interaction." },
+    { question: "How do you find the surviving names?", options: ["Read the WAF signature file", "Fuzz tag and event names with Burp Intruder", "Check the robots dot txt", "Disable JavaScript"], correct: 1, explanation: "Both the tag and the event are found by fuzzing the payload position and watching which requests avoid the 400 response." }
+  ]}
+/>

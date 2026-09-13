@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, type CSSProperties } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { WORK, TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
+import { WORK, TYPOGRAPHY } from "@/lib/design-tokens";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,7 +33,6 @@ export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -112,15 +111,8 @@ export default function Projects() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[minmax(180px,auto)] gap-4 md:gap-5"
         >
           {BENTO_CARDS.map((project, index) => {
-            const isHovered = hoveredIndex === index;
-            const spanClasses =
-              project.span.cols === 2
-                ? "sm:col-span-2"
-                : "sm:col-span-1";
-            const rowClasses =
-              project.span.rows === 2
-                ? "sm:row-span-2"
-                : "sm:row-span-1";
+            const spanClasses = project.span.cols === 2 ? "sm:col-span-2" : "sm:col-span-1";
+            const rowClasses = project.span.rows === 2 ? "sm:row-span-2" : "sm:row-span-1";
             const isMobileHidden = index >= 4;
 
             return (
@@ -128,128 +120,104 @@ export default function Projects() {
                 key={project.title}
                 className={`relative ${spanClasses} ${rowClasses} ${isMobileHidden ? "hidden sm:block" : ""}`}
               >
+                {/* The hover state is pure CSS (group-hover / group-focus-within) so it stays on
+                    the compositor instead of re-rendering React on every mouse move, and it works
+                    the same when the card is reached by keyboard. */}
                 <motion.div
-                  className={`project-card relative border-2 border-fg p-5 md:p-6 cursor-pointer overflow-hidden group h-full`}
-                  style={{
-                    backgroundColor: "var(--color-surface)",
-                    boxShadow: isHovered
-                      ? `8px 8px 0px ${project.color}`
-                      : `4px 4px 0px ${project.color}`,
-                  }}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
+                  className="project-card group relative h-full cursor-pointer overflow-hidden border-2 border-fg p-5 md:p-6
+                    shadow-[4px_4px_0px_var(--accent)] hover:shadow-[8px_8px_0px_var(--accent)] focus-within:shadow-[8px_8px_0px_var(--accent)]
+                    transition-[transform,box-shadow] duration-300 ease-out
+                    hover:-translate-x-1 hover:-translate-y-1 focus-within:-translate-x-1 focus-within:-translate-y-1"
+                  style={{ backgroundColor: "var(--color-surface)", "--accent": project.color } as CSSProperties}
                   data-cursor-label={project.category}
-                  animate={{
-                    x: isHovered ? -4 : 0,
-                    y: isHovered ? -4 : 0,
-                  }}
-                  transition={MOTION.snappy}
                 >
-                  <Link href={project.url} className="absolute inset-0 z-20" aria-label={project.title}>
+                  <Link
+                    href={project.url}
+                    className="absolute inset-0 z-20 outline-none"
+                    aria-label={`${project.title} — ${project.category}`}
+                  >
                     <span className="sr-only">{project.title}</span>
                   </Link>
-                {/* Color background accent */}
-                <div
-                  className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    backgroundColor: project.color,
-                    opacity: isHovered ? 0.06 : 0.02,
-                  }}
-                />
 
-                {/* Top color stripe */}
-                <div
-                  className="absolute top-0 left-0 w-full transition-all duration-300 pointer-events-none"
-                  style={{
-                    backgroundColor: project.color,
-                    height: isHovered ? "5px" : "3px",
-                  }}
-                />
+                  {/* Colour wash */}
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-[0.02] transition-opacity duration-300 group-hover:opacity-[0.06] group-focus-within:opacity-[0.06]"
+                    style={{ backgroundColor: project.color }}
+                  />
 
-                {/* Left color stripe (subtle) */}
-                <div
-                  className="absolute top-0 left-0 h-full transition-all duration-300 hidden sm:block pointer-events-none"
-                  style={{
-                    backgroundColor: project.color,
-                    width: isHovered ? "4px" : "0px",
-                    opacity: 0.7,
-                  }}
-                />
+                  {/* Top colour stripe */}
+                  <div
+                    className="pointer-events-none absolute left-0 top-0 h-[3px] w-full transition-[height] duration-300 group-hover:h-[5px] group-focus-within:h-[5px]"
+                    style={{ backgroundColor: project.color }}
+                  />
 
-                <div
-                  className="relative h-full flex flex-col justify-between pointer-events-none"
-                  style={{
-                    paddingLeft: isHovered ? "0.5rem" : "0",
-                    transition: "padding-left 0.2s ease",
-                  }}
-                >
-                  <div>
-                    {/* Category */}
-                    <span
-                      className="font-mono text-2xs uppercase tracking-label inline-block px-2 py-0.5 border transition-all duration-300"
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontMono,
-                        letterSpacing: TYPOGRAPHY.tracking.label,
-                        color: project.color,
-                        borderColor: isHovered ? project.color : "var(--color-fg-muted)",
-                      }}
-                    >
-                      {project.category}
-                    </span>
+                  {/* Left colour stripe */}
+                  <div
+                    className="pointer-events-none absolute left-0 top-0 hidden h-full w-0 transition-[width] duration-300 group-hover:w-[4px] group-focus-within:w-[4px] sm:block"
+                    style={{ backgroundColor: project.color, opacity: 0.7 }}
+                  />
 
-                    {/* Title */}
-                    <h3
-                      className="mt-3 font-display text-xl md:text-2xl font-bold uppercase text-fg leading-tight transition-colors duration-200"
-                      style={{
-                        fontFamily: TYPOGRAPHY.fontDisplay,
-                        color: isHovered ? project.color : undefined,
-                      }}
-                    >
-                      {project.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p
-                      className="mt-2 text-sm leading-relaxed text-fg-muted line-clamp-3"
-                      style={{ fontFamily: TYPOGRAPHY.fontSans }}
-                    >
-                      {project.description}
-                    </p>
-                  </div>
-
-                  {/* Tags + Link */}
-                  <div className="mt-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="font-mono text-2xs uppercase px-2 py-0.5 border border-fg/40 text-fg-muted group-hover:border-fg group-hover:text-fg transition-all"
-                          style={{ fontFamily: TYPOGRAPHY.fontMono }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-3 flex justify-between items-center gap-3">
+                  <div className="pointer-events-none relative flex h-full flex-col justify-between">
+                    <div>
+                      {/* Category */}
                       <span
-                        className="font-mono text-xs uppercase text-fg group-hover:text-brutal-pink transition-colors flex items-center gap-1 whitespace-nowrap"
+                        className="inline-block border border-fg-muted px-2 py-0.5 font-mono text-2xs uppercase tracking-label transition-colors duration-300 group-hover:border-[var(--accent)] group-focus-within:border-[var(--accent)]"
                         style={{
                           fontFamily: TYPOGRAPHY.fontMono,
-                          letterSpacing: TYPOGRAPHY.tracking.mono,
+                          letterSpacing: TYPOGRAPHY.tracking.label,
+                          color: project.color,
                         }}
                       >
-                        Details
-                        <motion.span
-                          animate={{ x: isHovered ? 3 : 0 }}
-                          transition={MOTION.snappy}
-                        >
-                          →
-                        </motion.span>
+                        {project.category}
                       </span>
+
+                      {/* Title */}
+                      <h3
+                        className="mt-3 font-display text-xl md:text-2xl font-bold uppercase text-fg leading-tight transition-colors duration-200 group-hover:text-[var(--accent)] group-focus-within:text-[var(--accent)]"
+                        style={{ fontFamily: TYPOGRAPHY.fontDisplay }}
+                      >
+                        {project.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p
+                        className="mt-2 text-sm leading-relaxed text-fg-muted line-clamp-3"
+                        style={{ fontFamily: TYPOGRAPHY.fontSans }}
+                      >
+                        {project.description}
+                      </p>
+                    </div>
+
+                    {/* Tags + link */}
+                    <div className="mt-4">
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="font-mono text-2xs uppercase px-2 py-0.5 border border-fg/40 text-fg-muted transition-colors duration-300 group-hover:border-fg/70 group-focus-within:border-fg/70"
+                            style={{ fontFamily: TYPOGRAPHY.fontMono }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="mt-3 flex justify-between items-center gap-3">
+                        <span
+                          className="flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase text-fg transition-colors duration-300 group-hover:text-[var(--accent)] group-focus-within:text-[var(--accent)]"
+                          style={{
+                            fontFamily: TYPOGRAPHY.fontMono,
+                            letterSpacing: TYPOGRAPHY.tracking.mono,
+                          }}
+                        >
+                          Details
+                          <span className="transition-transform duration-300 group-hover:translate-x-1 group-focus-within:translate-x-1">
+                            →
+                          </span>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
               </div>
             );
           })}

@@ -1,0 +1,35 @@
+---
+title: "Cloud Architecture Models"
+date: '2026-06-24'
+tags: ["Cloud", "AWS", "Azure", "GCP", "on-premises"]
+excerpt: "Public, private, on-premises and hybrid — the four ways to place your infrastructure, and how companies mix them together."
+type: til
+category: "Cloud"
+---
+
+# Cloud Architecture Models
+
+## Public cloud
+
+- Amazon AWS, Microsoft Azure and Office 365, Google Cloud Platform and Gapps.
+
+## Private cloud
+
+- Here we own our own data centers, or lease servers through a data center (co-location).
+
+## On premises
+
+Servers are on our premises.
+
+- We might have our own Active Directory (AD) server to manage all our users and user accounts.
+- FTP server.
+
+## Hybrid cloud
+
+- Here we use a combination from any of the above.
+
+<QuizCard title="Cloud model check" questions={[
+  { question: "Owning your own data centre, or leasing rack space in someone else's, is which model?", options: ["Public cloud", "Private cloud", "Hybrid", "Serverless"], correct: 1, explanation: "Private cloud is your own hardware, or co-location inside a provider's facility." },
+  { question: "Running Active Directory and an FTP server on hardware in your building is what?", options: ["On-premises", "Public cloud", "Edge", "Hybrid"], correct: 0, explanation: "On-premises means the servers physically sit on your own premises." },
+  { question: "Using AWS plus an on-prem AD is which model?", options: ["Public", "Private", "Hybrid", "Vendor lock-in"], correct: 2, explanation: "Hybrid combines any mix of public, private and on-premises." }
+]} />

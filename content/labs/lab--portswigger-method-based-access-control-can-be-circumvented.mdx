@@ -1,6 +1,6 @@
 ---
 title: Method-based access control can be circumvented
-date: '2025-06-18'
+date: '2026-08-12'
 tags:
   - PortSwigger
   - lab
@@ -10,39 +10,54 @@ excerpt: "This lab implements access controls based partly on the HTTP method of
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Method-based access control can be circumvented
 
-## Objective
-This lab implements access controls based partly on the HTTP method of requests. You can familiarize yourself with the admin panel by logging in using the credentials `administrator:admin`.
-To solve the lab, log in using the credentials `wiener:peter` and exploit the flawed access controls to promote yourself to become an administrator.
+`POST` was blocked. The exact same action over `GET` was not. That is the entire lab, and it is a good reminder that an access rule is only as wide as the surface it covers.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The application fails to enforce proper access controls on administrative or privileged functions.
-- **Root cause:** The server relies on client-side hints (URL, HTTP method, referer header) for access decisions instead of a server-side session check.
-- **Exploitation:** Access the restricted endpoint directly by guessing or finding the URL, changing the HTTP method, or manipulating headers.
-- **Key insight:** Server-side access control must be enforced on every request — never trust client-side indicators.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+Log in as `administrator:admin`, open the admin panel, and promote `carlos`. The request that does it is `POST /admin-roles?username=carlos&action=upgrade`. Note where the action lives: in the query string, not the body. The only thing that changes between users is whose session cookie rides along.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [x] Watched video solution
-- *Resume blind with new clue. Still stuck?*
+The lab then asks me to do the same promotion as `wiener:peter`.
 
-## Solution Reconstruction
-- [ ] Step 1: Used the given `administrator:admin` to login reach admin panel and change the role of carlos user. 
-- [ ] Step 2: It was happening with POST request and `action:upgrade`
-- [ ] Step 3: Changed the request method to `POST` and sent the request
-![](/images/series/changing_method_to_circumvent_access_control.png)
+## How the vulnerability works
 
-## Key Takeaway
-In Burpsuite, we can simply change the method by right clicking and selecting `Change Request Method`
+The access rule is keyed to the HTTP method. The guard on `/admin-roles` only inspects `POST` requests, so a non-admin sending `POST` gets "Unauthorized". The check lives in a routing rule out in front, not in the handler that actually changes the role.
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+Because the rule is method-scoped, the backend route is still reachable under other methods. Send the same request as `GET` and it never trips the guard, yet the backend processes it and performs the upgrade all the same.
+
+## Solving it
+
+1. As admin, promote `carlos` and send the request to Repeater. It is `POST /admin-roles?username=carlos&action=upgrade`.
+2. Log in as `wiener:peter` in a second browser, copy that session cookie into the Repeater request, and send. The response says "Unauthorized".
+3. Change the method from `POST` to `POSTX`. The response becomes "missing parameter", which shows the method is exactly where the check sits.
+4. Right-click and choose "Change request method" to convert it to `GET`. Change `username` to `wiener`.
+
+```http
+GET /admin-roles?username=wiener&action=upgrade HTTP/1.1
+Host: <lab-id>.web-security-academy.net
+Cookie: session=<wiener-session>
+```
+
+5. Send it. A `302` comes back, and `wiener` is now an administrator.
+
+## Why that payload works
+
+The proxy allowed `GET` through because the rule only matched `POST`. The backend, meanwhile, does not care how the request arrived, as long as the parameters are present, so the upgrade runs. Two layers disagree about which requests are sensitive, and the weaker interpretation wins.
+
+## The fix
+
+Put the role check inside the handler that changes the role, and run it for every method that can reach that handler. Access control belongs next to the action it protects, not in a routing rule that keys off the verb. Failing that, reject all methods except the one the endpoint is meant to serve.
+
+<QuizCard title="Method confusion" questions={[
+  { "question": "What did changing POST to POSTX prove?", "options": ["The access rule is tied to the HTTP method", "The server was offline", "The cookie expired", "The username was wrong"], "correct": 0, "explanation": "The response changed from 'Unauthorized' to 'missing parameter', showing the check only matched the exact POST method rather than guarding the action itself." },
+  { "question": "Where should the role check live?", "options": ["In the front-end proxy rule", "Inside the handler for every method", "In a JavaScript function in the browser", "In the Referer header"], "correct": 1, "explanation": "A guard that only covers one method leaves every other method open. The check has to sit with the code that performs the privileged action." }
+]} />
+
+<Terminal title="same action, other method" command="curl -i -X GET 'https://<lab-id>.web-security-academy.net/admin-roles?username=wiener&action=upgrade' -b 'session=<wiener-session>'" output={`HTTP/1.1 302 Found
+Location: /admin
+
+wiener is now an administrator`} color="#ff5500" />

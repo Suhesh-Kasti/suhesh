@@ -1,8 +1,200 @@
 ---
 title: "Python"
-excerpt: "is a versatile programming language used for web development, data analysis, artificial intelligence, and automation."
-tags: []
+date: '2026-06-16'
+excerpt: "Python syntax and snippets I keep looking up — data structures, strings, files, and the stdlib bits worth remembering."
+tags: ["Python", "Programming", "automation"]
 category: "Programming"
 type: "cheatsheet"
 ---
 
+# Python
+
+Snippets I keep reaching for. Python 3, standard library only unless a line says otherwise.
+
+## Data structures
+
+### List
+
+Ordered and mutable. Append, pop, and slice.
+
+```python
+nums = [1, 2, 3]
+nums.append(4)
+first = nums[0]
+last = nums[-1]
+middle = nums[1:3]   # [2, 3]
+```
+
+### Dict
+
+Key-value map. Use `get` so a missing key doesn't raise.
+
+```python
+user = {"name": "admin", "role": "admin"}
+name = user.get("name")
+user["email"] = "admin@example.com"
+for key, value in user.items():
+    print(key, value)
+```
+
+### Set
+
+Unordered, unique, and fast for membership checks.
+
+```python
+seen = set()
+seen.add("10.0.0.1")
+if "10.0.0.1" in seen:
+    print("already seen")
+```
+
+### Tuple
+
+Immutable sequence. Good for fixed records.
+
+```python
+point = (10, 129, 2)
+x, y, z = point
+```
+
+## Strings
+
+### f-strings
+
+Format values inline.
+
+```python
+host = "10.0.0.1"
+print(f"scanning {host} on port {443}")
+```
+
+### Split, join, strip
+
+```python
+parts = "a,b,c".split(",")   # ['a', 'b', 'c']
+joined = "-".join(parts)     # 'a-b-c'
+clean = "  hi  ".strip()
+```
+
+### Reverse
+
+```python
+s = "abcdef"
+print(s[::-1])   # 'fedcba'
+```
+
+## Control flow
+
+### if / elif / else
+
+```python
+if status == 200:
+    print("ok")
+elif status == 404:
+    print("missing")
+else:
+    print("error")
+```
+
+### for and while
+
+```python
+for i in range(3):
+    print(i)
+
+n = 0
+while n < 3:
+    n += 1
+```
+
+### Comprehensions
+
+Build a list or dict in one line.
+
+```python
+squares = [x * x for x in range(5)]
+evens = [x for x in range(10) if x % 2 == 0]
+index = {name: len(name) for name in ["ab", "abc"]}
+```
+
+## Functions
+
+### Defaults and keyword args
+
+```python
+def greet(name, greeting="hello"):
+    return f"{greeting}, {name}"
+```
+
+### Type hints
+
+```python
+def add(a: int, b: int) -> int:
+    return a + b
+```
+
+## Files and I/O
+
+### Read a file line by line
+
+```python
+with open("targets.txt") as f:
+    lines = [line.strip() for line in f]
+```
+
+### Write a file
+
+```python
+with open("out.txt", "w") as f:
+    f.write("done\n")
+```
+
+### Command line arguments
+
+```python
+import sys
+target = sys.argv[1]
+```
+
+<Accordion title="Stdlib one-liners worth remembering">
+
+### JSON
+
+```python
+import json
+data = json.loads('{"port": 80}')
+print(json.dumps(data, indent=2))
+```
+
+### Subprocess
+
+```python
+import subprocess
+out = subprocess.run(["nmap", "-sV", "target"], capture_output=True, text=True)
+print(out.stdout)
+```
+
+### Requests (needs pip install requests)
+
+```python
+import requests
+r = requests.get("https://example.com", timeout=10)
+print(r.status_code, len(r.text))
+```
+
+### Random and secrets
+
+```python
+import random, secrets
+print(random.choice(["a", "b"]))
+print(secrets.token_hex(16))
+```
+
+</Accordion>
+
+<Cloze title="Syntax recall" text="Open a file so it closes itself with a {{with}} block, and format output with an {{f-string}}." />
+
+<QuizCard title="Quick recall" color="#0055ff" questions={[
+  { question: "Which expression returns the unique values from nums?", options: ["set(nums)", "list(nums)", "sorted(nums)", "nums.copy()"], correct: 0, explanation: "A set drops duplicates, so set(nums) gives you the unique values." },
+  { question: "What does nums[-1] return?", options: ["The last element", "The first element", "An empty list", "The whole list reversed"], correct: 0, explanation: "Negative indexes count from the end, so -1 is the last element." }
+]} />

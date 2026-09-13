@@ -1,21 +1,24 @@
 ---
 title: DOM XSS in innerHTML sink using source location.search
-date: '2025-06-18'
+date: '2026-07-24'
 tags:
   - PortSwigger
   - lab
   - dom-xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "location.search flows into innerHTML, which never runs script tags, so an image with a broken src and an onerror handler does the work."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: DOM XSS in innerHTML sink using source location.search
 
 ## Objective
-*What is this lab trying to teach?*
+This lab contains a DOM-based cross-site scripting vulnerability in the search blog functionality. It uses an `innerHTML` assignment, which changes the HTML contents of a `div` element, using data from `location.search`.
+
+To solve this lab, perform a cross-site scripting attack that calls the `alert` function.
 
 ## Why This Works (The Principle)
 - **The vulnerability:** Client-side JavaScript writes attacker-controlled data to the DOM without sanitization.
@@ -25,8 +28,8 @@ difficulty: apprentice
 
 ## Blind Attempt (15-20 min max)
 *Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+- **What I tried:** Kept on trying `<script>` but something seemed to be filtering it
+- **Where I got stuck:** Nowhere
 
 ## Hint Usage (if needed)
 - [ ] Used lab hint
@@ -35,10 +38,9 @@ difficulty: apprentice
 
 ## Solution Reconstruction
 *After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+- [ ] Step 1:  Tried the exploit `<svg onload=alert(1)>` 
+- [ ] Step 2: The site was simply using innerHTML to add the query in the span
+![Browser devtools showing the search term written into the span through innerHTML](/images/content/lab--portswigger-dom-xss-in-innerhtml-sink-using-source-location-search/DOM_XSS_innerHTML.png)
 
 ## Key Takeaway
 *Write ONE principle I must remember:*
@@ -46,3 +48,5 @@ difficulty: apprentice
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="Because an {{innerHTML}} assignment never runs script tags, the payload instead uses an image with a broken {{src}} and an {{onerror}} handler." />

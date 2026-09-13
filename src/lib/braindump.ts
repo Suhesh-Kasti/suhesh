@@ -1,6 +1,6 @@
 import { CONTENT_ENTRIES, HEADINGS_MAP, type TocHeading } from "./content-registry";
 
-export type ContentType = "blog" | "til" | "cheatsheet" | "checklist" | "braindump" | "series" | "lab";
+export type ContentType = "blog" | "til" | "cheatsheet" | "checklist" | "braindump" | "roadmap" | "lab";
 
 export interface SeriesStep {
   title: string;
@@ -61,24 +61,4 @@ export function getPostMetas(): BrainDumpMeta[] {
     image: entry.image,
     steps: entry.steps,
   }));
-}
-
-export function getPostsByType(type: ContentType): BrainDumpMeta[] {
-  return CONTENT_ENTRIES
-    .filter((e) => e.type === type)
-    .map((entry) => ({
-      slug: entry.slug,
-      title: entry.title,
-      date: entry.date,
-      tags: entry.tags,
-      excerpt: entry.excerpt,
-      type: entry.type as ContentType,
-      category: entry.category,
-      image: entry.image,
-      steps: entry.steps,
-    }));
-}
-
-export function getPostMetasByType(type: ContentType): BrainDumpMeta[] {
-  return getPostsByType(type);
 }

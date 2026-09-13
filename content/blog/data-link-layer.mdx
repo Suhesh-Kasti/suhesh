@@ -1,0 +1,94 @@
+---
+title: "Data Link Layer"
+date: '2024-06-18'
+tags: ["network", "CCNA", "Ethernet", "ARP", "Layer 2"]
+excerpt: "The data link layer moves frames across a single link — MAC addressing, the MAC table, CSMA/CD, broadcast domains, and ARP, explained."
+type: blog
+category: "Networking"
+---
+
+# Data Link Layer
+
+The data link layer can be subdivided into two layers: the Media Access Control (MAC) layer and the Logical Link Control (LLC) layer.
+
+## Logical Link Control (LLC)
+
+- Frame synchronization
+- Provides a degree of error checking
+
+## MAC addressing
+
+48 bits (6 bytes): the first 24 represent the vendor, and the last 24 identify the device.
+
+### MAC address table
+
+The MAC address table learns and stores the MAC address and the port the device is connected to. When the switch receives a frame from a host, it forwards the frames out of the corresponding port in that table.
+
+## Header
+
+Headers are added to encapsulate the data:
+
+- Destination MAC address: six bytes
+- Source MAC address: six bytes
+- 802.1Q tag (when VLAN tagging is used): four bytes
+- Length of frame: two bytes
+- Frame check sequence: four bytes
+
+## Carrier Sense Multiple Access / Collision Detection (CSMA/CD)
+
+### Carrier Sense Multiple Access
+
+**Carrier sense:** when a host needs to send out frames on Ethernet, it begins by listening on the interface and sensing if there is any traffic being transmitted.
+
+**Multiple access:** each host on the network shares the same medium.
+
+**How?** If the network is busy, the host waits for a random period and then listens again until the network is idle, to prevent collision.
+
+### Collision detection
+
+Hosts can receive corrupted data if a collision occurs. Collision detection checks if there has been a collision on the network.
+
+A switch divides every port into a separate collision domain, which means every port acts as a dedicated layer two network — significantly reducing, or even eliminating, collisions. It does this using the "store and forward" method, where it stores and forwards the request.
+
+With collision detection, when a collision occurs the sending hosts detect it, immediately stop sending data, and send out a jam signal to alert other hosts that a collision has taken place. When a receiving host gets the jam signal it drops all partial frames it has received. After a host has transmitted the jam signal it waits for a random period before attempting to re-transmit, and repeats the carrier sense phase. This is sometimes called a back-off period. Both hosts involved in the collision have their own random time to wait before attempting to send the data again.
+
+## Broadcast domain
+
+A layer two broadcast frame is sent to `FF:FF:FF:FF:FF:FF`, which is accepted and inspected by every host.
+
+A **broadcast domain** is the group of hosts that will receive a broadcast message transmitted by any one of the group's members. A broadcast domain can contain multiple collision domains. Dividing a broadcast domain can improve network efficiency by reducing unnecessary broadcast traffic that all devices must process.
+
+## Address Resolution Protocol (ARP)
+
+ARP's purpose is to glue together — or map — layer three IP addresses to layer two MAC addresses.
+
+When a host wishes to send a packet to an IP address, layer two needs to know the MAC address of the destination host. To get it, the host sends an ARP request for the IP address: a broadcast to all the hosts on the local layer two network.
+
+If the IP address is remote (on a different logical, layer three network) it will instead send an ARP request for the default gateway's MAC address, because the gateway will handle the traffic.
+
+![An ARP request broadcast across a local network, followed by the ARP reply returning to the sender](/images/content/data-link-layer/arp_request_flow.png)
+
+1. The host sending data checks its own ARP table, and if the address does not exist it generates an ARP request containing:
+   1. Its own (source) IP address and MAC address
+   2. The IP address of the receiving host
+   3. Destination MAC address: `FF:FF:FF:FF:FF:FF`
+2. The sending host sends out the ARP request as a broadcast within its broadcast domain.
+3. The hosts within the broadcast domain that receive the ARP request examine it and check whether it is requesting their own IP address and MAC address. If it isn't, they discard the packet silently.
+4. When the correct host picks up the packet it sends a reply back to the sender. This packet is called an ARP reply. The host uses its own IP address and MAC address in the reply, and sends it back to the original sender.
+5. When the sending host receives the MAC address of the requested host, it stores this information in its ARP cache and proceeds with sending the intended packet using the MAC address it just received.
+
+## Virtual LAN (VLAN)
+
+A virtual LAN (VLAN) is a logical overlay network that groups together a subset of devices that share a physical LAN, isolating the traffic for each group.
+
+## Link Aggregation Control Protocol (LACP)
+
+Link Aggregation Control Protocol combines (bundles) several physical Ethernet interfaces into a single logical link that operates using one MAC address, as if it were a single physical interface. This technology goes by many names depending on the vendor. Cisco calls its link aggregation technology EtherChannel (though use of LACP is optional), and other vendors use the names teaming or trunking. LACP is standardized under IEEE 802.3ad / 802.1ax.
+
+> **Note:** An F5 device also uses trunk ports, but it means something completely different. In F5, a trunk port is the same as Link Aggregation Control Protocol — you combine several Ethernet connections into one logical link that operates under one MAC address.
+
+The two main advantages of LACP (or any similar technology) are *improved reliability* and *aggregated throughput*. If one of the physical links in a bundle fails, the device keeps transmitting and receiving frames on the other physical links that are still active. It is so seamless that a user or an application usually won't experience any issues.
+
+<Cloze title="Layer 2 recall" color="#00cc55" text="A MAC address is {{48}} bits: the first 24 identify the {{vendor}} and the last 24 identify the device. A broadcast frame goes to {{FF:FF:FF:FF:FF:FF}}, and ARP maps an IP address to a {{MAC}} address." />
+
+<FlipCard front={<div>What does a switch give every port, and how does that change collisions?</div>} back={<div>Its own collision domain. Each port is treated as a dedicated Layer 2 link, so collisions are reduced or eliminated.</div>} color="#0055ff" />

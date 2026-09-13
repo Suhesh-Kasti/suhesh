@@ -1,8 +1,8 @@
 ---
 title: "llama-swap vs llama.cpp router mode — two ways to juggle models on one GPU"
-date: "2026-05-16T14:30:00+05:45"
+date: '2026-06-03'
 excerpt: "When you have two models and not enough VRAM for both, you need model switching. I tried llama-swap (didn't work), discovered llama.cpp's native router mode (does work), and learned why the distinction matters."
-tags: []
+tags: ["llama.cpp", "Local AI", "LLM", "Qwen", "NVIDIA L4"]
 category: "AI/ML"
 type: "til"
 ---
@@ -101,6 +101,12 @@ curl -X POST http://localhost:6969/models/unload \
   -d '{"model": "Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P"}'
 ```
 
+<Cloze
+  title="Router flags"
+  color="#00e5ff"
+  text="Start llama.cpp router mode with no {{-m}} flag and point it at a folder of models with {{--models-dir}}. Keep one model resident with {{--models-max 1}}, and set the token limit in the INI as {{n-predict}}, not {{max_tokens}}."
+/>
+
 ## The smart router layer on top
 
 The llama.cpp router picks models based on the `model` field in the request. By default, Goose sends whatever `GOOSE_MODEL` is set to. To get automatic switching between light and heavy based on prompt complexity, I added a thin Python FastAPI proxy on port 7000 that:
@@ -123,7 +129,55 @@ Long prompt asking to analyze a complex auth flow for vulnerabilities → heavy 
 
 The 12-second heavy model load is noticeable but not painful. You're usually reading the light model's output anyway while the heavy one spins up. And once it's loaded, it stays loaded until a light model request comes in.
 
+<DataBar
+  title="Cold-load swap time on L4 (seconds)"
+  data={[
+    { "label": "9B Q6_K (~7GB)", "value": 4.5, "color": "#0055ff" },
+    { "label": "27B Q4_K_P (~18GB)", "value": 12, "color": "#ff2d95" }
+  ]}
+/>
+
 ## tldr comparison
 
 | | llama-swap | llama.cpp router mode |
 |
+
+<QuizCard
+  title="Router recall"
+  color="#8800ff"
+  questions={[
+    {
+      question: "Why did llama-swap return 502 errors in this setup?",
+      options: [
+        "Go template macros didn't expand ~ in the config paths",
+        "The GPU lacked FP8 support",
+        "The models were the wrong format",
+        "Port 6969 was already in use"
+      ],
+      correct: 0,
+      explanation: "The YAML used Go template macros that didn't expand ~, so the model subprocess died silently and llama-swap only reported 502."
+    },
+    {
+      question: "What does --models-max 1 do in llama.cpp router mode?",
+      options: [
+        "Keeps only one model in VRAM, evicting others on demand",
+        "Limits each response to one token",
+        "Loads exactly one model and never swaps",
+        "Restricts the server to one client"
+      ],
+      correct: 0,
+      explanation: "It holds a single model resident; a request for a different model triggers an LRU swap."
+    },
+    {
+      question: "How does the router know which model a request wants?",
+      options: [
+        "The model field in the request, matching the filename without .gguf",
+        "A separate HTTP header",
+        "The URL path",
+        "It always loads the largest model"
+      ],
+      correct: 0,
+      explanation: "The model field matches the filename (no .gguf extension); the INI preset supplies that model's settings."
+    }
+  ]}
+/>

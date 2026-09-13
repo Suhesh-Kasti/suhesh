@@ -1,0 +1,37 @@
+---
+title: "F5 DNS Resolution Flow"
+date: '2026-06-05'
+tags: ["f5", "bigip", "DNS", "zone transfer", "BIND"]
+excerpt: "How BIG-IP DNS decides where a query goes — from Wide IPs and DNS Express zones through local caches, pools and BIND before it fails or caches."
+type: cheatsheet
+category: "Network Operations"
+---
+
+# F5 DNS Resolution Flow
+
+## Decision flow
+
+We configure a listener on BigIP where the query arrives (e.g. `10.1.20.20`).
+
+1. Is there any Wide IP / FQDN configured against the query?
+2. Is the name in the DNS Express Zone? (AD DNS is configured as primary DNS server and F5 is configured as secondary, where every entry is replicated to.)
+3. Checks the F5 DNS cache.
+4. Checks the master DNS cache which we assign in F5 DNS. Here, F5 will work as a recursive resolver. But if the resolving cache is not configured...
+5. Is there any pool attached to the listener?
+   - Pool: we do not set up any secondary servers; rather, when a DNS query is received at F5, we configure F5 to direct it to the AD DNS.
+   - But if the pool is not configured, then...
+6. In F5 DNS, a local BIND DNS can be configured, where it is checked next.
+7. Checks if the listener is a Self-IP. If it is, then the query fails; if not, then the query is sent to that IP and the answer is cached.
+
+## Zone transfer
+
+Verify if a DNS zone transfer has occurred. To make F5 DNS make a DNS zone transfer request to the already-present primary DNS server, we can simply *change the DNS Express zone state to DISABLE and re-ENABLE again*.
+
+- `dnsxdump`
+- `tail -f "/var/log/ltm"`
+
+<QuizCard title="Resolution order check" questions={[
+  { question: "After the Wide IP and DNS Express zone checks, what does BIG-IP consult next?", options: ["The pool", "Its own DNS cache", "The BIND server", "The self IP"], correct: 1, explanation: "The flow checks the F5 DNS cache before the recursive master cache, pools or BIND." },
+  { question: "How do you force a fresh zone transfer into a DNS Express zone?", options: ["Restart the device", "Disable and re-enable the zone", "Clear the ARP cache", "Change the listener"], correct: 1, explanation: "Toggling the zone state to DISABLE and back to ENABLE triggers the transfer." },
+  { question: "What decides where a query goes first when a listener receives it?", options: ["The BIND cache", "A matching Wide IP or FQDN", "The self IP", "The client subnet"], correct: 1, explanation: "A Wide IP or FQDN configured for the query is matched before any cache or pool is consulted." }
+]} />

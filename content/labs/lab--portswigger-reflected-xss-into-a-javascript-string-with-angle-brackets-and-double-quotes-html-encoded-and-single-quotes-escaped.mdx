@@ -2,49 +2,55 @@
 title: >-
   Reflected XSS into a JavaScript string with angle brackets and double quotes
   HTML-encoded and single quotes escaped
-date: '2025-06-18'
+date: '2026-08-17'
 tags:
   - PortSwigger
   - lab
   - xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "Angle brackets and double quotes are encoded and single quotes are escaped, so you hand the escaped quote your own backslash."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Reflected XSS into a JavaScript string with angle brackets and double quotes HTML-encoded and single quotes escaped
 
-## Objective
-*What is this lab trying to teach?*
+I sat on this one longer than I should have, because "single quotes are escaped" sounds final. It is not. The filter escapes the quote but forgets to escape the backslash it uses to do the escaping, and that gap is the whole exploit.
 
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+The same search-tracking block as its neighbours, `var searchTerms = 'hello';`. This time `<`, `>`, and `"` are HTML-encoded, and `'` comes back as `\'`. So the HTML layer is closed and the obvious quote breakout is closed too. Send a bare `\`, though, and it survives as is. The backslash is not itself escaped.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+The server does something like `input.replace(/'/g, "\\'")`: every single quote gets a backslash shoved in front of it. That works right up until your input already contains a backslash. Then you get two backslashes in a row. In JavaScript, `\\` is a single escaped backslash inside the string. It consumes the escape, and the quote sitting after it is no longer escaped. Your own backslash pairs with the one the app adds, and the quote next to it is free to close the string. The escaping has effectively been cancelled by the escaping.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+## Solving it
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Confirm the reflection, and confirm a plain `'` comes back as `\'`.
+2. Realise you need a backslash before the quote, so the app's added backslash has something to pair with.
+3. Send this as the search term:
+
+```javascript
+\'-alert(1)//
+```
+
+4. The reflected line becomes `var searchTerms = '\\'-alert(1)//';`.
+
+## Why that payload works
+
+Break the reflected line down. The server wrote `'`, then your escaped input `\\'`, then the closing `';`. The string literal is `'\\'`, which JavaScript reads as one literal backslash, and the quote after it closes the string. What remains is `-alert(1)`, a valid expression statement, and `//` comments out the tail `';`. So the quote you thought was escaped is not escaped at all, because the backslash before it was doubled by your own input.
+
+## The fix
+
+Order matters in escaping. Replace backslashes first, then quotes, so a backslash cannot be used up by a later replacement. A proper JavaScript or JSON string encoder does this correctly; a hand-rolled `replace(/'/g, "\\'")` does not. The durable fix is still to keep user data out of inline scripts and read it from a `data-` attribute or from a safely encoded JSON blob.
+
+<Accordion title="Why the trailing -alert(1) is valid">
+After the string closes you have `-alert(1)//`. That is the unary minus applied to whatever `alert(1)` returns. It is a legal expression statement, so the engine evaluates `alert(1)` first and the alert fires; the minus then applies to the `undefined` that comes back. You did not need to build a complete arithmetic expression, a leading operator is enough.
+</Accordion>
+
+<Cloze title="Escaping recall" text="The filter escapes the quote but not the {{backslash}}, so I supply my own before the quote to produce a doubled backslash and cancel the escaping." />
+
+<FlipCard front={<div>Single quotes are escaped. What do you put before the quote to defeat the escaping?</div>} back={<div>A backslash. The app adds its own backslash before your quote, so the two form a literal backslash and the quote is left unescaped.</div>} />

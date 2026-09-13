@@ -1,0 +1,49 @@
+---
+title: "Network Architecture"
+date: '2024-09-10'
+tags: ["network", "spine-leaf", "data center", "CCNA", "architecture"]
+excerpt: "Two-tier, three-tier and spine-leaf: how core, distribution and access switches stack up, and when a network outgrows the simple designs."
+type: blog
+category: "Networking"
+---
+
+# Network Architecture
+
+- Redundancy is important while building a network.
+- Two is one, one is none.
+
+## Two tier / collapsed core
+
+- The core switch is collapsed into the distribution switch.
+- Used by businesses of smaller scale, or businesses on a budget.
+- It's not about how many employees we have, it's about how many buildings a business has.
+- Does all kinds of routing, packet switching, QoS.
+
+![A two-tier network where the core and distribution layers are collapsed into a single switch tier](/images/content/network-architecture/two_tier.png)
+
+## Three tier
+
+- The network spans multiple buildings.
+- The core does nothing except transfer data as fast as possible.
+- In the case of just a couple of buildings we can use LAG / EtherChannels, but as the number of buildings grows it makes the network messier, so we use three-tier architecture.
+
+![A three-tier network with separate core, distribution and access layers spanning multiple buildings](/images/content/network-architecture/three_tier.png)
+
+## Spine-leaf architecture (east-west traffic)
+
+- Mostly used in data centers.
+- The spine is the backbone; servers connect to the leaves.
+- Full mesh between spine and leaf.
+- Very fast traffic flow — combines traffic.
+
+![A spine-leaf topology where every leaf switch connects up to every spine switch](/images/content/network-architecture/spine_leaf.png)
+
+LAG (link aggregation) interface / EtherChannel — taking bandwidth from multiple links and bundling them together.
+
+ASIC — Application-Specific Integrated Circuit.
+
+<QuizCard title="Architecture recall" questions={[
+  { question: "In a two-tier (collapsed core) design, what happens to the core layer?", options: ["It is duplicated", "It is collapsed into the distribution layer", "It is removed entirely", "It moves to the spine"], correct: 1, explanation: "Two-tier folds core functions into the distribution switch." },
+  { question: "What is the defining feature of spine-leaf?", options: ["A single uplink per server", "A full mesh between every spine and every leaf", "Core switches in every building", "No Layer 3 routing"], correct: 1, explanation: "Every leaf connects to every spine, giving predictable east-west throughput." },
+  { question: "In a three-tier network, what does the core do?", options: ["Access control", "Only move data as fast as possible", "Run DHCP", "Terminate VPNs"], correct: 1, explanation: "The core handles nothing but high-speed transport; policy lives elsewhere." }
+]} />

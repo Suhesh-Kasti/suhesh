@@ -1,6 +1,6 @@
 ---
 title: "Automating Nmap Port Extraction to Clipboard"
-date: "2026-03-10"
+date: '2026-06-07'
 tags: ["nmap", "zsh", "automation", "pentesting", "workflow"]
 excerpt: "A ZSH function that extracts open ports from Nmap discovery scans and copies them to clipboard — saving precious seconds between recon phases."
 type: "til"
@@ -64,6 +64,12 @@ Ports [22,80,110,139,143,445,31337] copied to clipboard
 $ sudo nmap -p [Ctrl+V] ...  # → -p 22,80,110,139,143,445,31337
 ```
 </Accordion>
+
+<Cloze
+  title="Flag recall"
+  color="#00cc55"
+  text="Step 1 writes grepable output with {{-oG}}. Step 3 sorts open ports with {{sort -u -n}} and pipes the comma-joined list to {{wl-copy}}."
+/>
 
 ## Why this matters
 

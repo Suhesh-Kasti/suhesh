@@ -108,13 +108,13 @@ export function BrutalLink({ children, href, ...props }: ElProps & { href?: stri
 export function BrutalHr(props: ElProps) { return <hr className="my-8 border-0 h-[2px] bg-fg" {...props} />; }
 
 export function BrutalTable({ children, ...props }: ElProps) {
-  return <div className="my-6 overflow-x-auto not-prose"><table className="w-full border-collapse border-2 border-fg font-mono text-sm shadow-brutal" style={{ fontFamily: "var(--font-space-mono)" }} {...props}>{children}</table></div>;
+  return <div className="my-6 overflow-x-auto not-prose"><table className="w-full border-collapse border-2 border-fg font-mono text-sm shadow-brutal [&_tbody_tr:nth-child(even)]:bg-fg/[0.035] [&_tbody_tr:hover]:bg-fg/[0.06]" style={{ fontFamily: "var(--font-space-mono)" }} {...props}>{children}</table></div>;
 }
 export function BrutalTh({ children, ...props }: ElProps) {
-  return <th className="border-2 border-fg bg-fg text-surface px-4 py-2 text-left font-bold uppercase text-xs" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }} {...props}>{children}</th>;
+  return <th className="whitespace-nowrap border-2 border-fg bg-fg px-4 py-2 text-left align-bottom font-bold uppercase text-xs text-surface" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }} {...props}>{children}</th>;
 }
 export function BrutalTd({ children, ...props }: ElProps) {
-  return <td className="border-2 border-fg px-4 py-2" style={{ fontFamily: "var(--font-space-mono)" }} {...props}>{children}</td>;
+  return <td className="border-2 border-fg px-4 py-2 align-top" style={{ fontFamily: "var(--font-space-mono)" }} {...props}>{children}</td>;
 }
 export function BrutalUl({ children, ...props }: ElProps) {
   return <ul className="my-4 space-y-1 list-none" {...props}>{children}</ul>;

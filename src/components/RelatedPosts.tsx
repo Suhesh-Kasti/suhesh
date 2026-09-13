@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getPostMetas } from "@/lib/braindump";
+import { typeConfig } from "@/lib/content-types";
 
 /**
  * Picks the articles that share the most tags with the current one. This is the only
@@ -39,7 +40,7 @@ export function RelatedPosts({ slug, tags, limit = 4 }: { slug: string; tags: st
                 className="font-mono text-2xs uppercase text-fg-muted group-hover:text-surface/70"
                 style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}
               >
-                {post.date} · {post.type}
+                {post.date} · <span style={{ color: typeConfig(post.type).color }}>{typeConfig(post.type).label}</span>
               </span>
               <span
                 className="mt-1 block font-display text-base font-bold uppercase text-fg group-hover:text-surface"

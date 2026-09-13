@@ -1,6 +1,6 @@
 ---
 title: "F5 BigIP Software Update Checklist"
-date: "2024-12-25"
+date: '2024-12-25'
 tags: ["bigip", "firmware update", "f5", "network"]
 excerpt: "Step-by-step checklist for updating firmware on F5 BigIP appliances — from ISO import to traffic verification."
 category: "Network Operations"
@@ -11,3 +11,13 @@ Don't skip verification steps. The F5 carries production traffic — blind upgra
 <ProgressChecklist checklistId="f5-update" />
 
 <IdeaNode color="pink">**Critical:** The Internal Server Error during boot location change is NORMAL. Don't panic. Wait 15-20 minutes and the instance comes back.</IdeaNode>
+
+## Revision
+
+<QuizCard title="What did you forget" questions={[
+  { question: "What do you do before touching anything?", options: ["Import the ISO", "Take a UCS backup", "Change the boot location", "Reactivate the license"], correct: 1, explanation: "Download the UCS first. If the upgrade goes wrong, the UCS is how you get the config back." },
+  { question: "An Internal Server Error during which step is expected?", options: ["ISO import", "UCS download", "Boot location change", "License activation"], correct: 2, explanation: "Changing the boot location briefly takes the instance offline. The ISE is normal, and it returns in 15-20 minutes." },
+  { question: "Which command checks MCP state before you install?", options: ["tmsh show /sys mcp-state", "tmsh show sys service all", "load sys config verify", "tmsh show /sys license"], correct: 0, explanation: "tmsh show /sys mcp-state confirms the appliance is ready to take the install." }
+]} />
+
+<FlipCard front={<div>The upgrade threw an Internal Server Error when you changed the boot location. What now?</div>} back={<div>Nothing. That step takes the instance offline on purpose. Wait 15-20 minutes, do not power-cycle it, and it comes back on the upgraded partition.</div>} />

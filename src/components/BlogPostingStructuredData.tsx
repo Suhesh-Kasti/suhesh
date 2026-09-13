@@ -1,3 +1,5 @@
+import { jsonLdScript } from "@/lib/json-ld";
+
 const BASE_URL = "https://suhesh.com.np";
 
 interface BlogPostingStructuredDataProps {
@@ -59,7 +61,7 @@ export function BlogPostingStructuredData({
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
     />
   );
 }

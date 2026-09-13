@@ -1,6 +1,6 @@
 ---
 title: Reflected XSS into HTML context with most tags and attributes blocked
-date: '2025-06-18'
+date: '2026-08-21'
 tags:
   - PortSwigger
   - lab
@@ -13,44 +13,56 @@ excerpt: >-
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 # Lab: Reflected XSS into HTML context with most tags and attributes blocked
 
-## Objective
-This lab contains a reflected XSS vulnerability in the search functionality but uses a web application firewall (WAF) to protect against common XSS vectors.
-To solve the lab, perform a cross-site scripting attack that bypasses the WAF and calls the `print()` function.
-> **Note:** Your solution must not require any user interaction. Manually causing `print()` to be called in your own browser will not solve the lab.
+The WAF on this one blocks most tags and most attributes, which reads like a dead end until you remember that block-lists are never complete. I spent a while guessing bad payloads before I stopped and let Burp Intruder tell me the answer instead.
 
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+The search box reflects whatever you type straight back into the page with no escaping. The wall in front is a web application firewall: send a `script` tag or a familiar `onclick` and the server returns a 400 "attack detected" page instead of results. The reflection is real, so the only job is finding the tag and the event the block-list forgot.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [x] Watched video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1: Used intruder on html tag to see which tag is not getting blocked by WAF like:  `/?search=<$body$ onresize="print()">` 
-- [ ] Step 2: Used intruder again on html action to see which action attribute is valid and not getting 400 error like:  `/?search=<body $onresize$="print()">` 
-- [ ] Step 3: Since the user was not going to perform any action we had to automate the process so, we enclosed the entire payload in an `<iframe>` and made the size of the iframe's width resize when the iframe loads with the payload below: 
-- [ ] Final payload / exploit: 
-```js
-<iframe src="https://0ae9008c03c4eb2e8015f49800f10030.web-security-academy.net/?search=%3c%62%6f%64%79%20%6f%6e%72%65%73%69%7a%65%3d%22%70%72%69%6e%74%28%29%22%3e" onload=this.style.width="100px"></iframe>
-```
+Two filters are running, one for the tag name and one for the attribute name. Both are block-lists, so they only reject strings somebody remembered to add. Any tag or event that is not on the list goes through untouched and lands in the HTML unescaped. HTML has well over a hundred tags and as many event handlers, and nobody keeps that list complete.
 
-## Key Takeaway
-Very cool XSS payloads found here: [Portswigger XSS Cheatsheet](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)
+## Solving it
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Confirm the reflection. Search for a random string and read the response. It comes back raw, so the sink is fine and only the filter is in the way.
+2. Find a surviving tag. Send the request to Intruder, mark the tag name, and fuzz a list of HTML tags.
+   ```
+   /?search=<§body§>
+   ```
+   Almost everything comes back 400. `body` does not.
+3. Find a surviving event. Same request, but mark the attribute this time.
+   ```
+   /?search=<body §onresize§=print()>
+   ```
+   Most events are blocked. `onresize` gets through.
+4. The lab forbids user interaction, and `onresize` only fires on a resize. So wrap the payload in an iframe and resize that iframe from its own load handler. Host this on the exploit server:
+   ```html
+   <iframe src="https://YOUR-LAB-ID.web-security-academy.net/?search=%3Cbody%20onresize%3Dprint%28%29%3E" onload=this.style.width='100px'></iframe>
+   ```
+5. Store it and deliver to the victim.
+
+## Why that payload works
+
+The inner search term is URL-encoded because it sits inside the iframe `src` attribute. Once the iframe loads, its inline `onload` sets `this.style.width`, which resizes the framed document and fires `onresize` on its `body`. That runs `print()` with no click and no keypress from the victim.
+
+## The fix
+
+Encode the reflected value for its context, so `<` and `>` become entities and there is nothing to break out of. Then add a sanitizer allow-list like DOMPurify and a strict CSP. Blocking more tag names is not a fix; it is the reason this lab exists.
+
+<QuizCard
+  title="WAF bypass check"
+  questions={[
+    { question: "Why did a plain script tag fail here?", options: ["The WAF block-list rejects it", "The server escapes the output", "The sink is unreachable", "A CSP blocks it"], correct: 0, explanation: "The reflection is unescaped. The 400 comes from the WAF block-list, not from output encoding." },
+    { question: "Why wrap the final payload in an iframe?", options: ["The document needs another element", "onload can resize it, firing onresize without the user", "iframes disable the WAF", "to hide the payload from logs"], correct: 1, explanation: "onresize needs a resize event. The iframe onload changes its own width, which triggers it." }
+  ]}
+/>
+
+<Cloze
+  title="Payload recall"
+  text="The lab asks for {{print}} with no interaction, so the blocker is a tag plus an event. Intruder showed that {{body}} and the {{onresize}} handler were not on the list, and because that event only fires on a resize I wrapped the payload in an {{iframe}}."
+/>

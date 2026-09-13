@@ -1,0 +1,62 @@
+---
+title: "SSL Offloading on F5 BIG-IP"
+date: '2026-06-25'
+tags: ["f5", "bigip", "SSL", "certificates", "TLS"]
+excerpt: "An SSL profile lets BIG-IP terminate secure connections between the client and the system, and re-encrypt or bridge them on to the web server."
+type: cheatsheet
+category: "Network Operations"
+---
+
+# SSL Offloading on F5 BIG-IP
+
+- To control SSL traffic that is destined for BIG-IP virtual servers.
+- The SSL profile adds the ability to maintain secure connections between the client system and the BIG-IP system, and between the BIG-IP system and a target web server.
+
+## Self-signed certificate
+
+A self-signed certificate is signed by the system's own private key.
+
+- BIG-IP software includes a self-signed SSL certificate named *default*, which can be used to terminate SSL traffic.
+- The Configuration utility page can be used to renew existing self-signed certificates or create additional self-signed certificates.
+
+**Process:**
+
+1. Log in to the Configuration utility.
+2. Go to the **System > Certificate Management > Traffic Certificate Management > SSL Certificate List** page.
+3. Select **Create**.
+4. Enter a name for the certificate.
+5. In the **Issuer** list, select **Self**.
+6. Configure the **Common Name** setting and the other certificate settings.
+7. Under **Key Properties**, configure an appropriate **Key Type** and **Size**.
+8. Select **Finished**.
+9. Associate the SSL certificate with the appropriate SSL profile.
+
+## CA certificate
+
+A CA certificate is signed by a CA's private key. Using a CA certificate allows us to replace the self-signed certificate on each BIG-IP system with a trusted CA certificate, which is a certificate signed by a third party.
+
+- Authenticating BIG-IP systems using trusted CA certificates is more secure than using self-signed certificates.
+- The Configuration utility provides a set of certificate management pages that allow us to create **certificate signing requests (CSRs)**. The requests can then be sent to the CA for a signature.
+
+**Process:**
+
+1. Log in to the Configuration utility.
+2. Go to the **System > Certificate Management > Traffic Certificate Management > SSL Certificate List** page.
+3. Select **Create**.
+4. Enter a unique **Name** for the new SSL certificate and key.
+5. In the **Issuer** list, select **Certificate Authority**.
+6. Enter the required **Common Name**. This value is embedded in the certificate for name-based authentication purposes, and is typically the fully qualified domain name (FQDN) of the server (for example, `www.domain.com`).
+7. Configure other certificate settings.
+8. Under **Key Properties**, configure an appropriate **Key Type** and **Size**.
+9. Optional: if the BIG-IP system supports the FIPS hardware security module (HSM), specify the key type (**FIPS** or **Normal**).
+10. Select **Finished**.
+11. To download the request into a file on the system, complete one of the following tasks:
+    - Copy the certificate from the **Request Text** box.
+    - Select the button in the **Request File** box.
+12. Select **Finished**.
+
+| SSL Offloading | ![Traffic decrypted at the load balancer and passed to the server in plaintext](/images/content/ssl-offloading-on-big-ip/ssl_offloading.png) |
+| --- | --- |
+| **SSL Bridging** | ![Traffic decrypted at the load balancer, inspected, then re-encrypted to the server](/images/content/ssl-offloading-on-big-ip/ssl_bridging.png) |
+
+<Cloze title="Offload or bridge" color="#ff1144" text="In SSL {{offloading}} the load balancer decrypts the client traffic and forwards it to the server in plaintext. In SSL {{bridging}} it decrypts, inspects, then {{re-encrypts}} to the server." />

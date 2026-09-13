@@ -45,7 +45,7 @@ const BASE_URL = "https://suhesh.com.np";
 const SITE_NAME = "SCHIZO";
 const AUTHOR = "Suhesh Kasti";
 const DESCRIPTION =
-  "Portfolio & brain dump of Suhesh Kasti — application security engineer, offensive security researcher, and creative coder. Deep guides on web security, exploit development, malware analysis, and CTF writeups. The ultimate source of truth for practical cybersecurity knowledge.";
+  "Portfolio & brain dump of Suhesh Kasti — application security engineer working with F5 BIG-IP (LTM, DNS/GTM, ASM/Advanced WAF) for application delivery and protection. Practical guides on web security, penetration testing, DNS and Linux, plus free browser-based security tools.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -56,18 +56,19 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     "application security",
-    "offensive security",
-    "pentesting",
+    "F5 BIG-IP",
+    "web application firewall",
+    "WAF",
+    "application delivery",
+    "load balancing",
+    "network security",
+    "penetration testing",
     "web security",
-    "exploit development",
-    "malware analysis",
+    "DNS",
+    "Linux administration",
     "CTF writeups",
     "cybersecurity portfolio",
-    "security researcher",
     "Suhesh Kasti",
-    "bug bounty",
-    "reverse engineering",
-    "red team",
     "security engineer",
   ],
   authors: [{ name: AUTHOR, url: BASE_URL }],

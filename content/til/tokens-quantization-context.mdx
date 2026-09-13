@@ -1,8 +1,8 @@
 ---
 title: "Tokens, quantization, and context windows — what they actually mean"
-date: "2026-05-16T10:30:00+05:45"
+date: '2026-05-24'
 excerpt: "I kept nodding along when people said 'tokens' and 'quantization' without actually knowing what they meant. Here's what they actually are."
-tags: []
+tags: ["LLM", "Local AI", "Quantization", "Tokens", "Context Window"]
 category: "AI/ML"
 type: "til"
 ---
@@ -47,11 +47,32 @@ That doesn't fit in any consumer GPU. Quantization is the process of converting 
 
 **Q2** (2-bit): Getting rough. 27B model ≈ 7-9GB. Models start sounding confused. Not recommended unless you absolutely have to.
 
+<DataBar
+  title="27B model size by quantization (GB)"
+  data={[
+    { "label": "FP16", "value": 54, "color": "#ff1144" },
+    { "label": "Q8", "value": 27, "color": "#ff8800" },
+    { "label": "Q4", "value": 16, "color": "#00dd44" },
+    { "label": "Q2", "value": 8, "color": "#0055ff" }
+  ]}
+/>
+
 The K_M, K_S, K_P, K_XL suffixes in GGUF filenames? Those describe how the quantization is applied across different parts of the model. Some layers are more sensitive to precision loss than others. K_M is a balanced mixed-precision quantization, K_P is slightly higher quality (some layers stay at higher precision), K_XL prioritizes quality. In practice: if you're unsure, grab Q4_K_M or Q4_K_P.
 
 Your analogy about floating point precision is actually close: in Q8, a weight that was `1.98765432` might become `1.988`. In Q4, it might be stored as `2.0`. The model has billions of these so the approximation errors mostly average out — but you can definitely feel it on tasks requiring precise reasoning at the extremes.
 
 The format (GGUF in llama.cpp, safetensors for HuggingFace) is separate from quantization. GGUF is just the container format that includes the tokenizer, metadata, and quantized weights all in one file. Very convenient.
+
+<MatchPairs
+  title="Quant suffix → meaning"
+  color="#8800ff"
+  pairs={[
+    { term: "Q4_K_M", match: "balanced mixed-precision 4-bit" },
+    { term: "Q4_K_P", match: "slightly higher quality than K_M" },
+    { term: "K_XL", match: "prioritises quality" },
+    { term: "Q2", match: "2-bit, models start sounding confused" }
+  ]}
+/>
 
 ## The practical guide
 
@@ -62,3 +83,38 @@ If you have 24GB VRAM:
 - 7-9B models: fits at Q8 or even FP16 if you squeeze
 
 The jump from Q4 to Q8 is usually worth it when the model fits. The jump from Q8 to FP16 is usually not — you're paying double the VRAM for marginal improvement. Q4 to Q3 is where things start getting noticeable. Don't go below Q4 unless you're desperate.
+
+<QuizCard
+  title="Tokens and quant check"
+  color="#ffdd00"
+  questions={[
+    {
+      question: "Roughly how many words is one English token?",
+      options: ["About 0.75 of a word", "Exactly one word", "Three words", "Half a character"],
+      correct: 0,
+      explanation: "1 token is about 0.75 words, so a 128k context holds roughly 96,000 words."
+    },
+    {
+      question: "Does the context window include previous conversations?",
+      options: [
+        "No — it is the current conversation's working memory only",
+        "Yes, it stores everything forever",
+        "Only if you enable long-term memory",
+        "Yes, for 30 days"
+      ],
+      correct: 0,
+      explanation: "It is working memory for the current conversation; there is no long-term recall unless you add it."
+    },
+    {
+      question: "At what point does quantization quality loss really start to show?",
+      options: [
+        "Below Q4, and clearly at Q2",
+        "At Q8",
+        "Only at FP16",
+        "Never, it is lossless"
+      ],
+      correct: 0,
+      explanation: "Q4 is fine for chat and reasoning; Q3 and below get noticeable, and Q2 makes models sound confused."
+    }
+  ]}
+/>

@@ -1,6 +1,6 @@
 ---
 title: Information disclosure in error messages
-date: '2025-06-18'
+date: '2026-08-04'
 tags:
   - PortSwigger
   - lab
@@ -15,28 +15,43 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: Information disclosure in error messages
 
-## Objective
-This lab's verbose error messages reveal that it is using a vulnerable version of a third-party framework. To solve the lab, obtain and submit the version number of this framework.
+There is not much to bypass here. The bug is that the server answers a bad input by dumping its entire stack trace, and the trace cheerfully announces which framework build is running. One broken request and you have the version number.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The application reveals sensitive information through error messages, debug pages, backup files, or version control history.
-- **Root cause:** These endpoints/files are unintentionally exposed to unauthenticated or unauthorized users.
-- **Exploitation:** Request the vulnerable endpoint to retrieve hidden data.
-- **Key insight:** Information disclosure is rarely the end goal — it is a stepping stone to a bigger attack (e.g., finding credentials, API keys, or internal paths).
+## The setup
 
-## Solution Reconstruction
-- [ ] Step 1: Created a sitemap of entire site 
-- [ ] Step 2: Find productID parameter in products page
-- [ ] Step 3: Takes numbers, using numbers either gives products or gives 404 Not Found
-- [ ] Sending a character *"A"*, breaks something in application and throws 500 Internal Server Error with server's version
+Product pages are fetched with an integer parameter: `GET /product?productId=1`. Any well-formed number returns a product, and there is nothing else to the feature.
 
-## Key Takeaway
-Send weird things in parameters
+## How the vulnerability works
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+When the parameter cannot be converted to the type the code expects, the framework raises an exception. The app is configured to return that exception to the client, and a Java stack trace is chatty: package names, class names, and the framework version. A version number is not sensitive on its own, but it maps straight onto a list of known vulnerabilities for that exact release.
 
-![](/images/series/information_disclosed_in_error.png)
+## Solving it
+
+1. Open a product page and note `productId` in the query string.
+2. Send the request to Repeater.
+3. Replace the integer with a string:
+
+```http
+GET /product?productId="abc" HTTP/1.1
+```
+
+4. The response is a 500 with a full stack trace. Read the framework banner in it: Apache Struts 2 2.3.31.
+5. Submit `2 2.3.31` in the lab's solution box.
+
+## Why that payload works
+
+The parameter is bound as an integer, so `"abc"` fails conversion and throws inside the framework. The error handler prints the whole chain rather than a generic page, and that chain includes the Struts version string. The disclosure is not the crash. It is the choice to render internal error text to whoever asked.
+
+## The fix
+
+Disable verbose errors in production and return a generic 500 page. Log the trace server-side with a correlation id and show the user only that id, so support can still look it up. Keep dependencies patched, since a leaked version is only interesting when it is old, and avoid advertising the framework in response headers either.
+
+<QuizCard title="Info leak check" questions={[
+  { question: "What turns a harmless crash into an information disclosure?", options: ["The stack trace is shown to the user", "The request is over HTTP", "The parameter is an integer", "The page uses cookies"], correct: 0, explanation: "The exception is expected. Returning the full trace, with framework names and versions, to the client is the actual bug." },
+  { question: "Why does a framework version number matter to an attacker?", options: ["It reveals the server's timezone", "It maps to known CVEs for that exact release", "It tells you the database name", "It is not useful at all"], correct: 1, explanation: "Version strings are the lookup key for public vulnerability databases, so leaking one hands over the shortlist." }
+]} />
+
+<Cloze title="Type confusion recall" text="The productId parameter is bound as an {{integer}}. Sending the string {{abc}} makes it throw, and the returned stack trace names {{Apache Struts 2}} 2.3.31." />

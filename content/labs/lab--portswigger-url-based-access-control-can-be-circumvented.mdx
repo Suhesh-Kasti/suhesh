@@ -1,17 +1,18 @@
 ---
 title: URL-based access control can be circumvented
-date: '2025-06-18'
+date: '2026-09-01'
 tags:
   - PortSwigger
   - lab
   - access-control
   - walkthrough
-excerpt: "This website has an unauthenticated admin panel at\_`/admin`, but a front-end system has been configured to block external access to that path. However, the back-end application is built on a framework that supports the\_`X-Original-URL`\_header."
+excerpt: "A front-end rule blocks external access to /admin, but the backend trusts the X-Original-URL header and I walk right past it."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: URL-based access control can be circumvented
 
 ## Objective
@@ -28,9 +29,9 @@ To solve the lab, access the admin panel and delete the user `carlos`.
 - [ ] Step 1:
 - [ ] Step 2:
 - [ ] Step 3:
-![](/images/series/req_with_x-original-url.png)
+![Request to the root path carrying an X-Original-URL header that points at /admin](/images/content/lab--portswigger-url-based-access-control-can-be-circumvented/req_with_x-original-url.png)
 - [ ] Final payload / exploit:
-![](/images/series/username_deleted_with_x-original-url.png)
+![The delete-user request succeeding through the X-Original-URL header bypass](/images/content/lab--portswigger-url-based-access-control-can-be-circumvented/username_deleted_with_x-original-url.png)
 
 ## Key Takeaway
 ####  X-Original-URL?
@@ -39,3 +40,5 @@ The **X-Original-URL** HTTP header is used by reverse proxies (such as Nginx, 
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="The front end blocks /admin, but the back-end framework trusts the {{X-Original-URL}} header, so pointing it at /admin reaches the panel and lets you delete {{carlos}}." />

@@ -28,9 +28,8 @@ export async function generateMetadata({ params }: Props) {
 
   const BASE_URL = "https://suhesh.com.np";
   const url = `${BASE_URL}/braindump/${slugStr}`;
-  const imageUrl = post.meta.image
-    ? `${BASE_URL}${post.meta.image}`
-    : `${BASE_URL}/opengraph-image?title=${encodeURIComponent(post.meta.title)}&tags=${encodeURIComponent(post.meta.tags.slice(0, 3).join(","))}`;
+  // Per-article share card (see src/app/og/[...slug]/route.tsx), rendered at build time.
+  const ogImage = `${BASE_URL}/og/${slugStr}`;
 
   return {
     title: `${post.meta.title} — SCHIZO Brain Dump`,
@@ -45,20 +44,13 @@ export async function generateMetadata({ params }: Props) {
       authors: ["Suhesh Kasti"],
       tags: post.meta.tags,
       siteName: "SCHIZO",
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: post.meta.title,
-        },
-      ],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.meta.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: post.meta.title,
       description: post.meta.excerpt,
-      images: [imageUrl],
+      images: [ogImage],
     },
   };
 }
@@ -82,7 +74,7 @@ export default async function BrainDumpPost({ params }: Props) {
         image={post.meta.image}
       />
       <main className="flex-1 pt-16">
-        {post.meta.type === "series" ? (
+        {post.meta.type === "roadmap" ? (
           <article className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
             <header className="mb-12">
               <span className="font-mono text-2xs uppercase tracking-label text-fg-muted" style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.12em" }}>
@@ -130,7 +122,7 @@ export default async function BrainDumpPost({ params }: Props) {
 
         <RelatedPosts slug={slugStr} tags={post.meta.tags} />
 
-        {post.meta.type !== "series" && (
+        {post.meta.type !== "roadmap" && (
           <>
             <hr className="mt-16 max-w-5xl mx-auto border-0 h-[2px] bg-fg" />
             <nav className="max-w-5xl mx-auto px-6 md:px-12 mt-8 pb-16 flex justify-between items-center">

@@ -1,8 +1,8 @@
 ---
 title: "Docker Compose file to run open WebUI and AI Agents"
-date: "2026-01-01T10:30:00+05:45"
-excerpt: "How to run open WebUI and download gguf files to run AI Agents"
-tags: []
+date: '2026-06-06'
+excerpt: "A docker-compose file that runs open WebUI and llama.cpp together, so you can drop in gguf files and start chatting with them locally."
+tags: ["docker", "containers", "devops", "llama.cpp", "Local AI"]
 category: "DevOps"
 type: "til"
 ---
@@ -14,6 +14,12 @@ Today I learned about Docker Compose file to run open WebUI and AI Agents just b
 ## What are gguf files?
 
 GGUF files are a special type of file format used to store and run large language models efficiently. They help make these models faster to load and easier to use on regular computers.
+
+<FlipCard
+  color="#0055ff"
+  front={<div>Which service stores the models, and which one shows the chat UI?</div>}
+  back={<div>llama-server serves the <code>/models</code> volume on :8080. open-webui is the chat UI, exposed on host port 3001.</div>}
+/>
 
 ## Actual docker compose file
 
@@ -66,6 +72,12 @@ This docker-compose file runs two services:
 1. **llama-server**: This service runs a llama.cpp server that provides access to the models stored in the `/models` directory.
 2. **open-webui**: This service runs the Open WebUI application, which provides a user interface for interacting with the models.
 
+<Cloze
+  title="Wiring the two services"
+  color="#00cc55"
+  text="Open WebUI reaches the model server through {{OPENAI_API_BASE_URL}}, and the dummy key it expects is {{sk-no-key-required}}."
+/>
+
 ### How to use
 
 1. Download the gguf files from [hugging face](https://huggingface.co).
@@ -74,3 +86,16 @@ This docker-compose file runs two services:
 4. Open the Open WebUI application in your browser.
 5. Select the model you want to use.
 6. Start chatting!
+
+<Sequence
+  title="Order the setup"
+  color="#ff5500"
+  steps={[
+    "Download the gguf files from Hugging Face",
+    "Place the gguf files in the /models directory",
+    "Run the docker-compose file",
+    "Open the Web UI in your browser",
+    "Select the model",
+    "Start chatting"
+  ]}
+/>

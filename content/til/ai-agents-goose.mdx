@@ -1,8 +1,8 @@
 ---
 title: "AI Agents — Goose, Hermes, and the Octopus Theory"
-date: "2026-05-16T13:00:00+05:45"
+date: '2026-06-02'
 excerpt: "What AI agents actually are, how Goose works under the hood, what MCP extensions do for agents, and why the octopus analogy actually explains it better than any technical description"
-tags: []
+tags: ["LLM", "Goose", "MCP", "Local AI", "AI Agents"]
 category: "AI/ML"
 type: "til"
 ---
@@ -36,6 +36,19 @@ When you give Goose a task, here's what happens under the hood:
 
 This loop is the "agentic" part. The LLM isn't just answering once and stopping — it's reasoning, acting, observing the results, and deciding what to do next. More like a person working through a problem than a search engine returning an answer.
 
+<Sequence
+  title="Order the agentic loop"
+  color="#ff5500"
+  steps={[
+    "Goose builds the system prompt (.goosehints, tools, skills, memory)",
+    "Your message joins the conversation and goes to the LLM",
+    "The LLM returns text or a structured tool call",
+    "Goose executes the tool call",
+    "The result is appended to the conversation",
+    "The LLM sees it and decides the next step"
+  ]}
+/>
+
 ## Goose specifically
 
 Goose is built by the Block (formerly Square) team, now under the Linux Foundation's AAIF. It's one of the most MCP-complete implementations — supports all transport types, handles parallel tool calls, has subagent spawning via the `summon` extension, can run multiple sessions via `orchestrator`.
@@ -48,6 +61,17 @@ The extensions in Goose map directly to capabilities:
 - MCP stdio servers → anything else you wire up
 
 The model never directly controls anything. Goose is the intermediary. The LLM says "call shell with `nmap -p 80,443 target`", Goose executes it, Goose returns the output, the LLM decides what to do with that output.
+
+<MatchPairs
+  title="Extension → what it gives the agent"
+  color="#8800ff"
+  pairs={[
+    { term: "developer", match: "terminal and file access" },
+    { term: "memory", match: "notes that survive session resets" },
+    { term: "summon", match: "spawns subagents that run in parallel" },
+    { term: "computercontroller", match: "browser automation and scraping" }
+  ]}
+/>
 
 ## Goose vs Hermes
 
@@ -80,3 +104,43 @@ The `GOOSE_CLI_MIN_PRIORITY` setting controls which tool calls Goose bothers ask
 It's genuinely useful. Kick off a long scan from your phone, come back to results. The bot persists on your machine; you just need to keep the systemd service running.
 
 The security model is Telegram authentication — only people who know the bot exist and can message it. Not exposed to the public internet. For a private research machine on a VM, that's fine.
+
+<QuizCard
+  title="Agent recall"
+  color="#00dd44"
+  questions={[
+    {
+      question: "In the agentic loop, what happens right after a tool result is added to the conversation?",
+      options: [
+        "The whole conversation goes back to the LLM for the next decision",
+        "Goose stops and waits for you",
+        "The tool runs again automatically",
+        "The session context is cleared"
+      ],
+      correct: 0,
+      explanation: "The loop repeats: the LLM sees the result and decides what to do next, until it returns plain text with no tool calls."
+    },
+    {
+      question: "What does GOOSE_MODE: auto do?",
+      options: [
+        "Runs everything without stopping for approval",
+        "Pauses before every risky command",
+        "Blocks all shell commands",
+        "Only answers questions, never calls tools"
+      ],
+      correct: 0,
+      explanation: "auto is fully autonomous. smart_approve is the one that pauses before risky shell commands."
+    },
+    {
+      question: "Why does the article prefer Goose over Hermes Agent for terminal work right now?",
+      options: [
+        "Goose is more battle-tested, with a mature MCP ecosystem and security model",
+        "Hermes can't run any tools",
+        "Hermes only works on Windows",
+        "Goose is newer and self-improves"
+      ],
+      correct: 0,
+      explanation: "Hermes' self-improvement loop is interesting, but it is very new with a thin MCP ecosystem, no sandbox mode, and sparse docs."
+    }
+  ]}
+/>

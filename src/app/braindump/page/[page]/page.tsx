@@ -22,7 +22,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { page } = await params;
-  const description = `Page ${page} of the SCHIZO brain dump — cybersecurity writeups, CTF walkthroughs, exploit development, malware analysis and cheatsheets by Suhesh Kasti.`;
+  const description = `Page ${page} of the SCHIZO brain dump — cybersecurity writeups, penetration testing walkthroughs, DNS and Linux guides, and cheatsheets by Suhesh Kasti.`;
 
   return {
     title: `Brain Dump — Page ${page}`,
@@ -33,13 +33,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url: `${BASE_URL}/braindump/page/${page}`,
       siteName: "SCHIZO",
-      images: [{ url: `${BASE_URL}/opengraph-image`, width: 1200, height: 630, alt: "SCHIZO" }],
     },
     twitter: {
       card: "summary_large_image",
       title: `Brain Dump — Page ${page}`,
       description,
-      images: [`${BASE_URL}/opengraph-image`],
     },
   };
 }

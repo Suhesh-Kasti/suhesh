@@ -1,48 +1,51 @@
 ---
 title: Reflected XSS into a JavaScript string with single quote and backslash escaped
-date: '2025-06-18'
+date: '2026-08-18'
 tags:
   - PortSwigger
   - lab
   - xss
   - walkthrough
-excerpt: What is this lab trying to teach?*
+excerpt: "Both the quote and the backslash are escaped, so stop fighting the JavaScript layer and close the script element instead."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
+
 # Lab: Reflected XSS into a JavaScript string with single quote and backslash escaped
 
-## Objective
-*What is this lab trying to teach?*
+The two labs on either side of this one trip people in opposite directions, and this is the one where the JavaScript escaping is genuinely solid. The trick is to stop attacking JavaScript and attack HTML instead. Two parsers read your input, and they run in a fixed order.
 
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## The setup
 
-## Blind Attempt (15-20 min max)
-*Try without any hints. Document everything.*
-- **What I tried:**
-- **Where I got stuck:**
+The search query is tracked inside a `<script>` block, roughly `var searchTerms = 'hello';`. Try a single quote and it comes back as `\'`. Try a backslash and it comes back as `\\`. Nothing you can type closes the string. What is not encoded, though, is `<` and `>`. Write those and they pass through clean.
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+## How the vulnerability works
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+Your input hits two engines in sequence. The HTML parser runs first. While it reads the contents of a `<script>` element it does not understand JavaScript strings, it is only scanning for the literal sequence `</script>` to know where the script data ends. It does that regardless of whether a quote is open. So the moment your input contains `</script>`, the HTML parser closes the element, and the rest of your input is back in plain HTML land, free to open a brand-new `<script>`. The quote escaping was airtight. It was guarding the wrong layer.
 
-## Key Takeaway
-*Write ONE principle I must remember:*
+## Solving it
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Search a test string and view the source to confirm the reflection inside `var searchTerms = '...';`, with quotes and backslashes escaped.
+2. Since the escaping lives at the JavaScript level, aim one level up:
+
+```html
+</script><script>alert(1)</script>
+```
+
+3. Send that as the search term.
+
+The first `</script>` ends the page's own script block. The following `<script>alert(1)</script>` is then read as ordinary HTML and runs.
+
+## Why that payload works
+
+The HTML tokenizer never looks inside a JavaScript string. It sees the characters `</script` and ends the script data immediately, no matter what the JavaScript is doing. After that point you are in HTML context again, which is why you can simply open a new script element. Your escaped quotes stayed escaped and were never the point. You bypassed the JavaScript string entirely by closing the layer above it.
+
+## The fix
+
+Do not interpolate raw data into an inline `<script>`. If you must, JSON-encode the value and also escape the characters that matter to the HTML layer: write `<` as `\u003c` and `/` as `\u002f`, so the byte sequence `</script>` can never appear literally. A Content-Security-Policy without `unsafe-inline` stops the injected script even if the reflection still happens.
+
+<IdeaNode color="#ff2d95">**Two parsers, one order.** HTML is parsed before JavaScript. Escaping that only protects the JS string does nothing once your input can close the script element in the HTML layer.</IdeaNode>
+
+<Sequence title="Order of events" steps={["The server reflects your search term inside a <script> block", "The HTML parser scans for the literal </script> sequence", "Your payload closes the script element", "The parser reads your new <script> as HTML", "The JavaScript engine runs alert(1)"]} />

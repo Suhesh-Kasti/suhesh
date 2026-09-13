@@ -1,11 +1,82 @@
 ---
 title: "TCP/IP and OSI in networking"
-date: "2024-04-08"
+date: '2024-04-08'
 excerpt: "Computer networking involves the interconnection of devices and systems for communication and resource sharing, enabling data transfer and access across various networks."
-tags: []
+tags: ["network", "TCP/IP", "OSI Model", "Beginner"]
 category: "Networking"
 type: "blog"
 ---
 
-Welcome, friends, to the fascinating realm of computer networking. In this networking series, we will embark on an exciting journey to understand networking. Today we will start by exploring the intricates of the TCP/IP and OSI models, exploring each layer's functions, protocols, and real-world examples. Prepare to dive deep into the world of networking as we unravel its mysteries together!
+# TCP/IP and OSI in Networking
 
+Two models describe the same thing: how data gets from one machine to another. OSI is the seven-layer teaching model. TCP/IP is the four-layer model the internet actually runs on. Learn both and you stop guessing where a problem lives.
+
+![Computers and network devices connected on a network, moving data between machines](/images/content/networking/networking01.jpg)
+
+## The OSI Model
+
+Seven layers, bottom to top:
+
+| # | Layer | What it does | Example |
+|---|-------|--------------|---------|
+| 7 | Application | What the user talks to | HTTP, DNS, SSH |
+| 6 | Presentation | Encoding and encryption | TLS, JPEG |
+| 5 | Session | Opens and keeps a conversation | Session tokens, RPC |
+| 4 | Transport | End-to-end delivery, ports | TCP, UDP |
+| 3 | Network | Routing between networks | IP, ICMP |
+| 2 | Data link | Delivery on the local link | Ethernet, MAC |
+| 1 | Physical | The wire and the bits | Cables, radio |
+
+## The TCP/IP Model
+
+Four layers, which is what the real stack uses:
+
+| Layer | Maps to OSI | Example |
+|-------|-------------|---------|
+| Application | 5 to 7 | HTTP, DNS, TLS |
+| Transport | 4 | TCP, UDP |
+| Internet | 3 | IP |
+| Network access | 1 and 2 | Ethernet, Wi-Fi |
+
+## How They Line Up
+
+OSI's top three layers collapse into TCP/IP's Application layer. Its bottom two collapse into Network access. The middle two, Transport and Internet, stay as they are. That is the whole mapping.
+
+## Encapsulation
+
+When you send a request, each layer wraps the one below it. Your HTTP request becomes a TCP segment, then an IP packet, then an Ethernet frame. On the other end the wrapping comes off in reverse order.
+
+This is why people say "layer 2 problem" or "layer 3 problem". They mean: how far down the stack is this broken? A wrong cable is layer 1. A wrong route is layer 3. A refused connection is layer 4.
+
+## Quick Check
+
+<Sequence
+  title="Order the OSI layers, top to bottom"
+  color="#00dd44"
+  steps={[
+    "Application",
+    "Presentation",
+    "Session",
+    "Transport",
+    "Network",
+    "Data link",
+    "Physical"
+  ]}
+/>
+
+<MatchPairs
+  title="Layer to job"
+  color="#0055ff"
+  pairs={[
+    { term: "Application (L7)", match: "What the user talks to, like HTTP or DNS" },
+    { term: "Transport (L4)", match: "End-to-end delivery and ports, like TCP or UDP" },
+    { term: "Network (L3)", match: "Routing between networks, like IP" },
+    { term: "Data link (L2)", match: "Delivery on the local link, like MAC" }
+  ]}
+/>
+
+<Cloze
+  title="Count the layers"
+  color="#ffdd00"
+  text="The OSI model has {{7}} layers. The TCP/IP model has {{4}} layers. TCP and UDP live in the {{Transport}} layer."
+/>

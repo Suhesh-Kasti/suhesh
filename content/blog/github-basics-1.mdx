@@ -1,19 +1,85 @@
 ---
 title: "Git Basics: Part 1"
-date: "2024-03-24T20:53:06+05:45"
+date: '2024-03-24'
 excerpt: "Git is a powerful version control system with a wide range of capabilities and GitHub is a popular web-based platform that provides hosting for Git repositories."
-tags: []
+tags: ["Git", "GitHub", "devops", "Version Control"]
 category: "DevOps"
 type: "blog"
 ---
 
 # Demystifying Git and GitHub for Beginners
 
-Welcome, fellow coders! Today, we embark on a journey to explore the powerful tools of Git and GitHub. These essential tools can seem daunting at first, but worry not! We'll be diving into the fundamentals, providing you with a comprehensive and beginner-friendly introduction.
+Git and GitHub get used like they are the same word. They are not. Git is the version control system that runs on your machine. GitHub is a website that hosts Git repositories so you can back them up and share them. You can use Git without GitHub. You can't use GitHub without Git.
 
-## Understanding Git and GitHub
+![An illustration contrasting Git, which runs locally, with GitHub, which hosts the repository online](/images/content/github-basics-1/git01.jpg)
 
-Before we begin, let's clear up a common misconception: Git and GitHub are not the same. Git is a version control system, while GitHub is a hosting platform for Git repositories. To better understand the differences, let's take a look at the table below:
+## Git vs GitHub
 
-| Comparison Point | Git                                                                      | GitHub                                                                                      |
-| 
+| Comparison Point | Git | GitHub |
+|------------------|-----|--------|
+| What it is | Version control system | Hosting platform for Git repos |
+| Where it runs | Locally, on your machine | In the cloud |
+| Needs the internet? | No | Yes, to push and pull |
+| Core job | Track changes to files | Store and share repositories |
+| Account needed? | No | Yes |
+| Alternatives | Mercurial, SVN | GitLab, Bitbucket |
+
+Once that clicks, the rest of Git is just remembering the commands.
+
+## The Commands You Actually Use
+
+Three commands do most of the work. Everything else is a variation on them.
+
+```bash
+git init                              # start tracking a folder
+git add .                             # stage every change
+git commit -m "add the login page"    # snapshot what is staged
+git remote add origin https://github.com/you/repo.git
+git push -u origin main               # send those commits to GitHub
+```
+
+`git add` picks what goes into the next snapshot. `git commit` takes that snapshot. `git push` sends your snapshots to GitHub. People mix up add and commit all the time, then wonder why the file they edited is still the old version.
+
+<IdeaNode color="green">The three states to keep in your head: **working tree** (files as you edit them), **staging area** (what `git add` selected), **repository** (the committed history). Every Git command moves changes between those three.</IdeaNode>
+
+## The Daily Loop
+
+After the first push, you repeat one small loop forever:
+
+1. Edit files.
+2. `git add` the changes you want.
+3. `git commit -m "..."`.
+4. `git push`.
+
+That is it. Branches, merges and rebases come later, and you can go far with just this loop.
+
+## Quick Check
+
+<MatchPairs
+  title="Git terms"
+  color="#8800ff"
+  pairs={[
+    { term: "Working tree", match: "The files as they are right now on disk" },
+    { term: "Staging area", match: "Changes selected by git add, ready to commit" },
+    { term: "Commit", match: "A saved snapshot with a message" },
+    { term: "Remote", match: "A copy of the repo hosted elsewhere, like GitHub" },
+    { term: "Clone", match: "Downloading a full copy of a remote repo" }
+  ]}
+/>
+
+<Sequence
+  title="Put the loop in order"
+  color="#00dd44"
+  steps={[
+    "Edit your files",
+    "git add the changes",
+    "git commit with a message",
+    "git push to the remote"
+  ]}
+/>
+
+<Cloze
+  title="Command recall"
+  color="#00e5ff"
+  text="To stage every change run {{git add .}}. To save a snapshot run {{git commit}} with a message. To send commits to GitHub run {{git push}}."
+/>

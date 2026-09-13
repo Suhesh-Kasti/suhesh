@@ -1,0 +1,76 @@
+---
+title: "Fully Qualified Domain Names"
+date: '2024-08-20'
+tags: ["DNS", "network", "FQDN", "domain names", "Beginner"]
+excerpt: "A fully qualified domain name pins down the exact location of a resource in DNS. Here's how the labels stack up, and how it differs from a URL."
+type: blog
+category: "Networking"
+---
+
+# Fully Qualified Domain Names (FQDN)
+
+A fully qualified domain name (FQDN) is a complete, unambiguous domain name that specifies the exact location of network resources, such as servers, websites, or services, on the Internet. FQDNs facilitate the organization, identification, and access of online resources, ensuring interoperability across diverse networked environments.
+
+## FQDN structure
+
+The FQDN serves to show the exact location of a computing resource inside the Domain Name System (DNS) hierarchy. An FQDN is traditionally written as a list of domain labels: the top-level domain, the second-level domain name, a subdomain (if used), and the host domain, each separated by dots or periods. The label hierarchy is read from right to left. As an example of FQDN syntax, in the address `www.shop.example.com`, the `.com` is the top-level domain, `example` is the second-level domain name, `shop` is the subdomain, and the `www` is the hostname.
+
+- The top-level domain (TLD) is the highest level in the hierarchical structure of domain names and represents the most general categorization of the domain. In addition to `.com`, other common generic TLDs include `.org`, `.net`, and `.info`. Country code TLDs are also used: `.ca` (Canada), `.us` (United States), `.de` (Germany).
+- The second-level domain (SLD) is located immediately to the left of the TLD. The SLD is typically chosen by the owner or administrator of the domain and is often associated with the name or brand of the organization, website, or service. The combination of the second-level domain and the top-level domain creates the root domain, a distinctive and recognizable address for accessing websites and other Internet resources.
+- Subdomains are used to organize and categorize different sections or services within a domain, and provide a way to create distinct namespaces and hierarchical organizations under a primary domain. Subdomains are often used to represent distinct services, departments, or sections of a website. For example, `shop.example.com` could be the address of an online store.
+- The hostname is the leftmost element of a domain name. Hostnames can be used for a variety of purposes, such as identifying web servers (`www`), mail servers (`mail`), ftp servers (`ftp`), and more. For instance, `www.example.com` is the address of the web server associated with the domain `example.com`. Hostnames provide a way to organize and categorize different services within a domain.
+- The Internet Corporation for Assigned Names and Numbers (ICANN) manages the assignment and administration of domain names and TLDs to ensure the stability and security of the global domain name system.
+
+## FQDN syntax variations
+
+- **Trailing dot:** in an FQDN, a trailing dot (for instance, `www.example.com.`) represents the root of the DNS hierarchy. The dot at the end serves to terminate the domain name, making it an absolute, fully qualified reference. When an FQDN is specified without a trailing dot, the DNS system automatically appends the root domain to the name. For example, `www.example.com` is equivalent to `www.example.com.`. However, the presence or absence of the trailing dot can influence the interpretation of the domain name in certain situations. When specifying domain names in DNS configurations, zone files, or other technical contexts, including the trailing dot is important for accuracy and proper interpretation.
+- **Wildcard subdomains:** a wildcard subdomain refers to a subdomain that is specified using the wildcard character `*` as a placeholder for any arbitrary subdomain name. Hence, `*.example.com` represents any subdomain under the domain `example.com`. Wildcard subdomains are often used in situations where subdomains are created dynamically or where the exact list of subdomains is not predefined. A wildcard subdomain can also serve as a catch-all rule for any subdomain that matches the specified pattern. This can simplify DNS configurations by allowing a single rule to cover multiple subdomains.
+
+## FQDN vs. Uniform Resource Locator (URL)
+
+An FQDN is a complete domain name that specifies the exact location of a resource in the DNS, while a URL refers to the full address for accessing resources on the Internet, including the protocol and additional components beyond the domain name. URLs are commonly used in web browsers to navigate to specific web pages.
+
+## How FQDNs are used
+
+FQDNs serve a number of important functions, including:
+
+- **Identifying network resources.** FQDNs are used to uniquely and exactly identify network resources, such as servers, routers, and devices, on the Internet. Each resource can be assigned a distinct FQDN to facilitate precise locating and communication.
+- **Email addressing.** In an email address, the domain name is represented by the site's FQDN. For instance, in the email address `user@example.com`, `example.com` represents the mail server's domain.
+- **Web server hosting.** FQDNs are used in web hosting to identify and access web servers. Websites are typically associated with FQDNs, allowing users to access specific web pages by entering the complete address (for instance, `www.example.com`). This is critical for hosting multiple websites on a single server, each with its own FQDN.
+- **DNS resolution.** DNS translates human-readable domain names into IP addresses, enabling computers to locate and communicate with each other on the Internet. FQDNs are fundamental for DNS resolution, as they are used in DNS queries and responses, allowing systems to resolve hostnames to their corresponding IP addresses.
+
+## Why do you need an FQDN?
+
+FQDNs play a crucial role in identifying, connecting, and securing network infrastructure, communication, and web services. These uses include:
+
+- **Obtaining an SSL/TLS certificate.** FQDNs are instrumental for securing web communication through SSL/TLS certificates, which protect connections between a web server and a browser. SSL/TLS certificates are typically issued for specific FQDNs to ensure secure and encrypted communication between clients and servers.
+- **Remote host connections.** FQDNs are commonly used in remote access scenarios, such as remote host and virtual machine connections. They contribute to the authentication process, ensuring accurate identification of and connection with the intended server.
+- **Accessing domain services, protocols, and remote servers.** FQDNs are essential for many applications such as accessing FTP servers and in the configuration of email services. FQDNs are also used to securely identify and authenticate hosts for Secure Shell (SSH) connections and to specify intended host servers in Telnet connections. For instance, within an FTP session, the FQDN may be used to specify the full path to a directory or file on the FTP server. Similarly, when sending emails, mail clients use the FQDN of the SMTP server to route outgoing messages.
+- **Migrating to a new server.** Migrating services to a new server or infrastructure usually requires changes in IP addresses. Using FQDNs allows users to update DNS records to reflect the new IP addresses without requiring changes on client devices. FQDNs provide an abstraction layer, allowing users to refer to services by their domain names rather than specific IP addresses.
+
+## How to find an FQDN
+
+How to find your computer's FQDN depends on your operating system.
+
+### Windows OS
+
+1. Open the **Control Panel**.
+2. Click **System and Security > System**.
+3. Select **See the name of this computer**.
+4. The **Full device name** (i.e., the FQDN) is listed under **Device specifications**.
+
+### macOS
+
+1. Select the **Apple** menu, **System Settings**, and click **General** in the sidebar.
+2. Click **About** on the right. You might need to scroll down.
+3. The full computer name, or the FQDN, appears at the top of the **About** settings.
+
+Alternatively, in macOS, opening the terminal and typing `hostname -f` into the prompt returns the FQDN.
+
+### Linux
+
+Opening the terminal and entering `hostname -A`, where the A is case-sensitive, into the prompt will return the FQDN.
+
+<Cloze title="Reading an FQDN" color="#0055ff" text="In www.shop.example.com the labels are read right to left: {{com}} is the top-level domain, {{example}} the second-level domain, {{shop}} the subdomain and {{www}} the hostname." />
+
+<FlipCard front={<div>What does a trailing dot in www.example.com. tell the resolver?</div>} back={<div>It marks the name as absolute by terminating it at the DNS root, so no search suffix is appended.</div>} color="#8800ff" />

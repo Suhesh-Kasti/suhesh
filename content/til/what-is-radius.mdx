@@ -1,0 +1,26 @@
+---
+title: "What Is RADIUS?"
+date: '2026-06-15'
+tags: ["RADIUS", "AAA", "network", "802.1X", "Security"]
+excerpt: "RADIUS centralises authentication, authorization and accounting for network access — one server instead of local accounts on every switch, AP and firewall."
+type: til
+category: "Networking"
+---
+
+# What Is RADIUS?
+
+RADIUS (Remote Authentication Dial-In User Service) is a networking protocol designed to centralize AAA — **authentication**, **authorization**, and **accounting** — for network access over **UDP ports 1812 and 1813**.
+
+## How RADIUS works
+
+When a user attempts to connect to an enterprise Wi-Fi network, VPN, or switch port, the network hardware (acting as a RADIUS client) offloads the credential check to the central RADIUS server.
+
+- **Authentication:** the RADIUS server verifies the user's credentials against a backend database or directory.
+- **Authorization:** if valid, the server returns an Access-Accept packet containing policy instructions (e.g., "Assign this user to VLAN 20 and apply ACL X").
+- **Accounting:** the server logs session activity, including logon/logoff timestamps, assigned IP addresses, and data usage for security audits.
+
+## Why RADIUS
+
+Without RADIUS, administrators would have to manually create and manage local user accounts across every individual switch, router, AP, and firewall on a network. RADIUS eliminates this operational burden by providing a single point of access control, powering technologies like **802.1X** (port-level authentication) and dynamic network segmentation.
+
+<Cloze title="RADIUS recall" color="#8800ff" text="RADIUS centralises the three A's: {{authentication}}, {{authorization}} and {{accounting}}, over UDP ports {{1812}} and {{1813}}. It commonly powers {{802.1X}} port-level authentication." />

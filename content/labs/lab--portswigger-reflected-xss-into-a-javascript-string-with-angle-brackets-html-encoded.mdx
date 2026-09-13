@@ -1,6 +1,6 @@
 ---
 title: Reflected XSS into a JavaScript string with angle brackets HTML encoded
-date: '2025-06-18'
+date: '2026-08-17'
 tags:
   - PortSwigger
   - lab
@@ -12,31 +12,50 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: Reflected XSS into a JavaScript string with angle brackets HTML encoded
 
-## Objective
-This lab contains a reflected cross-site scripting vulnerability in the search query tracking functionality where angle brackets are encoded. The reflection occurs inside a JavaScript string. To solve this lab, perform a cross-site scripting attack that breaks out of the JavaScript string and calls the `alert` function.
+This is the mirror image of the lab before it. There, quotes were the wall and angle brackets walked straight through. Here the angle brackets are encoded, so you cannot touch the HTML, and the single quote is sitting there completely unescaped. Same reflection point, opposite door.
 
-## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
-- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
-- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
-- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
+## The setup
 
-## Hint Usage (if needed)
-- [ ] Used lab hint
-- [ ] Watched first 30s of video solution
-- *Resume blind with new clue. Still stuck?*
+The search term is reflected in a script block, `var searchTerms = 'test';`. Search for `<script>alert(1)</script>` this time and it comes back HTML-encoded, so tag injection is dead. Send a lone `'` and it is echoed back untouched. The app spent its escaping budget on the HTML layer and left the JavaScript string open.
 
-## Solution Reconstruction
-*After viewing full solution, close it immediately.*
-- [ ] Step 1: The string was being reflected in javascript
-- [ ] Step 2: Used the payload `'; alert(1);//` to make the js
-    `var searchTerms = ''; alert(1);//';` 
-making searchTerm=' ' -> alert(1) -> everything else commented out
-## Key Takeaway
-*Write ONE principle I must remember:*
+## How the vulnerability works
 
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+Angle-bracket encoding is an HTML defence. It exists to stop your input being parsed as tags. It has no opinion about characters that only mean something to JavaScript, and in a JavaScript string the character that matters most is the single quote that closes it. Because the reflection lands inside `'...'`, a single quote in your input ends the string early and puts you in code position. From there it is normal JavaScript, and the HTML encoder never gets a say.
+
+## Solving it
+
+1. Search a test string and view the source to confirm `var searchTerms = 'test';`.
+2. Add a single quote and check that it is reflected raw.
+3. Send this as the search term:
+
+```javascript
+';alert(1)//
+```
+
+4. The `//` comments out the server's trailing `';` so nothing is left dangling.
+
+## Why that payload works
+
+The browser constructs this line:
+
+```javascript
+var searchTerms = '';alert(1)//';
+```
+
+Your first `'` closes the string, so `searchTerms` is the empty string. The `;` ends that statement. `alert(1)` is now a free-standing expression and runs immediately. The `//` turns the leftover `';` from the page into a comment, which prevents a syntax error. Every character that decided the outcome was invisible to the angle-bracket encoder, because that encoder was watching the wrong context.
+
+## The fix
+
+Escape for the context you are actually in. For a JavaScript string that means escaping `'`, `"`, `\` and line terminators, or better, JSON-encoding the value so no raw quote can appear. HTML-encoding `<` and `>` is right for HTML, but it is not a substitute for JavaScript string escaping, and neither replaces keeping data out of inline scripts altogether.
+
+<Cloze title="Payload recall" text="Angle brackets are encoded but single quotes are not, so I close the string and comment out the tail: {{';alert(1)//}}." />
+
+<MatchPairs title="Match the defence to the layer" pairs={[
+  { term: "HTML-encoding < and >", match: "Stops new tags, does nothing to a JavaScript string" },
+  { term: "Backslash-escaping a quote", match: "Stops the quote closing a JS string" },
+  { term: "JSON-encoding the value", match: "Correctly handles quotes, backslashes and line breaks for JS" },
+  { term: "Closing </script> in the input", match: "Ends the script element in the HTML parser before JS runs" }
+]} />

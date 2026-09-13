@@ -1,5 +1,3 @@
-import { CSSProperties } from "react";
-
 export const SITE = {
   name: "SCHIZO",
   realName: "Suhesh Kasti",
@@ -8,14 +6,6 @@ export const SITE = {
     "A creative space where offensive security meets art. Portfolio, brain dump, and playground — all in one canvas.",
   url: "https://suhesh.com.np",
   locale: "en",
-} as const;
-
-export const BREAKPOINTS = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  "2xl": 1536,
 } as const;
 
 export const COLORS = {
@@ -86,34 +76,6 @@ export const TYPOGRAPHY = {
   },
 } as const;
 
-export const SHADOWS = {
-  sm: "2px 2px 0px #0a0a0a",
-  md: "4px 4px 0px #0a0a0a",
-  lg: "8px 8px 0px #0a0a0a",
-  xl: "12px 12px 0px #0a0a0a",
-  colored: `6px 6px 0px ${COLORS.pink}`,
-  blue: `6px 6px 0px ${COLORS.blue}`,
-  yellow: `6px 6px 0px ${COLORS.yellow}`,
-  orange: `6px 6px 0px ${COLORS.orange}`,
-  green: `6px 6px 0px ${COLORS.green}`,
-  purple: `6px 6px 0px ${COLORS.purple}`,
-} as const;
-
-export const BORDERS = {
-  width: "2px",
-  color: COLORS.black,
-  style: "solid",
-} as const;
-
-export const SPACING = {
-  unit: 4,
-  micro: "0.5rem",
-  inline: "1rem",
-  card: "1.5rem",
-  section: "2.5rem",
-  macro: "5rem",
-} as const;
-
 export const MOTION = {
   spring: {
     type: "spring" as const,
@@ -161,7 +123,7 @@ export const NAVIGATION = {
 export const HERO = {
   title: "Suhesh Kasti",
   description:
-    "Exploring application security, pentesting and red teaming. Here documented are braindumps of all my learnings, exploration and mistakes as well.",
+    "Exploring application security, network infrastructure and application delivery. Here documented are braindumps of all my learnings, exploration and mistakes as well.",
   primaryAction: { label: "Explore Work", href: "/projects" },
   secondaryAction: { label: "Brain Dump", href: "/braindump" },
   tertiaryAction: { label: "Download CV", href: "/CV/Suhesh-Cybersecurity-CV.pdf" },
@@ -170,7 +132,7 @@ export const HERO = {
       label: "Offensive Security",
       href: "/CV/Suhesh-Cybersecurity-CV.pdf",
       color: COLORS.pink,
-      description: "Pentesting, red team, exploit dev, web security",
+      description: "Pentesting, OWASP Top 10, vulnerability research, web security",
     },
     {
       label: "IT & Network Admin",
@@ -213,44 +175,30 @@ export const FORMSPREE = {
   formId: "mrgwjvry",
 } as const;
 
-export const CURSOR = {
-  size: 24,
-  outlineSize: 48,
-  color: COLORS.pink,
-  blendMode: "exclusion" as CSSProperties["mixBlendMode"],
-  hoverScale: 2.5,
-} as const;
-
-export const SEARCH = {
-  placeholder: "Ask me anything — CV, contact, WhatsApp, projects, skills...",
-  noResults: "Nothing found. Try asking about my skills, contact info, or projects.",
-  loadingText: "Thinking...",
-} as const;
-
 export const WORK = {
   projects: [
      {
       title: "Local AI Security Agent",
       category: "AI Security",
-      description: "Fully private local AI agent stack — dual LLM routing, RAG knowledge base, MCP tools, Telegram control.",
+      description: "Two local models, a RAG index I keep fed with live CVE data, MCP tools for nmap and search, and a Telegram bot so I can ask it things from my phone. Nothing leaves the GPU.",
       tags: ["Python", "llama.cpp", "Qdrant", "FastAPI", "Docker"],
       color: COLORS.orange,
       url: "/projects/ai-agent",
       image: null,
     },
     {
-      title: "Hack The Box",
-      category: "Capture The Flag",
-      description: "HTB boxes' CTF's walkthrough and writeups - of the ones i could solve.",
-      tags: ["CTF", "Pentesting", "HTB", "Walkthrough"],
+      title: "Security Writeups",
+      category: "Writeups",
+      description: "Every lab and box I have worked through, written up the way I wish someone had explained them to me. The payloads, the dead ends, and the parts I got wrong first.",
+      tags: ["PortSwigger", "HTB", "CTF", "Walkthrough"],
       color: COLORS.green,
-      url: "/braindump?tag=htb",
+      url: "/braindump",
       image: null,
     },
     {
       title: "RemarkEnks",
       category: "Automation",
-      description: "Chrome/Firefox extension automating TSC remark writing for Subisu — saved thousands of operator hours.",
+      description: "A browser extension that writes TSC remarks for Subisu operators. One click instead of the usual copy-paste routine, and it saved the team a serious number of hours.",
       tags: ["JavaScript", "Chrome", "Firefox", "Automation"],
       color: COLORS.yellow,
       url: "/projects/remarkenks",
@@ -259,7 +207,7 @@ export const WORK = {
     {
       title: "Re-Earth Waste Management",
       category: "Web Design",
-      description: "Frontend contribution to Re-Earth, a waste management system based in Nepal.",
+      description: "Frontend work on a waste management platform in Nepal. I built the interface while the rest of the team handled the backend.",
       tags: ["HTML", "CSS", "JavaScript", "Collaboration"],
       color: COLORS.teal,
       url: "/projects/re-earth",
@@ -268,7 +216,7 @@ export const WORK = {
     {
       title: "Browser 11",
       category: "Web Experiment",
-      description: "Windows 11 replica in a web browser — interactive start button, notification center.",
+      description: "A Windows 11 clone that runs in a browser tab. The start menu opens, the notification centre works, and it exists mostly because I wanted to know if I could.",
       tags: ["HTML", "CSS", "JavaScript", "UI/UX"],
       color: COLORS.blue,
       url: "/projects/browser11",
@@ -277,7 +225,7 @@ export const WORK = {
     {
       title: "Subisu TSC Desktop App",
       category: "Desktop App",
-      description: "Python GUI training application built for Subisu recruits — self-paced learning platform.",
+      description: "A Tkinter app that trains new Subisu technicians. Lessons with diagrams, a quiz bank, progress tracking, and it works with no internet at all.",
       tags: ["Python", "Tkinter", "Desktop", "Training"],
       color: COLORS.purple,
       url: "/projects/subisu",

@@ -1,0 +1,49 @@
+---
+title: "IP Headers and Address Classes"
+date: '2026-06-12'
+tags: ["network", "IPv4", "IP addressing", "CCNA", "packet header"]
+excerpt: "The fields inside an IPv4 packet header, and the class A/B/C rules that decide how much of an address is network and how much is host."
+type: cheatsheet
+category: "Networking"
+---
+
+# IP Headers and Address Classes
+
+## Headers in the network layer
+
+- Version — four bits
+- Internet Header Length (IHL) — four bits
+- Differentiated Services Code Point (DSCP) — six bits
+- Explicit Congestion Notification (ECN) — two bits
+- Total Length — two bytes
+- Identification — two bytes
+- Flags — three bits
+- Fragment Offset — 13 bits
+- Time to Live (TTL) — one byte
+- Protocol — one byte
+- Header Checksum — two bytes
+- Source IP Address — four bytes
+- Destination IP Address — four bytes
+- One or more optional Options headers — variable length
+
+## IP addressing
+
+- Used to identify a network interface on a logical IP network.
+- IP addresses make it possible for any host to communicate with any other, regardless of location or physical network type.
+- An IPv4 address is composed of **32 bits (4 bytes)** and has both *a host portion, which identifies a specific host* and *a network portion, which identifies which network the host belongs to*.
+- A **subnet mask** is used to differentiate what portion of the address is the host portion and what portion is the network.
+
+### Addressing classes
+
+| IP Address Class | Class A | Class B | Class C |
+| --- | --- | --- | --- |
+| First bit values (binary) | 0 | 10 | 110 |
+| First byte value (decimal) | 0-127 | 128-191 | 192-223 |
+| Number of network identifier bits | 8 | 16 | 24 |
+| Number of host identifier bits | 24 | 16 | 8 |
+| Number of possible networks | 126 | 16,384 | 2,097,152 |
+| Number of possible hosts | 16,777,214 | 65,534 | 254 |
+
+There is also a Class D, which is used for multicast, and a Class E, which is used for experimental purposes.
+
+<Cloze title="Class and header recall" color="#0055ff" text="A Class A address uses {{8}} network bits, Class B uses {{16}} and Class C uses {{24}}. In the IPv4 header, TTL is {{1}} byte and the source address is {{4}} bytes." />

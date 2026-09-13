@@ -1,0 +1,50 @@
+---
+title: "How DNSSEC Works"
+date: '2024-11-12'
+tags: ["DNS", "DNSSEC", "network", "Security", "RRSIG"]
+excerpt: "DNSSEC signs DNS records, not individual records but whole record sets. Here's how RRSETs, zone-signing keys and RRSIG records fit together."
+type: blog
+category: "Networking"
+---
+
+# How DNSSEC Works
+
+To query with DNSSEC enabled:
+
+```bash
+dig @server query +dnssec
+```
+
+## Resource Record Set (RRSET)
+
+The first step towards securing a zone with DNSSEC is to group all the records with the same type into a resource record set (RRset). For example, if you have three AAAA records in your zone on the same label (i.e. `label.example.com`), they would all be bundled into a single AAAA RRset.
+
+![DNS records of the same type and label being grouped into a single resource record set](/images/content/how-dnssec-works/rrset_Allocation.png)
+
+DNSSEC doesn't work on individual records but on sets of records — the RRSETs.
+
+## Zone-Signing Keys
+
+Each zone in DNSSEC has a zone-signing key pair (ZSK): the private portion of the key digitally signs each RRset in the zone, while the public portion verifies the signature. To enable DNSSEC, a zone operator creates digital signatures for each RRset using the private ZSK and stores them in their name server as RRSIG records. This is like saying, "These are my DNS records, they come from my server, and they should look like this."
+
+## RRSIG
+
+It stores the digital signature of the RRSET using public and private keys.
+
+## The how
+
+First we take the RRSET (plain text). We run it through a signing process, which uses the private part of the ZSK to create a signature. This output — the signature — is stored alongside the plain text RRSET using the same name with record type RRSIG.
+
+Normal clients will only see the RRSET, whereas DNSSEC clients will see the RRSIG as well.
+
+- If the RRSET changes, the RRSIG has to be regenerated in order to be valid.
+- If the RRSET changes without a corresponding change in the RRSIG, the signature is considered invalid.
+
+![The RRSET being signed with the private zone-signing key and the resulting RRSIG stored alongside it](/images/content/how-dnssec-works/howDNSSECworks.png)
+
+<Cloze title="DNSSEC recall" color="#00cc55" text="Records of the same type and label are grouped into an {{RRSET}}. The private half of the {{ZSK}} signs each set, and the signature is stored beside it as an {{RRSIG}} record." />
+
+<QuizCard title="DNSSEC check" questions={[
+  { question: "What does DNSSEC sign?", options: ["Each record separately", "Sets of records (RRSETs)", "Only the zone apex", "The whole zone file at once"], correct: 1, explanation: "DNSSEC operates on RRSETs, not on individual records." },
+  { question: "What happens if an RRSET changes but its RRSIG does not?", options: ["Nothing", "The signature is treated as invalid", "The zone resigns automatically", "Clients ignore the record type"], correct: 1, explanation: "A signature only validates the exact set it was generated for." }
+]} />

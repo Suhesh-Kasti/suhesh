@@ -55,7 +55,7 @@ const TYPE_ICONS: Record<string, typeof faBook> = {
   cheatsheet: faFileCode,
   checklist: faClipboardCheck,
   braindump: faBrain,
-  series: faBook,
+  roadmap: faBook,
   lab: faBook,
 };
 
@@ -66,6 +66,22 @@ const TYPE_LABELS: Record<string, string> = {
   checklist: "Checklist",
   braindump: "Brain Dump",
 };
+
+/**
+ * How many roadmap labs this visitor has ticked off, read from their own browser storage.
+ * Only the count is sent, and only with the question they just asked — nothing is stored
+ * server-side and there is no account involved.
+ */
+function readRoadmapProgress(): number | undefined {
+  try {
+    const raw = localStorage.getItem("roadmap-progress");
+    if (!raw) return undefined;
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.length : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 export default function SearchButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -93,7 +109,7 @@ export default function SearchButton() {
       const res = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q.trim(), askAI: withAI }),
+        body: JSON.stringify({ query: q.trim(), askAI: withAI, progress: readRoadmapProgress() }),
       });
       if (res.ok) {
         const data = await res.json();

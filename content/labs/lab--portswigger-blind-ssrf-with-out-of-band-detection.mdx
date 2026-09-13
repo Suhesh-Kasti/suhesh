@@ -1,38 +1,58 @@
 ---
 title: Blind SSRF with out-of-band detection
-date: '2025-06-18'
+date: '2026-07-18'
 tags:
   - PortSwigger
   - lab
   - ssrf
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind SSRF with out-of-band detection.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The Referer header makes the server fetch a URL I choose. I point it at Burp Collaborator and watch the request land."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind SSRF with out-of-band detection
 
-## Objective
+Most SSRF labs pay out with data in the response. This one gives you nothing back. The only proof the server made a request is on a machine you control, which is exactly the problem Burp Collaborator solves. It is a small lab, but the idea behind it shows up everywhere.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Analytics software watches the `Referer` header when a product page loads and fetches that URL server-side. The fetched content is never returned to you, so you cannot read it. All you get to see is whether the request happened at all.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The fetcher takes a request header the client fully controls and makes a server-side request to it, with no allow-list. Because the result is discarded, you cannot pivot to read internal pages, but you can still confirm the request and where it went. Give the server a URL whose DNS and HTTP traffic you can observe, and the observation itself becomes the leak.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Open a product page with Burp running, catch the request, and send it to Repeater.
+2. Generate a Collaborator payload from the Collaborator tab.
+3. Replace the `Referer` value with it:
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```http
+Referer: https://YOUR-COLLABORATOR-SUBDOMAIN/
+```
+
+4. Send the request.
+5. Poll Collaborator. You should see a DNS lookup and an HTTP request coming from the back-end.
+
+If nothing shows up, wait a few seconds. The fetch runs asynchronously.
+
+## Why that payload works
+
+The `Referer` value is not validated, so the analytics fetcher resolves whatever host it contains. The Collaborator domain uses name servers Burp controls, so the lookup alone leaks: the server's resolver asks Burp's authoritative server to resolve the name. Then the HTTP fetch lands on Burp's listener. Two interactions, both traceable to the back-end.
+
+The lab firewall blocks arbitrary external hosts on purpose, so only the default public Collaborator server counts here.
+
+## The fix
+
+Never fetch URLs that come from client input. If a feature genuinely needs it, keep an allow-list of exact hosts and schemes, strip inbound headers such as `Referer` and `X-Forwarded-*` before the fetch, and run the fetcher behind an egress proxy that denies private address ranges. Assuming the response stays hidden does not make the request safe.
+
+<Terminal title="oob check" command="curl -s -H 'Referer: https://YOUR-COLLABORATOR-SUBDOMAIN/' https://LAB-ID.web-security-academy.net/product?productId=1 -o /dev/null -w '%{http_code}'" output={"200\n\n# Then in Burp: Collaborator > Poll now\n# DNS:  YOUR-COLLABORATOR-SUBDOMAIN   (from the back-end)\n# HTTP: GET /  Host: YOUR-COLLABORATOR-SUBDOMAIN"} />
+
+<QuizCard title="Blind SSRF basics" questions={[
+  { question: "What makes this SSRF blind?", options: ["The request happens at night", "The server follows the Referer, but the fetched content is not returned to you", "The response is encrypted", "It only works on localhost"], correct: 1, explanation: "The fetcher runs server-side and throws away the body, so the only evidence is the out-of-band interaction." },
+  { question: "Why use Burp Collaborator here?", options: ["To slow the attack down", "Because it gives you a domain whose DNS and HTTP traffic you can watch", "To bypass a CORS policy", "To crack a password"], correct: 1, explanation: "A Collaborator payload turns a silent server-side request into an observable DNS and HTTP event." }
+]} />

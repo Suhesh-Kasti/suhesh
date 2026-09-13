@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,8 +12,13 @@ const STAGGER_DELAY = 0.06;
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [scrolledDown, setScrolledDown] = useState(false);
   const { links, logoText } = NAVIGATION;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -43,7 +49,26 @@ export default function Navbar() {
     return () => document.documentElement.classList.remove("nav-hidden");
   }, [hidden]);
 
+  // Escape closes the menu, and the page behind it is locked so the overlay cannot scroll away.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+    const bodyOverflow = document.body.style.overflow;
+    const htmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = bodyOverflow;
+      document.documentElement.style.overflow = htmlOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen]);
+
   return (
+    <>
     <header
       className="fixed left-0 top-0 z-50 w-full border-b-2 border-fg bg-surface transition-transform duration-300 ease-out"
       style={{ transform: hidden ? "translateY(-100%)" : "translateY(0)" }}
@@ -118,12 +143,17 @@ export default function Navbar() {
           </button>
         </div>
       </nav>
+    </header>
 
-      {/* Mobile fullscreen overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 flex flex-col md:hidden"
+    {/* Mobile overlay, portalled to <body>. The header carries a transform for its
+        hide-on-scroll slide, and a transformed ancestor makes `fixed` resolve against the
+        header instead of the viewport — which is what crushed this menu into the header strip. */}
+    {mounted &&
+      createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              className="fixed inset-0 z-[45] flex flex-col md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -221,7 +251,7 @@ export default function Navbar() {
                       {/* Link text with underline animation */}
                       <span className="relative">
                         <span
-                          className="font-display text-3xl font-extrabold uppercase text-fg group-hover:text-brutal-pink transition-colors"
+                          className="font-display text-3xl font-extrabold uppercase text-fg transition-colors group-hover:text-brutal-pink group-active:text-brutal-pink"
                           style={{ fontFamily: TYPOGRAPHY.fontDisplay }}
                         >
                           {link.label}
@@ -241,7 +271,8 @@ export default function Navbar() {
 
             {/* Footer bar */}
             <motion.div
-              className="relative z-10 border-t-2 border-fg px-8 py-4 flex items-center justify-between"
+              className="relative z-10 border-t-2 border-fg px-8 pt-4 flex items-center justify-between gap-3"
+              style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
               initial={{ y: 40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.3 }}
@@ -260,8 +291,10 @@ export default function Navbar() {
               </span>
             </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 }

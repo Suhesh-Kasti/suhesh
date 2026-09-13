@@ -1,6 +1,6 @@
 ---
 title: "SQL Injection 101"
-date: "2025-03-12"
+date: '2025-03-12'
 tags: ["SQL Injection", "Web Security", "Penetration Testing", "OWASP"]
 excerpt: "From basic concepts to data extraction — everything you need to understand SQL injection attacks and how to prevent them."
 type: "blog"
@@ -12,6 +12,8 @@ SQL injection is still in the OWASP Top 10 after decades. Not because it's hard 
 <IdeaNode color="pink">**The one-line fix:** parameterized queries. Everything else in this post is understanding *why* that matters.</IdeaNode>
 
 ## The Three Attack Types
+
+![The three SQL injection types side by side: in-band, blind and out-of-band](/images/content/sqlinjection/sqli_types.png)
 
 <Accordion title="1. In-Band (Classic) — attacker sees results directly" color="#ff2d95">
 
@@ -30,6 +32,8 @@ SELECT title FROM products WHERE id=1
 Response leaks usernames and passwords directly in the product title field.
 
 </Accordion>
+
+![Burp Repeater showing a UNION SELECT injection in the request and the response leaking credentials](/images/content/sqlinjection/sqli-lab2-burp-repeater.png)
 
 <Accordion title="2. Blind (Inferential) — attacker infers from behavior" color="#0055ff">
 
@@ -116,4 +120,16 @@ sqlmap -u "http://target.com/page.php?id=1" --dbs
       explanation: "Parameterized queries separate code from data at the database driver level — no amount of escaping can beat that. Everything else is a bandage."
     }
   ]}
+/>
+
+<Cloze
+  title="Payload recall"
+  color="#00e5ff"
+  text="To pull usernames and passwords in-band, inject {{' UNION SELECT username, password FROM users--}}. To confirm one character with a delay, inject {{' AND IF(SUBSTRING(password,1,1)=&quot;a&quot;, SLEEP(10), 0)}}."
+/>
+
+<FlipCard
+  front={<div>How does blind SQLi read data when nothing appears in the response?</div>}
+  back={<div>It asks true/false questions. Boolean-based watches the page change; time-based watches the clock with SLEEP. Data comes out one bit at a time.</div>}
+  color="#ff6600"
 />

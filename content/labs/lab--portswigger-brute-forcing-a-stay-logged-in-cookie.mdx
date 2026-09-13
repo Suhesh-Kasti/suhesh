@@ -1,38 +1,67 @@
 ---
 title: Brute-forcing a stay-logged-in cookie
-date: '2025-06-18'
+date: '2026-07-20'
 tags:
   - PortSwigger
   - lab
   - authentication
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Brute-forcing a stay-logged-in cookie.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The stay-logged-in cookie is base64 of username plus an MD5 of the password, so a wordlist and Burp payload processing crack Carlos."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Brute-forcing a stay-logged-in cookie
 
-## Objective
+The "stay logged in" checkbox is a convenience feature that quietly hands you a password oracle. The cookie it drops is `base64(username + ':' + md5(password))`, which means anyone with a wordlist can test passwords one cookie at a time and never touch the login form.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `wiener:peter` with Stay logged in ticked, then look at the response. You get a `stay-logged-in` cookie. Decode it and you see `wiener:` followed by 32 hex characters. Mine decoded to `wiener:51dc30ddc473d43a6011e9ebba6ca770`, which is exactly MD5 of my password. The shape is the point: username, colon, hash.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+Two mistakes stacked. The cookie encodes both the username and a hash of the password. The hash is plain, unsalted MD5, and MD5 is built for speed. A cookie that carries a password hash is a cookie that leaks the password to anyone who can guess it.
 
-*Write ONE principle I must remember*
+Because the username sits in the cookie in clear text, you do not even need to know who it belongs to. You put the victim's username in the prefix, hash each candidate password, glue the two together, base64 the result, and compare. The cookie is the verifier, and the server just decodes and compares dozens of these with no rate limit.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Log in as `wiener:peter` with Stay logged in, decode your cookie, and confirm the format `username:md5(password)`.
+2. Grab the `GET /my-account?id=wiener` request and send it to Intruder. The `stay-logged-in` cookie becomes a payload position automatically.
+3. Try your own password first to prove the recipe works:
+
+```text
+Payload processing, applied in order:
+1. Hash: MD5
+2. Add prefix: wiener:
+3. Encode: Base64-encode
+```
+
+4. Now swap in the candidate password list, change the request URL to `id=carlos`, and change the prefix to `carlos:`.
+
+```http
+GET /my-account?id=carlos HTTP/2
+Cookie: stay-logged-in=§cGF5bG9hZA==§
+```
+
+5. Add a grep match rule for the string `Update email`, which only shows when you are logged in. Start the attack. One response matches, and that payload is Carlos's cookie.
+6. Use that request in the browser and open My account.
+
+## Why that payload works
+
+The server trusts the cookie completely. It decodes base64, splits on the colon, and re-hashes the stored password to compare with what you sent. When the candidate you hashed matches the real password, the hashes are equal and the server treats the request as a valid session. The payload processing is doing nothing clever, it just rebuilds the exact cookie format the app expects, so every request looks like a genuine login.
+
+## The fix
+
+Do not keep credentials in a cookie. A stay-logged-in token should be a random, opaque, server-side identifier with no password material in it. Store the token in a table with an expiry, bind it to the user, and revoke it on logout or password change. Separately, never hash passwords with a bare MD5; use bcrypt, scrypt, or Argon2 with a per-user salt.
+
+<Cloze title="Cookie anatomy" text="The stay-logged-in cookie is {{base64}} of {{username}} plus a colon plus an {{MD5}} hash of the password." />
+
+<MatchPairs title="Words from this lab" pairs={[
+  { term: "stay-logged-in cookie", match: "base64(username:md5(password))" },
+  { term: "MD5", match: "fast, unsalted hash a wordlist chews through" },
+  { term: "grep match rule", match: "flags responses containing a logged-in-only string" }
+]} />

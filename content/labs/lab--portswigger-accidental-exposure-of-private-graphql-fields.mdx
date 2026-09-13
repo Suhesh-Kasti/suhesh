@@ -1,38 +1,65 @@
 ---
 title: Accidental exposure of private GraphQL fields
-date: '2025-06-18'
+date: '2026-07-05'
 tags:
   - PortSwigger
   - lab
   - graphql
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Accidental exposure of private GraphQL
-  fields. Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "The getUser query hands back passwords, and the admin sits at id 1. Introspection is all it takes to log in as admin."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Accidental exposure of private GraphQL fields
 
-## Objective
+Login here is a GraphQL mutation, which means the whole schema is one introspection query away from being public. That is basically the lab. The password field I wanted was sitting on a query the developers forgot to lock down.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in with any credentials and watch the request. The login attempt is a mutation carrying a username and password. The same endpoint handles the account view, so the schema covers users, their passwords and the admin's actions. None of it is hidden from introspection.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+Someone built a `getUser` query that returns a user's username and password, keyed by an `id`. It exists so the front end can verify details, and it is reachable by any client that knows the field name. Introspection reveals it in seconds. Once you can call `getUser` directly, you can ask for the password of any user by number. The bug is a combination: sensitive fields on a queryable type, plus an id that is a small predictable integer.
 
-*Write ONE principle I must remember*
+The admin is usually the first user, so id 1 is the place to start.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Log in with the lab's own account and catch the login mutation in your proxy history.
+2. Right-click the request and send it to Repeater, then swap the body for an introspection query and send it. Save the queries it exposes.
+3. Open the `getUser` query. It takes an `id` and returns username and password.
+
+```
+POST /graphql/v1
+
+{
+  "query": "query($id: Int!) { getUser(id: $id) { username password } }",
+  "variables": { "id": 1 }
+}
+```
+
+4. Id `0` returns nothing. Step up through small integers until the admin's credentials come back. In this lab the admin is `1`, but the number can shift per instance.
+5. Log in as the administrator, open the admin panel and delete `carlos`.
+
+## Why that payload works
+
+Introspection turns an unknown API into a documented one, so you stop guessing field names. The `getUser` resolver takes the id straight from the query and never checks who is asking. That is horizontal and vertical access control failing at once: any caller can read any user. The password comes back in a form the login mutation accepts, which is what makes the leaked value directly usable.
+
+## The fix
+
+Never put passwords on a type a client can query. Hash and verify them server side, and return a boolean instead of the secret. The resolver must also check that the caller may read the row they asked for, and introspection should be off in production. An id parameter is not authorization.
+
+<Cloze title="Field recall" text="Introspection shows a {{getUser}} query that returns a user's username and {{password}}, looked up by a small integer id." />
+
+<MatchPairs title="GraphQL terms" pairs={[
+  { term: "Introspection", match: "a query that returns the schema" },
+  { term: "getUser", match: "the query that leaks credentials here" },
+  { term: "id variable", match: "the integer that selects the user" },
+  { term: "Mutation", match: "an operation that changes state" }
+]} />
+
+<IdeaNode color="#ff5500">Start the id at 0 and walk up. The first user is often the administrator, but do not assume the number is 1 on every instance.</IdeaNode>

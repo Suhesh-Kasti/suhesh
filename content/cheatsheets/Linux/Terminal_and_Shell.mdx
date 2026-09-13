@@ -1,45 +1,57 @@
 ---
 title: "Terminal & Shell"
-excerpt: "Command line essentials.... navigation, editing, and history shortcuts for Zsh and Ghostty."
-tags: []
+date: '2026-06-13'
+excerpt: "Readline shortcuts for Zsh and Ghostty — cursor movement, editing, history and screen control, the keys I actually reach for in a terminal."
+tags: ["zsh", "Linux", "Terminal", "Shell"]
 category: "Operating System"
 type: "cheatsheet"
 ---
 
-#### 1. Cursor Movement
+# Terminal & Shell
 
-<Accordion title="Fast Navigation">
-* **Ctrl + a**: Jump to the **beginning** of the line.
-* **Ctrl + e**: Jump to the **end** of the line.
-* **Alt + f**: Move **forward** one word.
-* **Alt + b**: Move **backward** one word.
-* **Ctrl + xx**: Toggle cursor between start and current position.
+Readline shortcuts that work in Zsh (and most shells). The Ghostty ones are terminal-level, not shell-level.
+
+## Cursor movement
+
+<Accordion title="Fast navigation">
+* **Ctrl + a**: jump to the beginning of the line.
+* **Ctrl + e**: jump to the end of the line.
+* **Alt + f**: move forward one word.
+* **Alt + b**: move backward one word.
+* **Ctrl + xx**: toggle between the start of the line and the current position.
 </Accordion>
 
-#### 2. Editing & Deleting
+## Editing and deleting
 
-<Accordion title="Text Manipulation">
-* **Ctrl + w**: Delete the **word** before the cursor.
-* **Alt + d**: Delete the **word** after the cursor.
-* **Ctrl + u**: Delete from cursor to **beginning** of line.
-* **Ctrl + k**: Delete from cursor to **end** of line.
-* **Ctrl + y**: **Yank** (paste) the last deleted text.
-* **Ctrl + _**: **Undo** your last edit.
+<Accordion title="Text manipulation">
+* **Ctrl + w**: delete the word before the cursor.
+* **Alt + d**: delete the word after the cursor.
+* **Ctrl + u**: delete from the cursor to the beginning of the line.
+* **Ctrl + k**: delete from the cursor to the end of the line.
+* **Ctrl + y**: paste the last deleted text.
+* **Ctrl + _**: undo the last edit.
 </Accordion>
 
-#### 3. Command History
+## Command history
 
-<Accordion title="Retrieving Commands">
-* **Ctrl + r**: Search command history (triggers Atuin if installed).
-* **Alt + .**: Insert the **last argument** of the previous command.
-* **!!**: Execute the **entire** last command again (e.g., `sudo !!`).
-* **!$**: Execute only the last argument of the previous command.
+<Accordion title="Re-running commands">
+* **Ctrl + r**: search history. Triggers Atuin if it's installed.
+* **Alt + .**: insert the last argument of the previous command.
+* **!!**: run the whole previous command again. Handy as `sudo !!`.
+* **!$**: run only the last argument of the previous command.
 </Accordion>
 
-#### 4. Screen Control
+## Screen control
 
-<Accordion title="Ghostty & View">
-* **Ctrl + l**: Clear the screen.
-* **Ctrl + + / -**: Zoom in or out (Ghostty native).
-* **Ctrl + 0**: Reset zoom level.
+<Accordion title="Ghostty">
+* **Ctrl + l**: clear the screen.
+* **Ctrl + + / -**: zoom in or out.
+* **Ctrl + 0**: reset the zoom level.
 </Accordion>
+
+<Cloze title="Shortcut recall" text="Hit {{Ctrl + r}} to search your history, {{Ctrl + w}} to delete the word before the cursor, and run {{!!}} to repeat the last command." />
+
+<QuizCard title="Muscle memory check" color="#ff6600" questions={[
+  { question: "Which shortcut deletes from the cursor to the end of the line?", options: ["Ctrl + k", "Ctrl + u", "Ctrl + w", "Ctrl + y"], correct: 0, explanation: "Ctrl + k kills to the end of the line. Ctrl + u kills to the start, and Ctrl + y pastes what you killed." },
+  { question: "You ran a long command and forgot sudo. Fastest correction?", options: ["sudo !!", "Ctrl + r", "Alt + .", "!$"], correct: 0, explanation: "!! expands to the whole previous command, so sudo !! re-runs it with sudo in front." }
+]} />

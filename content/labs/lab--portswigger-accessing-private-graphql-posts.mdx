@@ -1,14 +1,12 @@
 ---
 title: Accessing private GraphQL posts
-date: '2025-06-18'
+date: '2026-07-04'
 tags:
   - PortSwigger
   - lab
   - graphql
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Accessing private GraphQL posts.
-  Walkthrough with solution, key takeaways, and blind replay exercise.
+excerpt: "One blog post id is missing from the list, and introspection reveals a postPassword field. Reading the hidden post is just a matter of id."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
@@ -17,22 +15,48 @@ difficulty: apprentice
 
 # Lab: Accessing private GraphQL posts
 
-## Objective
+The blog pulls its posts through GraphQL, which is the kind of detail I usually skim past. Here it matters, because a gap in the list of post ids points straight at a post the site does not want me to read.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Open the blog and watch the traffic. Posts arrive from `POST /graphql/v1`, and each one has a sequential `id`. When I counted them, id 3 was simply absent: 1, 2, 4, 5 and so on. A hole in a sequential list is a hidden row, every time.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+GraphQL returns exactly the fields the client asks for and nothing else. The developers wrote a query that fetches the title, summary and body for the visible posts, and never mentioned the other fields that exist on the `BlogPost` type. Those fields are still sitting on the server. The type has a `postPassword` field, and introspection will read the schema and hand you its name. Once you know the field exists, you can request it for any post, including the one the UI drops.
 
-*Write ONE principle I must remember*
+The authorization mistake is that the password lives on the same object as the public post data, so nothing stops a query that asks for it.
 
-## Next-Day Blind Replay
+## Solving it
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+1. Open a post or the index and find the `POST /graphql/v1` request in your proxy history. Send it to Repeater.
+2. Run introspection to read the schema. Look at the `BlogPost` type and note the `postPassword` field.
+3. Build a query for the missing id and include that field:
+
+```
+POST /graphql/v1
+Content-Type: application/json
+
+{
+  "query": "query getBlogPost($id: Int!) { getBlogPost(id: $id) { title postPassword } }",
+  "variables": { "id": 3 }
+}
+```
+
+4. The response returns the password for the hidden post. Submit it to solve the lab. The value is unique per instance, so copy it from your own response.
+
+## Why that payload works
+
+GraphQL object types do not hide fields per caller. If a field is part of the type, a query can select it, as long as the resolver returns it. The `postPassword` resolver does no ownership check; it reads the column and returns it. Introspection is the part that turns this from guesswork into a straight lookup, because it names the field for you.
+
+## The fix
+
+A field like `postPassword` should not sit on the type the public query returns. Keep secrets in a separate type with its own authorization, or drop the field entirely. Disable introspection in production. Any resolver that returns sensitive data must also verify that the caller is allowed to see that specific object, not just that they are logged in.
+
+<QuizCard title="Private posts check" questions={[
+  { question: "What first signals a hidden post on the blog page?", options: ["A 404 on a post URL", "A gap in the sequential post ids", "An error in the GraphQL response", "A comment left in the HTML"], correct: 1, explanation: "The listed ids skip one value, and a missing row in a sequential list is where the hidden post lives." },
+  { question: "Where does the hidden post's password come from?", options: ["A field named postPassword on the BlogPost type", "A brand new mutation", "The admin panel", "A cookie"], correct: 0, explanation: "Introspection shows postPassword as a field on the same BlogPost type the public query uses." },
+  { question: "Why can you ask for a field the UI never requests?", options: ["The field is not part of the type", "GraphQL returns whole objects anyway", "The type exposes it and the resolver does not check ownership", "The password is cached"], correct: 2, explanation: "If a field is on the type, a query can select it. The resolver returns it without an access check." }
+]} />
+
+<Sequence title="Order of the attack" steps={["Notice the missing post id", "Send the request to Repeater", "Run introspection to find postPassword", "Query the hidden id with that field", "Submit the password"]} />

@@ -1,39 +1,64 @@
 ---
 title: Basic server-side template injection (code context)
-date: '2025-06-18'
+date: '2026-07-09'
 tags:
   - PortSwigger
   - lab
   - ssti
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Basic server-side template injection
-  (code context). Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The display-name setting is dropped into Tornado template code, so closing the expression with }} and adding your own Python runs server-side."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Basic server-side template injection (code context)
 
-## Objective
+Here the injection point is not a message that gets rendered. It is a setting, your comment display name, that the app splices into Tornado template code. My first payload did the maths and left a stray `}}` on the page, and that leftover brace is the best confirmation I have found that I am inside the template.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in as `wiener:peter` and post a comment. On the account page you choose how your name is shown: full name, first name, or nickname. Submitting sends `POST /my-account/change-blog-post-author-display` with a parameter set to `user.name`, `user.first_name`, or `user.nickname`. Reload the post and the name above your comment updates from that value.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+## How the vulnerability works
 
-## Key Takeaway
+The server stores that parameter and drops it into a template expression. The app expects one of the three fixed strings, but you control the whole field. So your value starts its life inside Tornado's `{{ ... }}`, and you only have to close the expression to get out. Anything you add after the closing braces becomes new template code. Tornado expressions are `{{ }}`; statements, including imports, are `{% %}`. That is enough to reach Python.
 
-*Write ONE principle I must remember*
+## Solving it
 
-## Next-Day Blind Replay
+1. Post a comment and change your display name, confirming it appears above the comment.
+2. Break out of the expression and do arithmetic. Set the parameter to:
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+```
+user.name}}{{7*7}}
+```
+
+Reload the comment. The name reads something like `Peter Wiener49}}`. The `49` is server-side evaluation; the trailing `}}` is Tornado's leftover from the expression you closed early.
+3. Tornado runs Python inside `{% %}`. Import `os` and call `system()`:
+
+```
+{% import os %}{{os.system('rm /home/carlos/morale.txt')}}
+```
+
+4. In Repeater, set `blog-post-author-display=user.name}}{%25+import+os+%25}{{os.system('rm%20/home/carlos/morale.txt')`, then reload the comment page.
+
+## Why that payload works
+
+Your value already sits inside `{{ }}`, so the first `}}` ends the app's expression early and `{{7*7}}` is evaluated as a fresh one, which is why a literal `49` and a dangling brace show up together. `{% import os %}` is a statement, and `{{os.system(...)}}` calls it. Tornado does not sandbox template code, so once you are inside the template you are in Python, with the server's privileges.
+
+## The fix
+
+Do not let the request name the expression. Map the three allowed choices to fixed values server-side with an allow-list, or pass the chosen display string as a variable that the template prints. The parameter should select from your values; it should never be copied into template source.
+
+<Sequence title="Order the attack" steps={["Change the display name and reload the comment","Inject user.name}}{{7*7}} and read Peter Wiener49}}","Close the expression and add {% import os %}","Call os.system('rm /home/carlos/morale.txt') and reload"]} />
+
+<MatchPairs title="Tornado syntax" pairs={[
+  { term: "{{ }}", match: "expression that prints a value" },
+  { term: "{% %}", match: "statement such as an import or loop" },
+  { term: "blog-post-author-display", match: "the parameter that carries the injected code" }
+]} />
+
+<Accordion title="That trailing brace">
+The page showed `49}}`: a number, then a brace it did not expect. The number proves evaluation, and the brace proves you closed an expression the app opened. Two different facts from one payload.
+</Accordion>

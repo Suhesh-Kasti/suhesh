@@ -1,15 +1,12 @@
 ---
 title: Stored XSS into HTML context with nothing encoded
-date: '2025-06-18'
+date: '2026-08-30'
 tags:
   - PortSwigger
   - lab
   - xss
   - walkthrough
-excerpt: >-
-  This lab contains a stored cross-site scripting vulnerability in the comment
-  functionality. To solve this lab, submit a comment that calls the alert
-  function when the blog post is viewed.
+excerpt: "The comment field drops straight into the page with nothing encoded, so a plain script tag fires whenever the post is viewed."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
@@ -19,19 +16,17 @@ difficulty: apprentice
 # Lab: Stored XSS into HTML context with nothing encoded
 
 ## Objective
-This lab contains a stored cross-site scripting vulnerability in the comment functionality. To solve this lab, submit a comment that calls the `alert` function when the blog post is viewed.
+This lab contains a stored cross-site scripting vulnerability in the comment functionality.
+To solve this lab, submit a comment that calls the `alert` function when the blog post is viewed.
 
 ## Why This Works (The Principle)
-- **The vulnerability:** User-supplied input is stored and then embedded into a web page without any escaping, allowing arbitrary JavaScript execution for every visitor.
-- **Root cause:** The application stores attacker-controlled data and outputs it into an HTML context without sanitization or encoding.
-- **Exploitation:** Submit a simple `<script>alert(1)</script>` payload in a comment field that executes when any user views the page.
-- **Key insight:** Stored XSS is more dangerous than reflected XSS because it affects every user who views the page, not just the user who clicks a crafted link.
+- **The vulnerability:** User-supplied input is embedded into a web page without proper escaping, allowing arbitrary JavaScript execution.
+- **Root cause:** The application outputs attacker-controlled data into an HTML context, attribute, or JavaScript context without sanitization.
+- **Exploitation:** Inject a payload that escapes the current context (e.g., `>` to break out of an HTML tag, `"` to break out of an attribute).
+- **Key insight:** XSS is context-dependent — the same payload will not work in every injection point. Always identify the context first.
 
 ## Solution Reconstruction
-- [ ] Step 1: Navigated to a blog post with a comment section
-- [ ] Step 2: Injected `<script>alert(1)</script>` into the comment body
-- [ ] Step 3: Submitted the comment and verified the alert fired when viewing the blog post
-- [ ] Final payload / exploit: `<script>alert(1)</script>`
+- [ ] Final payload / exploit: Opened the site, went to a comment and in a comment section simply wrote the payload `<script>alert(1)</script>` 
 
 ## Key Takeaway
 *Write ONE principle I must remember:*
@@ -39,3 +34,5 @@ This lab contains a stored cross-site scripting vulnerability in the comment fun
 ## Next-Day Blind Replay
 - [ ] Solved entirely from memory
 - [ ] Needed to look at: *(write the specific step forgotten)*
+
+<Cloze title="Lab recall" color="#00e5ff" text="Nothing is encoded, so the comment payload is a plain {{&lt;script&gt;alert(1)&lt;/script&gt;}} tag that runs whenever the post is viewed." />

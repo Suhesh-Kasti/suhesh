@@ -1,6 +1,6 @@
 ---
 title: Insecure direct object references
-date: '2025-06-18'
+date: '2026-08-06'
 tags:
   - PortSwigger
   - lab
@@ -14,25 +14,46 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
+
 # Lab: Insecure direct object references
 
-## Objective
-This lab stores user chat logs directly on the server's file system, and retrieves them using static URLs.
-Solve the lab by finding the password for the user `carlos`, and logging into their account.
+Mine is the second chat transcript. That number on its own tells you a first one has to exist, and that is really the whole bug.
 
-## Why This Works (The Principle)
-- **The vulnerability:** The application uses user-supplied input (e.g., `id`, `user_id`, `uid`) to access resources without verifying ownership.
-- **Root cause:** No server-side authorization check — the server trusts the client to provide a valid identifier.
-- **Exploitation:** Modify the identifier to access another user's data.
-- **Key insight:** IDOR is not about bypassing authentication; it is about bypassing authorization. Even authenticated users can exploit IDOR.
+## The setup
 
-## Solution Reconstruction
-- [ ] Step 1: The site had a live chat feature that had the option to download the chat transcript 
-- [ ] Step 2: When i downloaded my chat transcript, it did that through `/download-transcript/2.txt`
-- [ ] Step 3: Changed the location to `/download-transcript/1.txt` which downloaded the 1.txt transcript stored statically in server
-![](/images/series/chat_transcript_stored_statically.png)
-## Key Takeaway
-*Write ONE principle I must remember:*
-## Next-Day Blind Replay
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+The site has a Live chat tab. I send a message, click "View transcript", and it downloads a plain text file. The URL is `/download-transcript/2.txt`. A static file, served straight off disk, named with an incrementing number. The transcript endpoint does not even ask me to log in, which already suggests ownership was never part of its design.
+
+## How the vulnerability works
+
+The transcript is fetched by filename, and the filename is a sequential integer. Nothing ties number 2 to my session, and nothing stops me asking for number 1. Whoever owns transcript 1 is a different user, and their file is one decrement away. Because the numbers are small and dense, the whole range is walkable by hand in seconds, no tooling required.
+
+This is a direct object reference: the parameter points at the stored object itself. It is not a case of broken login, because I am not logged in at all here. It is broken authorization, or rather no authorization, on a resource that was never meant to be public.
+
+## Solving it
+
+1. Open the Live chat tab and send a message.
+2. Click "View transcript" and download your own transcript.
+3. Look at the download URL: `/download-transcript/2.txt`.
+4. Change the number to reach the other file:
+
+```http
+GET /download-transcript/1.txt HTTP/1.1
+Host: <lab-id>.web-security-academy.net
+```
+
+5. Read the text. It contains a password for the user `carlos`.
+6. Return to the login page and sign in with those credentials.
+
+## Why that payload works
+
+The handler resolves the path to a file on the filesystem and returns its contents. File 1 exists, the web server can read it, and nobody checks whether the requester should have it. A predictable name turns a guess into a hit on the first try.
+
+## The fix
+
+Serve transcripts through an authenticated handler that confirms the file belongs to the current session before returning it, and reference them by an indirect token that maps to the real file on the server. Do not expose the raw filename, and never depend on the number being hard to guess.
+
+<Cloze title="Spot the reference" text="The transcript URL is /download-transcript/{{2.txt}}, and the other user's file is {{1.txt}}. The password is found inside {{carlos}}'s chat log." />
+
+<Accordion title="Why the number is the whole bug">
+Even a random filename would not fix this on its own. A guessable name makes the attack trivial, but the real defect is that the file is served with no check that the requester is allowed to read it. Randomness is a speed bump. An authorization check is a wall.
+</Accordion>

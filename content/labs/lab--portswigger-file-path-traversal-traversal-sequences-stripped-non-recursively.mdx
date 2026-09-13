@@ -1,39 +1,72 @@
 ---
 title: 'File path traversal, traversal sequences stripped non-recursively'
-date: '2025-06-18'
+date: '2026-07-31'
 tags:
   - PortSwigger
   - lab
   - path-traversal
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — File path traversal, traversal
-  sequences stripped non-recursively. Walkthrough with solution, key takeaways,
-  and blind replay exercise.
+excerpt: "The filter deletes `../` in one pass and stops. `....//` reassembles into a working traversal after that pass."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: File path traversal, traversal sequences stripped non-recursively
 
-## Objective
+I have written this exact filter myself, which is the embarrassing part: strip `../` from the input, feel safe, ship it. This lab is the two-minute proof that one pass is not a filter, and it is the kind of bug I would wave through in a code review.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Product images load through `GET /image?filename=<name>`. The parameter is a plain filename, and there is no extension check worth mentioning. Ask for a real image and it comes back fine:
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+```
+GET /image?filename=49.jpg HTTP/1.1
+Host: LAB-ID.web-security-academy.net
+```
 
-## Key Takeaway
+Change the filename to `../../../etc/passwd` and you get nothing useful. The app removed the traversal. That is the tell: something in the input is being deleted, so the question becomes what it is deleting, and when.
 
-*Write ONE principle I must remember*
+## How the vulnerability works
 
-## Next-Day Blind Replay
+The backend strips traversal sequences out of the filename before joining it onto the image directory. The strip is non-recursive, which is a polite way of saying it scans the input once for the literal `../`, deletes every match, and never looks at the result again.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+That single pass is the whole bug. The developer assumed one removal pass deletes all traversal. It does not, because removing a substring can create a new one out of the characters left behind.
+
+## Solving it
+
+1. Send a normal image request through Burp and drop it into Repeater, so you have a known-good baseline to compare against.
+2. Replace the filename with a nested sequence. Three `....//` blocks, then the target path:
+
+```
+filename=....//....//....//etc/passwd
+```
+
+3. Send it. The response body is the contents of `/etc/passwd`, even though the request never contained a literal `../`.
+
+Why three: the image directory sits at `/var/www/images/`, three levels below root. Three climbs reach `/`, and from there `etc/passwd` is a normal relative path.
+
+## Why that payload works
+
+Look at one block on its own: `....//`. That is four dots followed by two slashes. The filter searches for `../` and finds it at offset three, the third and fourth dots plus the first slash. It deletes those three characters. What is left is the first two dots plus the still-present second slash, which is `../`.
+
+So the filter manufactures a traversal sequence while believing it removed one. Repeat the block three times and the server hands you `../../../` out of input that, on its face, contains no valid traversal at all. The payload does not contain the thing the filter is looking for. The filter builds it.
+
+## The fix
+
+Stop sanitising paths by deleting substrings. Resolve the requested file against the allowed base directory, then check that the canonical result is still inside that base. If it is not, reject:
+
+```c
+char resolved[PATH_MAX];
+if (realpath(joined_path, resolved) == NULL) reject();
+if (strncmp(resolved, base_dir, strlen(base_dir)) != 0) reject();
+```
+
+The better design is to not accept a filename at all. Map an opaque id to a known file and look that id up in a table, so there is no path for the user to influence.
+
+<Cloze title="Non-recursive strip" text="The filter deletes the literal {{../}} once and stops. Send it {{....//}} and a fresh {{../}} appears after the deletion, because the scan never revisits the result." />
+
+<FlipCard front={<div>The app strips `../` in a single pass. What block do you send per level to get a traversal through?</div>} back={<div>`....//`. One pass removes the inner `../`, and the leftover two dots plus the remaining slash reassemble into `../`. Stack three for `../../../`.</div>} />
+
+<IdeaNode color="#ff5500">The word "non-recursive" in the lab title is the hint: a single-pass replace, not a loop. If the title says recursive, this exact payload fails and you reach for double-encoding instead.</IdeaNode>

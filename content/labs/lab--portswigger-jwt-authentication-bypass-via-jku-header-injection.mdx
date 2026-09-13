@@ -1,39 +1,72 @@
 ---
 title: JWT authentication bypass via jku header injection
-date: '2025-06-18'
+date: '2026-08-09'
 tags:
   - PortSwigger
   - lab
   - jwt
   - walkthrough
-excerpt: >-
-  PortSwigger Web Security Academy lab — JWT authentication bypass via jku
-  header injection. Walkthrough with solution, key takeaways, and blind replay
-  exercise.
+excerpt: "The jku header names the key-set URL, so I host my own JWKS on the exploit server and point the token at it."
 type: lab
 category: PortSwigger Academy
 platform: PortSwigger
-difficulty: apprentice
+difficulty: practitioner
 ---
 
 # Lab: JWT authentication bypass via jku header injection
 
-## Objective
+This is the jwk lab's cousin with one extra hop of indirection. Instead of putting my key inside the token, I put it on a web page and make the token point at that page. It is the same trust bug, dressed up as a key-set reference. Two labs ago I recovered a key I was not given. Here I just publish my own.
 
-*Describe the labs objective here*
+## The setup
 
-## Solution Reconstruction
+Log in and inspect the JWT. The header has a `jku` field holding a URL:
 
-- [ ] Step 1:
-- [ ] Step 2:
-- [ ] Step 3:
-- [ ] Final payload / exploit:
+```json
+{"alg": "RS256", "jku": "https://<lab-host>/.well-known/jwks.json"}
+```
 
-## Key Takeaway
+A `jku` is a URL pointing at a JWKS document, the same kind of key-set file the algorithm confusion labs fetched. The app loads keys from whatever URL the token names, which is the part that should never be true of attacker-supplied input.
 
-*Write ONE principle I must remember*
+## How the vulnerability works
 
-## Next-Day Blind Replay
+The flaw is that the URL comes from the token. It should be a fixed address the server controls, but here it is data the attacker can set, so it can point anywhere the server is able to reach. The server then fetches my document, reads my key, and verifies my signature with it.
 
-- [ ] Solved entirely from memory
-- [ ] Needed to look at: *(write the specific step forgotten)*
+The lab gives me an exploit server for exactly this. I upload a JWKS file holding the public half of a keypair I generated, set `jku` to that file's URL, and sign with the private half.
+
+## Solving it
+
+1. Log in as `wiener:peter` and capture the JWT.
+2. In JWT Editor generate a new RSA keypair.
+3. Copy the public key as a JWK, then on the exploit server build a JWKS file around it:
+
+```json
+{"keys": [ {"kty": "RSA", "e": "AQAB", "use": "sig", "kid": "<your-kid>", "n": "<your-modulus>"} ]}
+```
+
+   Set that file's content type to `application/json` and store it.
+4. Edit the token. Set the payload `sub` to `administrator`, set the header `jku` to the exploit server URL of your JWKS, set `kid` to the same `<your-kid>`, and sign with your private key.
+5. Send, browse to `/admin`, and delete `carlos`.
+
+## Why that payload works
+
+The verifier trusts a key that arrived by URL and never checks that URL against an allow-list. My JWKS is served by a host I control, so the key it returns is mine, and the signature I made with the matching private key validates. It lands the same way as the jwk lab, one hop further out. Inline key versus remote key is only a difference in where the attacker's key lives.
+
+## The fix
+
+Never take the key-set URL from the token. Pin verification to a server-configured JWKS address and ignore any `jku` the client sends, or validate it against a strict allow-list. Cache the trusted key set and reject tokens whose `jku` is not on it.
+
+<Terminal
+  title="what the server fetches"
+  command={`GET /my-account  (Cookie: session=<jwt whose jku points at the exploit server>)`}
+  output={`HTTP/1.1 200 OK\n... the server fetches your jwks.json,\nreads YOUR public key, verifies YOUR signature, lets you in`}
+/>
+
+<FlipCard
+  front={<div>What is the difference between the jwk and jku labs?</div>}
+  back={<div>jwk embeds the attacker's public key inside the token. jku points the token at a URL where the attacker hosts that key. Same trust flaw, one extra hop.</div>}
+/>
+
+<Cloze
+  title="Recall"
+  text="I host a {{JWKS}} file with my public key on the exploit server, point the {{jku}} header at its URL, and sign the token with my {{private key}}."
+/>

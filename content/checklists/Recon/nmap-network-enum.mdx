@@ -1,6 +1,6 @@
 ---
 title: "Nmap Engagement & Evasion Strategy"
-date: "2026-03-10"
+date: '2026-03-10'
 tags: ["cpts", "red-team", "nmap", "port scanning", "evasion", "recon"]
 excerpt: "A systematic Nmap workflow — host discovery to service enumeration to firewall evasion. Run these phases in order."
 category: "Reconnaissance"
@@ -10,7 +10,7 @@ Run these phases in order. Don't skip host discovery. Don't full-scan before you
 
 ---
 
-### Phase 1: Host Discovery
+## Phase 1: Host Discovery
 
 <ProgressChecklist checklistId="nmap-host-discovery" />
 
@@ -23,16 +23,28 @@ Run these phases in order. Don't skip host discovery. Don't full-scan before you
 
 ---
 
-### Phase 2: Port Scanning
+## Phase 2: Port Scanning
 
 <ProgressChecklist checklistId="nmap-port-scanning" />
 
 ---
 
-### Phase 3: Firewall Evasion
+## Phase 3: Firewall Evasion
 
 <ProgressChecklist checklistId="nmap-evasion" />
 
 <IdeaNode color="green">After scanning, save grepable output: nmap -oG scan.txt. Parse with grep or awk for quick analysis.</IdeaNode>
 
 <IdeaNode color="pink">Never skip host discovery. Blind full-port scanning wastes time and generates noise. Know what's alive first, then scan surgically.</IdeaNode>
+
+---
+
+## Revision
+
+<QuizCard title="What did you forget" questions={[
+  { question: "ICMP Echo is blocked and you still want an alive check. Next ping type?", options: ["-PE", "-PP", "-PS", "-PR"], correct: 1, explanation: "ICMP Timestamp (-PP) often slips through where Echo (-PE) is dropped." },
+  { question: "A stateful firewall ignores your SYN pings. Which ping looks like normal traffic?", options: ["-PE", "-PS", "-PA", "-PR"], correct: 2, explanation: "An ACK (-PA) resembles a reply inside an established connection, so it is rarely filtered." },
+  { question: "Best first pass over a host you just confirmed alive?", options: ["-p-", "--top-ports=100", "-O", "-f"], correct: 1, explanation: "Top 100 ports covers most real services fast. -p- is the slow thorough pass you run afterwards." }
+]} />
+
+<Cloze title="Evasion flags" text="Split packets: nmap {{-f}}. Set the fragment size: nmap {{--mtu}} 24. Blend in with decoys: nmap -D {{RND:10}}. Pretend to be DNS: nmap --source-port {{53}}." />

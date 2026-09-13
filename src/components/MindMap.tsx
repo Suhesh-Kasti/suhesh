@@ -8,7 +8,6 @@ import type { BrainDumpMeta, ContentType } from "@/lib/braindump";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
-  faChevronDown,
   faBook,
   faLightbulb,
   faClipboardCheck,
@@ -41,7 +40,7 @@ const TYPE_CONFIG: Record<ContentType, { label: string; icon: typeof faBook; col
   cheatsheet: { label: "Cheatsheets", icon: faFileCode, color: COLORS.green },
   checklist: { label: "Checklists", icon: faClipboardCheck, color: COLORS.blue },
   braindump: { label: "Brain Dump", icon: faBrain, color: COLORS.purple },
-  series: { label: "Series & Roadmaps", icon: faRoad, color: COLORS.teal },
+  roadmap: { label: "Roadmaps", icon: faRoad, color: COLORS.teal },
   lab: { label: "Labs & Walkthroughs", icon: faFlask, color: COLORS.orange },
 };
 
@@ -49,9 +48,9 @@ function buildMap(posts: BrainDumpMeta[]): MapNode[] {
   const nodes: MapNode[] = [];
 
   // Separate posts by type
-  const seriesPosts = posts.filter((p) => p.type === "series");
+  const seriesPosts = posts.filter((p) => p.type === "roadmap");
   const labPosts = posts.filter((p) => p.type === "lab");
-  const otherPosts = posts.filter((p) => p.type !== "series" && p.type !== "lab");
+  const otherPosts = posts.filter((p) => p.type !== "roadmap" && p.type !== "lab");
 
   // Build Roadmaps node with nested lab walkthroughs
   if (seriesPosts.length > 0 || labPosts.length > 0) {
@@ -154,7 +153,7 @@ function buildMap(posts: BrainDumpMeta[]): MapNode[] {
 
   // Build rest of the types (blog, til, cheatsheet, checklist, braindump)
   for (const [type, cfg] of Object.entries(TYPE_CONFIG)) {
-    if (type === "series" || type === "lab") continue;
+    if (type === "roadmap" || type === "lab") continue;
     const typePosts = otherPosts.filter((p) => p.type === type);
     if (typePosts.length === 0) continue;
     const typeNode: MapNode = {
@@ -298,13 +297,6 @@ function MobileMap({ mapNodes }: { mapNodes: MapNode[] }) {
       return next;
     });
   }, []);
-  const expandAll = () => {
-    const ids = new Set<string>();
-    const walk = (n: MapNode[]) => n.forEach((x) => { ids.add(x.id); walk(x.children); });
-    walk(mapNodes);
-    setExpanded(ids);
-  };
-  const collapseAll = () => setExpanded(new Set());
 
   return (
     <div className="flex flex-col flex-1 overflow-y-auto">
@@ -349,13 +341,55 @@ function MobileMap({ mapNodes }: { mapNodes: MapNode[] }) {
   );
 }
 
+const MIN_ZOOM = 0.3;
+const MAX_ZOOM = 2.5;
+
 function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set(mapNodes.map((n) => n.id)));
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const dragStart = useRef({ x: 0, y: 0 });
+  const contentRef = useRef<HTMLDivElement>(null);
+  const zoomLabelRef = useRef<HTMLSpanElement>(null);
+
+  // The camera lives in a ref and is written straight to the DOM. Panning re-renders nothing,
+  // which matters because this tree holds every post on the site — going through React state
+  // on every mousemove was what made the canvas lag and drift.
+  const view = useRef({ x: 0, y: 0, zoom: 1 });
+  const drag = useRef<{ id: number; startX: number; startY: number; originX: number; originY: number } | null>(null);
+
+  const applyView = useCallback(() => {
+    const { x, y, zoom } = view.current;
+    if (contentRef.current) {
+      contentRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${zoom})`;
+    }
+    const canvas = canvasRef.current;
+    if (canvas) {
+      // The grid is the canvas's own background, so it repeats forever with no giant layer.
+      canvas.style.backgroundPosition = `${x}px ${y}px`;
+      canvas.style.backgroundSize = `${40 * zoom}px ${40 * zoom}px`;
+    }
+    if (zoomLabelRef.current) {
+      zoomLabelRef.current.textContent = `${Math.round(zoom * 100)}%`;
+    }
+  }, []);
+
+  // Keep at least a slice of the map on screen, so it stays an infinite canvas without ever
+  // letting the content wander off and get lost.
+  const clampView = useCallback(() => {
+    const el = contentRef.current;
+    const canvas = canvasRef.current;
+    if (!el || !canvas) return;
+    const v = view.current;
+    const w = el.offsetWidth * v.zoom;
+    const h = el.offsetHeight * v.zoom;
+    const marginX = Math.min(canvas.clientWidth * 0.5, Math.max(80, w * 0.5));
+    const marginY = Math.min(canvas.clientHeight * 0.5, Math.max(80, h * 0.5));
+    v.x = Math.min(Math.max(v.x, -w + marginX), canvas.clientWidth - marginX);
+    v.y = Math.min(Math.max(v.y, -h + marginY), canvas.clientHeight - marginY);
+  }, []);
+
+  useEffect(() => {
+    applyView();
+  }, [applyView]);
 
   const toggle = useCallback((id: string) => {
     setExpanded((prev) => {
@@ -374,36 +408,69 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
   };
   const collapseAll = () => setExpanded(new Set());
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.target === canvasRef.current || (e.target as HTMLElement).closest(".map-canvas")) {
-      isDragging.current = true;
-      if (canvasRef.current) canvasRef.current.style.cursor = "grabbing";
-      dragStart.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
-    }
-  };
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging.current) setPan({ x: e.clientX - dragStart.current.x, y: e.clientY - dragStart.current.y });
-  };
-  const handleMouseUp = () => {
-    isDragging.current = false;
-    if (canvasRef.current) canvasRef.current.style.cursor = "grab";
+  const resetView = () => {
+    view.current = { x: 0, y: 0, zoom: 1 };
+    applyView();
   };
 
+  // Ctrl/Cmd + wheel zooms toward the pointer. A plain wheel is left alone so trackpad
+  // momentum scrolls the page instead of flinging the canvas around.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const handler = (e: WheelEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-        setZoom((z) => Math.max(0.3, Math.min(2, z - e.deltaY * 0.001)));
-      } else {
-        e.preventDefault();
-        setPan((p) => ({ x: p.x - e.deltaX, y: p.y - e.deltaY }));
-      }
+    const onWheel = (e: WheelEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      const v = view.current;
+      const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, v.zoom * Math.exp(-e.deltaY * 0.002)));
+      const k = next / v.zoom;
+      // keep the point under the cursor fixed while zooming
+      v.x = px - (px - v.x) * k;
+      v.y = py - (py - v.y) * k;
+      v.zoom = next;
+      clampView();
+      applyView();
     };
-    canvas.addEventListener("wheel", handler, { passive: false });
-    return () => canvas.removeEventListener("wheel", handler);
-  }, []);
+    canvas.addEventListener("wheel", onWheel, { passive: false });
+    return () => canvas.removeEventListener("wheel", onWheel);
+  }, [applyView, clampView]);
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Never start a drag from a node or a toolbar control — that is what made clicking a link
+    // throw the whole map sideways.
+    if ((e.target as HTMLElement).closest("a, button")) return;
+    drag.current = {
+      id: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+      originX: view.current.x,
+      originY: view.current.y,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+    e.currentTarget.style.cursor = "grabbing";
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    if (!d || d.id !== e.pointerId) return;
+    view.current.x = d.originX + (e.clientX - d.startX);
+    view.current.y = d.originY + (e.clientY - d.startY);
+    clampView();
+    applyView();
+  };
+
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    if (!d || d.id !== e.pointerId) return;
+    drag.current = null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    e.currentTarget.style.cursor = "grab";
+  };
 
   return (
     <>
@@ -413,6 +480,9 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
           <span className="font-mono text-2xs uppercase tracking-label" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>
             Knowledge Map
           </span>
+          <span ref={zoomLabelRef} className="font-mono text-2xs opacity-60" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+            100%
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={expandAll} className="font-mono text-2xs uppercase px-2 py-1 border border-surface/30 hover:bg-surface hover:text-fg transition-colors cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
@@ -421,7 +491,7 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
           <button onClick={collapseAll} className="font-mono text-2xs uppercase px-2 py-1 border border-surface/30 hover:bg-surface hover:text-fg transition-colors cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
             <FontAwesomeIcon icon={faMinus} /> Collapse
           </button>
-          <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="font-mono text-2xs uppercase px-2 py-1 border border-surface/30 hover:bg-surface hover:text-fg transition-colors cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+          <button onClick={resetView} className="font-mono text-2xs uppercase px-2 py-1 border border-surface/30 hover:bg-surface hover:text-fg transition-colors cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
             Reset
           </button>
         </div>
@@ -429,33 +499,24 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
 
       <div
         ref={canvasRef}
-        className="map-canvas relative flex-1 select-none"
+        className="map-canvas relative flex-1 select-none overflow-hidden"
         style={{
           cursor: "grab",
-          overflow: "hidden",
+          touchAction: "none",
+          backgroundColor: "var(--surf)",
+          backgroundImage:
+            "linear-gradient(var(--fg) 1px, transparent 1px), linear-gradient(90deg, var(--fg) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
       >
-        {/* Infinite grid background */}
         <div
-          className="absolute pointer-events-none"
-          style={{
-            inset: "-500%",
-            backgroundColor: "var(--surf)",
-            backgroundImage: "linear-gradient(var(--fg) 1px, transparent 1px), linear-gradient(90deg, var(--fg) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-            opacity: 0.03,
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-          }}
-        />
-        <motion.div
+          ref={contentRef}
           className="absolute p-12"
-          style={{ transformOrigin: "0 0" }}
-          animate={{ x: pan.x, y: pan.y, scale: zoom }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          style={{ transformOrigin: "0 0", willChange: "transform" }}
         >
           <div className="flex gap-16 flex-wrap">
             {mapNodes.map((typeNode) => (
@@ -478,8 +539,8 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
               </div>
             ))}
           </div>
-        </motion.div>
-        <div className="absolute bottom-3 left-3 font-mono text-2xs text-fg-muted/30 flex gap-3 pointer-events-none z-10" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+        </div>
+        <div className="absolute bottom-3 left-3 font-mono text-2xs text-fg-muted/40 flex gap-3 pointer-events-none z-10" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
           <span>Drag to pan</span>
           <span>Ctrl+Scroll to zoom</span>
         </div>

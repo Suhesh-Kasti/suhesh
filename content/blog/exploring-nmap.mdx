@@ -1,10 +1,11 @@
 ---
 title: "Exploring Nmap — Getting Started"
-date: "2023-09-28"
+date: '2023-09-28'
 tags: ["Nmap", "Port Scanning", "Penetration Testing", "Enumeration"]
 excerpt: "Every hack starts with enumeration. Nmap is the tool. Here's how to install it and run your first scans."
 type: "blog"
 category: "Reconnaissance"
+image: "/images/content/nmap/nmap-cover.png"
 ---
 
 Enumeration is the first real step in any engagement. Before you exploit anything, you need to know what's there. Nmap answers that question.
@@ -111,5 +112,21 @@ PORT     STATE    SERVICE      VERSION
 - **filtered** — Firewall blocking — can't tell if open or closed
 
 </Accordion>
+
+<Cloze
+  title="Port states"
+  color="#7700ff"
+  text="A service is listening on an {{open}} port. A firewall blocking the probe leaves it {{filtered}}. Reachable with nothing listening is {{closed}}."
+/>
+
+<QuizCard
+  title="Nmap flags"
+  color="#ffdd00"
+  questions={[
+    { question: "Which flag runs a ping sweep with no port scan?", options: ["-sn", "-sS", "-sV", "-O"], correct: 0, explanation: "-sn finds live hosts and stops there. -sS is a SYN port scan, -sV fingerprints services." },
+    { question: "What does -sV add to a scan?", options: ["All ports", "Service and version detection", "OS fingerprint", "Faster timing"], correct: 1, explanation: "-sV probes open ports to name the service and its version." },
+    { question: "What does a filtered port mean?", options: ["No service is listening", "A firewall is blocking the probe", "The port is open", "The host is down"], correct: 1, explanation: "Filtered means Nmap got no useful answer because something, usually a firewall, dropped the probe." }
+  ]}
+/>
 
 <BrutalButton color="#ffdd00">Check the full Nmap Cheatsheet →</BrutalButton>

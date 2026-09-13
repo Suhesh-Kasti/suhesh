@@ -1,8 +1,8 @@
 ---
 title: "MCP — how AI agents grow new limbs"
-date: "2026-05-16T11:30:00+05:45"
+date: '2026-05-31'
 excerpt: "Model Context Protocol explained — what the server and client actually are, why it exists, and how it turned my LLM from a chatbot into something that can actually run commands"
-tags: []
+tags: ["MCP", "Goose", "LLM", "Local AI", "SearXNG"]
 category: "AI/ML"
 type: "til"
 ---
@@ -53,6 +53,18 @@ Goose reads it, formats it, injects into LLM context
 LLM continues with search results available
 ```
 
+<Sequence
+  title="Order the MCP tool call"
+  color="#00e5ff"
+  steps={[
+    "LLM decides which tool to call",
+    "Client (Goose) serializes the call",
+    "Server reads the JSON-RPC request from stdin",
+    "Server runs the task and writes JSON to stdout",
+    "Client injects the result into the LLM context"
+  ]}
+/>
+
 ## The transport types
 
 **stdio** (most common): Server runs as a subprocess. Communication happens over stdin/stdout pipes. Dead simple, works on anything. My qdrant and searxng servers both use this.
@@ -67,6 +79,17 @@ searxng:
 Goose spawns `python3 /opt/mcp-searxng/server.py` and talks to it via pipes.
 
 **SSE / HTTP**: Server runs as a network service. Used for remote servers or when you want multiple clients connecting to the same server. More complex, used for cloud integrations.
+
+<MatchPairs
+  title="Who is who in MCP"
+  color="#8800ff"
+  pairs={[
+    { term: "MCP server", match: "a process that exposes tools" },
+    { term: "MCP client", match: "the agent framework that talks to servers" },
+    { term: "stdio", match: "server runs as a subprocess over pipes" },
+    { term: "SSE / HTTP", match: "server runs as a network service" }
+  ]}
+/>
 
 ## Why the `available_tools: []` in Goose config
 
@@ -89,3 +112,43 @@ Before MCP, each tool integration was a hardcoded connection between specific ag
 - The LLM doesn't need to know implementation details — it just knows "there's a tool called `searxng_search` that takes a query string"
 
 It's basically USB for AI tools. Write the tool once, plug it into anything that has a USB port.
+
+<QuizCard
+  title="MCP check"
+  color="#ff5500"
+  questions={[
+    {
+      question: "Who talks directly to the MCP server?",
+      options: [
+        "The client (Goose), never the LLM",
+        "The LLM over HTTP",
+        "The tokenizer",
+        "The browser"
+      ],
+      correct: 0,
+      explanation: "The LLM only emits a tool call; the client serializes it, talks to the server, and feeds the result back into context."
+    },
+    {
+      question: "In Goose, what does an empty available_tools list mean for an extension?",
+      options: [
+        "Expose all tools from that server",
+        "Expose no tools",
+        "Only expose read-only tools",
+        "It is an error"
+      ],
+      correct: 0,
+      explanation: "Empty means all tools; listing specific names restricts what the agent can call."
+    },
+    {
+      question: "Why does the tool description matter so much?",
+      options: [
+        "The LLM reads it to decide when to call the tool",
+        "It sets the JSON schema types",
+        "It selects the transport",
+        "It names the server process"
+      ],
+      correct: 0,
+      explanation: "The model picks tools based on the description text, so a vague one means the tool rarely gets used."
+    }
+  ]}
+/>

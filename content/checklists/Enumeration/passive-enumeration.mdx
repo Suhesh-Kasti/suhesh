@@ -1,29 +1,68 @@
 ---
 title: "Passive & Active Enumeration Checklist"
-date: "2026-03-22"
+date: '2026-03-22'
 tags: ["cpts", "red-team", "bug hunt", "recon", "subdomain", "dns", "shodan", "dorking", "osint"]
 excerpt: "Map the target's footprint without setting off alarms — from passive DNS to active service discovery. Phased recon: passive → semi-passive → active."
 category: "Reconnaissance"
 ---
 
-Three phases of enumeration. Passive first (never touch the target), then semi-passive (use public scanners), then active (direct interaction).
+Three phases of enumeration. Passive first (never touch the target), then semi-passive (use public scanners), then active (direct interaction). If the target's own logs could show a packet from you, it is not passive.
 
 ---
 
-### Phase 1: Passive Recon
+## Phase 1: Passive Recon
+
+Read third-party data. Nothing here reaches the target.
+
+```bash
+# subdomains from Certificate Transparency logs
+curl -s "https://crt.sh/?q=%25.example.com&output=json" | jq -r '.[].name_value' | sort -u
+
+# mail stack and who is allowed to send as the domain
+dig +short TXT example.com
+dig +short MX example.com
+
+# leaked secrets in code and buckets: use GitHub search and GrayHatWarfare by hand
+```
 
 <ProgressChecklist checklistId="passive-enum" />
 
 ---
 
-### Phase 2: Semi-Passive
+## Phase 2: Semi-Passive
+
+You ask public scanners about the target. The target sees nothing.
+
+```bash
+shodan host example.com
+# Censys: filter on services and certificates in the web UI
+```
 
 <ProgressChecklist checklistId="semi-passive" />
 
 ---
 
-### Phase 3: Active Footprinting
+## Phase 3: Active Footprinting
+
+Now you send packets at the target. This is the detectable phase.
+
+```bash
+nmap -T4 -F example.com            # fast sweep of the most common ports
+nmap -sV -p <ports> example.com    # versions on whatever answered
+```
 
 <ProgressChecklist checklistId="active-footprinting" />
 
 <IdeaNode color="green">Progress auto-saves to your browser via localStorage. Come back anytime.</IdeaNode>
+
+---
+
+## Revision
+
+<QuizCard title="What did you forget" questions={[
+  { question: "Which of these is a passive step?", options: ["Sending nmap at the host", "Querying crt.sh for subdomains", "Brute-forcing virtual hosts", "Grabbing service banners"], correct: 1, explanation: "crt.sh reads public Certificate Transparency logs. No packet reaches the target, so it stays passive." },
+  { question: "A domain's TXT records tell you what?", options: ["The server operating system", "The mail stack and who may send as the domain", "The open ports", "The admin password"], correct: 1, explanation: "SPF and provider TXT records leak the mail platform and the ranges the domain trusts to send mail." },
+  { question: "In which phase do you actually touch the target?", options: ["Phase 1", "Phase 2", "Phase 3", "Never"], correct: 2, explanation: "Active footprinting is the only phase where the target's own logs can see you." }
+]} />
+
+<Cloze title="Sources and flags" text="Passive subdomains come from Certificate Transparency logs at {{crt.sh}}. TXT and MX records are read with {{dig}}. The active phase opens with a fast sweep: nmap {{-T4}} {{-F}} example.com, then version detection with nmap {{-sV}}." />

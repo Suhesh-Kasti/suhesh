@@ -30,9 +30,9 @@ const PUBLIC_DIR = join(ROOT, "public");
 // The portrait photos in admin/ are rendered as a small card and are the mobile LCP
 // element, so they cap lower and compress harder.
 const CAP_DEFAULT = 1400;
-const CAP_ADMIN = 700;
+const CAP_ADMIN = 560;
 const QUALITY = 85;
-const QUALITY_ADMIN = 78;
+const QUALITY_ADMIN = 74;
 
 const SCAN_DIRS = ["content", "src"];
 const SCAN_EXTS = new Set([".mdx", ".md", ".ts", ".tsx", ".js", ".mjs", ".json"]);
@@ -90,8 +90,12 @@ function collectReferences() {
 }
 
 function settingsFor(publicPath) {
-  const isAdmin = publicPath.startsWith("/images/admin/");
-  return { cap: isAdmin ? CAP_ADMIN : CAP_DEFAULT, quality: isAdmin ? QUALITY_ADMIN : QUALITY };
+  if (publicPath.startsWith("/images/admin/")) return { cap: CAP_ADMIN, quality: QUALITY_ADMIN };
+  // Certificate images are shown as ~145px thumbnails; only the zoom needs more.
+  if (publicPath.startsWith("/images/certificates/")) return { cap: 500, quality: 82 };
+  // Nav logos render at 65x40, so 160px covers a retina display.
+  if (/^\/logo-/.test(publicPath)) return { cap: 160, quality: 88 };
+  return { cap: CAP_DEFAULT, quality: QUALITY };
 }
 
 async function convert(sharp, sourcePath, targetPath, cap, quality) {

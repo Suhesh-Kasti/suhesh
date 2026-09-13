@@ -71,7 +71,7 @@ export default function Hero() {
         scrollTrigger: { trigger: containerRef.current, start: "top top", end: "bottom 1000px", scrub: 1.5 },
       });
       if (descRef.current) {
-        gsap.fromTo(descRef.current, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: containerRef.current, start: "top 70%", toggleActions: "play none none reverse" } });
+        gsap.fromTo(descRef.current, { y: 30 }, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: containerRef.current, start: "top 70%", toggleActions: "play none none reverse" } });
       }
       if (actionsRef.current) {
         const btns = actionsRef.current.querySelectorAll(".hero-action");
@@ -99,7 +99,7 @@ export default function Hero() {
           {isClient ? <GlitchText text={title} /> : title}
         </h1>
 
-        <p ref={descRef} className="mt-6 max-w-xl text-base md:text-lg text-fg-muted opacity-0 leading-relaxed" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.wide }}>{description}</p>
+        <p ref={descRef} className="mt-6 max-w-xl text-base md:text-lg text-fg-muted leading-relaxed" style={{ fontFamily: TYPOGRAPHY.fontSans, maxWidth: TYPOGRAPHY.measure.wide }}>{description}</p>
 
         <div ref={actionsRef} className="mt-10 flex flex-col sm:flex-row gap-4 flex-wrap justify-center">
           <Link href={primaryAction.href} className="hero-action btn-brutal btn-brutal-accent text-lg px-8 py-4" data-cursor-label={primaryAction.label} style={{ fontFamily: TYPOGRAPHY.fontDisplay }}>{primaryAction.label}</Link>

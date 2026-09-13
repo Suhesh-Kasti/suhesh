@@ -119,6 +119,12 @@ export default async function BrainDumpPost({ params }: Props) {
 
         <RelatedPosts slug={slugStr} tags={post.meta.tags} />
 
+        {/* Roadmaps have no bottom nav block, so they need their own space. */}
+
+
+        <div className="roadmap-spacer h-20" aria-hidden="true" />
+
+
         {post.meta.type !== "roadmap" && (
           <>
             <hr className="mt-12 max-w-5xl mx-auto border-0 h-[2px] bg-fg" />

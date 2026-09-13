@@ -6,9 +6,6 @@ excerpt: "Port lockdown on a self IP decides which management ports answer on th
 type: til
 category: "Network Operations"
 ---
-
-# Locking Down Ports on F5 BIG-IP
-
 We can SSH and access the web UI of the BigIP through a self IP if we allow ports 22 and 443 in **Network > Self IPs > external_selfip > Port Lockdown**.
 
 <Cloze title="Port lockdown" color="#ff1144" text="Which management ports answer on a BIG-IP self IP is set under Network, Self IPs, Port Lockdown. Allowing {{22}} gives SSH and {{443}} gives the web UI." />

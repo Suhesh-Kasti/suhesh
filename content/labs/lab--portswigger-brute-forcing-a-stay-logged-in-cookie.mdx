@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: practitioner
 ---
-
-# Lab: Brute-forcing a stay-logged-in cookie
-
 The "stay logged in" checkbox is a convenience feature that quietly hands you a password oracle. The cookie it drops is `base64(username + ':' + md5(password))`, which means anyone with a wordlist can test passwords one cookie at a time and never touch the login form.
 
 ## The setup

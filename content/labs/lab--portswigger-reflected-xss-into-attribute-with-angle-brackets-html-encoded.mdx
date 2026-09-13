@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
-
-# Lab: Reflected XSS into attribute with angle brackets HTML-encoded
-
 My first thought on this one was that encoded angle brackets meant XSS was off the table, which is wrong in a way that keeps catching me out. The value is reflected inside an attribute, and attribute context has its own escape character: the double quote. That one is left wide open.
 
 ## The setup

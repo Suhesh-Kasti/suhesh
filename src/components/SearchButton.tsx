@@ -7,6 +7,7 @@ import { TYPOGRAPHY, MOTION, COLORS } from "@/lib/design-tokens";
 import { parseSimpleMarkdown } from "@/lib/markdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBook, faFileCode, faLightbulb, faClipboardCheck, faBrain, faWrench } from "@fortawesome/free-solid-svg-icons";
+import { usePathname } from "next/navigation";
 
 const PLACEHOLDERS = [
   "AI-powered search...",
@@ -85,10 +86,24 @@ function readRoadmapProgress(): number | undefined {
 
 export default function SearchButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResults | null>(null);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!isOpen) return;

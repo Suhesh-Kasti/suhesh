@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: practitioner
 ---
-
-# Lab: JWT authentication bypass via jwk header injection
-
 After all that key recovery, this one feels like cheating. The server takes the verification key straight out of a header field called `jwk`, so I just hand it a key I generated and sign with its private half. I never need the server's key at all. It is a shorter lab than the last two and it teaches a cleaner lesson.
 
 ## The setup

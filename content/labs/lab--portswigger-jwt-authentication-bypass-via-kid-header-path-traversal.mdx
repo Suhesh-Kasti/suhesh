@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: practitioner
 ---
-
-# Lab: JWT authentication bypass via kid header path traversal
-
 The last lab in the set takes the key reference and turns it into a filesystem path. Instead of abusing which key I get, I make the app read a file that happens to be empty, then sign with nothing. An empty string is a valid HMAC secret, which is the joke at the bottom of this whole series.
 
 ## The setup

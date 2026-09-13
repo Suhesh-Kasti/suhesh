@@ -6,9 +6,6 @@ excerpt: "When a client sends a packet and never gets a response, it starts a co
 type: til
 category: "Networking"
 ---
-
-# TCP Retransmission
-
 When a client sends a packet (i.e. an initial "Client Hello") but never gets a response back, it starts a countdown onto itself, and when the retransmission countdown expires it re-transmits the data.
 
 ![A Wireshark capture showing the client's initial hello and the retransmission that follows when no reply arrives](/images/content/tcp-retransmission/tcp_retransmission_initial_hello.webp)

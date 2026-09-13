@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: practitioner
 ---
-
-# Lab: Basic server-side template injection (code context)
-
 Here the injection point is not a message that gets rendered. It is a setting, your comment display name, that the app splices into Tornado template code. My first payload did the maths and left a stray `}}` on the page, and that leftover brace is the best confirmation I have found that I am inside the template.
 
 ## The setup

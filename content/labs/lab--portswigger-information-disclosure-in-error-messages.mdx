@@ -15,9 +15,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
-
-# Lab: Information disclosure in error messages
-
 There is not much to bypass here. The bug is that the server answers a bad input by dumping its entire stack trace, and the trace cheerfully announces which framework build is running. One broken request and you have the version number.
 
 ## The setup

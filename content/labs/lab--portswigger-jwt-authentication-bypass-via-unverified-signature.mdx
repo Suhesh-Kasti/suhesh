@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: apprentice
 ---
-
-# Lab: JWT authentication bypass via unverified signature
-
 ## Objective
 This lab uses a JWT-based mechanism for handling sessions. Due to implementation flaws, the server doesn't verify the signature of any JWTs that it receives.
 To solve the lab, modify your session token to gain access to the admin panel at `/admin`, then delete the user `carlos`.

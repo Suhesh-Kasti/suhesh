@@ -179,7 +179,7 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
           />
           <motion.div
             ref={drawerRef}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col border-l-2 border-fg bg-surface shadow-brutal-xl lg:hidden"
+            className="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l-2 border-fg bg-surface shadow-brutal-xl sm:max-w-sm lg:hidden"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

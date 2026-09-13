@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: practitioner
 ---
-
-# Lab: File path traversal, validation of start of path
-
 Of the traversal labs, this is the filter I would actually defend in a code review, because "the path must start with the images directory" sounds airtight. It is not, and the reason is worth remembering: a prefix check validates a string, and the kernel validates a path.
 
 ## The setup

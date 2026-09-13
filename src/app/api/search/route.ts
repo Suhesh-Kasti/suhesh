@@ -167,23 +167,37 @@ function getEnv(): Env {
   }
 }
 
-function systemPrompt(postCount: number, projectCount: number, progress?: number): string {
-  const hasContent = postCount > 0 || projectCount > 0;
-  return `You are the assistant on Suhesh Kasti's portfolio site. He is an application security engineer; the site holds his writeups, cheatsheets, roadmaps and browser-based tools.
+function systemPrompt(
+  postCount: number,
+  projectCount: number,
+  progress: number | undefined,
+  sources: { title: string; url: string }[]
+): string {
+  const listed = sources.map((c) => `- ${c.title} -> ${c.url}`).join("\n");
+  return `You are SCHIZO, the assistant on Suhesh Kasti's portfolio site. He writes up web security, F5 BIG-IP, DNS and labs he has broken on purpose. You are the friendly person who knows where everything is filed.
 
 How to answer:
-- Plain and specific. At most 3 short sentences. No hype, no jokes about the author, no persona, no slang.
-- Be genuinely useful: say which page answers the question and what they will find there. A little dry humour is fine, never at the reader's expense.
-- Use only the matching pages given to you. Link the single most relevant one as a markdown link, and never invent a title or URL that is not in the matches.
-- If the matches do not answer the question, say so in one line and point at the closest page instead of guessing.${
-    hasContent
-      ? `\n- There are ${postCount} matching page(s) and ${projectCount} matching project(s) for this question.`
-      : "\n- Nothing on the site matches this question."
-  }${
-    typeof progress === "number" && progress > 0
-      ? `\n- The visitor has ticked off ${progress} labs in the PortSwigger roadmap (their own browser data, sent only for this question). You may use it to suggest what to do next, and you may mention it once if it fits.`
-      : ""
-  }`;
+- Two or three sentences, plain words. Warm and a bit dry-witted, never corporate, never a chatbot. No "As an AI", no bullet lists, no restating the question.
+- Point at the page that answers them and say what is on it.
+- Link the single most relevant page as a markdown link. Use ONLY the URLs listed below, copied exactly. Do not build a URL from a title, and never use any other domain.
+- The author's own progress notes are private; you may mention them, never repeat them back as a list.
+- If nothing listed answers the question, say so in one line and point at the nearest page instead of guessing.
+
+Pages that match this question:
+${listed || "- none"}
+${postCount + projectCount > 0 ? "" : "Nothing on the site matches this question.\n"}${typeof progress === "number" && progress > 0 ? `The visitor has ticked off ${progress} labs in the PortSwigger roadmap (their own browser data, sent only for this question).\n` : ""}`;
+}
+
+/** Any link the model produces must land on a page we actually gave it. */
+function guardLinks(text: string, sources: { title: string; url: string }[]): string {
+  const valid = new Set(sources.map((source) => source.url));
+  const fallback = sources[0]?.url;
+  const fixed = text
+    .replace(/https?:\/\/(?:www\.)?suhesh[a-z0-9-]*\.(?:com|np|com\.np)/gi, "https://suhesh.com.np")
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (whole, label, url) =>
+      valid.has(url) ? whole : fallback ? `[${label}](${fallback})` : label
+    );
+  return fixed;
 }
 
 async function tryAI(
@@ -193,12 +207,16 @@ async function tryAI(
   progress?: number
 ): Promise<string> {
   const env = getEnv();
-  const sys = systemPrompt(posts.length, projects.length, progress);
+  const sources = [
+    ...posts.map((post) => ({ title: post.title, url: `https://suhesh.com.np${post.url}` })),
+    ...projects.map((project) => ({ title: project.title, url: `https://suhesh.com.np${project.url}` })),
+  ];
+  const sys = systemPrompt(posts.length, projects.length, progress, sources);
 
   if (env.AI && typeof env.AI.run === "function") {
     try {
       const answer = await runAI(env.AI, q, sys);
-      if (answer) return answer;
+      if (answer) return guardLinks(answer, sources);
     } catch (e: unknown) {
       console.error("Workers AI binding failed:", errorText(e));
       if (isQuotaError(e)) return quotaMessage();
@@ -210,7 +228,7 @@ async function tryAI(
   if (accountId && token) {
     try {
       const answer = await callAIRest(q, sys, accountId, token);
-      if (answer) return answer;
+      if (answer) return guardLinks(answer, sources);
     } catch (e: unknown) {
       console.error("Workers AI REST failed:", errorText(e));
       if (isQuotaError(e)) return quotaMessage();
@@ -225,7 +243,7 @@ async function tryAI(
 async function runAI(ai: AiBinding, query: string, sys: string): Promise<string> {
   const resp = await ai.run(MODEL, {
     messages: [{ role: "system", content: sys }, { role: "user", content: query }],
-    max_tokens: 200, temperature: 0.4,
+    max_tokens: 220, temperature: 0.6,
   });
   return resp?.response || "";
 }
@@ -236,7 +254,7 @@ async function callAIRest(query: string, sys: string, accountId: string, token: 
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       messages: [{ role: "system", content: sys }, { role: "user", content: query }],
-      max_tokens: 200, temperature: 0.85,
+      max_tokens: 220, temperature: 0.6,
     }),
   });
   if (!res.ok) {

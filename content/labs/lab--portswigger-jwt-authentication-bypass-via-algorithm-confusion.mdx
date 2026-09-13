@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: expert
 ---
-
-# Lab: JWT authentication bypass via algorithm confusion
-
 This is the lab where the idea finally clicked for me. It is the first one in the set where the developer did almost everything right. The signing key is strong and asymmetric, so there is nothing to crack. The bug is that the verifier will also accept an HMAC token if the header asks, and the HMAC key it would then use is the RSA public key, which is public on purpose.
 
 ## The setup

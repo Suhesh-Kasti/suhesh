@@ -57,7 +57,19 @@ export default function MatchPairs({ title = "Match them up", pairs = [], color 
       </div>
 
       <div className="grid grid-cols-1 gap-3 px-4 py-4 sm:grid-cols-2">
-        <div className="space-y-2">
+        <div className="space-y-2 border-t-2 border-fg-muted/30 pt-4 sm:border-t-0 sm:pt-0">
+          <div
+            className="mb-1.5 flex items-center gap-2 font-mono text-2xs uppercase text-fg-muted"
+            style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+          >
+            <span className="font-bold text-fg">2</span> Then its match
+          </div>
+          <div
+            className="mb-1.5 flex items-center gap-2 font-mono text-2xs uppercase text-fg-muted"
+            style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}
+          >
+            <span className="font-bold text-fg">1</span> Pick a term
+          </div>
           {pairs.map((pair, index) => {
             const isMatched = matched.has(index);
             const isSelected = selected === index;

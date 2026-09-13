@@ -12,9 +12,6 @@ category: PortSwigger Academy
 platform: PortSwigger
 difficulty: practitioner
 ---
-
-# Lab: 2FA broken logic
-
 The login has two steps, and the second one trusts a value I can edit. I spent a while assuming the code was bound to my session. The code is bound to whatever sits in the `verify` parameter, which means I can ask the server to check a code for somebody else.
 
 ## The setup

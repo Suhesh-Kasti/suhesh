@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getAllSlugs, getPostBySlug } from "@/lib/braindump";
-import { articleCard, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og/cards";
+import { articleCard, homeCard, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og/cards";
 
 /**
  * Share cards for individual articles.
@@ -14,12 +14,28 @@ export const dynamic = "force-static";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug: slug.split("/") }));
+  const paths = getAllSlugs().map((slug) => {
+    const parts = slug.split("/");
+    // The .png suffix is for crawlers (WhatsApp among them) that refuse an image
+    // URL without a recognisable extension.
+    parts[parts.length - 1] = `${parts[parts.length - 1]}.png`;
+    return { slug: parts };
+  });
+  return [{ slug: ["home.png"] }, ...paths];
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug.join("/"));
+  const path = slug.join("/").replace(/\.png$/, "");
+  const post = getPostBySlug(path);
+
+  if (path === "home") {
+    return new ImageResponse(
+      homeCard(),
+      { ...OG_SIZE, headers: { "content-type": OG_CONTENT_TYPE, "cache-control": "public, max-age=31536000, immutable" } }
+    );
+  }
+
 
   return new ImageResponse(
     articleCard({

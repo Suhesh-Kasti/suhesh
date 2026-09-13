@@ -13,12 +13,14 @@ export const metadata: Metadata = {
   description: HOME_DESCRIPTION,
   alternates: { canonical: BASE_URL },
   openGraph: {
+    images: [{ url: "/og/home.png", width: 1200, height: 630, type: "image/png", alt: "Suhesh Kasti — Application Security & Offensive Security" }],
     type: "website",
     url: BASE_URL,
     title: "Suhesh Kasti — Application Security & Offensive Security",
     description: HOME_DESCRIPTION,
   },
   twitter: {
+    images: ["/og/home.png"],
     card: "summary_large_image",
     title: "Suhesh Kasti — Application Security & Offensive Security",
     description: HOME_DESCRIPTION,

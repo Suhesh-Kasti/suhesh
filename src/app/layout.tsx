@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [
       {
-        url: `${BASE_URL}/opengraph-image`,
+        url: `${BASE_URL}/og/home.png`,
         width: 1200,
         height: 630,
         alt: "SCHIZO — Suhesh Kasti's cybersecurity portfolio",
@@ -110,7 +110,7 @@ export const metadata: Metadata = {
     creator: "@suheshkasti",
     title: "Suhesh Kasti — Application Security & Offensive Security | SCHIZO",
     description: DESCRIPTION,
-    images: [`${BASE_URL}/opengraph-image`],
+    images: [`${BASE_URL}/og/home.png`],
   },
   robots: {
     index: true,

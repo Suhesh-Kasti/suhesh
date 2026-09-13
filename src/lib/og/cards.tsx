@@ -161,6 +161,9 @@ export function homeCard(): ReactElement {
         <div style={{ display: "flex", fontSize: 34, fontWeight: 900, letterSpacing: 3, color: INK, marginTop: 20 }}>
           APPLICATION SECURITY ENGINEER
         </div>
+        <div style={{ display: "flex", fontSize: 26, fontWeight: 500, color: MUTED, marginTop: 16, maxWidth: 920 }}>
+          Writing down what I break — F5 BIG-IP, WAF and DNS, one lab at a time.
+        </div>
       </div>
 
       <div style={{ display: "flex", marginTop: 34 }}>
@@ -180,9 +183,12 @@ export function articleCard(post: {
   category?: string;
   tags: string[];
   date: string;
+  excerpt?: string;
+  readingTime?: number;
 }): ReactElement {
   const accent = typeAccent(post.type);
   const label = typeLabel(post.type);
+  const blurb = post.excerpt ? clamp(post.excerpt, 118) : "";
 
   return (
     <Frame accent={accent}>
@@ -197,13 +203,16 @@ export function articleCard(post: {
             {clamp(post.category, 30).toUpperCase()}
           </div>
         ) : null}
-        <div style={{ display: "flex", fontSize: 22, fontWeight: 700, letterSpacing: 1, color: MUTED }}>{post.date}</div>
+        <div style={{ display: "flex", fontSize: 22, fontWeight: 700, letterSpacing: 1, color: MUTED }}>
+          {post.date}
+          {post.readingTime ? ` · ${post.readingTime} MIN READ` : ""}
+        </div>
       </div>
 
       <div
         style={{
           display: "flex",
-          fontSize: post.title.length > 70 ? 52 : post.title.length > 44 ? 62 : 76,
+          fontSize: post.title.length > 70 ? 48 : post.title.length > 44 ? (blurb ? 56 : 62) : blurb ? 68 : 76,
           fontWeight: 900,
           lineHeight: 1.06,
           letterSpacing: -1,
@@ -215,7 +224,13 @@ export function articleCard(post: {
         {clamp(post.title, 108)}
       </div>
 
-      <div style={{ display: "flex", marginTop: 30 }}>
+      {blurb ? (
+        <div style={{ display: "flex", fontSize: 26, fontWeight: 500, lineHeight: 1.35, color: MUTED, marginTop: 20, maxWidth: 980 }}>
+          {blurb}
+        </div>
+      ) : null}
+
+      <div style={{ display: "flex", marginTop: blurb ? 24 : 30 }}>
         <Chips items={post.tags.slice(0, 4)} />
       </div>
 

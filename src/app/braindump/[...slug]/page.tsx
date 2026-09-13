@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props) {
   const BASE_URL = "https://suhesh.com.np";
   const url = `${BASE_URL}/braindump/${slugStr}`;
   // Per-article share card (see src/app/og/[...slug]/route.tsx), rendered at build time.
-  const ogImage = `${BASE_URL}/og/${slugStr}`;
+  const ogImage = `${BASE_URL}/og/${slugStr}.png`;
 
   return {
     title: `${post.meta.title} — SCHIZO Brain Dump`,

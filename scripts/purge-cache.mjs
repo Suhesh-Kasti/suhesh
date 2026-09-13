@@ -34,8 +34,9 @@ function loadEnvFile(file) {
 
 for (const file of [".env.local", ".dev.vars", ".env"]) loadEnvFile(file);
 
-const ZONE_ID = process.env.CF_ZONE_ID;
-const API_TOKEN = process.env.CF_PURGE_TOKEN || process.env.CF_API_TOKEN;
+const ZONE_ID = process.env.CF_ZONE_ID || process.env.CLOUDFLARE_ZONE_ID;
+const API_TOKEN =
+  process.env.CF_PURGE_TOKEN || process.env.CF_API_TOKEN || process.env.CLOUDFLARE_ACCESS_TOKEN;
 
 async function main() {
   if (!ZONE_ID || !API_TOKEN) {

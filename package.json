@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "eslint",
     "optimize:images": "node scripts/optimize-images.mjs",
-    "purge:cache": "node scripts/purge-cache.mjs"
+    "purge:cache": "node scripts/purge-cache.mjs",
+    "prune:cache": "node scripts/prune-cache.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

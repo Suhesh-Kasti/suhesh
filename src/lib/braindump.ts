@@ -14,6 +14,7 @@ export interface BrainDumpMeta {
   date: string;
   tags: string[];
   excerpt: string;
+  readingTime?: number;
   type: ContentType;
   category?: string;
   image?: string;
@@ -40,6 +41,7 @@ export function getPostBySlug(slug: string): BrainDumpPost | null {
       date: entry.date,
       tags: entry.tags,
       excerpt: entry.excerpt,
+    readingTime: entry.readingTime,
       type: entry.type as ContentType,
       category: entry.category,
       image: entry.image,

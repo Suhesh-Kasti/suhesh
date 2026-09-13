@@ -157,6 +157,8 @@ for (const { dir, type } of CONTENT_DIRS) {
       date: formatDate(data.date),
       tags,
       excerpt: data.description ?? data.excerpt ?? "",
+      // ~220 words a minute, rounded up, floored at one.
+      readingTime: Math.max(1, Math.round(String(raw).trim().split(/\s+/).length / 220)),
       type,
       category: data.category ?? data.categories?.[0] ?? "",
       image: data.image ?? "",
@@ -218,6 +220,7 @@ export interface RegistryEntry {
   date: string;
   tags: string[];
   excerpt: string;
+  readingTime?: number;
   type: string;
   category: string;
   image: string;

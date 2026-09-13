@@ -44,6 +44,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       category: post?.meta.category,
       tags: post?.meta.tags ?? [],
       date: post?.meta.date ?? "",
+      excerpt: post?.meta.excerpt,
+      readingTime: post?.meta.readingTime,
     }),
     { ...OG_SIZE, headers: { "content-type": OG_CONTENT_TYPE, "cache-control": "public, max-age=31536000, immutable" } }
   );

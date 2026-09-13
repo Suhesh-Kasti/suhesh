@@ -228,7 +228,9 @@ export function articleCard(post: {
         <div style={{ display: "flex", fontSize: 26, fontWeight: 500, lineHeight: 1.35, color: MUTED, marginTop: 20, maxWidth: 980 }}>
           {blurb}
         </div>
-      ) : null}
+      ) : (
+        <></>
+      )}
 
       <div style={{ display: "flex", marginTop: blurb ? 24 : 30 }}>
         <Chips items={post.tags.slice(0, 4)} />

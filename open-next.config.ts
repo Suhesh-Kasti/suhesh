@@ -1,9 +1,5 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
 
-// Prerendered pages are stored in R2 instead of being re-rendered on every request.
-// Without this the Worker rebuilds each page per visit, which is what exhausted the
-// CPU budget and returned Error 1102.
-export default defineCloudflareConfig({
-  incrementalCache: r2IncrementalCache,
-});
+// No incremental cache: it needs R2, and R2 is not enabled on this account. The deploy
+// fails at the populate step while this is set, so it stays off until R2 is turned on.
+export default defineCloudflareConfig({});

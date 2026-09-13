@@ -366,7 +366,7 @@ export default function SearchButton() {
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2">
                                       <span
-                                        className="font-mono text-xs font-bold uppercase group-hover:text-brutal-pink transition-colors"
+                                        className="font-mono text-xs font-bold uppercase group-hover:text-brutal-pink-text transition-colors"
                                         style={{ fontFamily: TYPOGRAPHY.fontMono }}
                                       >
                                         {p.title}
@@ -385,7 +385,7 @@ export default function SearchButton() {
                                       {p.description}
                                     </p>
                                   </div>
-                                  <span className="text-fg-muted group-hover:text-brutal-pink shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-all">
+                                  <span className="text-fg-muted group-hover:text-brutal-pink-text shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-all">
                                     <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
                                   </span>
                                 </Link>
@@ -432,7 +432,7 @@ export default function SearchButton() {
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-2">
                                         <span
-                                          className="font-mono text-xs font-bold uppercase group-hover:text-brutal-pink transition-colors"
+                                          className="font-mono text-xs font-bold uppercase group-hover:text-brutal-pink-text transition-colors"
                                           style={{ fontFamily: TYPOGRAPHY.fontMono }}
                                         >
                                           {p.title}
@@ -451,7 +451,7 @@ export default function SearchButton() {
                                         {p.excerpt}
                                       </p>
                                     </div>
-                                    <span className="text-fg-muted group-hover:text-brutal-pink shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-all">
+                                    <span className="text-fg-muted group-hover:text-brutal-pink-text shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-all">
                                       <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
                                     </span>
                                   </Link>

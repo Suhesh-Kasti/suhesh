@@ -155,10 +155,10 @@ export default function QuizCard({
                 <span className="text-fg-muted mr-2">{String.fromCharCode(65 + index)}.</span>
                 {option}
                 {revealed && index === question.correct && (
-                  <span className="ml-2 text-brutal-green">[+]</span>
+                  <span className="ml-2 text-brutal-green-text">[+]</span>
                 )}
                 {revealed && index === selectedOption && index !== question.correct && (
-                  <span className="ml-2 text-brutal-red">[-]</span>
+                  <span className="ml-2 text-brutal-red-text">[-]</span>
                 )}
               </button>
             );

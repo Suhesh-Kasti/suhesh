@@ -369,7 +369,7 @@ export default function ArtPlayground() {
                   {diffResult.length > 0 && (
                     <div className="border-2 border-fg p-3 font-mono text-xs space-y-0.5 max-h-[200px] overflow-y-auto" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
                       {diffResult.map((r,i) => (
-                        <div key={i} className={r.type==="add"?"text-brutal-green":r.type==="del"?"text-brutal-red line-through":"text-fg-muted"}>
+                        <div key={i} className={r.type==="add"?"text-brutal-green-text":r.type==="del"?"text-brutal-red-text line-through":"text-fg-muted"}>
                           {r.type==="add"?"+ ":r.type==="del"?"- ":"  "}{r.text}
                         </div>
                       ))}
@@ -447,7 +447,7 @@ export default function ArtPlayground() {
 function OutputBox({ output }: { output: string }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="border-2 border-brutal-green p-4 bg-brutal-green/5">
-      <span className="font-mono text-2xs uppercase text-brutal-green tracking-label block mb-2" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Output</span>
+      <span className="font-mono text-2xs uppercase text-brutal-green-text tracking-label block mb-2" style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label }}>Output</span>
       <pre className="font-mono text-sm text-fg whitespace-pre-wrap break-all max-h-[300px] overflow-y-auto" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{output}</pre>
       <button onClick={() => navigator.clipboard.writeText(output)} className="mt-2 font-mono text-2xs uppercase text-fg-muted hover:text-fg cursor-pointer border border-fg-muted px-2 py-1 hover:border-fg transition-all" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Copy</button>
     </motion.div>

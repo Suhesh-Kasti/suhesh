@@ -24,7 +24,7 @@ export default function BrainDumpPreview() {
           <div className="flex-1 h-1 bg-fg" />
           <Link
             href="/braindump"
-            className="font-mono text-xs uppercase text-fg hover:text-brutal-pink transition-colors whitespace-nowrap"
+            className="font-mono text-xs uppercase text-fg hover:text-brutal-pink-text transition-colors whitespace-nowrap"
             style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.05em" }}
             data-cursor-label="View All Posts"
           >
@@ -32,7 +32,7 @@ export default function BrainDumpPreview() {
           </Link>
           <Link
             href="/map"
-            className="font-mono text-xs uppercase text-brutal-pink hover:text-fg transition-colors whitespace-nowrap border border-brutal-pink px-2 py-0.5"
+            className="font-mono text-xs uppercase text-brutal-pink-text hover:text-fg transition-colors whitespace-nowrap border border-brutal-pink px-2 py-0.5"
             style={{ fontFamily: "var(--font-space-mono)", letterSpacing: "0.05em" }}
             data-cursor-label="Knowledge Map"
           >
@@ -61,12 +61,12 @@ export default function BrainDumpPreview() {
                     <Link
                       href={typeFilterHref(post.type)}
                       aria-label={`All ${config.label} on the brain dump`}
-                      className="pointer-events-auto relative z-20 inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-2xs uppercase transition-opacity hover:opacity-70"
+                      className="pointer-events-auto relative z-20 inline-flex items-center gap-1 border min-h-6 px-2 py-1 font-mono text-2xs uppercase transition-opacity hover:opacity-70"
                       style={{
                         fontFamily: "var(--font-space-mono)",
                         letterSpacing: "0.12em",
                         borderColor: config.color,
-                        color: config.color,
+                        color: config.textColor ?? config.color,
                       }}
                     >
                       <FontAwesomeIcon icon={config.icon} /> {config.label}
@@ -80,7 +80,7 @@ export default function BrainDumpPreview() {
                   </div>
 
                   <h3
-                    className="mt-3 font-display text-lg font-bold uppercase text-fg group-hover:text-brutal-pink transition-colors leading-tight"
+                    className="mt-3 font-display text-lg font-bold uppercase text-fg group-hover:text-brutal-pink-text transition-colors leading-tight"
                     style={{ fontFamily: "var(--font-clash-display)" }}
                   >
                     {post.title}

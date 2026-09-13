@@ -7,10 +7,11 @@
     "dev": "next dev",
     "build": "node scripts/optimize-images.mjs && node scripts/generate-content-registry.mjs && next build",
     "generate-registry": "node scripts/generate-content-registry.mjs",
-    "deploy": "npm install --include=dev && node scripts/optimize-images.mjs && node scripts/generate-content-registry.mjs && npx @opennextjs/cloudflare build && npx @opennextjs/cloudflare deploy",
+    "deploy": "npm install --include=dev && node scripts/optimize-images.mjs && node scripts/generate-content-registry.mjs && npx @opennextjs/cloudflare build && npx @opennextjs/cloudflare deploy && node scripts/purge-cache.mjs",
     "start": "next start",
     "lint": "eslint",
-    "optimize:images": "node scripts/optimize-images.mjs"
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "purge:cache": "node scripts/purge-cache.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

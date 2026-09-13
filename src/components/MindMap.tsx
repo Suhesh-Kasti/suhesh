@@ -240,7 +240,7 @@ function TreeNode({
         {isLeaf ? (
           <Link
             href={node.slug!}
-            className="font-mono text-sm text-fg hover:text-brutal-pink transition-colors truncate flex-1"
+            className="font-mono text-sm text-fg hover:text-brutal-pink-text transition-colors truncate flex-1"
             style={{ fontFamily: TYPOGRAPHY.fontMono }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -578,7 +578,7 @@ function MapBranch({
           )}
           <FontAwesomeIcon icon={node.icon} className="text-xs shrink-0" style={{ color: node.color }} />
           {isLeaf ? (
-            <Link href={node.slug!} className="font-mono text-xs text-fg hover:text-brutal-pink transition-colors truncate flex-1" style={{ fontFamily: TYPOGRAPHY.fontMono }} onClick={(e) => e.stopPropagation()}>
+            <Link href={node.slug!} className="font-mono text-xs text-fg hover:text-brutal-pink-text transition-colors truncate flex-1" style={{ fontFamily: TYPOGRAPHY.fontMono }} onClick={(e) => e.stopPropagation()}>
               {node.label}
             </Link>
           ) : (

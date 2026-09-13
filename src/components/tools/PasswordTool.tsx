@@ -63,7 +63,7 @@ export default function PasswordTool() {
             style={{ color: "var(--fg)", fontFamily: TYPOGRAPHY.fontMono }}
           />
           <button onClick={() => setShowPw(!showPw)} className="font-mono text-2xs uppercase px-3 py-2 border border-fg-muted/30 text-fg-muted hover:border-fg hover:text-fg transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{showPw ? "HIDE" : "SHOW"}</button>
-          <button onClick={generate} className="font-mono text-2xs uppercase px-3 py-2 border border-brutal-green text-brutal-green hover:bg-brutal-green hover:text-surface transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>GEN</button>
+          <button onClick={generate} className="font-mono text-2xs uppercase px-3 py-2 border border-brutal-green text-brutal-green-text hover:bg-brutal-green hover:text-surface transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>GEN</button>
         </div>
 
         {/* Strength meter */}
@@ -79,7 +79,7 @@ export default function PasswordTool() {
         {issues.length > 0 && (
           <div className="space-y-1">
             {issues.map((issue, i) => (
-              <div key={i} className="font-mono text-2xs text-brutal-red border border-brutal-red/30 px-2 py-1" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+              <div key={i} className="font-mono text-2xs text-brutal-red-text border border-brutal-red/30 px-2 py-1" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
                 [!] {issue.issue}
               </div>
             ))}
@@ -88,7 +88,7 @@ export default function PasswordTool() {
 
         {/* Breach check hint */}
         <p className="font-mono text-2xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
-          This password has <span className="text-brutal-green">{bits.toFixed(0)} bits</span> of entropy.
+          This password has <span className="text-brutal-green-text">{bits.toFixed(0)} bits</span> of entropy.
           {bits >= 80 ? " Strong enough for production use." : " Consider making it longer and adding symbols."}
         </p>
       </div>

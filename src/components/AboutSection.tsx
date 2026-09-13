@@ -228,6 +228,7 @@ export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
                     src={PHOTOS[0]}
                     alt="Suhesh Kasti — application security engineer working with F5 BIG-IP and web application firewalls"
                     fill
+                    priority
                     sizes="(max-width: 1024px) 100vw, 480px"
                     className="object-cover object-center"
                   />
@@ -537,7 +538,7 @@ function CertCard({ cert, onView }: { cert: typeof CERTS[number]; onView: (c: ty
       data-cursor-label="View Certificate"
     >
       <div className="h-32 flex items-center justify-center p-2 bg-[#fafaf5]">
-        <img src={cert.image} alt={cert.fullName} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
+        <img src={cert.image} alt="" className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
       </div>
       <div className="border-t-2 px-3 py-2.5" style={{ borderColor: cert.color }}>
         <p className="font-display text-xs font-bold uppercase leading-tight" style={{ fontFamily: TYPOGRAPHY.fontDisplay, color: cert.color }}>{cert.name}</p>
@@ -553,7 +554,7 @@ function CertCard({ cert, onView }: { cert: typeof CERTS[number]; onView: (c: ty
           >
             {cert.issuer}
             <span aria-hidden="true">↗</span>
-            <span className="sr-only">— verify this certification</span>
+            <span className="sr-only">— verify the {cert.name} certification</span>
           </a>
         ) : (
           <p className="font-mono text-2xs text-fg-muted mt-1 leading-tight" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{cert.issuer}</p>

@@ -353,7 +353,7 @@ export default function BrainDumpList({
 
                   {/* Title */}
                   <h2
-                    className="mt-1 font-display text-lg font-bold uppercase text-fg group-hover:text-brutal-pink transition-colors leading-tight"
+                    className="mt-1 font-display text-lg font-bold uppercase text-fg group-hover:text-brutal-pink-text transition-colors leading-tight"
                     style={{ fontFamily: TYPOGRAPHY.fontDisplay }}
                   >
                     {post.title}

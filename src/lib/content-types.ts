@@ -6,6 +6,7 @@ import { COLORS } from "@/lib/design-tokens";
 export interface ContentTypeConfig {
   label: string;
   color: string;
+  textColor?: string;
   icon: IconDefinition;
   order: number;
 }
@@ -16,13 +17,13 @@ export interface ContentTypeConfig {
  * labs, which made the two indistinguishable on the archive.
  */
 export const TYPE_CONFIG: Record<ContentType, ContentTypeConfig> = {
-  braindump: { label: "MAP", color: COLORS.pink, icon: faMap, order: 0 },
-  roadmap: { label: "Roadmap", color: COLORS.teal, icon: faRoad, order: 1 },
-  lab: { label: "Labs", color: COLORS.orange, icon: faFlask, order: 2 },
-  cheatsheet: { label: "Cheatsheets", color: COLORS.green, icon: faBookOpen, order: 3 },
-  checklist: { label: "Checklists", color: COLORS.red, icon: faListCheck, order: 4 },
-  til: { label: "Byte-Sized", color: COLORS.blue, icon: faInfinity, order: 5 },
-  blog: { label: "Deep Dives", color: COLORS.purple, icon: faFileCode, order: 6 },
+  braindump: { label: "MAP", color: COLORS.pink, textColor: "var(--pink-text)", icon: faMap, order: 0 },
+  roadmap: { label: "Roadmap", color: COLORS.teal, textColor: "var(--teal-text)", icon: faRoad, order: 1 },
+  lab: { label: "Labs", color: COLORS.orange, textColor: "var(--orange-text)", icon: faFlask, order: 2 },
+  cheatsheet: { label: "Cheatsheets", color: COLORS.green, textColor: "var(--green-text)", icon: faBookOpen, order: 3 },
+  checklist: { label: "Checklists", color: COLORS.red, textColor: "var(--red-text)", icon: faListCheck, order: 4 },
+  til: { label: "Byte-Sized", color: COLORS.blue, textColor: "var(--blue-text)", icon: faInfinity, order: 5 },
+  blog: { label: "Deep Dives", color: COLORS.purple, textColor: "var(--purple-text)", icon: faFileCode, order: 6 },
 };
 
 /** Types shown in the home-page preview, one card each. */

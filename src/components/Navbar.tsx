@@ -76,7 +76,7 @@ export default function Navbar() {
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 text-fg hover:text-brutal-pink transition-colors"
+          className="flex items-center gap-2 text-fg hover:text-brutal-pink-text transition-colors"
           data-cursor-label="Home"
         >
           <Image src="/logo-dark.png" alt="SCHIZO" width={210} height={129} priority className="hidden h-10 w-auto dark:block" />
@@ -241,7 +241,7 @@ export default function Navbar() {
                       </span>
                       {/* Arrow */}
                       <motion.span
-                        className="font-mono text-fg-muted group-hover:text-brutal-pink transition-colors shrink-0"
+                        className="font-mono text-fg-muted group-hover:text-brutal-pink-text transition-colors shrink-0"
                         style={{ fontFamily: TYPOGRAPHY.fontMono }}
                         animate={{ x: 0 }}
                         whileHover={{ x: 4 }}
@@ -251,7 +251,7 @@ export default function Navbar() {
                       {/* Link text with underline animation */}
                       <span className="relative">
                         <span
-                          className="font-display text-3xl font-extrabold uppercase text-fg transition-colors group-hover:text-brutal-pink group-active:text-brutal-pink"
+                          className="font-display text-3xl font-extrabold uppercase text-fg transition-colors group-hover:text-brutal-pink-text group-active:text-brutal-pink-text"
                           style={{ fontFamily: TYPOGRAPHY.fontDisplay }}
                         >
                           {link.label}

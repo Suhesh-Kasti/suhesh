@@ -186,7 +186,7 @@ export default function SeriesRoadmap({ steps }: SeriesRoadmapProps) {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/braindump/${step.slug}`}
-                            className={`font-mono text-sm hover:text-brutal-pink transition-colors truncate ${isDone ? "line-through opacity-50" : ""}`}
+                            className={`font-mono text-sm hover:text-brutal-pink-text transition-colors truncate ${isDone ? "line-through opacity-50" : ""}`}
                             style={{ fontFamily: TYPOGRAPHY.fontMono }}
                           >
                             {step.title}

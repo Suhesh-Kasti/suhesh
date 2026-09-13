@@ -11,6 +11,15 @@
   --surf-invert: #0a0a0a;
   --fg: #0a0a0a;
   --fg-muted: #555555;
+  --pink-text: #d3257b;
+  --blue-text: #0055ff;
+  --yellow-text: #827000;
+  --green-text: #008428;
+  --orange-text: #c94300;
+  --purple-text: #8800ff;
+  --cyan-text: #007d8c;
+  --teal-text: #007d8c;
+  --red-text: #e00e3b;
 
   --pink: #ff2d95;
   --blue: #0055ff;
@@ -28,6 +37,15 @@
   --surf-invert: #f0f0f8;
   --fg: #f0f0f8;
   --fg-muted: #999999;
+  --pink-text: var(--pink);
+  --blue-text: var(--blue);
+  --yellow-text: var(--yellow);
+  --green-text: var(--green);
+  --orange-text: var(--orange);
+  --purple-text: var(--purple);
+  --cyan-text: var(--cyan);
+  --teal-text: var(--teal);
+  --red-text: var(--red);
 }
 
 /* ── Design Tokens exposed as Tailwind-aware variables ── */
@@ -55,6 +73,14 @@
   --color-surface-invert: var(--surf-invert);
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
+  --color-brutal-pink-text: var(--pink-text);
+  --color-brutal-blue-text: var(--blue-text);
+  --color-brutal-yellow-text: var(--yellow-text);
+  --color-brutal-green-text: var(--green-text);
+  --color-brutal-orange-text: var(--orange-text);
+  --color-brutal-purple-text: var(--purple-text);
+  --color-brutal-cyan-text: var(--cyan-text);
+  --color-brutal-red-text: var(--red-text);
 
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 1;

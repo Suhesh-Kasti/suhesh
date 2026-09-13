@@ -37,7 +37,7 @@ const QUALITY_ADMIN = 78;
 const SCAN_DIRS = ["content", "src"];
 const SCAN_EXTS = new Set([".mdx", ".md", ".ts", ".tsx", ".js", ".mjs", ".json"]);
 const SKIP_DIRS = new Set(["node_modules", ".next", ".open-next", ".git", "generated"]);
-const REF_RE = /\/images\/[A-Za-z0-9_./@%()+-]+\.(?:png|jpe?g|webp)/gi;
+const REF_RE = /\/images\/[A-Za-z0-9_./@%()+-]+\.(?:png|jpe?g|webp|avif|gif)/gi;
 
 function loadSharp() {
   const tries = [join(ROOT, "package.json"), join(ROOT, "node_modules", "next", "package.json")];
@@ -161,17 +161,19 @@ async function main() {
 
     const { cap, quality } = settingsFor(decoded);
 
-    if (!isWebp) {
-      jobs.push({ decoded, encodedForms, sourcePath, targetPath, cap, quality, rewrite: true });
+    // PNG and JPEG are converted to WebP. AVIF and GIF are only measured — turning an
+    // AVIF into a WebP would be a downgrade, and both already belong in the manifest
+    // so new images still get width/height without anyone running anything.
+    if (!/\.(png|jpe?g)$/i.test(decoded)) {
+      if (!sharp || !/\.webp$/i.test(decoded)) continue;
+      const meta = await sharp(sourcePath, { failOn: "none" }).metadata();
+      if (meta.width && meta.width > cap) {
+        jobs.push({ decoded, encodedForms, sourcePath, targetPath, cap, quality, rewrite: false });
+      }
       continue;
     }
-    // An existing .webp only needs work if it is still bigger than the cap. Metadata
-    // reads are cheap, so this keeps the common case (already optimised) fast.
-    if (!sharp) continue;
-    const meta = await sharp(sourcePath, { failOn: "none" }).metadata();
-    if (meta.width && meta.width > cap) {
-      jobs.push({ decoded, encodedForms, sourcePath, targetPath, cap, quality, rewrite: false });
-    }
+
+    jobs.push({ decoded, encodedForms, sourcePath, targetPath, cap, quality, rewrite: true });
   }
 
   if (missing.length) {

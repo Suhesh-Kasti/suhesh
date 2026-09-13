@@ -104,7 +104,7 @@ export default function Contact() {
                     {social.label}
                   </div>
                   <div
-                    className="font-mono text-xs text-fg group-hover:text-brutal-pink transition-colors truncate"
+                    className="font-mono text-xs text-fg group-hover:text-brutal-pink-text transition-colors truncate"
                     style={{ fontFamily: TYPOGRAPHY.fontMono }}
                   >
                     {social.handle}
@@ -145,6 +145,7 @@ export default function Contact() {
                   type="text"
                   id="name"
                   name="name"
+                  autoComplete="name"
                   required
                   className="w-full border-2 border-fg bg-surface text-fg font-sans text-sm p-3 focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted"
                   style={{ fontFamily: TYPOGRAPHY.fontSans }}
@@ -166,6 +167,7 @@ export default function Contact() {
                   type="email"
                   id="email"
                   name="email"
+                  autoComplete="email"
                   required
                   className="w-full border-2 border-fg bg-surface text-fg font-sans text-sm p-3 focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted"
                   style={{ fontFamily: TYPOGRAPHY.fontSans }}
@@ -186,6 +188,7 @@ export default function Contact() {
                 <textarea
                   id="message"
                   name="message"
+                  autoComplete="off"
                   required
                   rows={4}
                   className="w-full border-2 border-fg bg-surface text-fg font-sans text-sm p-3 resize-none focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted"

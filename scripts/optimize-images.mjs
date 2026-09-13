@@ -77,7 +77,8 @@ function collectReferences() {
   const refs = new Map();
   for (const dir of SCAN_DIRS) {
     for (const file of walk(join(ROOT, dir))) {
-      const text = readFileSync(file, "utf8");
+      // Example paths inside code fences are not assets, so they are not scanned.
+      const text = readFileSync(file, "utf8").replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]*`/g, "");
       for (const match of text.matchAll(REF_RE)) {
         const encoded = match[0];
         const decoded = decodeURIComponent(encoded);

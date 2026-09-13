@@ -2,7 +2,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare/cloudflare-context"
 import searchIndex from "./search-index.json";
 import { WORK } from "@/lib/design-tokens";
 import { clientKey, isSameOrigin, rateLimit } from "@/lib/api-guard";
-import { getPostBySlug } from "@/lib/braindump";
+import { getAllSlugs, getPostBySlug } from "@/lib/braindump";
+import { askExternalProviders } from "@/lib/ai-providers";
 
 const MODEL = "@cf/meta/llama-3.2-3b-instruct";
 const MAX_QUERY_LENGTH = 200;
@@ -144,9 +145,15 @@ export async function POST(request: Request) {
       } else if (isLookup) {
         aiAnswer = `The page you want is **${top.title}** — it is the first result below.`;
       } else if (rateLimit(clientKey(request, "search-ai"), 5, 60_000) && rateLimit("search-ai-global", 60, 60_000)) {
-        aiAnswer = posts.length === 0 && projects.length === 0
-        ? noMatchMessage(q)
-        : await tryAI(q, posts, projects, tracked);
+        aiAnswer = /\b(cv|resume|curriculum vitae)\b/i.test(q)
+        ? cvAnswer()
+        : /\b(contact|email|reach|message me|get in touch|hire|whatsapp|telegram|talk to)\b/i.test(q)
+          ? contactAnswer()
+        : /\b(progress|how far|how many|finished|completed|ticked|am i (?:done|through))\b/i.test(q)
+          ? progressAnswer(tracked)
+          : posts.length === 0 && projects.length === 0
+            ? noMatchMessage(q)
+            : await tryAI(q, posts, projects, tracked);
         await writeCachedAnswer(q, progressKey, aiAnswer);
       } else {
         aiAnswer =
@@ -189,10 +196,46 @@ interface TrackedSeries {
 }
 
 /**
+ * Progress answered from real data: counts from this browser, totals and next step
+ * from the registry. Never the model — it invented sections ("HTML and CSS") and
+ * claimed half the roadmap was done when nothing was ticked.
+ */
+function progressAnswer(tracked: TrackedSeries[]): string {
+  const rows = tracked.flatMap((item) => {
+    const post = getPostBySlug(item.slug);
+    const steps = post?.meta.steps ?? [];
+    if (!steps.length) return [];
+    const done = Math.min(item.done, steps.length);
+    const next = steps[done]?.title;
+    const name = post?.meta.title ?? item.slug;
+    const pct = Math.round((done / steps.length) * 100);
+    return ["- **" + name + "** — " + done + " of " + steps.length + " (" + pct + "%). "
+      + (next ? "Next up: \"" + next + "\". " : "Everything ticked, nicely done. ")
+      + "[Open it](/braindump/" + item.slug + ")"];
+  });
+  const head = rows.length
+    ? ["**Your progress, from this browser**", "", ...rows]
+    : ["**Nothing ticked yet**", "", "This browser has no saved progress. Open the roadmap and tick a lab and it will show up here."];
+  return [...head, "", "Progress is stored only in this browser, so it will not follow you to another device."].join("\n");
+}
+
+/**
  * Turns what the browser reported into prompt lines. The totals and the next unchecked
  * step come from the content registry, so the model is given facts, never asked to do
  * arithmetic on a number it was handed.
  */
+/** CV questions, answered directly with the real files. */
+function cvAnswer(): string {
+  return [
+    "**The CV**",
+    "",
+    "Three versions. Pick the one that matches the role:",
+    "- [Cybersecurity CV](/CV/Suhesh-Cybersecurity-CV.pdf)",
+    "- [DevOps CV](/CV/Suhesh-Kasti-CV-DevOps.pdf)",
+    "- [IT and Network CV](/CV/Suhesh-Kasti-CV-IT-Network.pdf)",
+  ].join("\n");
+}
+
 /**
  * Nothing matched. The model used to be asked anyway, and with no pages to work from it
  * invented one ("Cloud Architecture Models", asked about a CV). Answering here is exact
@@ -206,6 +249,79 @@ function noMatchMessage(query: string): string {
     + "\n- [IT and Network CV](/CV/Suhesh-Kasti-CV-IT-Network.pdf)" + "\n\nTell me which one and I can point you at the right page.";
   }
   return "**I do not have that one**\n\nNothing on the site matches that yet. If it is about my background, the About page has the short version and the contact links; everything I have written lives in the Brain Dump.";
+}
+
+const CONTACTS = [
+  "- [Email](mailto:kastisuhesh1@gmail.com)",
+  "- [X](https://twitter.com/kastisuhesh)",
+  "- [YouTube](https://youtube.com/@suheshkasti)",
+  "- [Telegram](https://t.me/suheshkasti)",
+  "- [WhatsApp](https://wa.me/9779861084025)",
+].join("\n");
+
+/**
+ * Contact details, written once. These are static by design: the assistant must never
+ * paraphrase or invent a way to reach him.
+ */
+function contactAnswer(): string {
+  return [
+    "**How to reach Suhesh**",
+    "",
+    CONTACTS,
+    "",
+    "WhatsApp or Telegram is quickest. He is happy to talk F5, WAF, or a lab you are stuck on.",
+  ].join("\n");
+}
+
+/** What the site is and is not about, so it can answer "do you have anything on X?" honestly. */
+/** The newest few posts, so "what has he written lately?" has a real answer. */
+function recentTitles(count: number): string {
+  const posts = getAllSlugs()
+    .map((slug) => getPostBySlug(slug))
+    .filter((post) => Boolean(post?.meta.date));
+  posts.sort((a, b) => String(b?.meta.date).localeCompare(String(a?.meta.date)));
+  return posts.slice(0, count).map((post) => post?.meta.title + " (" + post?.meta.date + ")").join("; ");
+}
+
+function siteFacts(): string {
+  return [
+    "",
+    "",
+    "About him: application security engineer — F5 BIG-IP (LTM, DNS/GTM, ASM/Advanced WAF), IT and network administration, and offensive security labs.",
+    "The site holds: " + '100 Labs, 31 Deep Dives, 25 Cheatsheets, 25 Byte-Sized, 5 Checklists, 1 Roadmap' + ".",
+    "Contact and CV:", CONTACTS,
+    "- [Payload Arsenal](/tools/payloads)",
+    "- [Regex Lab](/tools/regex)",
+    "- [JWT / JOSE Inspector](/tools/jwt)",
+    "- [Certificate Studio](/tools/cert)",
+    "- [Crypto Lab](/tools/crypto)",
+    "- [Hash Identifier](/tools/hash-id)",
+    "- [HTTP Security Header Analyzer](/tools/headers)",
+    "- [Hex Dump Analyzer](/tools/hexdump)",
+    "- [Nmap Output Parser](/tools/ports)",
+    "- [Recon Suite](/tools/recon)",
+    "- [Reverse Shell Generator](/tools/reverse-shell)",
+    "- [AI Prompt Injection Lab](/tools/ai-injection)",
+    "- [MDX Preview](/tools/mdx-preview)",
+    "Newest writing: " + recentTitles(5) + ".",
+    "Browser tools as a list:",
+        "- [Payload Arsenal](/tools/payloads)",
+    "- [Regex Lab](/tools/regex)",
+    "- [JWT / JOSE Inspector](/tools/jwt)",
+    "- [Certificate Studio](/tools/cert)",
+    "- [Crypto Lab](/tools/crypto)",
+    "- [Hash Identifier](/tools/hash-id)",
+    "- [HTTP Security Header Analyzer](/tools/headers)",
+    "- [Hex Dump Analyzer](/tools/hexdump)",
+    "- [Nmap Output Parser](/tools/ports)",
+    "- [Recon Suite](/tools/recon)",
+    "- [Reverse Shell Generator](/tools/reverse-shell)",
+    "- [AI Prompt Injection Lab](/tools/ai-injection)",
+    "- [MDX Preview](/tools/mdx-preview)",
+    "Topics that appear in the writing: walkthrough, portswigger, lab, network, authentication, xss, f5, security, local ai, llm, sql-injection, ccna, enumeration, bigip, nmap, access-control, jwt, programming, web security, dns, penetration testing, devops, beginner, recon, file-upload, ssrf, information-disclosure, ssti, path-traversal, dom-xss, api-testing, python, graphql, nosql-injection, command-injection, lab/htb, sql injection, owasp, llama.cpp, qwen.",
+    "Personality: genuinely interested in this stuff, a bit funny, never corporate. Dry, warm, occasionally a little cheeky about how cursed a lab was. Never a chatbot, never that as-an-AI voice, never salesy, never a lecture.",
+    "If a topic is not in the list above, say plainly that the site does not cover it. Never invent an article, page or link.",
+  ].join("\n");
 }
 
 function progressNote(tracked: TrackedSeries[]): string {
@@ -236,7 +352,8 @@ function systemPrompt(
   return `You are SCHIZO, the assistant on Suhesh Kasti's portfolio site. He writes up web security, F5 BIG-IP, DNS and labs he has broken on purpose. You are the friendly person who knows where everything is filed.
 
 How to answer:
-- Two or three sentences, plain words. Warm and a bit dry-witted, never corporate, never a chatbot. No "As an AI", no bullet lists, no restating the question.
+- Format with markdown: a bullet list when you name three or more pages or tools, **bold** for names, and links as markdown links using the exact URLs above.
+- Answer properly: three to five sentences when the question deserves it, one line when it does not. Give the useful detail and the link, not a shrug. No "As an AI", no bullet lists, no restating the question.
 - Point at the page that answers them and say what is on it.
 - Link the single most relevant page as a markdown link. Use ONLY the URLs listed below, copied exactly. Do not build a URL from a title, and never use any other domain.
 - The author's own progress notes are private; you may mention them, never repeat them back as a list.
@@ -272,33 +389,15 @@ async function tryAI(
   ];
   // Deliberately no progress count: the number belongs to one browser's localStorage and
   // the model stated it wrongly twice. The client can render it exactly instead.
-  const sys = systemPrompt(posts.length, projects.length, undefined, sources) + progressNote(tracked);
+  const sys = systemPrompt(posts.length, projects.length, undefined, sources) + siteFacts() + progressNote(tracked);
 
-  if (env.AI && typeof env.AI.run === "function") {
-    try {
-      const answer = await runAI(env.AI, q, sys);
-      if (answer) return guardLinks(answer, sources);
-    } catch (e: unknown) {
-      console.error("Workers AI binding failed:", errorText(e));
-      if (isQuotaError(e)) return quotaMessage();
-    }
-  }
+  // Every Gemini key first, then DeepSeek. No small models: they invented answers.
+    const external = await askExternalProviders(q, sys, env, { includePaid: true });
+    if (external) return guardLinks(external, sources);
 
-  const accountId = env.CF_ACCOUNT_ID || process.env.CF_ACCOUNT_ID;
-  const token = env.CF_API_TOKEN || process.env.CF_API_TOKEN;
-  if (accountId && token) {
-    try {
-      const answer = await callAIRest(q, sys, accountId, token);
-      if (answer) return guardLinks(answer, sources);
-    } catch (e: unknown) {
-      console.error("Workers AI REST failed:", errorText(e));
-      if (isQuotaError(e)) return quotaMessage();
-    }
-  } else {
-    console.error("AI unavailable: no AI binding and no CF_ACCOUNT_ID/CF_API_TOKEN");
-  }
 
-  return unavailableMessage();
+  // Out of thinking for today. Say so kindly rather than showing a provider error.
+  return quotaMessage();
 }
 
 async function runAI(ai: AiBinding, query: string, sys: string): Promise<string> {

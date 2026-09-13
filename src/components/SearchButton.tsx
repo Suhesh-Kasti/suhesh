@@ -152,6 +152,7 @@ export default function SearchButton() {
         setIsOpen(true);
       }
       if (e.key === "Escape" && isOpen) {
+        setQuery("");
         setIsOpen(false);
       }
     };
@@ -195,7 +196,8 @@ export default function SearchButton() {
               onClick={() => setIsOpen(false)}
             />
             <motion.div
-              className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4"
+                className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4"
+                onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false); }}
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -257,7 +259,7 @@ export default function SearchButton() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => { setQuery(""); setIsOpen(false); }}
                       className="font-mono text-2xs text-fg-muted hover:text-fg border border-fg-muted/30 hover:border-fg px-2 py-1 transition-colors cursor-pointer"
                       style={{ fontFamily: TYPOGRAPHY.fontMono }}
                       aria-label="Close search"
@@ -313,6 +315,9 @@ export default function SearchButton() {
                   "Building a Local AI-Powered Security Research Agent from Scratch",
                   "How do I download your CV?",
                   "How far am I through the PortSwigger roadmap?",
+                  "How do I contact Suhesh?",
+                  "What tools are on this site?",
+                  "What has Suhesh written recently?",
                 ].map((suggestion) => (
                         <button
                           key={suggestion}

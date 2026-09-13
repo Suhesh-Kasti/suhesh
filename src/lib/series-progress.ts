@@ -10,6 +10,9 @@ const PREFIX = "roadmap-progress:";
 const LEGACY_KEY = "roadmap-progress";
 const MAX_INDEX = 9999;
 
+/** The one roadmap that predates namespaced keys, so its ticks can be adopted. */
+export const LEGACY_ADOPT_SLUG = "portswigger-beginner-roadmap";
+
 export interface SeriesProgress {
   slug: string;
   done: number;
@@ -65,6 +68,8 @@ export function clearSeries(slug: string): void {
  * so it only ever contains roadmaps the visitor has actually started.
  */
 export function readAllSeries(): SeriesProgress[] {
+  // Reading it performs the migration, so the prefix scan below finds it.
+  readSeries(LEGACY_ADOPT_SLUG);
   const found: SeriesProgress[] = [];
   try {
     for (let i = 0; i < localStorage.length; i += 1) {

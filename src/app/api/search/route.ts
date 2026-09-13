@@ -144,7 +144,9 @@ export async function POST(request: Request) {
       } else if (isLookup) {
         aiAnswer = `The page you want is **${top.title}** — it is the first result below.`;
       } else if (rateLimit(clientKey(request, "search-ai"), 5, 60_000) && rateLimit("search-ai-global", 60, 60_000)) {
-        aiAnswer = await tryAI(q, posts, projects, tracked);
+        aiAnswer = posts.length === 0 && projects.length === 0
+        ? noMatchMessage(q)
+        : await tryAI(q, posts, projects, tracked);
         await writeCachedAnswer(q, progressKey, aiAnswer);
       } else {
         aiAnswer =
@@ -191,6 +193,21 @@ interface TrackedSeries {
  * step come from the content registry, so the model is given facts, never asked to do
  * arithmetic on a number it was handed.
  */
+/**
+ * Nothing matched. The model used to be asked anyway, and with no pages to work from it
+ * invented one ("Cloud Architecture Models", asked about a CV). Answering here is exact
+ * and costs no quota. The CVs are real files that are not in the search index yet.
+ */
+function noMatchMessage(query: string): string {
+  if (/\b(cv|resume|curriculum vitae)\b/i.test(query)) {
+    return "**Looking for my CV**\n\nThere are three, depending on the role:" + 
+    + "\n- [Cybersecurity CV](/CV/Suhesh-Cybersecurity-CV.pdf)"
+    + "\n- [DevOps CV](/CV/Suhesh-Kasti-CV-DevOps.pdf)"
+    + "\n- [IT and Network CV](/CV/Suhesh-Kasti-CV-IT-Network.pdf)" + "\n\nTell me which one and I can point you at the right page.";
+  }
+  return "**I do not have that one**\n\nNothing on the site matches that yet. If it is about my background, the About page has the short version and the contact links; everything I have written lives in the Brain Dump.";
+}
+
 function progressNote(tracked: TrackedSeries[]): string {
   const lines = tracked.flatMap((item) => {
     const post = getPostBySlug(item.slug);

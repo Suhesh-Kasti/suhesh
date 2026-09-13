@@ -307,12 +307,13 @@ export default function SearchButton() {
                         <div className="flex-1 h-px bg-fg-muted/30" />
                       </div>
                       {[
-                        "How to download CV?",
-                        "WhatsApp number",
-                        "Skills and expertise",
-                        "Tell me about the projects",
-                        "Contact info",
-                      ].map((suggestion) => (
+                  "Wireshark Basics",
+                  "How DNSSEC Works",
+                  "Exploring Nmap — Getting Started",
+                  "Building a Local AI-Powered Security Research Agent from Scratch",
+                  "How do I download your CV?",
+                  "How far am I through the PortSwigger roadmap?",
+                ].map((suggestion) => (
                         <button
                           key={suggestion}
                           onClick={() => { setQuery(suggestion); handleSearch(suggestion, false); }}

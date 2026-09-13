@@ -121,8 +121,8 @@ export default async function BrainDumpPost({ params }: Props) {
 
         {post.meta.type !== "roadmap" && (
           <>
-            <hr className="mt-16 max-w-5xl mx-auto border-0 h-[2px] bg-fg" />
-            <nav className="max-w-5xl mx-auto px-6 md:px-12 mt-8 pb-16 flex justify-between items-center">
+            <hr className="mt-12 max-w-5xl mx-auto border-0 h-[2px] bg-fg" />
+            <nav className="max-w-5xl mx-auto px-6 md:px-12 mt-6 pb-12 flex justify-between items-center">
               <Link href="/braindump" className="font-mono text-xs uppercase text-fg hover:text-brutal-pink-text transition-colors" style={{ fontFamily: "var(--font-space-mono)" }}>
                 ← All Posts
               </Link>

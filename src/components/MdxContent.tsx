@@ -38,6 +38,7 @@ export function MdxContent({ slug, steps }: Props) {
       [&_td]:border-2 [&_td]:border-fg [&_td]:px-4 [&_td]:py-2
       [&_thead]:border-b-2 [&_thead]:border-fg
       [&_tbody]:divide-y [&_tbody]:divide-fg-muted/20
+        [&>*:last-child]:mb-0
     ">
         <Content components={components} />
     </div>

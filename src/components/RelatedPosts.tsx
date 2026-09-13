@@ -21,7 +21,7 @@ export function RelatedPosts({ slug, tags, limit = 4 }: { slug: string; tags: st
   if (related.length === 0) return null;
 
   return (
-    <section aria-labelledby="related-heading" className="max-w-5xl mx-auto px-6 md:px-12 mt-16">
+    <section aria-labelledby="related-heading" className="max-w-5xl mx-auto px-6 md:px-12 mt-12">
       <h2
         id="related-heading"
         className="font-display text-2xl font-bold uppercase text-fg border-b-2 border-fg pb-2"

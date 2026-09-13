@@ -46,7 +46,7 @@ To solve this lab, submit a comment that calls the `alert` function when the c
 onclick="var tracker={track(){}};tracker.track('https://suhesh.com.np'-alert(1)-'');">
 ```
 - [ ] Final payload / exploit:
-![The onclick handler where the HTML-encoded quote is decoded into a working JavaScript payload](/images/content/lab--portswigger-stored-xss-into-onclick-event-with-angle-brackets-and-double-quotes-html-encoded-and-single-quotes-and-backslash-escaped/HTML_encoded_elements_gets_decoded.png)
+![The onclick handler where the HTML-encoded quote is decoded into a working JavaScript payload](/images/content/lab--portswigger-stored-xss-into-onclick-event-with-angle-brackets-and-double-quotes-html-encoded-and-single-quotes-and-backslash-escaped/HTML_encoded_elements_gets_decoded.webp)
 ## Key Takeaway
 _How does an alert trigger if it's supposed to be inside a string being passed to a function?_ It works because of JavaScript's **Order of Evaluation** and **Type Coercion**. JavaScript reads the expression from left to right and attempts to perform mathematical subtraction (the `-` signs) on strings and functions like:
 - **Step 1:** The engine sees a math problem involving subtraction operators: `[Value A] - [Value B] - [Value C]`.   

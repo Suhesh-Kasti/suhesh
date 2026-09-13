@@ -66,30 +66,30 @@ BIG-IP Next:
 2. Upload UCS to the migration tool.
 3. Deploy the migrated application to BIG-IP Next.
 
-![Downloading a UCS backup and uploading it to the BIG-IP Next migration tool](/images/content/f5-bigip-next-architecture-and-migration/migrating-to-bigIPNext.png)
+![Downloading a UCS backup and uploading it to the BIG-IP Next migration tool](/images/content/f5-bigip-next-architecture-and-migration/migrating-to-bigIPNext.webp)
 
-![The migration tool analysing an uploaded configuration](/images/content/f5-bigip-next-architecture-and-migration/migration-BigIPNext-analyze.png)
+![The migration tool analysing an uploaded configuration](/images/content/f5-bigip-next-architecture-and-migration/migration-BigIPNext-analyze.webp)
 
 - Per-application migration.
 - Right now only LTM and ASM are supported by BIG-IP Next.
 
-![The supported migration paths from classic BIG-IP to BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/migration-path-BigIPNext.png)
+![The supported migration paths from classic BIG-IP to BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/migration-path-BigIPNext.webp)
 
 ## BIG-IP Next UI
 
-![The BIG-IP Next user interface](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-UI-1.png)
+![The BIG-IP Next user interface](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-UI-1.webp)
 
 This is real-time latency, but it cannot display interval-based latency as of now, as it is in beta.
 
-![An alert shown in the BIG-IP Next interface](/images/content/f5-bigip-next-architecture-and-migration/alert-in-BigIPNext.png)
+![An alert shown in the BIG-IP Next interface](/images/content/f5-bigip-next-architecture-and-migration/alert-in-BigIPNext.webp)
 
-![A new security template being created in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-new-security-template.png)
+![A new security template being created in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-new-security-template.webp)
 
-![Low-touch policy management in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-lowtouchpolicymanagement.png)
+![Low-touch policy management in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-lowtouchpolicymanagement.webp)
 
 Low-touch policy management is used for reducing time from learning to blocking. It is not customizable — ratings 1, 2, 3 (alarm log) and 4, 5 (block log). Around 7k attack signatures form the base of negative security, with no granular control. Yes, it impacts resources. Used where clients do not have a lot of time to move from learning to blocking.
 
-![Violation-based policies in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-violationbased.png)
+![Violation-based policies in BIG-IP Next](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-violationbased.webp)
 
 - False positive suppression engine.
 - Signature tuning.
@@ -98,7 +98,7 @@ Low-touch policy management is used for reducing time from learning to blocking.
 
 ## Lab
 
-![The BIG-IP Next Central Manager](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-CM.png)
+![The BIG-IP Next Central Manager](/images/content/f5-bigip-next-architecture-and-migration/BigIPNext-CM.webp)
 
 <QuizCard title="BIG-IP Next recall" questions={[
   { question: "Which Kubernetes flavour runs on the lighter R-series and VE?", options: ["k8s", "k3s", "F5OS", "OpenShift"], correct: 1, explanation: "k3s is the lighter distribution for R-series and VE; k8s is the heavier one used on chassis platforms." },

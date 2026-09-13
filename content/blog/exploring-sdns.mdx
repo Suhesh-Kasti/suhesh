@@ -30,7 +30,7 @@ Every network device is doing three jobs at once. They get split into planes.
 
 Control plane decides. Data plane moves. Hold onto that, because everything below follows from pulling those two apart.
 
-![The data, control and management planes that split up the work inside a network device](/images/content/networking/notThumb/Data_Control_Management_Planes.png)
+![The data, control and management planes that split up the work inside a network device](/images/content/networking/notThumb/Data_Control_Management_Planes.webp)
 
 The three names ran together in my head at first. Management is you, control is the brain, data is the muscle. That is the whole trick to keeping them straight.
 
@@ -44,11 +44,11 @@ The three names ran together in my head at first. Management is you, control is 
 
 A normal network runs a distributed control plane. Every router and switch has its own brain and makes its own calls. They cooperate through routing protocols, but no single device is in charge. Kill one box and the others route around it.
 
-![A distributed control plane, where every router and switch makes its own forwarding decisions](/images/content/networking/notThumb/Distributed_Control_Plane.png)
+![A distributed control plane, where every router and switch makes its own forwarding decisions](/images/content/networking/notThumb/Distributed_Control_Plane.webp)
 
 SDN lifts that brain out of every device and drops it into one controller. The devices keep the data plane and lose the arguments. They forward what they're told, and the thinking happens in one place.
 
-![Controller-based networking, where the devices give up their own control planes and follow one central SDN controller](/images/content/networking/notThumb/Controller_Based_Networking_Zombie.png)
+![Controller-based networking, where the devices give up their own control planes and follow one central SDN controller](/images/content/networking/notThumb/Controller_Based_Networking_Zombie.webp)
 
 The trade is easy to see. You get one place to change the network and one place to break it. Central control is also central failure, which is why controllers run as a cluster.
 
@@ -90,7 +90,7 @@ Underlay, overlay, and every device that runs them together are the fabric.
 
 ACI is Cisco's version of all this for the data centre. Everything connects over Layer 3 in a spine-leaf layout. Leaf switches hang off the servers, spine switches connect the leaves, and every leaf reaches every spine.
 
-![Spine-leaf data center topology, with leaf switches connecting the servers up to spine switches](/images/content/networking/notThumb/Spine_Leaf_in_data_center.png)
+![Spine-leaf data center topology, with leaf switches connecting the servers up to spine switches](/images/content/networking/notThumb/Spine_Leaf_in_data_center.webp)
 
 The controller is the APIC (Application Policy Infrastructure Controller). It manages the underlay and the overlay together, and you run the whole data centre through it.
 

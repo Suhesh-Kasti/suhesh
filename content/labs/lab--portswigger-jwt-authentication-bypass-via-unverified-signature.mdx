@@ -39,11 +39,11 @@ You can log in to your own account using the following credentials: `wiener:pet
 ## Solution Reconstruction
 *After viewing full solution, close it immediately.*
 - [ ] Step 1: Sent the traffic without signature and still got response back meaning signature isnt being verified.
-![Request sent with the JWT signature stripped that still returns a valid response](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/jwt_without_signature_nosig_verify.png)
+![Request sent with the JWT signature stripped that still returns a valid response](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/jwt_without_signature_nosig_verify.webp)
 - [ ] Step 2: I changed the page to `/admininistrator` and  replayed the request and the app thought I was administrator.
-![The admin panel reached after changing the request path to the administrator page](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/nosig_verify_admin_page.png)
+![The admin panel reached after changing the request path to the administrator page](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/nosig_verify_admin_page.webp)
 - [ ] Step 3: The jwt was being sent through cookie so replaced the cookie in browser and I was able to identify as admin
-![The unsigned JWT cookie being replayed from the browser to authenticate as admin](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/jwt_authentication_sent_without_sign.png)
+![The unsigned JWT cookie being replayed from the browser to authenticate as admin](/images/content/lab--portswigger-jwt-authentication-bypass-via-unverified-signature/jwt_authentication_sent_without_sign.webp)
 - [ ] Final payload / exploit:
 
 ## Key Takeaway

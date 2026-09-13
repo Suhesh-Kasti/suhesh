@@ -36,9 +36,9 @@ To solve the lab, deliver an exploit to the victim that calls the `print()` fu
 
 ## Solution Reconstruction
 *After viewing full solution, close it immediately.*
-- [ ] Step 1: The site contains js code that when user sets a hash fragment it splits and checks each heading and the string after the hash and if it matches it scrolls to that respective title![The page's JavaScript scrolling to a heading that matches the value in the hash fragment](/images/content/lab--portswigger-dom-xss-in-jquery-selector-sink-using-a-hashchange-event/DOM_XSS_hashpointer_autoscrolls.png)
+- [ ] Step 1: The site contains js code that when user sets a hash fragment it splits and checks each heading and the string after the hash and if it matches it scrolls to that respective title![The page's JavaScript scrolling to a heading that matches the value in the hash fragment](/images/content/lab--portswigger-dom-xss-in-jquery-selector-sink-using-a-hashchange-event/DOM_XSS_hashpointer_autoscrolls.webp)
 - [ ] Step 2:  When I inserted an `<img>` tag it processed it as hash fragment and invoked the function inside the event `onerror` but this is a self XSS meaning 
-![The print dialog appearing after the img onerror payload fired as a self-XSS](/images/content/lab--portswigger-dom-xss-in-jquery-selector-sink-using-a-hashchange-event/DOM_XSS-self-print-func-invoked.png)
+![The print dialog appearing after the img onerror payload fired as a self-XSS](/images/content/lab--portswigger-dom-xss-in-jquery-selector-sink-using-a-hashchange-event/DOM_XSS-self-print-func-invoked.webp)
 - [ ] Step 3:
 - [ ] Final payload / exploit:
 

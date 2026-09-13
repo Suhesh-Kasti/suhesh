@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/generate-content-registry.mjs",
+    "predev": "node scripts/optimize-images.mjs && node scripts/generate-content-registry.mjs",
     "dev": "next dev",
-    "build": "node scripts/generate-content-registry.mjs && next build",
+    "build": "node scripts/optimize-images.mjs && node scripts/generate-content-registry.mjs && next build",
     "generate-registry": "node scripts/generate-content-registry.mjs",
-    "deploy": "npm install --include=dev && node scripts/generate-content-registry.mjs && npx @opennextjs/cloudflare build && npx @opennextjs/cloudflare deploy",
+    "deploy": "npm install --include=dev && node scripts/optimize-images.mjs && node scripts/generate-content-registry.mjs && npx @opennextjs/cloudflare build && npx @opennextjs/cloudflare deploy",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "optimize:images": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

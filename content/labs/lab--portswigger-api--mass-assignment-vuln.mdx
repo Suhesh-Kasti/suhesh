@@ -22,7 +22,7 @@ To solve the lab, find and exploit a mass assignment vulnerability to buy a **L
 > **EXAMPLE**: If the `isAdmin` value in the request is bound to the user object without adequate validation and sanitization, the user `wiener` may be incorrectly granted admin privileges. To determine whether this is the case, browse the application as `wiener` to see whether you can access admin functionality.
 ## Blind Attempt (15-20 min max)
 - **What I tried:**  Went to /api and found API docs. While the app was only doing GET request to /api/checkout we could also do some POST request
-![The /api documentation showing the checkout endpoint and its GET and POST methods](/images/content/lab--portswigger-api--mass-assignment-vuln/api-mass-assign-api-doc.png)
+![The /api documentation showing the checkout endpoint and its GET and POST methods](/images/content/lab--portswigger-api--mass-assignment-vuln/api-mass-assign-api-doc.webp)
 - **Where I got stuck:**
 ## Hint Usage (if needed)
 - [ ] Used lab hint
@@ -33,7 +33,7 @@ To solve the lab, find and exploit a mass assignment vulnerability to buy a **L
 *After viewing full solution, close it immediately.*
 - [ ] Step 1:  Logged in as weiner
 - [ ] Step 2:  Went to /api and got the docs found out we can do a POST req in /api/checkput endpoint
-- [ ] Step 3:  Made this post request according to the documentation![POST request to /api/checkout carrying the chosen_discount field the UI never sends](/images/content/lab--portswigger-api--mass-assignment-vuln/api-mass-assignment-assigned-discount.png)
+- [ ] Step 3:  Made this post request according to the documentation![POST request to /api/checkout carrying the chosen_discount field the UI never sends](/images/content/lab--portswigger-api--mass-assignment-vuln/api-mass-assignment-assigned-discount.webp)
 - [ ] Final payload / exploit: This created a discount of 100% for the jacket of which I could buy.
 ## Key Takeaway
 Search for exposed API docs as they might expose all and everything possible to do with API.

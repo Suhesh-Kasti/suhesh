@@ -15,7 +15,7 @@ export default function SubisuPage() {
   return (
     <ProjectLayout title="Subisu TSC Desktop App" category="Desktop App" color={COLORS.purple}>
       <div className="border-2 border-fg p-4 mb-8 bg-surface">
-        <Image src="/images/projects/subisuTSC.jpg" alt="Subisu TSC Desktop Training App" width={800} height={500} className="w-full h-auto" />
+        <Image src="/images/projects/subisuTSC.webp" alt="Subisu TSC Desktop Training App" width={800} height={500} className="w-full h-auto" />
       </div>
       <h2 className="font-display text-lg font-extrabold uppercase mt-8 mb-4">Project Description</h2>
       <p>A Python desktop application built for Subisu TSC (Technical Service Center) to train new recruits. The app provides an interactive, self-paced learning environment covering networking fundamentals, cable types, IP addressing, troubleshooting procedures, and internal tools used at Subisu.</p>
@@ -34,7 +34,7 @@ export default function SubisuPage() {
 
       <ImageGallery
         images={[
-          { src: "/images/projects/subisuTSC.jpg", alt: "Subisu TSC Desktop App training interface" },
+          { src: "/images/projects/subisuTSC.webp", alt: "Subisu TSC Desktop App training interface" },
         ]}
         color={COLORS.purple}
       />

@@ -15,7 +15,7 @@ export default function ReEarthPage() {
   return (
     <ProjectLayout title="Re-Earth Waste Management" category="Web Design" color={COLORS.teal}>
       <div className="border-2 border-fg p-4 mb-8 bg-surface">
-        <Image src="/images/projects/re-earth.png" alt="Re-Earth Waste Management System" width={800} height={500} className="w-full h-auto" />
+        <Image src="/images/projects/re-earth.webp" alt="Re-Earth Waste Management System" width={800} height={500} className="w-full h-auto" />
       </div>
       <h2 className="font-display text-lg font-extrabold uppercase mt-8 mb-4">Project Description</h2>
       <p>A collaborative web project for Re-Earth, a waste management system based in Nepal. I was responsible for designing and implementing the front page layout, working alongside the project lead Ms. Anjila Tripathi to create an accessible and visually clear information architecture for the waste management platform.</p>
@@ -34,7 +34,7 @@ export default function ReEarthPage() {
 
       <ImageGallery
         images={[
-          { src: "/images/projects/re-earth.png", alt: "Re-Earth landing page design" },
+          { src: "/images/projects/re-earth.webp", alt: "Re-Earth landing page design" },
         ]}
         color={COLORS.teal}
       />

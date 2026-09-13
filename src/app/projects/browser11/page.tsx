@@ -15,7 +15,7 @@ export default function Browser11Page() {
   return (
     <ProjectLayout title="Browser 11" category="Web Experiment" color={COLORS.blue}>
       <div className="border-2 border-fg p-4 mb-8 bg-surface">
-        <Image src="/images/projects/jhyaleghara.png" alt="Browser 11 — Windows 11 replica in the browser" width={800} height={500} className="w-full h-auto" />
+        <Image src="/images/projects/jhyaleghara.webp" alt="Browser 11 — Windows 11 replica in the browser" width={800} height={500} className="w-full h-auto" />
       </div>
       <h2 className="font-display text-lg font-extrabold uppercase mt-8 mb-4">Project Description</h2>
       <p>One of my early web development projects — a complete Windows 11 desktop replica running entirely in a web browser. Built with vanilla HTML, CSS, and JavaScript, it features an interactive start button, notification center, taskbar, and window management — all faithfully mimicking the Windows 11 UI.</p>
@@ -34,7 +34,7 @@ export default function Browser11Page() {
 
       <ImageGallery
         images={[
-          { src: "/images/projects/jhyaleghara.png", alt: "Browser 11 Windows 11 replica in browser" },
+          { src: "/images/projects/jhyaleghara.webp", alt: "Browser 11 Windows 11 replica in browser" },
         ]}
         color={COLORS.blue}
       />

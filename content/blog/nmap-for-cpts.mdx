@@ -13,7 +13,7 @@ type: "blog"
 
 Scanning is the process of sending a specific probe (a packet with certain flags) and observing the response. The "State" Nmap reports is simply an interpretation of that response based on RFC standards. If a firewall sits in the middle, it "lies" or "silences" the conversation, which is why Nmap has complex states like `open|filtered`.
 
-![An Nmap scan running in a terminal, printing the ports it finds as it works through the target](/images/content/nmap-for-cpts/nmapscan.png)
+![An Nmap scan running in a terminal, printing the ports it finds as it works through the target](/images/content/nmap-for-cpts/nmapscan.webp)
 
 ## Host Discovery
 
@@ -28,9 +28,9 @@ Before ports, you find hosts. Nmap mixes several probes, not just ping:
 
 `nmap -sn 10.0.0.0/24` runs those defaults across the subnet. On a local network Nmap uses ARP instead, which is far more reliable. If you already know the host is up, skip discovery entirely with `-Pn`.
 
-![Nmap host discovery where the target answers, so the host is reported as up](/images/content/nmap-for-cpts/targetup.png)
+![Nmap host discovery where the target answers, so the host is reported as up](/images/content/nmap-for-cpts/targetup.webp)
 
-![Nmap host discovery where the target stays silent, so the host is reported as down](/images/content/nmap-for-cpts/targetdown.png)
+![Nmap host discovery where the target stays silent, so the host is reported as down](/images/content/nmap-for-cpts/targetdown.webp)
 
 ## Port States
 

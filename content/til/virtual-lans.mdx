@@ -29,7 +29,7 @@ Using VLANs adds a 32-bit (4 byte) sub header to Ethernet frames where necessary
    - Each frame being sent or received carries a tag to identify the VLAN it belongs to.
    - A trunk port on each switch serves as a passage between them, identifying every VLAN used in the network.
 
-![Two switches connected by a single trunk port carrying several VLANs, with access ports on each side](/images/content/virtual-lans/trunk_port_passage.png)
+![Two switches connected by a single trunk port carrying several VLANs, with access ports on each side](/images/content/virtual-lans/trunk_port_passage.webp)
 
 **Note:** we could actually not use a trunk (and therefore VLAN tagging), but instead we'd need to use a dedicated port on each switch for every VLAN used across the two — which would be very wasteful. In the example above we'd use three ports per switch instead of just one.
 

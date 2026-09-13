@@ -48,7 +48,7 @@ export default function AIAgent() {
 
       <ImageGallery
         images={[
-          { src: "/images/projects/local-ai.png", alt: "Local AI Security Agent — architecture diagram" },
+          { src: "/images/projects/local-ai.webp", alt: "Local AI Security Agent — architecture diagram" },
         ]}
         color={COLORS.orange}
       />

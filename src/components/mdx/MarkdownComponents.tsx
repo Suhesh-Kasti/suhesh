@@ -4,6 +4,7 @@ import { ReactNode, HTMLAttributes, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faExpand, faCopy, faCheck } from "@fortawesome/free-solid-svg-icons";
+import imageManifest from "@/data/image-manifest.json";
 
 type ElProps = HTMLAttributes<HTMLElement> & { children?: ReactNode };
 type CodeProps = HTMLAttributes<HTMLElement> & { children?: ReactNode; className?: string };
@@ -127,8 +128,26 @@ export function BrutalLi({ children, ...props }: ElProps) {
     </li>
   );
 }
+/**
+ * Intrinsic size per image, written at build time by scripts/optimize-images.mjs. With
+ * real width and height the browser reserves the right box before the file lands,
+ * instead of reflowing the article as each screenshot arrives.
+ */
+function imageSize(src?: string): [number, number] | undefined {
+  if (!src) return undefined;
+  let key = src;
+  try {
+    key = decodeURIComponent(src);
+  } catch {
+    /* fall back to the raw value */
+  }
+  const entry = (imageManifest as Record<string, number[]>)[key];
+  return entry && entry.length === 2 ? [entry[0], entry[1]] : undefined;
+}
+
 export function BrutalImg({ src, alt, ...props }: ElProps & { src?: string; alt?: string }) {
   const [fullscreen, setFullscreen] = useState(false);
+  const size = imageSize(src);
 
   return (
     <>
@@ -138,7 +157,18 @@ export function BrutalImg({ src, alt, ...props }: ElProps & { src?: string; alt?
           onClick={() => setFullscreen(true)}
           data-cursor-label="Expand Image"
         >
-          <img src={src} alt={alt ?? ""} className="w-full object-cover" {...props} />
+          {/* The caption below already carries the description, so a matching alt here
+              would only be announced twice. */}
+          <img
+            src={src}
+            alt=""
+            width={size?.[0]}
+            height={size?.[1]}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-auto object-cover"
+            {...props}
+          />
           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <span className="font-mono text-2xs px-2 py-1 border border-fg bg-surface text-fg uppercase" style={{ fontFamily: "var(--font-space-mono)" }}>
               <FontAwesomeIcon icon={faExpand} className="mr-1" /> Expand

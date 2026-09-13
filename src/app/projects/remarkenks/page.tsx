@@ -48,7 +48,7 @@ export default function RemarkEnks() {
 
       <ImageGallery
         images={[
-          { src: "/images/projects/remarkEnks.jpg", alt: "remarkEnks browser extension UI" },
+          { src: "/images/projects/remarkEnks.webp", alt: "remarkEnks browser extension UI" },
         ]}
         color={COLORS.yellow}
       />

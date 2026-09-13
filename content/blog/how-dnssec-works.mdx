@@ -19,7 +19,7 @@ dig @server query +dnssec
 
 The first step towards securing a zone with DNSSEC is to group all the records with the same type into a resource record set (RRset). For example, if you have three AAAA records in your zone on the same label (i.e. `label.example.com`), they would all be bundled into a single AAAA RRset.
 
-![DNS records of the same type and label being grouped into a single resource record set](/images/content/how-dnssec-works/rrset_Allocation.png)
+![DNS records of the same type and label being grouped into a single resource record set](/images/content/how-dnssec-works/rrset_Allocation.webp)
 
 DNSSEC doesn't work on individual records but on sets of records — the RRSETs.
 
@@ -40,7 +40,7 @@ Normal clients will only see the RRSET, whereas DNSSEC clients will see the RRSI
 - If the RRSET changes, the RRSIG has to be regenerated in order to be valid.
 - If the RRSET changes without a corresponding change in the RRSIG, the signature is considered invalid.
 
-![The RRSET being signed with the private zone-signing key and the resulting RRSIG stored alongside it](/images/content/how-dnssec-works/howDNSSECworks.png)
+![The RRSET being signed with the private zone-signing key and the resulting RRSIG stored alongside it](/images/content/how-dnssec-works/howDNSSECworks.webp)
 
 <Cloze title="DNSSEC recall" color="#00cc55" text="Records of the same type and label are grouped into an {{RRSET}}. The private half of the {{ZSK}} signs each set, and the signature is stored beside it as an {{RRSIG}} record." />
 

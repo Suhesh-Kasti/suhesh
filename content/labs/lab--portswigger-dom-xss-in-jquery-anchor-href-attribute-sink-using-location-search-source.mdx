@@ -27,7 +27,7 @@ To solve this lab, make the "back" link alert `document.cookie`.
 
 ## Blind Attempt 
 - **What I tried:** I kept on trying all kinds of attacks 
-![The submit feedback page where my earlier payloads failed to change the back link](/images/content/lab--portswigger-dom-xss-in-jquery-anchor-href-attribute-sink-using-location-search-source/DOM_XSS_failed_backButton.png)
+![The submit feedback page where my earlier payloads failed to change the back link](/images/content/lab--portswigger-dom-xss-in-jquery-anchor-href-attribute-sink-using-location-search-source/DOM_XSS_failed_backButton.webp)
 - **Where I got stuck:** None of the attacks landed because I was trying to change the DOM but I had to change the functionality of the button 
 
 ## Hint Usage (if needed)
@@ -41,7 +41,7 @@ To solve this lab, make the "back" link alert `document.cookie`.
 - [ ] Step 2: Looked at the site's source code... the path where the back button lands was being placed from whatever was sent in the URL parameter
 - [ ] Step 3: Sent `javascript:alert(document.cookie)` and the back button now pointed to that location alerting the cookie
 - [ ] Final payload / exploit: 
-![The back link on the feedback page now pointing at a javascript:alert payload](/images/content/lab--portswigger-dom-xss-in-jquery-anchor-href-attribute-sink-using-location-search-source/DOM-XSS_Back_button_exploited.png)
+![The back link on the feedback page now pointing at a javascript:alert payload](/images/content/lab--portswigger-dom-xss-in-jquery-anchor-href-attribute-sink-using-location-search-source/DOM-XSS_Back_button_exploited.webp)
 ## Key Takeaway
 *Write ONE principle I must remember:*
 

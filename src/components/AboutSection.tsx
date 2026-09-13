@@ -31,11 +31,11 @@ const PHOTOS = [
 ];
 
 const CERTS: { name: string; issuer: string; color: string; fullName: string; image: string; verify?: string }[] = [
-  { name: "CAPT", issuer: "Hackviser", color: COLORS.green, fullName: "Certified Associate Penetration Tester", image: "/images/certificates/0xCAPT.png", verify: "https://hackviser.com/verify?id=HV-CAPT-LJ2W1FQ8" },
-  { name: "CWSE", issuer: "Hackviser", color: COLORS.purple, fullName: "Certified Web Security Expert", image: "/images/certificates/0xCWSE.png", verify: "https://hackviser.com/verify?id=HV-CWSE-2U5CIN2G" },
-  { name: "F5 CTS", issuer: "F5 Networks", color: COLORS.red, fullName: "F5 Certified Technology Specialist", image: "/images/certificates/0xF5CTS.png", verify: "https://www.credly.com/badges/09a33e80-8708-460b-8d57-911317aa9d4b/public_url" },
-  { name: "F5 CA", issuer: "F5 Networks", color: COLORS.pink, fullName: "F5 Certified BIG-IP Administrator", image: "/images/certificates/0xF5CA.png", verify: "https://www.credly.com/badges/66d58a6c-b052-4eba-b8bf-f77864684db6/public_url" },
-  { name: "Cybersecurity Certificate", issuer: "Google", color: COLORS.yellow, fullName: "Google Cybersecurity Certificate", image: "/images/certificates/0x000G.jpg" },
+  { name: "CAPT", issuer: "Hackviser", color: COLORS.green, fullName: "Certified Associate Penetration Tester", image: "/images/certificates/0xCAPT.webp", verify: "https://hackviser.com/verify?id=HV-CAPT-LJ2W1FQ8" },
+  { name: "CWSE", issuer: "Hackviser", color: COLORS.purple, fullName: "Certified Web Security Expert", image: "/images/certificates/0xCWSE.webp", verify: "https://hackviser.com/verify?id=HV-CWSE-2U5CIN2G" },
+  { name: "F5 CTS", issuer: "F5 Networks", color: COLORS.red, fullName: "F5 Certified Technology Specialist", image: "/images/certificates/0xF5CTS.webp", verify: "https://www.credly.com/badges/09a33e80-8708-460b-8d57-911317aa9d4b/public_url" },
+  { name: "F5 CA", issuer: "F5 Networks", color: COLORS.pink, fullName: "F5 Certified BIG-IP Administrator", image: "/images/certificates/0xF5CA.webp", verify: "https://www.credly.com/badges/66d58a6c-b052-4eba-b8bf-f77864684db6/public_url" },
+  { name: "Cybersecurity Certificate", issuer: "Google", color: COLORS.yellow, fullName: "Google Cybersecurity Certificate", image: "/images/certificates/0x000G.webp" },
 ];
 
 const QUALIFICATIONS = [

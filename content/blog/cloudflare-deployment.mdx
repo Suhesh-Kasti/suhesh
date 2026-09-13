@@ -3,7 +3,7 @@ title: "Deploying to Cloudflare"
 description: "If you are a beginner frontend developer, this is a goldmine for you. Host your website projects for free in cloudflare pages easily and shine infront of your competition in recruitments."
 date: '2024-02-25'
 category: "DevOps"
-image: "/images/content/deployment/cloudflare/hosting.jpg"
+image: "/images/content/deployment/cloudflare/hosting.webp"
 tags: ["Static sites", "Hosting", "Deployment"]
 ---
 
@@ -40,31 +40,31 @@ If you outgrow the bandwidth or need your own domain, that is when you look at a
 
 2. **Open the Cloudflare dashboard.** Log in and find the project area.
 
-   ![Cloudflare dashboard after logging in, with the account navigation on the left](/images/content/deployment/cloudflare/dashboard.png)
+   ![Cloudflare dashboard after logging in, with the account navigation on the left](/images/content/deployment/cloudflare/dashboard.webp)
 
 3. **Create a project.** This starts a new static site project.
 
-   ![Cloudflare dashboard with the Create a project button](/images/content/deployment/cloudflare/create-project.png)
+   ![Cloudflare dashboard with the Create a project button](/images/content/deployment/cloudflare/create-project.webp)
 
 4. **Go to Workers & Pages**, then pick Pages.
 
-   ![Workers & Pages section open in the Cloudflare dashboard](/images/content/deployment/cloudflare/pages.png)
+   ![Workers & Pages section open in the Cloudflare dashboard](/images/content/deployment/cloudflare/pages.webp)
 
    Click **Connect to Git** and choose where your repo lives, GitHub or GitLab.
 
 5. **Choose the repository** you want to deploy.
 
-   ![Repository picker listing the Git repos connected to Cloudflare](/images/content/deployment/cloudflare/choose-repo.png)
+   ![Repository picker listing the Git repos connected to Cloudflare](/images/content/deployment/cloudflare/choose-repo.webp)
 
 6. **Configure the build.** Cloudflare tries to detect your framework automatically. Change the preset if it guessed wrong.
 
-   ![Project build settings showing the framework preset and build command fields](/images/content/deployment/cloudflare/configure-project.png)
+   ![Project build settings showing the framework preset and build command fields](/images/content/deployment/cloudflare/configure-project.webp)
 
    Then click **Deploy**. Cloudflare pulls the code, builds it, and publishes the output.
 
 7. **Done.** With no build errors, the site is live at `YOUR_PROJECT_NAME.pages.dev` within a minute.
 
-   ![Deployment success screen showing the live pages.dev URL](/images/content/deployment/cloudflare/deployed.png)
+   ![Deployment success screen showing the live pages.dev URL](/images/content/deployment/cloudflare/deployed.webp)
 
 From here, every push to the repo triggers a rebuild and redeploy automatically.
 
@@ -72,7 +72,7 @@ From here, every push to the repo triggers a rebuild and redeploy automatically.
 
 Deploys fail for a handful of boring reasons. The log is where you find out which one.
 
-![Failed deployment build log inside the Cloudflare dashboard](/images/content/deployment/cloudflare/error.png)
+![Failed deployment build log inside the Cloudflare dashboard](/images/content/deployment/cloudflare/error.webp)
 
 <Accordion title="Where the log lives" color="#ff5500">
 
@@ -100,7 +100,7 @@ Sometimes a retry just works. If it doesn't, the deploy log is the only place wo
 
 Once the build passes, the deployment flips to available:
 
-![Deployment finished and available at the pages.dev subdomain](/images/content/deployment/cloudflare/available.png)
+![Deployment finished and available at the pages.dev subdomain](/images/content/deployment/cloudflare/available.webp)
 
 ## Supported Frameworks
 

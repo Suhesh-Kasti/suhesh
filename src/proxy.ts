@@ -13,10 +13,18 @@ const CSP = [
   "frame-ancestors 'none'",
   "form-action 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  // Handlers must be real listeners, never inline attributes. React always attaches
+  // listeners, so this costs nothing and closes the inline-attribute XSS path even
+  // though script-src still needs 'unsafe-inline' for Next's own bootstrap scripts.
+  "script-src-attr 'none'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https:",
+  "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "connect-src 'self' https://cloudflare-dns.com",
+  // Two HTB writeups embed YouTube walkthroughs. Without this they fall back to
+  // default-src 'self' and the players never load.
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+  "media-src 'self'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
   "upgrade-insecure-requests",

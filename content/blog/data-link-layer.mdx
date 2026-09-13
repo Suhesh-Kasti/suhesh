@@ -66,7 +66,7 @@ When a host wishes to send a packet to an IP address, layer two needs to know th
 
 If the IP address is remote (on a different logical, layer three network) it will instead send an ARP request for the default gateway's MAC address, because the gateway will handle the traffic.
 
-![An ARP request broadcast across a local network, followed by the ARP reply returning to the sender](/images/content/data-link-layer/arp_request_flow.png)
+![An ARP request broadcast across a local network, followed by the ARP reply returning to the sender](/images/content/data-link-layer/arp_request_flow.webp)
 
 1. The host sending data checks its own ARP table, and if the address does not exist it generates an ARP request containing:
    1. Its own (source) IP address and MAC address

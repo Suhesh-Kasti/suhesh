@@ -8,6 +8,7 @@ import { parseSimpleMarkdown } from "@/lib/markdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBook, faFileCode, faLightbulb, faClipboardCheck, faBrain, faWrench } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
+import { readAllSeries } from "@/lib/series-progress";
 
 const PLACEHOLDERS = [
   "AI-powered search...",
@@ -78,7 +79,11 @@ function readRoadmapProgress(): number | undefined {
     const raw = localStorage.getItem("roadmap-progress");
     if (!raw) return undefined;
     const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.length : undefined;
+    if (!Array.isArray(parsed)) return undefined;
+    // Only plausible lab indices count. Anything else in there is stale or foreign and
+    // must not be reported to the model as progress.
+    const valid = parsed.filter((n) => Number.isInteger(n) && (n as number) >= 0 && (n as number) < 1000);
+    return valid.length;
   } catch {
     return undefined;
   }
@@ -124,7 +129,7 @@ export default function SearchButton() {
       const res = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q.trim(), askAI: withAI, progress: readRoadmapProgress() }),
+        body: JSON.stringify({ query: q.trim(), askAI: withAI, progress: readAllSeries() }),
       });
       if (res.ok) {
         const data = await res.json();

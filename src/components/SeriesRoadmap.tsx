@@ -7,6 +7,7 @@ import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 import type { SeriesStep } from "@/lib/braindump";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { readSeries, writeSeries, clearSeries } from "@/lib/series-progress";
 
 interface PhaseDivider {
   label: string;
@@ -35,19 +36,18 @@ const PHASES: PhaseDivider[] = [
 
 interface SeriesRoadmapProps {
   steps: SeriesStep[];
+  /** Namespaces this roadmap's stored progress so several can coexist. */
+  slug: string;
 }
 
-export default function SeriesRoadmap({ steps }: SeriesRoadmapProps) {
+export default function SeriesRoadmap({ steps, slug }: SeriesRoadmapProps) {
   // Starts empty and fills in after mount. Reading localStorage inside the state initialiser
   // made the first client render disagree with the server's (0 vs the saved count), which is
   // what triggered the hydration mismatch and made React rebuild the tree.
   const [completed, setCompleted] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("roadmap-progress");
-      if (saved) setCompleted(new Set(JSON.parse(saved)));
-    } catch {}
+    setCompleted(readSeries(slug));
   }, []);
 
   const toggleStep = (index: number) => {
@@ -55,18 +55,14 @@ export default function SeriesRoadmap({ steps }: SeriesRoadmapProps) {
       const next = new Set(prev);
       if (next.has(index)) next.delete(index);
       else next.add(index);
-      try {
-        localStorage.setItem("roadmap-progress", JSON.stringify([...next]));
-      } catch {}
+      writeSeries(slug, next);
       return next;
     });
   };
 
   const resetProgress = () => {
     setCompleted(new Set());
-    try {
-      localStorage.removeItem("roadmap-progress");
-    } catch {}
+    clearSeries(slug);
   };
 
   const doneCount = completed.size;

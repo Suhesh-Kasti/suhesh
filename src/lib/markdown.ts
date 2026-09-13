@@ -1,24 +1,25 @@
+/**
+ * Renders the small subset of markdown the assistant actually emits: bold, inline code,
+ * links and line breaks. The text is escaped BEFORE the substitutions, so model output
+ * can never inject markup, and links are restricted to this site — the answer is
+ * untrusted text that arrives over the network.
+ */
 function parseSimpleMarkdown(text: string): string {
-  if (!text) return "";
-  return text
+  const escaped = text
+    .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-extrabold text-brutal-pink">$1</strong>')
-    // Italic
-    .replace(/\*(.+?)\*/g, '<em class="italic text-fg-muted">$1</em>')
-    // Inline code
-    .replace(/`(.+?)`/g, '<code class="font-mono text-sm bg-fg/10 px-1 py-0.5 border border-fg-muted/30">$1</code>')
-    // Ordered lists
-    .replace(/^(\d+)\. (.+)$/gm, '<span class="block pl-3 border-l-2 border-brutal-yellow my-1"><span class="font-mono text-2xs text-brutal-yellow mr-1">$1.</span>$2</span>')
-    // Unordered lists
-    .replace(/^- (.+)$/gm, '<span class="block pl-3 border-l-2 border-brutal-pink my-1">$1</span>')
-    // Headings
-    .replace(/^### (.+)$/gm, '<h3 class="font-display text-lg font-bold uppercase text-fg mt-4 mb-2" style="font-family:var(--font-clash-display)">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="font-display text-xl font-extrabold uppercase text-fg mt-4 mb-2" style="font-family:var(--font-clash-display)">$1</h2>')
-    // Double newlines → paragraph break
-    .replace(/\n\n/g, '<div class="my-2"></div>')
-    // Single newlines → line break
+    .replace(/"/g, "&quot;");
+
+  return escaped
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+|\/[^\s)]*)\)/g, (_whole, label, url) => {
+      const safe = /^https?:\/\/suhesh\.com\.np\//.test(url) || url.startsWith("/") ? url : "";
+      return safe
+        ? `<a href="${safe}" target="_blank" rel="noopener noreferrer" class="underline decoration-2 underline-offset-2 hover:text-brutal-pink-text">${label}</a>`
+        : label;
+    })
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/`([^`]+)`/g, '<code class="font-mono text-[0.9em] bg-fg/10 px-1">$1</code>')
     .replace(/\n/g, "<br/>");
 }
 

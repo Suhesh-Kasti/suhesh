@@ -20,7 +20,7 @@ interface Props {
 export function MdxContent({ slug, steps }: Props) {
   const Content = MDX_CONTENT[slug];
   const components = steps?.length
-    ? { ...mdxComponents, ProgressChecklist: () => <SeriesRoadmap steps={steps} /> }
+    ? { ...mdxComponents, ProgressChecklist: () => <SeriesRoadmap steps={steps} slug={slug} /> }
     : mdxComponents;
 
   if (!Content) {

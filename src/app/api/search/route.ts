@@ -2,6 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare/cloudflare-context"
 import searchIndex from "./search-index.json";
 import { WORK } from "@/lib/design-tokens";
 import { clientKey, isSameOrigin, rateLimit } from "@/lib/api-guard";
+import { getPostBySlug } from "@/lib/braindump";
 
 const MODEL = "@cf/meta/llama-3.2-3b-instruct";
 const MAX_QUERY_LENGTH = 200;
@@ -11,7 +12,7 @@ const MAX_QUERY_LENGTH = 200;
  * cache and each caller (and the isolate as a whole) gets a small AI budget per minute.
  */
 const answerCache = new Map<string, { answer: string; at: number }>();
-const CACHE_TTL_MS = 10 * 60_000;
+const CACHE_TTL_MS = 24 * 60 * 60;
 const CACHE_MAX = 300;
 const EDGE_CACHE_TTL_S = 6 * 60 * 60;
 const MAX_ANSWER_CHARS = 2000;
@@ -20,7 +21,7 @@ const MAX_ANSWER_CHARS = 2000;
  * Answers are personalised with the visitor's own progress count, so it has to be part of the
  * key — otherwise one visitor could be served another visitor's cached reply.
  */
-function cacheId(query: string, progress: number): string {
+function cacheId(query: string, progress: string): string {
   return `${query}|${progress}`;
 }
 
@@ -53,7 +54,7 @@ const EDGE_CACHE_ORIGIN = "https://edge-cache.invalid";
  * it survives a cold start and is shared across isolates, so a question asked yesterday by
  * someone else costs nothing today.
  */
-async function readCachedAnswer(query: string, progress: number): Promise<string | undefined> {
+async function readCachedAnswer(query: string, progress: string): Promise<string | undefined> {
   const id = cacheId(query, progress);
   const memory = cachedAnswer(id);
   if (memory) return memory;
@@ -72,7 +73,7 @@ async function readCachedAnswer(query: string, progress: number): Promise<string
   }
 }
 
-async function writeCachedAnswer(query: string, progress: number, answer: string): Promise<void> {
+async function writeCachedAnswer(query: string, progress: string, answer: string): Promise<void> {
   if (!answer) return;
   const id = cacheId(query, progress);
   rememberAnswer(id, answer);
@@ -101,7 +102,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = (await request.json()) as { query?: string; askAI?: boolean; progress?: number };
+    const body = (await request.json()) as { query?: string; askAI?: boolean; progress?: unknown };
     const q = (body.query ?? "").trim().toLowerCase().slice(0, MAX_QUERY_LENGTH);
     if (!q) return Response.json({ aiAnswer: "", posts: [], projects: [] });
 
@@ -124,14 +125,27 @@ export async function POST(request: Request) {
       const isLookup =
         !!top && words.length > 0 && words.every((w: string) => top.title.toLowerCase().includes(w));
 
-      const cached = await readCachedAnswer(q, progress);
+      const tracked: TrackedSeries[] = Array.isArray(body.progress)
+        ? (body.progress as Array<{ slug?: unknown; done?: unknown }>)
+            .slice(0, 10)
+            .filter((item) => typeof item.slug === "string" && /^[a-z0-9-]{1,80}$/.test(item.slug))
+            .map((item) => ({
+              slug: item.slug as string,
+              done: Math.max(0, Math.min(9999, Math.floor(Number(item.done) || 0))),
+            }))
+        : [];
+      // The cache key has to include the progress, or two visitors with different ticks
+      // would be served each other's personalised answer.
+      const progressKey = tracked.length ? tracked.map((t) => `${t.slug}:${t.done}`).join(",") : "none";
+
+      const cached = await readCachedAnswer(q, progressKey);
       if (cached) {
         aiAnswer = cached;
       } else if (isLookup) {
         aiAnswer = `The page you want is **${top.title}** — it is the first result below.`;
       } else if (rateLimit(clientKey(request, "search-ai"), 5, 60_000) && rateLimit("search-ai-global", 60, 60_000)) {
-        aiAnswer = await tryAI(q, posts, projects, progress);
-        await writeCachedAnswer(q, progress, aiAnswer);
+        aiAnswer = await tryAI(q, posts, projects, tracked);
+        await writeCachedAnswer(q, progressKey, aiAnswer);
       } else {
         aiAnswer =
           "**SCHIZO needs a breather**\n\nThat is a lot of AI questions in a short window. The results below still work — try again in a minute.";
@@ -167,10 +181,38 @@ function getEnv(): Env {
   }
 }
 
+interface TrackedSeries {
+  slug: string;
+  done: number;
+}
+
+/**
+ * Turns what the browser reported into prompt lines. The totals and the next unchecked
+ * step come from the content registry, so the model is given facts, never asked to do
+ * arithmetic on a number it was handed.
+ */
+function progressNote(tracked: TrackedSeries[]): string {
+  const lines = tracked.flatMap((item) => {
+    const post = getPostBySlug(item.slug);
+    const steps = post?.meta.steps ?? [];
+    if (!steps.length) return [];
+    const done = Math.min(item.done, steps.length);
+    const next = steps[done]?.title;
+    const name = post?.meta.title ?? item.slug;
+    return [`- "${name}": ${done} of ${steps.length} done. ${next ? `Next unchecked step is "${next}".` : "Every step is ticked."}`];
+  });
+  if (!lines.length) return "";
+  return (
+    "\n\nProgress the visitor's own browser reports (browser-local, so it may be empty on another device). " +
+    "Use it only when the question is about progress, quote the numbers exactly, and never invent one:\n" +
+    lines.join("\n")
+  );
+}
+
 function systemPrompt(
   postCount: number,
   projectCount: number,
-  progress: number | undefined,
+  progress: string | undefined,
   sources: { title: string; url: string }[]
 ): string {
   const listed = sources.map((c) => `- ${c.title} -> ${c.url}`).join("\n");
@@ -185,7 +227,7 @@ How to answer:
 
 Pages that match this question:
 ${listed || "- none"}
-${postCount + projectCount > 0 ? "" : "Nothing on the site matches this question.\n"}${typeof progress === "number" && progress > 0 ? `The visitor has ticked off ${progress} labs in the PortSwigger roadmap (their own browser data, sent only for this question).\n` : ""}`;
+${postCount + projectCount > 0 ? "" : "Nothing on the site matches this question.\n"}${typeof progress === "number" && progress > 0 ? `The visitor's current browser reports ${progress} labs ticked off in the PortSwigger roadmap. localStorage is per-device, so say it belongs to this browser rather than stating it as their overall progress.\n` : ""}`;
 }
 
 /** Any link the model produces must land on a page we actually gave it. */
@@ -204,14 +246,16 @@ async function tryAI(
   q: string,
   posts: PostResult[],
   projects: ProjectResult[],
-  progress?: number
+  tracked: TrackedSeries[] = []
 ): Promise<string> {
   const env = getEnv();
   const sources = [
     ...posts.map((post) => ({ title: post.title, url: `https://suhesh.com.np${post.url}` })),
     ...projects.map((project) => ({ title: project.title, url: `https://suhesh.com.np${project.url}` })),
   ];
-  const sys = systemPrompt(posts.length, projects.length, progress, sources);
+  // Deliberately no progress count: the number belongs to one browser's localStorage and
+  // the model stated it wrongly twice. The client can render it exactly instead.
+  const sys = systemPrompt(posts.length, projects.length, undefined, sources) + progressNote(tracked);
 
   if (env.AI && typeof env.AI.run === "function") {
     try {
@@ -275,11 +319,11 @@ function isQuotaError(e: unknown): boolean {
 }
 
 function quotaMessage(): string {
-  return "**SCHIZO is snoozing**\n\nThe free Cloudflare AI quota is used up for today. It resets at midnight UTC. The search results below still work.";
+  return "**My brain is done for today**\\n\\nI run on a small free quota and I have spent today's. The search results below still work. I get my wits back after midnight UTC — ask me again tomorrow?";
 }
 
 function unavailableMessage(): string {
-  return "**SCHIZO tripped on a wire**\n\nAI is unreachable right now. The search results below still work.";
+  return "**I am not answering that one**\\n\\nMy thinking engine is unreachable right now. The search results below still work fine.";
 }
 
 interface IndexedPost {

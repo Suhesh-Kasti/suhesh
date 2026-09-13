@@ -5,7 +5,6 @@ import { getPostBySlug, getAllSlugs } from "@/lib/braindump";
 import { MdxContent } from "@/components/MdxContent";
 import TableOfContents from "@/components/TableOfContents";
 import { BlogPostingStructuredData } from "@/components/BlogPostingStructuredData";
-import SeriesRoadmap from "@/components/SeriesRoadmap";
 import { RelatedPosts } from "@/components/RelatedPosts";
 
 export const dynamic = "force-static";
@@ -93,9 +92,7 @@ export default async function BrainDumpPost({ params }: Props) {
               <hr className="mt-8 border-0 h-[2px] bg-fg" />
             </header>
 
-            <MdxContent slug={slugStr} />
-
-            {post.meta.steps && <SeriesRoadmap steps={post.meta.steps} />}
+            <MdxContent slug={slugStr} steps={post.meta.steps} />
           </article>
         ) : (
           <article className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">

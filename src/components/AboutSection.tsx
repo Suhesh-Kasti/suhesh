@@ -436,6 +436,28 @@ export default function About({ featuredCerts }: { featuredCerts?: string[] }) {
                   ))}
                 </motion.ul>
               </AnimatePresence>
+
+              {/*
+                The switcher only mounts the group on screen, so the other four would be
+                invisible to crawlers. They stay in the DOM here, hidden visually but
+                readable by search engines and screen readers.
+              */}
+              <div className="sr-only">
+                {SKILL_GROUPS.map((group, index) =>
+                  index === skillSet ? null : (
+                    <div key={group.label}>
+                      <h5>{group.label}</h5>
+                      <ul>
+                        {group.items.map((item) => (
+                          <li key={item.name}>
+                            {item.name} — {item.detail}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
 
             {/* Stats sit under the skills on the home section, where the column is narrow. */}

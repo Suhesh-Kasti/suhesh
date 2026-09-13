@@ -49,6 +49,9 @@ const DESCRIPTION =
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  verification: {
+    google: "YHNBmX91GVK9Mj35DeCmQSsC1G6-e1wJTcmOsgyCyWA",
+  },
   title: {
     default: "Suhesh Kasti — Application Security & Offensive Security | SCHIZO",
     template: "%s | SCHIZO",

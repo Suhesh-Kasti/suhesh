@@ -1,17 +1,27 @@
 import { MDX_CONTENT } from "@/generated/mdx-registry.mjs";
 import { mdxComponents } from "@/components/mdx";
+import SeriesRoadmap from "@/components/SeriesRoadmap";
+import type { SeriesStep } from "@/lib/braindump";
 
 interface Props {
   slug: string;
+  steps?: SeriesStep[];
 }
 
 /**
  * Renders a pre-compiled MDX article. The MDX is compiled to a plain ESM module at
  * build time (see scripts/generate-content-registry.mjs) instead of being evaluated
  * in the browser, so it renders during static generation and needs no 'unsafe-eval'.
+ *
+ * When the post carries steps (a series or roadmap), a <ProgressChecklist /> component
+ * becomes available to the body, so the article decides where the checklist sits
+ * instead of the page template forcing it to the end.
  */
-export function MdxContent({ slug }: Props) {
+export function MdxContent({ slug, steps }: Props) {
   const Content = MDX_CONTENT[slug];
+  const components = steps?.length
+    ? { ...mdxComponents, ProgressChecklist: () => <SeriesRoadmap steps={steps} /> }
+    : mdxComponents;
 
   if (!Content) {
     return (
@@ -29,7 +39,7 @@ export function MdxContent({ slug }: Props) {
       [&_thead]:border-b-2 [&_thead]:border-fg
       [&_tbody]:divide-y [&_tbody]:divide-fg-muted/20
     ">
-      <Content components={mdxComponents} />
+        <Content components={components} />
     </div>
   );
 }

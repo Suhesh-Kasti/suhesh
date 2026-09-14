@@ -8,7 +8,20 @@ import { POSTS_PER_PAGE, archivePageHref } from "@/lib/pagination";
 import { TYPOGRAPHY, COLORS } from "@/lib/design-tokens";
 import { TYPE_CONFIG } from "@/lib/content-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileCode, faMap, faRoad, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash,
+  faFileCode, faMap, faRoad, faXmark } from "@fortawesome/free-solid-svg-icons";
+
+
+/** Which platform a lab belongs to. Slugs are the dependable signal; tags only cover some. */
+function labPlatform(post: { slug: string; tags: string[] }): string {
+  const slug = post.slug.toLowerCase();
+  if (slug.includes("portswigger")) return "PortSwigger";
+  if (slug.includes("htb")) return "Hack The Box";
+  if (slug.includes("tryhackme") || slug.includes("thm")) return "TryHackMe";
+  const tag = post.tags.find((t) => t.toLowerCase().startsWith("lab/"));
+  if (tag) return tag.slice(4).toUpperCase();
+  return "Other labs";
+}
 
 export default function BrainDumpList({
   posts,
@@ -22,6 +35,9 @@ export default function BrainDumpList({
   const [activeType, setActiveType] = useState<ContentType | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  // "NOT" inverts the type filter, so picking Labs with NOT on hides labs instead.
+  const [excludeType, setExcludeType] = useState(false);
+  const [activePlatform, setActivePlatform] = useState<string | null>(null);
   // Only used while a client-side filter is active; the unfiltered archive paginates by path.
   const [clientPage, setClientPage] = useState(0);
 
@@ -54,25 +70,68 @@ export default function BrainDumpList({
 
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
-      const typeMatch = activeType === "all" || post.type === activeType;
+      const typeMatch =
+        activeType === "all"
+          ? true
+          : excludeType
+            ? post.type !== activeType
+            : post.type === activeType;
       const tagMatch = !activeTag || post.tags.includes(activeTag);
       const searchMatch =
         !searchTerm ||
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.tags.some((t) => t.toLowerCase().includes(searchTerm.toLowerCase()));
-      return typeMatch && tagMatch && searchMatch;
+      const platformMatch = !activePlatform || labPlatform(post) === activePlatform;
+      return typeMatch && tagMatch && searchMatch && platformMatch;
     });
-  }, [posts, activeType, searchTerm, activeTag]);
+  }, [posts, activeType, excludeType, activePlatform, searchTerm, activeTag]);
 
   // A client filter changes the result set entirely, so paging falls back to client-side
   // buttons; the default (unfiltered) archive pages by URL so every page is crawlable.
-  const isFiltering = activeType !== "all" || searchTerm !== "" || activeTag !== null;
+  const isFiltering =
+    activeType !== "all" || searchTerm !== "" || activeTag !== null || activePlatform !== null;
   const archiveTotalPages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
   const totalPages = isFiltering ? Math.ceil(filteredPosts.length / PER_PAGE) : archiveTotalPages;
+  const PER_PLATFORM_PREVIEW = 6;
+  /** Heading colours per platform, so a group is identifiable at a glance. */
+  /** Group order in the labs view. TryHackMe deliberately sits last. */
+  const PLATFORM_ORDER = ["PortSwigger", "Hack The Box", "TryHackMe"];
+
+  const PLATFORM_COLORS: Record<string, string> = {
+    PortSwigger: "#ff5500",
+    "Hack The Box": "#00dd44",
+    TryHackMe: "#ff1144",
+  };
+
+  const groupedLabs =
+    activeType === "lab" && !excludeType && !activePlatform && !searchTerm && !activeTag;
   const visiblePosts = isFiltering
     ? filteredPosts.slice(clientPage * PER_PAGE, (clientPage + 1) * PER_PAGE)
     : posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  type Row =
+    | { kind: "header"; platform: string; count: number }
+    | { kind: "post"; post: BrainDumpMeta };
+  const rows: Row[] = groupedLabs
+    ? (() => {
+        const buckets = new Map<string, BrainDumpMeta[]>();
+        for (const post of filteredPosts) {
+          const platform = labPlatform(post);
+          buckets.set(platform, [...(buckets.get(platform) ?? []), post]);
+        }
+        const rank = (name: string) => {
+          const index = PLATFORM_ORDER.indexOf(name);
+          return index === -1 ? PLATFORM_ORDER.length : index;
+        };
+        return [...buckets.entries()]
+          .sort((a, b) => rank(a[0]) - rank(b[0]))
+          .flatMap(([platform, group]) => [
+          { kind: "header" as const, platform, count: group.length },
+            ...group.slice(0, PER_PLATFORM_PREVIEW).map((post) => ({ kind: "post" as const, post })),
+          ]);
+      })()
+    : visiblePosts.map((post) => ({ kind: "post" as const, post }));
 
   // Page numbers to render: the first, the last, and a small window around the current page.
   // The rest collapse into an ellipsis. Every page stays reachable — neighbours chain one into
@@ -85,7 +144,7 @@ export default function BrainDumpList({
   );
 
   // Reset page when filters change
-  useEffect(() => { setClientPage(0); }, [activeType, searchTerm, activeTag]);
+  useEffect(() => { setClientPage(0); }, [activeType, excludeType, activePlatform, searchTerm, activeTag]);
 
   if (posts.length === 0) {
     return (
@@ -128,7 +187,7 @@ export default function BrainDumpList({
               letterSpacing: TYPOGRAPHY.tracking.label,
             }}
           >
-            {filteredPosts.length} / {posts.length} entries
+            {filteredPosts.length} / {posts.length} entries{excludeType ? " · excluding" : ""}
           </span>
         </div>
 
@@ -160,9 +219,32 @@ export default function BrainDumpList({
 
           {/* Type filters only at top */}
           <div className="flex min-w-0 flex-wrap items-center gap-1.5 [&>*]:shrink-0 xl:flex-1">
+            {/* Inverts the type filter: Labs + ! shows everything except labs. */}
+            <button
+              onClick={() => {
+                if (activeType === "all") {
+                  setActiveType("lab");
+                  setExcludeType(true);
+                } else {
+                  setExcludeType((value) => !value);
+                }
+              }}
+              aria-pressed={excludeType}
+              aria-label={excludeType ? "Excluding the selected type" : "Exclude the selected type"}
+              title="NOT — hide the selected type"
+              className={`inline-flex w-8 shrink-0 cursor-pointer items-center justify-center border-2 py-1.5 transition-all xl:py-2 ${
+                excludeType
+                  ? "border-[var(--red)] bg-[var(--red)] text-[#0a0a0a]"
+                  : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
+              }`}
+              style={{ fontFamily: TYPOGRAPHY.fontMono }}
+            >
+              <FontAwesomeIcon icon={faEyeSlash} className="text-[11px]" />
+            </button>
+
             <button
               onClick={() => setActiveType("all")}
-              className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs ${
+              className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-2 xl:py-1.5 xl:text-xs ${
                 activeType === "all"
                   ? "border-fg bg-fg text-surface"
                   : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
@@ -178,7 +260,7 @@ export default function BrainDumpList({
             {/* MAP link — always visible */}
             <Link
               href="/map"
-              className="font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
+              className="font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-2 xl:py-1.5 xl:text-xs border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
               style={{
                 fontFamily: TYPOGRAPHY.fontMono,
                 letterSpacing: TYPOGRAPHY.tracking.mono,
@@ -190,8 +272,8 @@ export default function BrainDumpList({
 
             {/* ROADMAP link — filters to series type */}
             <button
-              onClick={() => setActiveType(activeType === "roadmap" ? "all" : "roadmap")}
-              className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs ${
+              onClick={() => { setActiveType(activeType === "roadmap" ? "all" : "roadmap"); setActivePlatform(null); }}
+              className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-2 xl:py-1.5 xl:text-xs ${
                 activeType === "roadmap"
                   ? "border-fg bg-fg text-surface"
                   : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
@@ -212,16 +294,19 @@ export default function BrainDumpList({
               return (
                 <button
                   key={type}
-                  onClick={() => setActiveType(type)}
-                  className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-3 xl:py-2 xl:text-xs ${
-                    activeType === type
-                      ? "border-fg bg-fg text-surface"
-                      : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
+                  onClick={() => { setActiveType(type); setActivePlatform(null); }}
+                  className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-2 xl:py-1.5 xl:text-xs ${
+                    excludeType && activeType === type
+                      ? "border-[var(--red)] bg-[var(--red)] text-[#0a0a0a]"
+                      : activeType === type
+                        ? "border-fg bg-fg text-surface"
+                        : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
                   }`}
                   style={{
                     fontFamily: TYPOGRAPHY.fontMono,
                     letterSpacing: TYPOGRAPHY.tracking.mono,
-                    borderColor: activeType === type ? "var(--color-fg)" : config?.color,
+                    borderColor:
+                      excludeType && activeType === type ? "var(--red)" : activeType === type ? "var(--color-fg)" : config?.color,
                   }}
                 >
                   <FontAwesomeIcon icon={config?.icon ?? faFileCode} /> {config?.label}
@@ -301,7 +386,32 @@ export default function BrainDumpList({
             transition={{ duration: 0.3 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
           >
-            {visiblePosts.map((post) => {
+            {rows.map((row) => {
+              if (row.kind === "header") {
+                const color = PLATFORM_COLORS[row.platform] ?? "var(--fg)";
+                return (
+                  <div key={`head-${row.platform}`} className="col-span-full mt-6 flex items-center gap-3 first:mt-0">
+                    <span
+                      className="font-mono text-xs font-bold uppercase tracking-label"
+                      style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color }}
+                    >
+                      {row.platform}
+                    </span>
+                    <span className="font-mono text-2xs uppercase text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                      {row.count}
+                    </span>
+                    <span className="h-[2px] flex-1" style={{ backgroundColor: color, opacity: 0.35 }} />
+                    <button
+                      onClick={() => setActivePlatform(row.platform)}
+                      className="cursor-pointer font-mono text-2xs uppercase transition-opacity hover:opacity-70"
+                      style={{ fontFamily: TYPOGRAPHY.fontMono, letterSpacing: TYPOGRAPHY.tracking.label, color }}
+                    >
+                      view more →
+                    </button>
+                  </div>
+                );
+              }
+              const post = row.post;
               const config = TYPE_CONFIG[post.type];
 
               // Determine URL based on type

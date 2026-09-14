@@ -381,8 +381,8 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
     const v = view.current;
     const w = el.offsetWidth * v.zoom;
     const h = el.offsetHeight * v.zoom;
-    const marginX = Math.min(canvas.clientWidth * 0.5, Math.max(80, w * 0.5));
-    const marginY = Math.min(canvas.clientHeight * 0.5, Math.max(80, h * 0.5));
+    const marginX = Math.min(canvas.clientWidth * 0.25, Math.max(24, w * 0.25));
+    const marginY = Math.min(canvas.clientHeight * 0.25, Math.max(24, h * 0.25));
     v.x = Math.min(Math.max(v.x, -w + marginX), canvas.clientWidth - marginX);
     v.y = Math.min(Math.max(v.y, -h + marginY), canvas.clientHeight - marginY);
   }, []);
@@ -449,13 +449,22 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
       originX: view.current.x,
       originY: view.current.y,
     };
-    e.currentTarget.setPointerCapture(e.pointerId);
     e.currentTarget.style.cursor = "grabbing";
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const d = drag.current;
     if (!d || d.id !== e.pointerId) return;
+    // Capture only once this is genuinely a drag. Capturing on pointerdown made the
+    // browser deliver the click to the canvas instead of the node under it, so nothing
+    // on the map was clickable with a mouse while touch still worked.
+    const state = d as { captured?: boolean };
+    if (!state.captured) {
+      if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 4) return;
+      state.captured = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      e.currentTarget.style.cursor = "grabbing";
+    }
     view.current.x = d.originX + (e.clientX - d.startX);
     view.current.y = d.originY + (e.clientY - d.startY);
     clampView();
@@ -502,10 +511,15 @@ function DesktopMap({ mapNodes }: { mapNodes: MapNode[] }) {
         className="map-canvas relative flex-1 select-none overflow-hidden"
         style={{
           cursor: "grab",
-          touchAction: "none",
+          // pan-y rather than none: with none, a touch drag on the canvas swallowed the
+          // gesture and the page could not be scrolled past the map to the list below it.
+          // Vertical drags now scroll the page; horizontal drags still pan the canvas.
+          touchAction: "pan-y",
           backgroundColor: "var(--surf)",
+          // A whisper of a grid: at full contrast it competed with the node borders and
+          // made the whole canvas hard to read. 7% is enough to place the eye, not to shout.
           backgroundImage:
-            "linear-gradient(var(--fg) 1px, transparent 1px), linear-gradient(90deg, var(--fg) 1px, transparent 1px)",
+            "linear-gradient(color-mix(in srgb, var(--fg) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--fg) 7%, transparent) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
         onPointerDown={onPointerDown}

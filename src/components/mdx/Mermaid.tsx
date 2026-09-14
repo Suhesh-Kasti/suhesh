@@ -39,7 +39,7 @@ async function renderDiagram(chart: string, isDark: boolean, accent: string): Pr
       fontSize: "14px",
       background: "transparent",
       primaryColor: accent,
-      primaryTextColor: "#0a0a0a",
+      primaryTextColor: isDark ? "#f0f0f8" : "#0a0a0a",
       primaryBorderColor: "#0a0a0a",
       secondaryColor: isDark ? "#1b1b22" : "#f0f0e8",
       secondaryTextColor: isDark ? "#f0f0f8" : "#0a0a0a",
@@ -58,6 +58,8 @@ async function renderDiagram(chart: string, isDark: boolean, accent: string): Pr
   return svg;
 }
 
+const clampZoom = (value: number) => Math.min(3, Math.max(0.4, value));
+
 export default function Mermaid({ chart, title = "Diagram", color = "#00e5ff" }: MermaidProps) {
   const accent = resolveAccent(color);
   const { isDark } = useTheme();
@@ -68,7 +70,14 @@ export default function Mermaid({ chart, title = "Diagram", color = "#00e5ff" }:
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [showSource, setShowSource] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  // While two fingers are down the browser must not claim the gesture, or pinch never
+  // reaches us. Outside a pinch, vertical panning stays native so the page still scrolls
+  // normally when a reader drags over a diagram.
+  const [pinching, setPinching] = useState(false);
+
   const drag = useRef<{ x: number; y: number } | null>(null);
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ distance: number; zoom: number } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -106,29 +115,62 @@ export default function Mermaid({ chart, title = "Diagram", color = "#00e5ff" }:
     setPan({ x: 0, y: 0 });
   };
 
+  const distance = () => {
+    const [a, b] = [...pointers.current.values()];
+    return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
+  };
+
+  const endGesture = (id: number) => {
+    pointers.current.delete(id);
+    if (pointers.current.size < 2) {
+      pinch.current = null;
+      setPinching(false);
+    }
+    drag.current = null;
+  };
+
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.current.size === 2) {
+      pinch.current = { distance: distance(), zoom };
+      setPinching(true);
+      drag.current = null;
+      return;
+    }
+    if (event.pointerType !== "mouse" && zoom <= 1) return;
+    drag.current = { x: event.clientX - pan.x, y: event.clientY - pan.y };
+  };
+
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (pointers.current.has(event.pointerId)) {
+      pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    }
+    if (pinch.current && pointers.current.size >= 2) {
+      const start = pinch.current.distance || 1;
+      setZoom(clampZoom(pinch.current.zoom * (distance() / start)));
+      return;
+    }
+    if (!drag.current) return;
+    setPan({ x: event.clientX - drag.current.x, y: event.clientY - drag.current.y });
+  };
+
+  const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    setZoom((value) => clampZoom(value - event.deltaY * 0.0015));
+  };
+
   const renderCanvas = (isFull: boolean) => (
     <div
       data-full={isFull ? "true" : undefined}
-      className={`mermaid-viewport relative flex min-h-[180px] w-full cursor-grab touch-pan-y items-center justify-center p-4 active:cursor-grabbing ${isFull ? "h-full overflow-auto" : "max-h-[62vh] overflow-auto"}`}
-      onPointerDown={(event) => {
-        if (event.pointerType !== "mouse") return;
-        drag.current = { x: event.clientX - pan.x, y: event.clientY - pan.y };
-      }}
-      onPointerMove={(event) => {
-        if (!drag.current) return;
-        setPan({ x: event.clientX - drag.current.x, y: event.clientY - drag.current.y });
-      }}
-      onPointerUp={() => {
-        drag.current = null;
-      }}
-      onPointerLeave={() => {
-        drag.current = null;
-      }}
-      onWheel={(event) => {
-        if (!event.ctrlKey && !event.metaKey) return;
-        event.preventDefault();
-        setZoom((value) => Math.min(3, Math.max(0.4, value - event.deltaY * 0.0015)));
-      }}
+      className={`mermaid-viewport relative flex min-h-[180px] w-full cursor-grab items-center justify-center p-4 active:cursor-grabbing ${isFull ? "h-full overflow-auto" : "max-h-[62vh] overflow-auto"}`}
+      style={{ touchAction: pinching ? "none" : "pan-y" }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={(event) => endGesture(event.pointerId)}
+      onPointerCancel={(event) => endGesture(event.pointerId)}
+      onPointerLeave={(event) => endGesture(event.pointerId)}
+      onWheel={onWheel}
       onDoubleClick={reset}
     >
       {error ? (
@@ -153,7 +195,7 @@ export default function Mermaid({ chart, title = "Diagram", color = "#00e5ff" }:
     <>
       <button
         type="button"
-        onClick={() => setZoom((value) => Math.min(3, value + 0.2))}
+        onClick={() => setZoom((value) => clampZoom(value + 0.2))}
         aria-label="Zoom in"
         className="inline-flex cursor-pointer items-center border border-current px-2 py-0.5 transition-opacity hover:opacity-70"
       >
@@ -161,7 +203,7 @@ export default function Mermaid({ chart, title = "Diagram", color = "#00e5ff" }:
       </button>
       <button
         type="button"
-        onClick={() => setZoom((value) => Math.max(0.4, value - 0.2))}
+        onClick={() => setZoom((value) => clampZoom(value - 0.2))}
         aria-label="Zoom out"
         className="inline-flex cursor-pointer items-center border border-current px-2 py-0.5 transition-opacity hover:opacity-70"
       >
@@ -223,7 +265,7 @@ export default function Mermaid({ chart, title = "Diagram", color = "#00e5ff" }:
           </pre>
         )}
         <div className="border-t-2 border-fg px-3 py-1.5 font-mono text-2xs uppercase text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
-          drag to pan · ctrl+scroll to zoom · double-click to reset
+          pinch to zoom · drag to pan · ctrl+scroll on desktop
         </div>
       </div>
 

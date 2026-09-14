@@ -2,86 +2,144 @@
   {
     "slug": "payloads",
     "name": "Payload Arsenal",
-    "title": "Payload Arsenal — XSS, SQLi & SSTI Payloads",
-    "description": "A categorised offensive payload reference for web application testing: cross-site scripting, SQL injection, SSTI, LFI and command injection payloads with bypass techniques, encoding tricks and the context each one is built for."
+    "title": "Payload Arsenal \u2014 XSS, SQLi & SSTI Payloads",
+    "description": "A categorised offensive payload reference for web application testing: cross-site scripting, SQL injection, SSTI, LFI and command injection payloads with bypass techniques, encoding tricks and the context each one is built for.",
+    "grid": true,
+    "summary": "Reverse shells, XSS, SQLi payloads with variable fill",
+    "color": "#0055ff"
   },
   {
     "slug": "regex",
     "name": "Regex Lab",
-    "title": "Regex Lab — Test & Explain Regular Expressions",
-    "description": "Write and test regular expressions in real time with a plain-English breakdown of every token, capture group and quantifier, plus catastrophic backtracking (ReDoS) detection on the patterns you run."
+    "title": "Regex Lab \u2014 Test & Explain Regular Expressions",
+    "description": "Write and test regular expressions in real time with a plain-English breakdown of every token, capture group and quantifier, plus catastrophic backtracking (ReDoS) detection on the patterns you run.",
+    "summary": "Colour-coded regex explainer \u2014 live matches, groups and a cheat sheet",
+    "color": "#ffdd00",
+    "grid": true
   },
   {
     "slug": "jwt",
     "name": "JWT / JOSE Inspector",
-    "title": "JWT Decoder & Verifier — Inspect JWS and JWE",
-    "description": "Decode and verify JSON Web Tokens entirely in your browser. Inspect JWS and JWE headers, claims and signatures, validate HMAC and RSA keys, and audit tokens for alg:none and other classic JWT flaws."
+    "title": "JWT Decoder & Verifier \u2014 Inspect JWS and JWE",
+    "description": "Decode and verify JSON Web Tokens entirely in your browser. Inspect JWS and JWE headers, claims and signatures, validate HMAC and RSA keys, and audit tokens for alg:none and other classic JWT flaws.",
+    "grid": true,
+    "summary": "Decode, inspect, and detect JWT vulnerabilities",
+    "color": "#ff2d95"
   },
   {
     "slug": "cert",
     "name": "Certificate Studio",
-    "title": "X.509 Certificate Studio — Generate & Inspect",
-    "description": "Generate keys and X.509 certificates, build a signing chain, inspect TLS certificates and PEM/DER/PKCS#12 files, and construct mutual-TLS setups for lab environments — all locally, with nothing sent to a server."
+    "title": "X.509 Certificate Studio \u2014 Generate & Inspect",
+    "description": "Generate keys and X.509 certificates, build a signing chain, inspect TLS certificates and PEM/DER/PKCS#12 files, and construct mutual-TLS setups for lab environments \u2014 all locally, with nothing sent to a server.",
+    "summary": "Inspect PEM/DER/PKCS#12 chains, generate a CA, issue server and mTLS certs, sign CSRs",
+    "color": "#00e5ff",
+    "grid": true
   },
   {
     "slug": "crypto",
     "name": "Crypto Lab",
-    "title": "Crypto Lab — Hashes, HMAC & AES Tools",
-    "description": "A practical cryptography workbench: SHA and MD5 message digests, HMAC, AES encryption and decryption, base64 and hex encoding, and classical ciphers for CTF work and quick analysis."
+    "title": "Crypto Lab \u2014 Hashes, HMAC & AES Tools",
+    "description": "A practical cryptography workbench: SHA and MD5 message digests, HMAC, AES encryption and decryption, base64 and hex encoding, and classical ciphers for CTF work and quick analysis.",
+    "summary": "CTF toolbox: hash cracking, XOR brute force, Caesar and frequency analysis",
+    "color": "#00dd44",
+    "grid": true
   },
   {
     "slug": "cvss",
     "name": "CVSS Calculator",
-    "title": "CVSS Calculator — v3.1 & v4.0 Scoring",
-    "description": "Build a CVSS vector and get the base score with a breakdown of every metric. Covers exploitability and impact subscores, severity bands and the vector string to paste straight into a report."
+    "title": "CVSS Calculator \u2014 v3.1 & v4.0 Scoring",
+    "description": "Build a CVSS vector and get the base score with a breakdown of every metric. Covers exploitability and impact subscores, severity bands and the vector string to paste straight into a report.",
+    "summary": "Score findings and copy the vector string for your report",
+    "color": "#ff1144",
+    "grid": true
   },
   {
     "slug": "hash-id",
     "name": "Hash Identifier",
-    "title": "Hash Identifier — Detect Hash Types",
-    "description": "Paste a hash and identify its likely algorithm from length, character set and known prefixes. Every candidate includes a confidence rating, its hashcat mode and a ready-to-run cracking example."
+    "title": "Hash Identifier \u2014 Detect Hash Types",
+    "description": "Paste a hash and identify its likely algorithm from length, character set and known prefixes. Every candidate includes a confidence rating, its hashcat mode and a ready-to-run cracking example.",
+    "summary": "Identify hash types \u2014 MD5, SHA, bcrypt, NTLM, and more",
+    "color": "#ff5500",
+    "grid": true
   },
   {
     "slug": "headers",
     "name": "HTTP Security Header Analyzer",
     "title": "HTTP Security Header Analyzer",
-    "description": "Analyse HTTP response headers against modern security best practice and get an A–F grade. Checks Content-Security-Policy, HSTS, X-Frame-Options and others, explains the risk of each gap and gives the exact value to set."
+    "description": "Analyse HTTP response headers against modern security best practice and get an A\u2013F grade. Checks Content-Security-Policy, HSTS, X-Frame-Options and others, explains the risk of each gap and gives the exact value to set.",
+    "summary": "Paste or fetch HTTP headers \u2014 get a security audit",
+    "color": "#ff2d95",
+    "grid": true
   },
   {
     "slug": "hexdump",
     "name": "Hex Dump Analyzer",
-    "title": "Hex Dump Analyzer — Signatures & Entropy",
-    "description": "Turn raw or copied hex into a readable xxd-style dump. Detect file signatures and magic bytes, measure Shannon entropy to spot packed or encrypted data, and extract printable strings from a binary."
+    "title": "Hex Dump Analyzer \u2014 Signatures & Entropy",
+    "description": "Turn raw or copied hex into a readable xxd-style dump. Detect file signatures and magic bytes, measure Shannon entropy to spot packed or encrypted data, and extract printable strings from a binary.",
+    "summary": "Parse raw hex: magic bytes, entropy, xxd-style output",
+    "color": "#8800ff",
+    "grid": true
   },
   {
     "slug": "ports",
     "name": "Nmap Output Parser",
-    "title": "Nmap Parser — Host & Service Summary",
-    "description": "Paste nmap XML or grepable output to get a clean per-host summary of open ports, services, versions and findings, grouped and filterable for note-taking and reporting."
+    "title": "Nmap Parser \u2014 Host & Service Summary",
+    "description": "Paste nmap XML or grepable output to get a clean per-host summary of open ports, services, versions and findings, grouped and filterable for note-taking and reporting.",
+    "summary": "100+ common ports \u2014 search, filter by category, copy lists",
+    "color": "#00e5ff",
+    "grid": true
   },
   {
     "slug": "recon",
     "name": "Recon Suite",
-    "title": "Recon Suite — Subdomain & Domain Recon",
-    "description": "A combined reconnaissance workbench: enumerate subdomains from a wordlist, resolve DNS records and flag the hosts worth investigating, then pivot into the rest of the toolset from one place."
+    "title": "Recon Suite \u2014 Subdomain & Domain Recon",
+    "description": "A combined reconnaissance workbench: enumerate subdomains from a wordlist, resolve DNS records and flag the hosts worth investigating, then pivot into the rest of the toolset from one place.",
+    "summary": "DNS records, SPF/DMARC/DKIM posture and subdomain scanning in one place",
+    "color": "#00e5ff",
+    "grid": true
   },
   {
     "slug": "reverse-shell",
     "name": "Reverse Shell Generator",
     "title": "Reverse Shell Generator & TTY Upgrades",
-    "description": "Generate reverse and bind shell payloads for bash, Python, PowerShell, netcat and more, with the matching listener command, shell stabilisation steps and CTF post-exploitation quick wins."
+    "description": "Generate reverse and bind shell payloads for bash, Python, PowerShell, netcat and more, with the matching listener command, shell stabilisation steps and CTF post-exploitation quick wins.",
+    "summary": "Build bash, python, powershell, netcat payloads with a listener",
+    "color": "#00dd44",
+    "grid": true
   },
   {
     "slug": "ai-injection",
     "name": "AI Prompt Injection Lab",
     "title": "AI Prompt Injection Lab",
-    "description": "Practise and study prompt injection, system-prompt leakage and jailbreak techniques against LLM applications, organised by attack category with the defensive control that stops each one."
+    "description": "Practise and study prompt injection, system-prompt leakage and jailbreak techniques against LLM applications, organised by attack category with the defensive control that stops each one.",
+    "summary": "Prompt injection arsenal: extraction, RAG injection, tool abuse and defences",
+    "color": "#8800ff",
+    "grid": true
   },
   {
     "slug": "mdx-preview",
     "name": "MDX Preview",
     "title": "MDX Preview",
     "description": "A writing surface for previewing MDX components and notes.",
-    "noindex": true
+    "noindex": true,
+    "grid": false
+  },
+  {
+    "slug": "rsa",
+    "name": "RSA Attack Lab",
+    "title": "RSA Attack Lab \u2014 Small Exponent, Common Modulus & Fermat",
+    "description": "Paste an RSA challenge's modulus, exponent and ciphertext and it checks the broken-key cases that make it solvable: small public exponent with no padding, two keys sharing a modulus, primes chosen too close together for Fermat, and weak prime factors. Recovered plaintext is shown as decimal, hex and ASCII. Everything runs in the browser.",
+    "summary": "Small exponent, common modulus, Fermat factorisation and weak primes \u2014 recovers the plaintext",
+    "color": "#00dd44",
+    "grid": true
+  },
+  {
+    "slug": "unpack",
+    "name": "Binary Unpacker",
+    "title": "Binary Unpacker \u2014 Read Hex as Ints, Floats, Text and Timestamps",
+    "description": "Paste hex and read it as the values it could represent: signed and unsigned integers, IEEE-754 floats, ASCII text and Unix timestamps, in either byte order, with offset and length to isolate a single struct field. A hex dump shows the bytes; this tells you what they mean.",
+    "summary": "Read hex as ints, floats, text and timestamps in either byte order",
+    "color": "#8800ff",
+    "grid": true
   }
 ]

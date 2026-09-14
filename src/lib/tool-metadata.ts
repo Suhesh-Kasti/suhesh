@@ -5,6 +5,9 @@ import toolsJson from "@/data/tools.json";
  * the exact same list when it writes llms.txt and the sitemap — one source of truth.
  */
 export interface ToolMeta {
+  summary?: string;
+  color?: string;
+  grid?: boolean;
   slug: string;
   name: string;
   /** Page title. Kept short — the root layout template appends " | SCHIZO". */

@@ -35,8 +35,10 @@ export default function BrainDumpList({
   const [activeType, setActiveType] = useState<ContentType | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
-  // "NOT" inverts the type filter, so picking Labs with NOT on hides labs instead.
-  const [excludeType, setExcludeType] = useState(false);
+  // Exclude mode hides any number of types at once and stays on until switched off,
+  // so "everything except cheatsheets, checklists and byte-sized" is one click away.
+  const [excludeMode, setExcludeMode] = useState(false);
+  const [excludedTypes, setExcludedTypes] = useState<Set<ContentType>>(new Set());
   const [activePlatform, setActivePlatform] = useState<string | null>(null);
   // Only used while a client-side filter is active; the unfiltered archive paginates by path.
   const [clientPage, setClientPage] = useState(0);
@@ -71,10 +73,10 @@ export default function BrainDumpList({
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       const typeMatch =
-        activeType === "all"
-          ? true
-          : excludeType
-            ? post.type !== activeType
+        excludedTypes.size > 0
+          ? !excludedTypes.has(post.type)
+          : activeType === "all"
+            ? true
             : post.type === activeType;
       const tagMatch = !activeTag || post.tags.includes(activeTag);
       const searchMatch =
@@ -85,12 +87,12 @@ export default function BrainDumpList({
       const platformMatch = !activePlatform || labPlatform(post) === activePlatform;
       return typeMatch && tagMatch && searchMatch && platformMatch;
     });
-  }, [posts, activeType, excludeType, activePlatform, searchTerm, activeTag]);
+  }, [posts, activeType, excludedTypes, activePlatform, searchTerm, activeTag]);
 
   // A client filter changes the result set entirely, so paging falls back to client-side
   // buttons; the default (unfiltered) archive pages by URL so every page is crawlable.
   const isFiltering =
-    activeType !== "all" || searchTerm !== "" || activeTag !== null || activePlatform !== null;
+    activeType !== "all" || excludedTypes.size > 0 || searchTerm !== "" || activeTag !== null || activePlatform !== null;
   const archiveTotalPages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
   const totalPages = isFiltering ? Math.ceil(filteredPosts.length / PER_PAGE) : archiveTotalPages;
   const PER_PLATFORM_PREVIEW = 6;
@@ -105,7 +107,11 @@ export default function BrainDumpList({
   };
 
   const groupedLabs =
-    activeType === "lab" && !excludeType && !activePlatform && !searchTerm && !activeTag;
+    (activeType === "lab" || excludedTypes.size > 0) &&
+    !excludedTypes.has("lab") &&
+    !activePlatform &&
+    !searchTerm &&
+    !activeTag;
   const visiblePosts = isFiltering
     ? filteredPosts.slice(clientPage * PER_PAGE, (clientPage + 1) * PER_PAGE)
     : posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
@@ -144,7 +150,7 @@ export default function BrainDumpList({
   );
 
   // Reset page when filters change
-  useEffect(() => { setClientPage(0); }, [activeType, excludeType, activePlatform, searchTerm, activeTag]);
+  useEffect(() => { setClientPage(0); }, [activeType, excludedTypes, activePlatform, searchTerm, activeTag]);
 
   if (posts.length === 0) {
     return (
@@ -187,7 +193,7 @@ export default function BrainDumpList({
               letterSpacing: TYPOGRAPHY.tracking.label,
             }}
           >
-            {filteredPosts.length} / {posts.length} entries{excludeType ? " · excluding" : ""}
+            {filteredPosts.length} / {posts.length} entries{excludeMode ? ` · excluding ${excludedTypes.size}` : ""}
           </span>
         </div>
 
@@ -222,18 +228,21 @@ export default function BrainDumpList({
             {/* Inverts the type filter: Labs + ! shows everything except labs. */}
             <button
               onClick={() => {
-                if (activeType === "all") {
-                  setActiveType("lab");
-                  setExcludeType(true);
+                if (excludeMode) {
+                  setExcludeMode(false);
+                  setExcludedTypes(new Set());
                 } else {
-                  setExcludeType((value) => !value);
+                  setExcludeMode(true);
+                  // Seed from the current selection so entering this mode never looks like
+                  // it did nothing.
+                  setExcludedTypes(activeType === "all" ? new Set() : new Set([activeType]));
                 }
               }}
-              aria-pressed={excludeType}
-              aria-label={excludeType ? "Excluding the selected type" : "Exclude the selected type"}
-              title="NOT — hide the selected type"
+              aria-pressed={excludeMode}
+              aria-label={excludeMode ? `Hiding ${excludedTypes.size} type(s). Turn off to show everything.` : "Hide types: pick as many as you like"}
+              title="Hide the types you select"
               className={`inline-flex w-8 shrink-0 cursor-pointer items-center justify-center border-2 py-1.5 transition-all xl:py-2 ${
-                excludeType
+                excludeMode
                   ? "border-[var(--red)] bg-[var(--red)] text-[#0a0a0a]"
                   : "border-fg-muted text-fg-muted hover:border-fg hover:text-fg"
               }`}
@@ -272,7 +281,19 @@ export default function BrainDumpList({
 
             {/* ROADMAP link — filters to series type */}
             <button
-              onClick={() => { setActiveType(activeType === "roadmap" ? "all" : "roadmap"); setActivePlatform(null); }}
+              onClick={() => {
+                if (excludeMode) {
+                  setExcludedTypes((prev) => {
+                    const next = new Set(prev);
+                    if (next.has("roadmap")) next.delete("roadmap");
+                    else next.add("roadmap");
+                    return next;
+                  });
+                } else {
+                  setActiveType(activeType === "roadmap" ? "all" : "roadmap");
+                  setActivePlatform(null);
+                }
+              }}
               className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-2 xl:py-1.5 xl:text-xs ${
                 activeType === "roadmap"
                   ? "border-fg bg-fg text-surface"
@@ -294,9 +315,21 @@ export default function BrainDumpList({
               return (
                 <button
                   key={type}
-                  onClick={() => { setActiveType(type); setActivePlatform(null); }}
+                  onClick={() => {
+                    if (excludeMode) {
+                      setExcludedTypes((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(type)) next.delete(type);
+                        else next.add(type);
+                        return next;
+                      });
+                    } else {
+                      setActiveType(type);
+                      setActivePlatform(null);
+                    }
+                  }}
                   className={`font-mono text-2xs uppercase px-2.5 py-1.5 border-2 transition-all cursor-pointer inline-flex items-center gap-1 xl:px-2 xl:py-1.5 xl:text-xs ${
-                    excludeType && activeType === type
+                    excludedTypes.has(type)
                       ? "border-[var(--red)] bg-[var(--red)] text-[#0a0a0a]"
                       : activeType === type
                         ? "border-fg bg-fg text-surface"
@@ -305,8 +338,11 @@ export default function BrainDumpList({
                   style={{
                     fontFamily: TYPOGRAPHY.fontMono,
                     letterSpacing: TYPOGRAPHY.tracking.mono,
-                    borderColor:
-                      excludeType && activeType === type ? "var(--red)" : activeType === type ? "var(--color-fg)" : config?.color,
+                    borderColor: excludedTypes.has(type)
+                      ? "var(--red)"
+                      : activeType === type
+                        ? "var(--color-fg)"
+                        : config?.color,
                   }}
                 >
                   <FontAwesomeIcon icon={config?.icon ?? faFileCode} /> {config?.label}

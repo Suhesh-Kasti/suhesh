@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { COLORS, TYPOGRAPHY } from "@/lib/design-tokens";
@@ -9,6 +9,9 @@ import PasswordTool from "@/components/tools/PasswordTool";
 import JoseTool from "@/components/tools/JoseTool";
 import ToolHelp from "@/components/tools/ToolHelp";
 import { CidrTool, MutatorTool, DefangTool, ChmodTool, CronTool } from "@/components/tools/SmallTools";
+import { TOOL_META } from "@/lib/tool-metadata";
+import { diffText, toSplitRows, visibleLines, toUnifiedText, canonicalJson, MAX_DIFF_LINES } from "@/lib/text-diff";
+import type { DiffLine, DiffOptions } from "@/lib/text-diff";
 
 type Tool = "encoder" | "jose" | "nmap-parse" | "multi-encoder" | "password" | "timestamp" | "diff" | "json-fmt" | "ip" | "mutate" | "defang" | "chmod" | "cron";
 
@@ -67,11 +70,22 @@ const QUICK_HELP: Record<Tool, { intro: string; steps: string[]; terms: { term: 
     ],
   },
   diff: {
-    intro: "Compare two blocks of text line by line to see exactly what changed.",
-    steps: ["Paste the original on the left and the modified on the right.", "Hit Compare.", "Read additions and deletions."],
+    intro: "Compare two blocks of text and see exactly what changed. It works on whole lines and highlights the individual words that differ, so a one-word edit inside a long line does not read as a rewrite. Turn on JSON-aware mode when both sides are JSON and the comparison is structural: keys are put in a stable order, so a reordered response is correctly reported as unchanged.",
+    steps: [
+      "Paste the original on the left and the modified on the right — the comparison re-runs as you edit.",
+      "Switch to side by side to line the two versions up, or stay unified for a compact patch view.",
+      "Use ignore whitespace and ignore case to filter out formatting noise.",
+      "Turn on JSON-aware for API responses, and changed only to hide everything that stayed the same.",
+      "Copy the result, or export it as a .patch file.",
+    ],
     terms: [
-      { term: "Added line", meaning: "Present on the right only — highlighted green." },
-      { term: "Deleted line", meaning: "Present on the left only — highlighted red." },
+      { term: "Added line", meaning: "Present on the right only — green." },
+      { term: "Deleted line", meaning: "Present on the left only — red." },
+      { term: "Word-level diff", meaning: "Inside a changed line, only the words that actually differ are underlined." },
+      { term: "LCS", meaning: "Longest common subsequence — the algorithm that decides which lines line up." },
+      { term: "JSON-aware", meaning: "Compares parsed JSON with sorted keys, so key order alone is not reported as a change." },
+      { term: "Ignore whitespace", meaning: "Treats runs of spaces and tabs as equivalent — useful when the only change is indentation." },
+      { term: "Unified vs side by side", meaning: "Unified is one column like a patch file; side by side lines the two versions up by line number." },
     ],
   },
   "json-fmt": {
@@ -136,6 +150,11 @@ const LS_INPUT = "tool-input";
 const LS_TS_INPUT = "tool-ts-input";
 const LS_DIFF_LEFT = "tool-diff-left";
 const LS_DIFF_RIGHT = "tool-diff-right";
+const LS_DIFF_VIEW = "tool-diff-view";
+const LS_DIFF_CASE = "tool-diff-ignore-case";
+const LS_DIFF_WS = "tool-diff-ignore-ws";
+const LS_DIFF_JSON = "tool-diff-json";
+const LS_DIFF_ONLY = "tool-diff-changed-only";
 const LS_JSON_INPUT = "tool-json-input";
 
 function load(key: string, fallback: string): string {
@@ -155,7 +174,14 @@ export default function ArtPlayground() {
   const [tsResult, setTsResult] = useState("");
   const [diffLeft, setDiffLeft] = useState(() => load(LS_DIFF_LEFT, ""));
   const [diffRight, setDiffRight] = useState(() => load(LS_DIFF_RIGHT, ""));
-  const [diffResult, setDiffResult] = useState<Array<{type:"same"|"add"|"del";text:string}>>([]);
+  const [diffResult, setDiffResult] = useState<DiffLine[]>([]);
+  const [diffStats, setDiffStats] = useState<{ added: number; removed: number } | null>(null);
+  const [diffNote, setDiffNote] = useState("");
+  const [diffView, setDiffView] = useState<"unified" | "split">(() => (load(LS_DIFF_VIEW, "unified") === "split" ? "split" : "unified"));
+  const [diffIgnoreCase, setDiffIgnoreCase] = useState(() => load(LS_DIFF_CASE, "0") === "1");
+  const [diffIgnoreWs, setDiffIgnoreWs] = useState(() => load(LS_DIFF_WS, "0") === "1");
+  const [diffJsonAware, setDiffJsonAware] = useState(() => load(LS_DIFF_JSON, "0") === "1");
+  const [diffChangedOnly, setDiffChangedOnly] = useState(() => load(LS_DIFF_ONLY, "0") === "1");
   const [jsonInput, setJsonInput] = useState(() => load(LS_JSON_INPUT, ""));
   const [jsonResult, setJsonResult] = useState("");
 
@@ -166,6 +192,11 @@ export default function ArtPlayground() {
   useEffect(() => { save(LS_TS_INPUT, tsInput); }, [tsInput]);
   useEffect(() => { save(LS_DIFF_LEFT, diffLeft); }, [diffLeft]);
   useEffect(() => { save(LS_DIFF_RIGHT, diffRight); }, [diffRight]);
+  useEffect(() => { save(LS_DIFF_VIEW, diffView); }, [diffView]);
+  useEffect(() => { save(LS_DIFF_CASE, diffIgnoreCase ? "1" : "0"); }, [diffIgnoreCase]);
+  useEffect(() => { save(LS_DIFF_WS, diffIgnoreWs ? "1" : "0"); }, [diffIgnoreWs]);
+  useEffect(() => { save(LS_DIFF_JSON, diffJsonAware ? "1" : "0"); }, [diffJsonAware]);
+  useEffect(() => { save(LS_DIFF_ONLY, diffChangedOnly ? "1" : "0"); }, [diffChangedOnly]);
   useEffect(() => { save(LS_JSON_INPUT, jsonInput); }, [jsonInput]);
 
   const handleEncode = useCallback(() => { try { setOutput(btoa(input)); } catch { setOutput("Invalid input for encoding"); } }, [input]);
@@ -190,51 +221,49 @@ export default function ArtPlayground() {
   }, [tsInput]);
 
   const handleDiff = useCallback(() => {
-    // Character-level diff using longest common subsequence (LCS)
-    function lcsMatrix(a: string, b: string): number[][] {
-      const m = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
-      for (let i = 1; i <= a.length; i++) {
-        for (let j = 1; j <= b.length; j++) {
-          m[i][j] = a[i-1] === b[j-1] ? m[i-1][j-1] + 1 : Math.max(m[i-1][j], m[i][j-1]);
-        }
+    const options: DiffOptions = { ignoreCase: diffIgnoreCase, ignoreWhitespace: diffIgnoreWs };
+    let left = diffLeft;
+    let right = diffRight;
+    let jsonNormalized = false;
+    if (diffJsonAware) {
+      const canonicalLeft = canonicalJson(diffLeft);
+      const canonicalRight = canonicalJson(diffRight);
+      if (canonicalLeft !== null && canonicalRight !== null) {
+        left = canonicalLeft;
+        right = canonicalRight;
+        jsonNormalized = true;
       }
-      return m;
     }
+    const result = diffText(left, right, options);
+    setDiffResult(result.lines);
+    setDiffStats({ added: result.added, removed: result.removed });
+    if (result.truncated) setDiffNote(`Only the first ${MAX_DIFF_LINES} lines of each side were compared.`);
+    else if (jsonNormalized) setDiffNote("Both sides parsed as JSON — compared with keys in a stable order, so reordering alone is not a change.");
+    else if (diffJsonAware) setDiffNote("At least one side is not valid JSON — compared as plain text.");
+    else setDiffNote("");
+  }, [diffLeft, diffRight, diffIgnoreCase, diffIgnoreWs, diffJsonAware]);
 
-    function backtrack(m: number[][], a: string, b: string): Array<{type:"same"|"add"|"del";text:string}> {
-      const result: typeof diffResult = [];
-      let i = a.length, j = b.length;
-      const buf: string[] = [];
-      let mode: "same"|"add"|"del"|null = null;
+  // Re-run whenever the inputs or the options change, so the view is always current.
+  useEffect(() => {
+    if (diffLeft || diffRight) handleDiff();
+  }, [diffLeft, diffRight, diffIgnoreCase, diffIgnoreWs, diffJsonAware, handleDiff]);
 
-      const flush = () => {
-        if (!buf.length) return;
-        result.unshift({ type: mode!, text: buf.reverse().join("") });
-        buf.length = 0;
-      };
+  const diffVisible = useMemo(() => visibleLines(diffResult, diffChangedOnly), [diffResult, diffChangedOnly]);
+  const diffRows = useMemo(() => toSplitRows(diffVisible), [diffVisible]);
 
-      while (i > 0 || j > 0) {
-        if (i > 0 && j > 0 && a[i-1] === b[j-1]) {
-          if (mode !== "same") { flush(); mode = "same"; }
-          buf.push(a[i-1]);
-          i--; j--;
-        } else if (j > 0 && (i === 0 || m[i][j-1] >= m[i-1][j])) {
-          if (mode !== "add") { flush(); mode = "add"; }
-          buf.push(b[j-1]);
-          j--;
-        } else {
-          if (mode !== "del") { flush(); mode = "del"; }
-          buf.push(a[i-1]);
-          i--;
-        }
-      }
-      flush();
-      return result;
-    }
+  const copyDiff = useCallback(() => {
+    navigator.clipboard?.writeText(toUnifiedText(diffResult, diffChangedOnly));
+  }, [diffResult, diffChangedOnly]);
 
-    const m = lcsMatrix(diffLeft, diffRight);
-    setDiffResult(backtrack(m, diffLeft, diffRight));
-  }, [diffLeft, diffRight]);
+  const exportDiff = useCallback(() => {
+    const blob = new Blob([toUnifiedText(diffResult, diffChangedOnly)], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "text-diff.patch";
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [diffResult, diffChangedOnly]);
 
   const handleJsonFmt = useCallback(() => {
     try { setJsonResult(JSON.stringify(JSON.parse(jsonInput), null, 2)); }
@@ -259,21 +288,13 @@ export default function ArtPlayground() {
     { id: "cron" as Tool, label: "Cron Explainer", icon: "cron" },
   ];
 
-  const standaloneTools = [
-    { label: "JWT Debugger", href: "/tools/jwt", desc: "Decode, inspect, and detect JWT vulnerabilities", color: COLORS.pink },
-    { label: "Payload Generator", href: "/tools/payloads", desc: "Reverse shells, XSS, SQLi payloads with variable fill", color: COLORS.blue },
-    { label: "Hash Identifier", href: "/tools/hash-id", desc: "Identify hash types — MD5, SHA, bcrypt, NTLM, and more", color: "#ff5500" },
-    { label: "Recon Suite", href: "/tools/recon", desc: "DNS records, SPF/DMARC/DKIM posture and subdomain scanning in one place", color: "#00e5ff" },
-    { label: "Header Analyzer", href: "/tools/headers", desc: "Paste or fetch HTTP headers — get a security audit", color: "#ff2d95" },
-    { label: "Hex Dump Analyzer", href: "/tools/hexdump", desc: "Parse raw hex: magic bytes, entropy, xxd-style output", color: "#8800ff" },
-    { label: "Port Reference", href: "/tools/ports", desc: "100+ common ports — search, filter by category, copy lists", color: "#00e5ff" },
-    { label: "Reverse Shell Generator", href: "/tools/reverse-shell", desc: "Build bash, python, powershell, netcat payloads with a listener", color: "#00dd44" },
-    { label: "CVSS 3.1 Calculator", href: "/tools/cvss", desc: "Score findings and copy the vector string for your report", color: "#ff1144" },
-    { label: "Regex Lab", href: "/tools/regex", desc: "Colour-coded regex explainer — live matches, groups and a cheat sheet", color: "#ffdd00" },
-    { label: "AI Injection Lab", href: "/tools/ai-injection", desc: "Prompt injection arsenal: extraction, RAG injection, tool abuse and defences", color: "#8800ff" },
-    { label: "Crypto Lab", href: "/tools/crypto", desc: "CTF toolbox: hash cracking, XOR brute force, Caesar and frequency analysis", color: "#00dd44" },
-    { label: "Cert Studio", href: "/tools/cert", desc: "Inspect PEM/DER/PKCS#12 chains, generate a CA, issue server and mTLS certs, sign CSRs", color: "#00e5ff" },
-  ];
+  // Derived from tools.json, so a new tool appears here the moment it is registered.
+  const standaloneTools = TOOL_META.filter((tool) => tool.grid).map((tool) => ({
+    label: tool.name,
+    href: `/tools/${tool.slug}`,
+    desc: tool.summary ?? tool.description,
+    color: tool.color ?? COLORS.green,
+  }));
 
   return (
     <section id="playground" className="relative w-full bg-surface py-20 md:py-32 section-divider overflow-hidden">
@@ -365,12 +386,70 @@ export default function ArtPlayground() {
                     <textarea value={diffLeft} onChange={e => setDiffLeft(e.target.value)} placeholder="Original text..." className="bg-transparent border-2 border-fg font-mono text-xs p-3 min-h-[120px] resize-none focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }} rows={6} />
                     <textarea value={diffRight} onChange={e => setDiffRight(e.target.value)} placeholder="Modified text..." className="bg-transparent border-2 border-fg font-mono text-xs p-3 min-h-[120px] resize-none focus:outline-none focus:border-brutal-pink transition-colors placeholder:text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono, color: "var(--fg)" }} rows={6} />
                   </div>
-                  <button onClick={handleDiff} className="font-mono text-xs uppercase px-4 py-2 border-2 border-fg hover:bg-fg hover:text-surface transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Compare</button>
-                  {diffResult.length > 0 && (
-                    <div className="border-2 border-fg p-3 font-mono text-xs space-y-0.5 max-h-[200px] overflow-y-auto" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
-                      {diffResult.map((r,i) => (
-                        <div key={i} className={r.type==="add"?"text-brutal-green-text":r.type==="del"?"text-brutal-red-text line-through":"text-fg-muted"}>
-                          {r.type==="add"?"+ ":r.type==="del"?"- ":"  "}{r.text}
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button onClick={handleDiff} className="font-mono text-xs uppercase px-4 py-2 border-2 border-fg hover:bg-fg hover:text-surface transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Compare</button>
+                    <button onClick={() => setDiffView(v => (v === "unified" ? "split" : "unified"))} aria-pressed={diffView === "split"} className="font-mono text-xs uppercase px-3 py-2 border-2 border-fg-muted/40 hover:border-fg text-fg-muted hover:text-fg transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>{diffView === "unified" ? "Unified" : "Side by side"}</button>
+                    {[
+                      { on: diffIgnoreCase, set: setDiffIgnoreCase, label: "Ignore case" },
+                      { on: diffIgnoreWs, set: setDiffIgnoreWs, label: "Ignore whitespace" },
+                      { on: diffJsonAware, set: setDiffJsonAware, label: "JSON-aware" },
+                      { on: diffChangedOnly, set: setDiffChangedOnly, label: "Changed only" },
+                    ].map(option => (
+                      <button key={option.label} onClick={() => option.set(!option.on)} aria-pressed={option.on} className={`font-mono text-xs uppercase px-3 py-2 border-2 transition-all cursor-pointer ${option.on ? "border-fg bg-fg text-surface" : "border-fg-muted/40 text-fg-muted hover:border-fg hover:text-fg"}`} style={{ fontFamily: TYPOGRAPHY.fontMono }}>{option.label}</button>
+                    ))}
+                    <span className="flex-1" />
+                    {diffResult.length > 0 && <>
+                      <button onClick={copyDiff} className="font-mono text-xs uppercase px-3 py-2 border-2 border-fg-muted/40 hover:border-fg text-fg-muted hover:text-fg transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Copy</button>
+                      <button onClick={exportDiff} className="font-mono text-xs uppercase px-3 py-2 border-2 border-fg-muted/40 hover:border-fg text-fg-muted hover:text-fg transition-all cursor-pointer" style={{ fontFamily: TYPOGRAPHY.fontMono }}>Export</button>
+                    </>}
+                  </div>
+
+                  {diffNote && <p className="font-sans text-xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontSans }}>{diffNote}</p>}
+
+                  {diffStats && diffResult.length > 0 && (
+                    <p className="font-mono text-xs uppercase text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                      <span className="text-brutal-green-text">+{diffStats.added}</span>{"  "}
+                      <span className="text-brutal-red-text">-{diffStats.removed}</span>
+                      {diffChangedOnly && diffVisible.length !== diffResult.length ? "  (unchanged lines hidden)" : ""}
+                    </p>
+                  )}
+
+                  {diffResult.length > 0 && diffVisible.length === 0 && (
+                    <div className="border-2 border-fg p-3 font-mono text-xs text-fg-muted" style={{ fontFamily: TYPOGRAPHY.fontMono }}>No differences.</div>
+                  )}
+
+                  {diffVisible.length > 0 && diffView === "unified" && (
+                    <div className="border-2 border-fg p-3 font-mono text-xs max-h-[260px] overflow-auto" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                      {diffVisible.map((line, index) => (
+                        <div key={index} className={line.kind === "add" ? "text-brutal-green-text" : line.kind === "del" ? "text-brutal-red-text" : "text-fg-muted"}>
+                          <span className="select-none opacity-60">{line.kind === "add" ? "+ " : line.kind === "del" ? "- " : "  "}</span>
+                          {line.leftWords || line.rightWords
+                            ? (line.kind === "del" ? line.leftWords : line.rightWords)!.map((word, wordIndex) => (
+                                <span key={wordIndex} className={word.changed ? "underline decoration-2 underline-offset-2" : undefined}>{word.text}</span>
+                              ))
+                            : line.text}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {diffVisible.length > 0 && diffView === "split" && (
+                    <div className="border-2 border-fg max-h-[260px] overflow-auto divide-y divide-fg-muted/15" style={{ fontFamily: TYPOGRAPHY.fontMono }}>
+                      {diffRows.map((row, index) => (
+                        <div key={index} className="grid grid-cols-2 gap-0">
+                          {[{ line: row.left, side: "left" as const }, { line: row.right, side: "right" as const }].map(cell => (
+                            <div key={cell.side} className="flex gap-2 px-2 py-0.5 text-xs min-w-0">
+                              <span className="w-8 shrink-0 select-none text-right text-fg-muted opacity-60">{cell.line ? (cell.side === "left" ? cell.line.leftNo : cell.line.rightNo) ?? "" : ""}</span>
+                              <span className={`min-w-0 break-all ${!cell.line ? "bg-fg-muted/10" : cell.line.kind === "same" ? "text-fg-muted" : cell.side === "left" ? "text-brutal-red-text" : "text-brutal-green-text"}`}>
+                                {(cell.side === "left" ? cell.line?.leftWords : cell.line?.rightWords)
+                                  ? (cell.side === "left" ? cell.line!.leftWords : cell.line!.rightWords)!.map((word, wordIndex) => (
+                                      <span key={wordIndex} className={word.changed ? "underline decoration-2 underline-offset-2" : undefined}>{word.text}</span>
+                                    ))
+                                  : cell.line?.text ?? ""}
+                              </span>
+                            </div>
+                          ))}
                         </div>
                       ))}
                     </div>
